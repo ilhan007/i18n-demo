@@ -6038,6 +6038,7 @@ const directive = (f) => ((...args) => {
 const isDirective = (o) => {
     return typeof o === 'function' && directives.has(o);
 };
+//# sourceMappingURL=directive.js.map
 
 /**
  * @license
@@ -6084,6 +6085,7 @@ const removeNodes = (container, startNode, endNode = null) => {
         node = n;
     }
 };
+//# sourceMappingURL=dom.js.map
 
 /**
  * @license
@@ -6107,6 +6109,7 @@ const noChange = {};
  * A sentinel value that signals a NodePart to fully clear its content.
  */
 const nothing = {};
+//# sourceMappingURL=part.js.map
 
 /**
  * @license
@@ -6296,6 +6299,7 @@ const createMarker = () => document.createComment('');
  *    * (') then any non-(')
  */
 const lastAttributeNameRegex = /([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F \x09\x0a\x0c\x0d"'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;
+//# sourceMappingURL=template.js.map
 
 /**
  * @license
@@ -6393,6 +6397,7 @@ class TemplateInstance {
         return fragment;
     }
 }
+//# sourceMappingURL=template-instance.js.map
 
 /**
  * @license
@@ -6457,6 +6462,7 @@ class TemplateResult {
         return template;
     }
 }
+//# sourceMappingURL=template-result.js.map
 
 /**
  * @license
@@ -6881,6 +6887,7 @@ const getOptions = (o) => o &&
     (eventOptionsSupported ?
         { capture: o.capture, passive: o.passive, once: o.once } :
         o.capture);
+//# sourceMappingURL=parts.js.map
 
 /**
  * @license
@@ -6932,6 +6939,7 @@ class DefaultTemplateProcessor {
     }
 }
 const defaultTemplateProcessor = new DefaultTemplateProcessor();
+//# sourceMappingURL=default-template-processor.js.map
 
 /**
  * @license
@@ -6979,6 +6987,7 @@ function templateFactory(result) {
     return template;
 }
 const templateCaches = new Map();
+//# sourceMappingURL=template-factory.js.map
 
 /**
  * @license
@@ -7019,6 +7028,7 @@ const render = (result, container, options) => {
     part.setValue(result);
     part.commit();
 };
+//# sourceMappingURL=render.js.map
 
 /**
  * @license
@@ -7042,6 +7052,7 @@ const render = (result, container, options) => {
  * render to and update a container.
  */
 const html = (strings, ...values) => new TemplateResult(strings, values, 'html', defaultTemplateProcessor);
+//# sourceMappingURL=lit-html.js.map
 
 /**
  * @license
@@ -7472,6 +7483,7 @@ const repeat = directive((items, keyFnOrTemplate, template) => {
         keyListCache.set(containerPart, newKeys);
     };
 });
+//# sourceMappingURL=repeat.js.map
 
 /**
  * @license
@@ -7549,6 +7561,7 @@ const classMap = directive((classInfo) => (part) => {
     }
     classMapCache.set(part, classInfo);
 });
+//# sourceMappingURL=class-map.js.map
 
 /**
  * @license
@@ -7630,12 +7643,88 @@ const styleMap$1 = directive((styleInfo) => (part) => {
     }
     styleMapCache.set(part, styleInfo);
 });
+//# sourceMappingURL=style-map.js.map
 
 const litRender = (templateResult, domNode, styles, { eventContext } = {}) => {
 	if (styles) {
 		templateResult = html`<style>${styles}</style>${templateResult}`;
 	}
 	render(templateResult, domNode, { eventContext });
+};
+
+const supportedLocales = ["ar", "ar_EG", "ar_SA", "bg", "ca", "cs", "da", "de", "de_AT", "de_CH", "el", "el_CY", "en", "en_AU", "en_GB", "en_HK", "en_IE", "en_IN", "en_NZ", "en_PG", "en_SG", "en_ZA", "es", "es_AR", "es_BO", "es_CL", "es_CO", "es_MX", "es_PE", "es_UY", "es_VE", "et", "fa", "fi", "fr", "fr_BE", "fr_CA", "fr_CH", "fr_LU", "he", "hi", "hr", "hu", "id", "it", "it_CH", "ja", "kk", "ko", "lt", "lv", "ms", "nb", "nl", "nl_BE", "pl", "pt", "pt_PT", "ro", "ru", "ru_UA", "sk", "sl", "sr", "sv", "th", "tr", "uk", "vi", "zh_CN", "zh_HK", "zh_SG", "zh_TW"];
+
+const cldrData = {};
+const cldrUrls = {};
+
+// externally configurable mapping function for resolving (localeId -> URL)
+// default implementation - ui5 CDN
+let cldrMappingFn = locale => `https://ui5.sap.com/1.60.2/resources/sap/ui/core/cldr/${locale}.json`;
+
+const M_ISO639_OLD_TO_NEW$3 = {
+	"iw": "he",
+	"ji": "yi",
+	"in": "id",
+	"sh": "sr",
+};
+
+const calcLocale = (language, region, script) => {
+	// normalize language and handle special cases
+	language = (language && M_ISO639_OLD_TO_NEW$3[language]) || language;
+	// Special case 1: in an SAP context, the inclusive language code "no" always means Norwegian Bokmal ("nb")
+	if (language === "no") {
+		language = "nb";
+	}
+	// Special case 2: for Chinese, derive a default region from the script (this behavior is inherited from Java)
+	if (language === "zh" && !region) {
+		if (script === "Hans") {
+			region = "CN";
+		} else if (script === "Hant") {
+			region = "TW";
+		}
+	}
+
+	// try language + region
+	let localeId = `${language}_${region}`;
+	if (!supportedLocales.includes(localeId)) {
+		// fallback to language only
+		localeId = language;
+	}
+	if (!supportedLocales.includes(localeId)) {
+		// fallback to english
+		localeId = "en";
+	}
+
+	return localeId;
+};
+
+
+const resolveMissingMappings = () => {
+	if (!cldrMappingFn) {
+		return;
+	}
+
+	const missingLocales = supportedLocales.filter(locale => !cldrData[locale] && !cldrUrls[locale]);
+	missingLocales.forEach(locale => {
+		cldrUrls[locale] = cldrMappingFn(locale);
+	});
+};
+
+const fetchCldrData = async (language, region, script) => {
+	resolveMissingMappings();
+	const localeId = calcLocale(language, region, script);
+
+	const cldrObj = cldrData[localeId];
+	const url = cldrUrls[localeId];
+
+	if (cldrObj) {
+		// inlined from build or fetched independently
+		registerModuleContent(`sap/ui/core/cldr/${localeId}.json`, JSON.stringify(cldrObj));
+	} else if (url) {
+		// fetch it
+		const cldrText = await fetchTextOnce(url);
+		registerModuleContent(`sap/ui/core/cldr/${localeId}.json`, cldrText);
+	}
 };
 
 const whenDOMReady = () => {
@@ -7890,176 +7979,6 @@ const Bootstrap = {
 	},
 };
 
-const M_ISO639_OLD_TO_NEW$3 = {
-	"iw": "he",
-	"ji": "yi",
-	"in": "id",
-	"sh": "sr",
-};
-
-const A_RTL_LOCALES$1 = getDesigntimePropertyAsArray("$cldr-rtl-locales:ar,fa,he$") || [];
-
-const impliesRTL = language => {
-	language = (language && M_ISO639_OLD_TO_NEW$3[language]) || language;
-
-	return A_RTL_LOCALES$1.indexOf(language) >= 0;
-};
-
-const getEffectiveRTL = () => {
-	const configurationRTL = getRTL();
-
-	if (configurationRTL !== null) {
-		return !!configurationRTL;
-	}
-
-	return impliesRTL(getLanguage() || detectNavigatorLanguage());
-};
-
-var mKeyCodes = {
-  BACKSPACE: 8,
-  TAB: 9,
-  ENTER: 13,
-  SHIFT: 16,
-  CONTROL: 17,
-  ALT: 18,
-  BREAK: 19,
-  CAPS_LOCK: 20,
-  ESCAPE: 27,
-  SPACE: 32,
-  PAGE_UP: 33,
-  PAGE_DOWN: 34,
-  END: 35,
-  HOME: 36,
-  ARROW_LEFT: 37,
-  ARROW_UP: 38,
-  ARROW_RIGHT: 39,
-  ARROW_DOWN: 40,
-  PRINT: 44,
-  INSERT: 45,
-  DELETE: 46,
-  DIGIT_0: 48,
-  DIGIT_1: 49,
-  DIGIT_2: 50,
-  DIGIT_3: 51,
-  DIGIT_4: 52,
-  DIGIT_5: 53,
-  DIGIT_6: 54,
-  DIGIT_7: 55,
-  DIGIT_8: 56,
-  DIGIT_9: 57,
-  A: 65,
-  B: 66,
-  C: 67,
-  D: 68,
-  E: 69,
-  F: 70,
-  G: 71,
-  H: 72,
-  I: 73,
-  J: 74,
-  K: 75,
-  L: 76,
-  M: 77,
-  N: 78,
-  O: 79,
-  P: 80,
-  Q: 81,
-  R: 82,
-  S: 83,
-  T: 84,
-  U: 85,
-  V: 86,
-  W: 87,
-  X: 88,
-  Y: 89,
-  Z: 90,
-  WINDOWS: 91,
-  CONTEXT_MENU: 93,
-  TURN_OFF: 94,
-  SLEEP: 95,
-  NUMPAD_0: 96,
-  NUMPAD_1: 97,
-  NUMPAD_2: 98,
-  NUMPAD_3: 99,
-  NUMPAD_4: 100,
-  NUMPAD_5: 101,
-  NUMPAD_6: 102,
-  NUMPAD_7: 103,
-  NUMPAD_8: 104,
-  NUMPAD_9: 105,
-  NUMPAD_ASTERISK: 106,
-  NUMPAD_PLUS: 107,
-  NUMPAD_MINUS: 109,
-  NUMPAD_COMMA: 110,
-  NUMPAD_SLASH: 111,
-  F1: 112,
-  F2: 113,
-  F3: 114,
-  F4: 115,
-  F5: 116,
-  F6: 117,
-  F7: 118,
-  F8: 119,
-  F9: 120,
-  F10: 121,
-  F11: 122,
-  F12: 123,
-  NUM_LOCK: 144,
-  SCROLL_LOCK: 145,
-  OPEN_BRACKET: 186,
-  PLUS: 187,
-  COMMA: 188,
-  SLASH: 189,
-  DOT: 190,
-  PIPE: 191,
-  SEMICOLON: 192,
-  MINUS: 219,
-  GREAT_ACCENT: 220,
-  EQUALS: 221,
-  SINGLE_QUOTE: 222,
-  BACKSLASH: 226
-};
-
-const isEnter = event => (event.key ? event.key === "Enter" : event.keyCode === mKeyCodes.ENTER) && !hasModifierKeys(event);
-
-const isSpace = event => (event.key ? (event.key === "Spacebar" || event.key === " ") : event.keyCode === mKeyCodes.SPACE) && !hasModifierKeys(event);
-
-const isLeft = event => (event.key ? (event.key === "ArrowLeft" || event.key === "Left") : event.keyCode === mKeyCodes.ARROW_LEFT) && !hasModifierKeys(event);
-
-const isRight = event => (event.key ? (event.key === "ArrowRight" || event.key === "Right") : event.keyCode === mKeyCodes.ARROW_RIGHT) && !hasModifierKeys(event);
-
-const isUp = event => (event.key ? (event.key === "ArrowUp" || event.key === "Up") : event.keyCode === mKeyCodes.ARROW_UP) && !hasModifierKeys(event);
-
-const isDown = event => (event.key ? (event.key === "ArrowDown" || event.key === "Down") : event.keyCode === mKeyCodes.ARROW_DOWN) && !hasModifierKeys(event);
-
-const isHome = event => (event.key ? event.key === "Home" : event.keyCode === mKeyCodes.HOME) && !hasModifierKeys(event);
-
-const isEnd = event => (event.key ? event.key === "End" : event.keyCode === mKeyCodes.END) && !hasModifierKeys(event);
-
-const isEscape = event => (event.key ? event.key === "Escape" || event.key === "Esc" : event.keyCode === mKeyCodes.ESCAPE) && !hasModifierKeys(event);
-
-const isTabNext = event => (event.key ? event.key === "Tab" : event.keyCode === mKeyCodes.TAB) && !hasModifierKeys(event);
-
-const isTabPrevious = event => (event.key ? event.key === "Tab" : event.keyCode === mKeyCodes.TAB) && checkModifierKeys(event, /* Ctrl */ false, /* Alt */ false, /* Shift */ true);
-
-const isBackSpace = event => (event.key ? (event.key === "Backspace" || event.key === "Backspace") : event.keyCode === mKeyCodes.BACKSPACE) && !hasModifierKeys(event);
-
-const isDelete = event => (event.key ? (event.key === "Delete" || event.key === "Delete") : event.keyCode === mKeyCodes.DELETE) && !hasModifierKeys(event);
-
-const isShow = event => {
-	if (event.key) {
-		return (event.key === "F4" && !hasModifierKeys(event)) || (((event.key === "ArrowDown" || event.key === "Down") || (event.key === "ArrowUp" || event.key === "Up")) && checkModifierKeys(event, /* Ctrl */ false, /* Alt */ true, /* Shift */ false));
-	}
-
-	return (event.keyCode === mKeyCodes.F4 && !hasModifierKeys(event)) || (event.keyCode === mKeyCodes.ARROW_DOWN && checkModifierKeys(event, /* Ctrl */ false, /* Alt */ true, /* Shift */ false));
-};
-
-const hasModifierKeys = event => event.shiftKey || event.altKey || getCtrlKey(event);
-
-const getCtrlKey = event => !!(event.metaKey || event.ctrlKey); // double negation doesn't have effect on boolean but ensures null and undefined are equivalent to false.
-
-const checkModifierKeys = (oEvent, bCtrlKey, bAltKey, bShiftKey) => oEvent.shiftKey === bShiftKey && oEvent.altKey === bAltKey && getCtrlKey(oEvent) === bCtrlKey;
-
 const URI = {
     parse: (url) => {
         const [protocol, hostname] = url.split("://");
@@ -8273,393 +8192,6 @@ const stringFromCharCode = code => {
 	return String.fromCharCode(typeof code === "number" ? code : parseInt(code, 16));
 };
 
-/*
-	lit-html directive that removes and attribute if it is undefined
-*/
-var ifDefined = directive(value => part => {
-	if ((value === undefined) && part instanceof AttributePart) {
-		if (value !== part.value) {
-			const name = part.committer.name;
-			part.committer.element.removeAttribute(name);
-		}
-	} else if (part.committer && part.committer.element && part.committer.element.getAttribute(part.committer.name) === value) {
-		part.setValue(noChange);
-	} else {
-		part.setValue(value);
-	}
-});
-
-const block0 = (context) => { return html`<span	class="${ifDefined(classMap(context.classes.main))}"	style="${ifDefined(context.fontStyle)}"	tabindex="-1"	data-sap-ui-icon-content="${ifDefined(context.iconContent)}"	dir="${ifDefined(context.dir)}"></span>`; };
-
-var iconCss = ":host(ui5-icon:not([hidden])){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}ui5-icon:not([hidden]){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.sapWCIcon{width:100%;height:100%;display:flex;justify-content:center;align-items:center;outline:none;border-style:none;pointer-events:none}.sapWCIcon:before{content:attr(data-sap-ui-icon-content);speak:none;font-weight:400;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;align-items:center;width:100%;height:100%;pointer-events:none}[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):after,[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):before{transform:scaleX(-1)}";
-
-/**
- * @public
- */
-const metadata$1 = {
-	tag: "ui5-icon",
-	properties: /** @lends sap.ui.webcomponents.main.Icon.prototype */ {
-
-		/**
-		 * Defines the source URI of the <code>ui5-icon</code>.
-		 * <br><br>
-		 * SAP-icons font provides numerous options. To find all the available icons, see the
-		 * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-		 * <br><br>
-		 * Example:
-		 * <br>
-		 * <code>src='sap-icons://add'</code>, <code>src='sap-icons://delete'</code>, <code>src='sap-icons://employee'</code>.
-		 *
-		 * @type {string}
-		 * @public
-		*/
-		src: {
-			type: String,
-		},
-	},
-	events: {
-		press: {},
-	},
-};
-
-/**
- * @class
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-icon</code> component is a wrapper around the HTML tag to embed an icon from an icon font.
- * There are two main scenarios how the <code>ui5-icon</code> component is used:
- * as a purely decorative element; or as a visually appealing clickable area in the form of an icon button.
- * In the first case, images are not predefined as tab stops in accessibility mode.
- * <br><br>
- * The <code>ui5-icon</code> uses embedded font instead of pixel image.
- * Comparing to image, <code>ui5-icon</code> is easily scalable,
- * its color can be altered live, and various effects can be added using CSS.
- * <br><br>
- * A large set of built-in icons is available
- * and they can be used by setting the <code>src</code> property on the <code>ui5-icon</code>.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Icon";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Icon
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-icon
- * @public
- */
-class Icon extends UI5Element {
-	static get metadata() {
-		return metadata$1;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0;
-	}
-
-	static get styles() {
-		return iconCss;
-	}
-
-	focus() {
-		HTMLElement.prototype.focus.call(this);
-	}
-
-	onclick() {
-		this.fireEvent("press");
-	}
-
-	onkeydown(event) {
-		if (isSpace(event)) {
-			event.preventDefault();
-			this.__spaceDown = true;
-		} else if (isEnter(event)) {
-			this.onclick(event);
-		}
-	}
-
-	onkeyup(event) {
-		if (isSpace(event) && this.__spaceDown) {
-			this.fireEvent("press");
-			this.__spaceDown = false;
-		}
-	}
-
-	get classes() {
-		const iconInfo = getIconInfo(this.src) || {};
-		return {
-			main: {
-				sapWCIcon: true,
-				sapWCIconMirrorInRTL: !iconInfo.suppressMirroring,
-			},
-		};
-	}
-
-	get iconContent() {
-		const iconInfo = getIconInfo(this.src) || {};
-		return iconInfo.content;
-	}
-
-	get dir() {
-		return getRTL() ? "rtl" : "ltr";
-	}
-
-	get fontStyle() {
-		const iconInfo = getIconInfo(this.src) || {};
-		return `font-family: '${iconInfo.fontFamily}'`;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Icon.define();
-});
-
-const block0$1 = (context) => { return html`<div class="ui5-badge-wrapper" dir="${ifDefined(context.rtl)}"><slot name="icon"></slot>	${ context.hasText ? block1(context) : undefined }</div>`; };
-const block1 = (context) => { return html`<label class="ui5-badge-text"><bdi><slot></slot></bdi></label>	`; };
-
-var badgeCss = ":host(ui5-badge:not([hidden])){display:inline-flex;height:1.125rem;min-width:1.125rem;max-width:100%;padding:0 .625rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border:solid 1px var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)));border-radius:1.125rem;box-sizing:border-box;font-size:var(--sapMFontSmallSize,.75rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));text-align:center}:host(ui5-badge[__has-icon]){padding:0 .3125rem}:host(ui5-badge[__has-icon]) .ui5-badge-text{padding-left:.1875rem}:host(ui5-badge[__has-icon]) .ui5-badge-wrapper[rtl] .ui5-badge-text{padding-right:.1875rem}:host(ui5-badge[color-scheme=\"1\"]){background-color:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border-color:var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)))}:host(ui5-badge[color-scheme=\"2\"]){background-color:var(--ui5-badge-bg-color-scheme-2,var(--sapUiAccent2Lighten40,#f9e6e6));border-color:var(--ui5-badge-border-color-scheme-2,var(--sapUiAccent2,var(--sapAccentColor2,#d04343)))}:host(ui5-badge[color-scheme=\"3\"]){background-color:var(--ui5-badge-bg-color-scheme-3,var(--sapUiAccent3Lighten46,#fce9f2));border-color:var(--ui5-badge-border-color-scheme-3,var(--sapUiAccent3,var(--sapAccentColor3,#db1f77)))}:host(ui5-badge[color-scheme=\"4\"]){background-color:var(--ui5-badge-bg-color-scheme-4,var(--sapUiAccent4Lighten46,#f9ebf5));border-color:var(--ui5-badge-border-color-scheme-4,var(--sapUiAccent4,var(--sapAccentColor4,#c0399f)))}:host(ui5-badge[color-scheme=\"5\"]){background-color:var(--ui5-badge-bg-color-scheme-5,var(--sapUiAccent5Lighten32,#eaeafa));border-color:var(--ui5-badge-border-color-scheme-5,var(--sapUiAccent5,var(--sapAccentColor5,#6367de)))}:host(ui5-badge[color-scheme=\"6\"]){background-color:var(--ui5-badge-bg-color-scheme-6,var(--sapUiAccent6Lighten52,#ebf3fa));border-color:var(--ui5-badge-border-color-scheme-6,var(--sapUiAccent6,var(--sapAccentColor6,#286eb4)))}:host(ui5-badge[color-scheme=\"7\"]){background-color:var(--ui5-badge-bg-color-scheme-7,var(--sapUiAccent7Lighten64,#e8fafd));border-color:var(--ui5-badge-border-color-scheme-7,var(--sapUiAccent7,var(--sapAccentColor7,#0f828f)))}:host(ui5-badge[color-scheme=\"8\"]){background-color:var(--ui5-badge-bg-color-scheme-8,var(--sapUiAccent8Lighten61,#f8fde7));border-color:var(--ui5-badge-border-color-scheme-8,var(--sapUiAccent8,var(--sapAccentColor8,#7ca10c)))}:host(ui5-badge[color-scheme=\"9\"]){background-color:var(--ui5-badge-bg-color-scheme-9,var(--sapUiAccent9Lighten37,#f2ebf9));border-color:var(--ui5-badge-border-color-scheme-9,var(--sapUiAccent9,var(--sapAccentColor9,#925ace)))}:host(ui5-badge[color-scheme=\"10\"]){background-color:var(--ui5-badge-bg-color-scheme-10,var(--sapUiAccent10Lighten49,#f1f3f4));border-color:var(--ui5-badge-border-color-scheme-10,var(--sapUiAccent10,var(--sapAccentColor10,#647987)))}.ui5-badge-wrapper{display:inline-flex;align-items:center;width:100%;box-sizing:border-box}.ui5-badge-text{width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.0125rem}ui5-badge:not([hidden]){display:inline-flex;height:1.125rem;min-width:1.125rem;max-width:100%;padding:0 .625rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border:solid 1px var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)));border-radius:1.125rem;box-sizing:border-box;font-size:var(--sapMFontSmallSize,.75rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));text-align:center}ui5-badge[__has-icon]{padding:0 .3125rem}ui5-badge[__has-icon] .ui5-badge-text{padding-left:.1875rem}ui5-badge[__has-icon] .ui5-badge-wrapper[rtl] .ui5-badge-text{padding-right:.1875rem}ui5-badge[color-scheme=\"1\"]{background-color:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border-color:var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)))}ui5-badge[color-scheme=\"2\"]{background-color:var(--ui5-badge-bg-color-scheme-2,var(--sapUiAccent2Lighten40,#f9e6e6));border-color:var(--ui5-badge-border-color-scheme-2,var(--sapUiAccent2,var(--sapAccentColor2,#d04343)))}ui5-badge[color-scheme=\"3\"]{background-color:var(--ui5-badge-bg-color-scheme-3,var(--sapUiAccent3Lighten46,#fce9f2));border-color:var(--ui5-badge-border-color-scheme-3,var(--sapUiAccent3,var(--sapAccentColor3,#db1f77)))}ui5-badge[color-scheme=\"4\"]{background-color:var(--ui5-badge-bg-color-scheme-4,var(--sapUiAccent4Lighten46,#f9ebf5));border-color:var(--ui5-badge-border-color-scheme-4,var(--sapUiAccent4,var(--sapAccentColor4,#c0399f)))}ui5-badge[color-scheme=\"5\"]{background-color:var(--ui5-badge-bg-color-scheme-5,var(--sapUiAccent5Lighten32,#eaeafa));border-color:var(--ui5-badge-border-color-scheme-5,var(--sapUiAccent5,var(--sapAccentColor5,#6367de)))}ui5-badge[color-scheme=\"6\"]{background-color:var(--ui5-badge-bg-color-scheme-6,var(--sapUiAccent6Lighten52,#ebf3fa));border-color:var(--ui5-badge-border-color-scheme-6,var(--sapUiAccent6,var(--sapAccentColor6,#286eb4)))}ui5-badge[color-scheme=\"7\"]{background-color:var(--ui5-badge-bg-color-scheme-7,var(--sapUiAccent7Lighten64,#e8fafd));border-color:var(--ui5-badge-border-color-scheme-7,var(--sapUiAccent7,var(--sapAccentColor7,#0f828f)))}ui5-badge[color-scheme=\"8\"]{background-color:var(--ui5-badge-bg-color-scheme-8,var(--sapUiAccent8Lighten61,#f8fde7));border-color:var(--ui5-badge-border-color-scheme-8,var(--sapUiAccent8,var(--sapAccentColor8,#7ca10c)))}ui5-badge[color-scheme=\"9\"]{background-color:var(--ui5-badge-bg-color-scheme-9,var(--sapUiAccent9Lighten37,#f2ebf9));border-color:var(--ui5-badge-border-color-scheme-9,var(--sapUiAccent9,var(--sapAccentColor9,#925ace)))}ui5-badge[color-scheme=\"10\"]{background-color:var(--ui5-badge-bg-color-scheme-10,var(--sapUiAccent10Lighten49,#f1f3f4));border-color:var(--ui5-badge-border-color-scheme-10,var(--sapUiAccent10,var(--sapAccentColor10,#647987)))}";
-
-/**
- * @public
- */
-const metadata$2 = {
-	tag: "ui5-badge",
-	properties: /** @lends sap.ui.webcomponents.main.Badge.prototype */  {
-
-		/**
-		 * Defines the color scheme of the <code>ui5-badge</code>.
-		 * There are 10 predefined schemes. Each scheme applies different values for the <code>background-color> and <code>border-color</code>.
-		 * To use one you can set a number from <code>"1"</code> to <code>"10"</code>. The <code>colorScheme</code> <code>"1"</code> will be set by default.
-		 * <br><br>
-		 * <b>Note:</b> color schemes have no visual representation in High Contrast Black (sap_belize_hcb) theme.
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		colorScheme: {
-			type: String,
-			defaultValue: "1",
-		},
-	},
-	slots: /** @lends sap.ui.webcomponents.main.Badge.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-badge</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-
-		/**
-		 * Defines the <code>ui5-icon</code> to be displayed in the <code>ui5-badge</code>.
-		 *
-		 * @type {Icon}
-		 * @slot
-		 * @public
-		 */
-		icon: {
-			type: Icon,
-		},
-
-	},
-	defaultSlot: "text",
-};
-
-/**
- * @class
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-badge</code> is a small non-interactive component which contains text information and color chosen from a list of predefined color schemes.
- * It serves the purpose to attract the user attention to some piece of information (state, quantity, condition, etc.).
- *
- * <h3>Usage Guidelines</h3>
- * <ul>
- * <li>If the text is longer than the width of the component, it doesn’t wrap, it shows ellipsis.</li>
- * <li>When truncated, the full text is not visible, therefore, it’s recommended to make more space for longer texts to be fully displayed.</li>
- * <li>Colors are not semantic and have no visual representation in High Contrast Black (sap_belize_hcb) theme.</li>
- * </ul>
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Badge";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Badge
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-badge
- * @since 0.12.0
- * @public
- */
-class Badge extends UI5Element {
-	static get metadata() {
-		return metadata$2;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$1;
-	}
-
-	static get styles() {
-		return badgeCss;
-	}
-
-	onBeforeRendering() {
-		if (this.hasIcon) {
-			this.setAttribute("__has-icon", "");
-		} else {
-			this.removeAttribute("__has-icon");
-		}
-	}
-
-	get hasText() {
-		return !!this.textContent.trim().length;
-	}
-
-	get hasIcon() {
-		return !!this.icon;
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Badge.define();
-});
-
-const block0$2 = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}">	${ context.active ? block1$1(context) : undefined }<slot></slot></div>`; };
-const block1$1 = (context) => { return html`<div class="ui5-busyindicator-dynamic-content"><div class="ui5-busyindicator-circle circle-animation-0"></div><div class="ui5-busyindicator-circle circle-animation-1"></div><div class="ui5-busyindicator-circle circle-animation-2"></div></div>	`; };
-
-var busyIndicatorCss = ":host(ui5-busyindicator:not([hidden])){display:inline-block}:host(ui5-busyindicator:not([hidden])[active]){opacity:1;background-color:var(--sapBackgroundColorFade72,hsla(0,0%,98%,.72));pointer-events:none}ui5-busyindicator:not([hidden]){display:inline-block}ui5-busyindicator:not([hidden])[active]{opacity:1;background-color:var(--sapBackgroundColorFade72,hsla(0,0%,98%,.72));pointer-events:none}.ui5-busyindicator-wrapper{display:flex;justify-content:center;align-items:center;position:relative;background-color:inherit}.ui5-busyindicator-circle{display:inline-block;background-color:var(--ui5-busyindicator-color,var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0))));border-radius:50%}.ui5-busyindicator-circle:before{content:\"\";width:100%;height:100%;border-radius:100%}.ui5-busyindicator-small{min-width:3rem;min-height:1rem}.ui5-busyindicator-medium{min-width:5rem;min-height:2rem}.ui5-busyindicator-large{min-width:8rem;min-height:3rem}.ui5-busyindicator-small .ui5-busyindicator-circle{width:.125rem;height:.125rem;margin:0 .2rem}.ui5-busyindicator-medium .ui5-busyindicator-circle{width:.5rem;height:.5rem;margin:0 .4rem}.ui5-busyindicator-large .ui5-busyindicator-circle{width:1rem;height:1rem;margin:0 .75rem}.ui5-busyindicator-dynamic-content{position:absolute;z-index:999;width:100%;height:100%;display:flex;justify-content:center;align-items:center;background-color:inherit}.circle-animation-0{animation:grow 1.6s cubic-bezier(.32,.06,.85,1.11) infinite}.circle-animation-1{animation:grow 1.6s cubic-bezier(.32,.06,.85,1.11) infinite;animation-delay:.2s}.circle-animation-2{animation:grow 1.6s cubic-bezier(.32,.06,.85,1.11) infinite;animation-delay:.4s}@keyframes grow{0%,50%,to{-webkit-transform:scale(1);-moz-transform:scale(1);-ms-transform:scale(1);transform:scale(1)}25%{-webkit-transform:scale(2.5);-moz-transform:scale(2.5);-ms-transform:scale(2.5);transform:scale(2.5)}}";
-
-/**
- * Different types of BusyIndicator.
- */
-const BusyIndicatorTypes = {
-	/**
-	 * small size
-	 */
-	Small: "Small",
-
-	/**
-	 * medium size
-	 */
-	Medium: "Medium",
-
-	/**
-	 * large size
-	 */
-	Large: "Large",
-};
-
-class BusyIndicatorType extends DataType {
-	static isValid(value) {
-		return !!BusyIndicatorTypes[value];
-	}
-}
-
-BusyIndicatorType.generataTypeAcessors(BusyIndicatorTypes);
-
-/**
- * @public
- */
-const metadata$3 = {
-	tag: "ui5-busyindicator",
-	properties: /** @lends sap.ui.webcomponents.main.BusyIndicator.prototype */ {
-		/**
-		 * Defines the size of the <code>ui5-busyindicator</code>.
-		 * </br></br>
-		 * <b>Note:</b> Available options are "Small", "Medium", "Large"
-		 *
-		 * @type {BusyIndicatorType}
-		 * @defaultvalue "Large"
-		 * @public
-		 */
-		size: { type: BusyIndicatorType, defaultValue: BusyIndicatorType.Large },
-
-		/**
-		 * Defines if the busy indicator is visible on the screen. By default it is not.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		active: { type: Boolean },
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-busyindicator</code> signals that some operation is going on and that the
- *  user must wait. It does not block the current UI screen so other operations could be
- *  triggered in parallel.
- *
- * <h3>Usage</h3>
- * For the <code>ui5-busyindicator</code> you can define the size of the indicator as well
- * as whether it is shown or hidden. In order to hide it, use the html attribute <code>hidden</code> or <code>display: none;</code>
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/BusyIndicator";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.BusyIndicator
- * @extends UI5Element
- * @tagname ui5-busyindicator
- * @public
- * @since 0.12.0
- */
-class BusyIndicator extends UI5Element {
-	static get metadata() {
-		return metadata$3;
-	}
-
-	static get styles() {
-		return busyIndicatorCss;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$2;
-	}
-
-	get classes() {
-		return {
-			main: {
-				"ui5-busyindicator-wrapper": true,
-				[`ui5-busyindicator-${this.size.toLowerCase()}`]: true,
-			},
-		};
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	BusyIndicator.define();
-});
-
 const features = new Map();
 
 const registerFeature = (name, feature) => {
@@ -8668,1384 +8200,6 @@ const registerFeature = (name, feature) => {
 
 const getFeature = name => {
 	return features.get(name);
-};
-
-/**
- * Different types of Button.
- */
-const ButtonTypes = {
-	/**
-	 * default type (no special styling)
-	 */
-	Default: "Default",
-
-	/**
-	 * accept type (green button)
-	 */
-	Positive: "Positive",
-
-	/**
-	 * reject style (red button)
-	 */
-	Negative: "Negative",
-
-	/**
-	 * transparent type
-	 */
-	Transparent: "Transparent",
-
-	/**
-	 * emphasized type
-	 */
-	Emphasized: "Emphasized",
-};
-
-class ButtonDesign extends DataType {
-	static isValid(value) {
-		return !!ButtonTypes[value];
-	}
-}
-
-ButtonDesign.generataTypeAcessors(ButtonTypes);
-
-const block0$3 = (context) => { return html`<button		type="button"		class="${ifDefined(classMap(context.classes.main))}"		?disabled="${ifDefined(context.disabled)}"		data-sap-focus-ref				dir="${ifDefined(context.rtl)}"	>		${ context.icon ? block1$2(context) : undefined }${ context.textContent ? block2(context) : undefined }</button>`; };
-const block1$2 = (context) => { return html`<ui5-icon				class="${ifDefined(classMap(context.classes.icon))}"				src="${ifDefined(context.icon)}"			></ui5-icon>		`; };
-const block2 = (context) => { return html`<span id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.text))}"><bdi><slot></slot></bdi></span>		`; };
-
-var buttonCss = ":host(ui5-button:not([hidden])){display:inline-block}ui5-button:not([hidden]){display:inline-block}button[dir=rtl].sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button[dir=rtl].sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button.sapUiSizeCompact .sapWCIconInButton{font-size:1rem}button.sapUiSizeCompact.sapMBtn{padding:var(--_ui5_button_compact_padding,0 .4375rem);min-height:var(--_ui5_button_compact_height,1.625rem);min-width:var(--_ui5_button_base_min_compact_width,2rem)}ui5-button .sapMBtn:before{content:\"\";min-height:inherit;font-size:0}.sapMBtn{width:100%;height:100%;min-width:var(--_ui5_button_base_min_width,2.25rem);min-height:var(--_ui5_button_base_height,2.25rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;box-sizing:border-box;padding:var(--_ui5_button_base_padding,0 .5625rem);border-radius:var(--_ui5_button_border_radius,.25rem);border-width:.0625rem;cursor:pointer;display:flex;justify-content:center;align-items:center;background-color:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,#0854a0));color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));outline:none;position:relative}.sapMBtn:not(.sapMBtnActive):hover{background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe))}.sapMBtn .sapWCIconInButton{font-size:var(--_ui5_button_base_icon_only_font_size,1rem);position:relative;color:inherit}.sapMBtn.sapMBtnIconEnd{flex-direction:row-reverse}.sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtn.sapMBtnNoText{padding:var(--_ui5_button_base_icon_only_padding,0 .5625rem)}.sapMBtnText{outline:none;position:relative}.sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtnDisabled{opacity:.5;pointer-events:none}.sapMBtn:focus:after{content:\"\";position:absolute;border:var(--_ui5_button_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_button_focus_after_top,1px);bottom:var(--_ui5_button_focus_after_bottom,1px);left:var(--_ui5_button_focus_after_left,1px);right:var(--_ui5_button_focus_after_right,1px)}.sapMBtn::-moz-focus-inner{border:0}.sapMBtnActive{background-image:none;background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));border-color:var(--_ui5_button_active_border_color,var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive{background-color:var(--sapUiButtonAcceptBackground,var(--sapButton_Accept_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--_ui5_button_positive_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))));color:var(--sapUiButtonAcceptTextColor,#107e3e);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnPositive:hover{background-color:var(--sapUiButtonAcceptHoverBackground,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_button_positive_border_hover_color,var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e))))))}.sapMBtn.sapMBtnPositive.sapMBtnActive{background-color:var(--sapUiButtonAcceptActiveBackground,#0d6733);border-color:var(--_ui5_button_positive_border_active_color,var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnPositive:focus{border-color:var(--_ui5_button_positive_focus_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))))}.sapMBtn.sapMBtnPositive.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnNegative{background-color:var(--sapUiButtonRejectBackground,var(--sapButton_Reject_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));color:var(--sapUiButtonRejectTextColor,#b00);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnNegative:hover{background-color:var(--sapUiButtonRejectHoverBackground,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--sapUiButtonRejectHoverBorderColor,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative:focus{border-color:var(--_ui5_button_negative_focus_border_color,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative.sapMBtnActive{background-color:var(--sapUiButtonRejectActiveBackground,#a20000);border-color:var(--_ui5_button_negative_active_border_color,var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnNegative.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnNegative:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnEmphasized{background-color:var(--sapUiButtonEmphasizedBackground,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))));border-color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1)))));color:var(--sapUiButtonEmphasizedTextColor,var(--sapButton_Emphasized_TextColor,#fff));text-shadow:0 0 .125rem var(--sapUiButtonEmphasizedTextShadow,transparent);font-weight:var(--_ui5_button_emphasized_font_weight,bold)}.sapMBtn.sapMBtnEmphasized:hover{background-color:var(--sapUiButtonEmphasizedHoverBackground,#085caf);border-color:var(--sapUiButtonEmphasizedHoverBorderColor,var(--sapUiButtonEmphasizedHoverBackground,#085caf))}.sapMBtn.sapMBtnEmphasized.sapMBtnActive{background-color:var(--sapUiButtonEmphasizedActiveBackground,#0854a0);border-color:var(--sapUiButtonEmphasizedActiveBorderColor,var(--sapUiButtonEmphasizedActiveBackground,#0854a0));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnEmphasized.sapMBtnActive:focus:after,.sapMBtn.sapMBtnEmphasized:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnEmphasized:focus{border-color:var(--_ui5_button_emphasized_focused_border_color,var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))))))}.sapMBtn.sapMBtnTransparent{background-color:var(--sapUiButtonLiteBackground,transparent);border-color:var(--sapUiButtonLiteBorderColor,transparent);color:var(--sapUiButtonLiteTextColor,var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));border-color:transparent}.sapMBtn.sapMBtnTransparent:hover{background-color:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.sapMBtn.sapMBtnTransparent.sapMBtnActive{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnTransparent:hover:not(.sapMBtnActive){border-color:transparent}";
-
-/**
- * @public
- */
-const metadata$4 = {
-	tag: "ui5-button",
-	properties: /** @lends sap.ui.webcomponents.main.Button.prototype */ {
-
-		/**
-		 * Defines the <code>ui5-button</code> design.
-		 * </br></br>
-		 * <b>Note:</b> Available options are "Default", "Emphasized", "Positive",
-		 * "Negative", and "Transparent".
-		 *
-		 * @type {ButtonDesign}
-		 * @defaultvalue "Default"
-		 * @public
-		 */
-		design: {
-			type: ButtonDesign,
-			defaultValue: ButtonDesign.Default,
-		},
-
-		/**
-		 * Defines whether the <code>ui5-button</code> is disabled
-		 * (default is set to <code>false</code>).
-		 * A disabled <code>ui5-button</code> can't be pressed or
-		 * focused, and it is not in the tab chain.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the icon to be displayed as graphical element within the <code>ui5-button</code>.
-		 * The SAP-icons font provides numerous options.
-		 * <br><br>
-		 * Example:
-		 * <br>
-		 * <pre>ui5-button icon="sap-icon://palette"</pre>
-		 *
-		 * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		icon: {
-			type: String,
-		},
-
-		/**
-		 * Defines whether the icon should be displayed after the <code>ui5-button</code> text.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		iconEnd: {
-			type: Boolean,
-		},
-
-		/**
-		 * When set to <code>true</code>, the <code>ui5-button</code> will
-		 * automatically submit the nearest form element upon <code>press</code>.
-		 *
-		 * <b>Important:</b> For the <code>submits</code> property to have effect, you must add the following import to your project:
-		 * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		submits: {
-			type: Boolean,
-		},
-
-		/**
-		 * Used to switch the active state (pressed or not) of the <code>ui5-button</code>.
-		 */
-		_active: {
-			type: Boolean,
-		},
-
-		_iconSettings: {
-			type: Object,
-		},
-	},
-	slots: /** @lends sap.ui.webcomponents.main.Button.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-button</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	defaultSlot: "text",
-	events: /** @lends sap.ui.webcomponents.main.Button.prototype */ {
-
-		/**
-		 * Fired when the <code>ui5-button</code> is pressed either with a
-		 * click/tap or by using the Enter or Space key.
-		 * <br><br>
-		 * <b>Note:</b> The event will not be fired if the <code>disabled</code>
-		 * property is set to <code>true</code>.
-		 *
-		 * @event
-		 * @public
-		 */
-		press: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-button</code> component represents a simple push button.
- * It enables users to trigger actions by clicking or tapping the <code>ui5-button</code>, or by pressing
- * certain keyboard keys, such as Enter.
- *
- *
- * <h3>Usage</h3>
- *
- * For the <code>ui5-button</code> UI, you can define text, icon, or both. You can also specify
- * whether the text or the icon is displayed first.
- * <br><br>
- * You can choose from a set of predefined types that offer different
- * styling to correspond to the triggered action.
- * <br><br>
- * You can set the <code>ui5-button</code> as enabled or disabled. An enabled
- * <code>ui5-button</code> can be pressed by clicking or tapping it. The button changes
- * its style to provide visual feedback to the user that it is pressed or hovered over with
- * the mouse cursor. A disabled <code>ui5-button</code> appears inactive and cannot be pressed.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Button";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Button
- * @extends UI5Element
- * @tagname ui5-button
- * @public
- */
-class Button extends UI5Element {
-	static get metadata() {
-		return metadata$4;
-	}
-
-	static get styles() {
-		return buttonCss;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$3;
-	}
-
-	constructor() {
-		super();
-
-		this._deactivate = () => {
-			if (this._active) {
-				this._active = false;
-			}
-		};
-	}
-
-	onBeforeRendering() {
-		const FormSupport = getFeature("FormSupport");
-		if (this.submits && !FormSupport) {
-			console.warn(`In order for the "submits" property to have effect, you should also: import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";`); // eslint-disable-line
-		}
-	}
-
-	onEnterDOM() {
-		document.addEventListener("mouseup", this._deactivate);
-	}
-
-	onExitDOM() {
-		document.removeEventListener("mouseup", this._deactivate);
-	}
-
-	onclick(event) {
-		event.isMarked = "button";
-		if (!this.disabled) {
-			this.fireEvent("press", {});
-			const FormSupport = getFeature("FormSupport");
-			if (FormSupport) {
-				FormSupport.triggerFormSubmit(this);
-			}
-		}
-	}
-
-	onmousedown(event) {
-		event.isMarked = "button";
-
-		if (!this.disabled) {
-			this._active = true;
-		}
-	}
-
-	onmouseup(event) {
-		event.isMarked = "button";
-	}
-
-	onkeydown(event) {
-		if (isSpace(event) || isEnter(event)) {
-			this._active = true;
-		}
-	}
-
-	onkeyup(event) {
-		if (isSpace(event) || isEnter(event)) {
-			this._active = false;
-		}
-	}
-
-	onfocusout(_event) {
-		this._active = false;
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMBtn: true,
-				sapMBtnActive: this._active,
-				sapMBtnWithIcon: this.icon,
-				sapMBtnNoText: !this.text.length,
-				sapMBtnDisabled: this.disabled,
-				sapMBtnIconEnd: this.iconEnd,
-				[`sapMBtn${this.design}`]: true,
-				sapUiSizeCompact: getCompactSize(),
-			},
-			icon: {
-				sapWCIconInButton: true,
-			},
-			text: {
-				sapMBtnText: true,
-			},
-		};
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-
-	static async define(...params) {
-		await Icon.define();
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Button.define();
-});
-
-const Device = {};
-const OS = {
-  "WINDOWS": "win",
-  "MACINTOSH": "mac",
-  "IOS": "iOS",
-  "ANDROID": "Android"
-};
-const _getMobileOS = () => {
-  const userAgent = navigator.userAgent;
-  let rPlatform, aMatches;
-  rPlatform = /\(([a-zA-Z ]+);\s(?:[U]?[;]?)([\D]+)((?:[\d._]*))(?:.*[\)][^\d]*)([\d.]*)\s/;
-  aMatches = userAgent.match(rPlatform);
-  if (aMatches) {
-    var rAppleDevices = /iPhone|iPad|iPod/;
-    if (aMatches[0].match(rAppleDevices)) {
-      aMatches[3] = aMatches[3].replace(/_/g, ".");
-      return {
-        "name": OS.IOS,
-        "versionStr": aMatches[3]
-      };
-    }
-    if (aMatches[2].match(/Android/)) {
-      aMatches[2] = aMatches[2].replace(/\s/g, "");
-      return {
-        "name": OS.ANDROID,
-        "versionStr": aMatches[3]
-      };
-    }
-  }
-  rPlatform = /\((Android)[\s]?([\d][.\d]*)?;.*Firefox\/[\d][.\d]*/;
-  aMatches = userAgent.match(rPlatform);
-  if (aMatches) {
-    return {
-      "name": OS.ANDROID,
-      "versionStr": aMatches.length === 3 ? aMatches[2] : ""
-    };
-  }
-};
-const _getDesktopOS = () => {
-  const sPlatform = navigator.platform;
-  if (sPlatform.indexOf("Win") !== -1) {
-    const rVersion = /Windows NT (\d+).(\d)/i;
-    const uaResult = navigator.userAgent.match(rVersion);
-    return {
-      "name": OS.WINDOWS,
-      "versionStr": uaResult[1]
-    };
-  }
-  if (sPlatform.indexOf("Mac") !== -1) {
-    return {
-      "name": OS.MACINTOSH,
-      "versionStr": ""
-    };
-  }
-  return null;
-};
-const _getOS = () => {
-  return _getMobileOS() || _getDesktopOS();
-};
-const _setOS = () => {
-  if (Device.os) {
-    return;
-  }
-  Device.os = _getOS() || ({});
-  Device.os.OS = OS;
-  Device.os.version = Device.os.versionStr ? parseFloat(Device.os.versionStr) : -1;
-  if (Device.os.name) {
-    for (let name in OS) {
-      if (OS[name] === Device.os.name) {
-        Device.os[name.toLowerCase()] = true;
-      }
-    }
-  }
-};
-const BROWSER = {
-  "INTERNET_EXPLORER": "ie",
-  "EDGE": "ed",
-  "FIREFOX": "ff",
-  "CHROME": "cr",
-  "SAFARI": "sf",
-  "ANDROID": "an"
-};
-const _calcBrowser = () => {
-  const sUserAgent = navigator.userAgent.toLowerCase();
-  const rwebkit = /(webkit)[ \/]([\w.]+)/;
-  const rmsie = /(msie) ([\w.]+)/;
-  const rmsie11 = /(trident)\/[\w.]+;.*rv:([\w.]+)/;
-  const redge = /(edge)[ \/]([\w.]+)/;
-  const rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
-  const browserMatch = redge.exec(sUserAgent) || rmsie11.exec(sUserAgent) || rwebkit.exec(sUserAgent) || rmsie.exec(sUserAgent) || sUserAgent.indexOf("compatible") < 0 && rmozilla.exec(sUserAgent) || [];
-  const oRes = {
-    browser: browserMatch[1] || "",
-    version: browserMatch[2] || "0"
-  };
-  oRes[oRes.browser] = true;
-  return oRes;
-};
-const _getBrowser = () => {
-  const oBrowser = _calcBrowser();
-  const sUserAgent = navigator.userAgent;
-  const oNavigator = window.navigator;
-  let oExpMobile;
-  let oResult;
-  if (oBrowser.mozilla) {
-    oExpMobile = /Mobile/;
-    if (sUserAgent.match(/Firefox\/(\d+\.\d+)/)) {
-      var fVersion = parseFloat(RegExp.$1);
-      oResult = {
-        name: BROWSER.FIREFOX,
-        versionStr: "" + fVersion,
-        version: fVersion,
-        mozilla: true,
-        mobile: oExpMobile.test(sUserAgent)
-      };
-    } else {
-      oResult = {
-        mobile: oExpMobile.test(sUserAgent),
-        mozilla: true,
-        version: -1
-      };
-    }
-  } else if (oBrowser.webkit) {
-    var regExpWebkitVersion = sUserAgent.toLowerCase().match(/webkit[\/]([\d.]+)/);
-    var webkitVersion;
-    if (regExpWebkitVersion) {
-      webkitVersion = regExpWebkitVersion[1];
-    }
-    oExpMobile = /Mobile/;
-    var aChromeMatch = sUserAgent.match(/(Chrome|CriOS)\/(\d+\.\d+).\d+/);
-    var aFirefoxMatch = sUserAgent.match(/FxiOS\/(\d+\.\d+)/);
-    var aAndroidMatch = sUserAgent.match(/Android .+ Version\/(\d+\.\d+)/);
-    if (aChromeMatch || aFirefoxMatch || aAndroidMatch) {
-      var sName, sVersion, bMobile;
-      if (aChromeMatch) {
-        sName = BROWSER.CHROME;
-        bMobile = oExpMobile.test(sUserAgent);
-        sVersion = parseFloat(aChromeMatch[2]);
-      } else if (aFirefoxMatch) {
-        sName = BROWSER.FIREFOX;
-        bMobile = true;
-        sVersion = parseFloat(aFirefoxMatch[1]);
-      } else if (aAndroidMatch) {
-        sName = BROWSER.ANDROID;
-        bMobile = oExpMobile.test(sUserAgent);
-        sVersion = parseFloat(aAndroidMatch[1]);
-      }
-      oResult = {
-        name: sName,
-        mobile: bMobile,
-        versionStr: "" + sVersion,
-        version: sVersion,
-        webkit: true,
-        webkitVersion: webkitVersion
-      };
-    } else {
-      var oExp = /(Version|PhantomJS)\/(\d+\.\d+).*Safari/;
-      var bStandalone = oNavigator.standalone;
-      if (oExp.test(sUserAgent)) {
-        var aParts = oExp.exec(sUserAgent);
-        var fVersion = parseFloat(aParts[2]);
-        oResult = {
-          name: BROWSER.SAFARI,
-          versionStr: "" + fVersion,
-          fullscreen: false,
-          webview: false,
-          version: fVersion,
-          mobile: oExpMobile.test(sUserAgent),
-          webkit: true,
-          webkitVersion: webkitVersion,
-          phantomJS: aParts[1] === "PhantomJS"
-        };
-      } else if ((/iPhone|iPad|iPod/).test(sUserAgent) && !(/CriOS/).test(sUserAgent) && !(/FxiOS/).test(sUserAgent) && (bStandalone === true || bStandalone === false)) {
-        oResult = {
-          name: BROWSER.SAFARI,
-          version: -1,
-          fullscreen: bStandalone,
-          webview: !bStandalone,
-          mobile: oExpMobile.test(sUserAgent),
-          webkit: true,
-          webkitVersion: webkitVersion
-        };
-      } else {
-        oResult = {
-          mobile: oExpMobile.test(sUserAgent),
-          webkit: true,
-          webkitVersion: webkitVersion,
-          version: -1
-        };
-      }
-    }
-  } else if (oBrowser.msie || oBrowser.trident) {
-    var fVersion = parseFloat(oBrowser.version);
-    oResult = {
-      name: BROWSER.INTERNET_EXPLORER,
-      versionStr: "" + fVersion,
-      version: fVersion,
-      msie: true,
-      mobile: false
-    };
-  } else if (oBrowser.edge) {
-    var fVersion = fVersion = parseFloat(oBrowser.version);
-    oResult = {
-      name: BROWSER.EDGE,
-      versionStr: "" + fVersion,
-      version: fVersion,
-      edge: true
-    };
-  } else {
-    oResult = {
-      name: "",
-      versionStr: "",
-      version: -1,
-      mobile: false
-    };
-  }
-  return oResult;
-};
-const _setBrowser = () => {
-  Device.browser = _getBrowser();
-  Device.browser.BROWSER = BROWSER;
-  if (Device.browser.name) {
-    for (var b in BROWSER) {
-      if (BROWSER[b] === Device.browser.name) {
-        Device.browser[b.toLowerCase()] = true;
-      }
-    }
-  }
-};
-const isIE = () => {
-  if (!Device.browser) {
-    _setBrowser();
-  }
-  return !!Device.browser.msie;
-};
-const _setSupport = () => {
-  if (Device.support) {
-    return;
-  }
-  if (!Device.browser) {
-    _setBrowser();
-  }
-  Device.support = {};
-  Device.support.touch = !!(("ontouchstart" in window) || navigator.maxTouchPoints > 0 || window.DocumentTouch && document instanceof window.DocumentTouch);
-};
-const supportTouch = () => {
-  if (!Device.support) {
-    _setSupport();
-  }
-  return !!Device.support.touch;
-};
-const SYSTEMTYPE = {
-  "TABLET": "tablet",
-  "PHONE": "phone",
-  "DESKTOP": "desktop",
-  "COMBI": "combi"
-};
-const _isTablet = () => {
-  const sUserAgent = navigator.userAgent;
-  if (Device.os.name === Device.os.OS.IOS) {
-    return (/ipad/i).test(sUserAgent);
-  } else {
-    if (supportTouch()) {
-      if (Device.os.windows && Device.os.version >= 8) {
-        return true;
-      }
-      if (Device.browser.chrome && Device.os.android && Device.os.version >= 4.4) {
-        return !(/Mobile Safari\/[.0-9]+/).test(sUserAgent);
-      } else {
-        let densityFactor = window.devicePixelRatio ? window.devicePixelRatio : 1;
-        if (Device.os.android && Device.browser.webkit && parseFloat(Device.browser.webkitVersion) > 537.1) {
-          densityFactor = 1;
-        }
-        const bTablet = Math.min(window.screen.width / densityFactor, window.screen.height / densityFactor) >= 600;
-        return bTablet;
-      }
-    } else {
-      const bAndroidPhone = (/(?=android)(?=.*mobile)/i).test(sUserAgent);
-      return Device.browser.msie && sUserAgent.indexOf("Touch") !== -1 || Device.os.android && !bAndroidPhone;
-    }
-  }
-};
-const _getSystem = () => {
-  const bTabletDetected = _isTablet();
-  const isWin8Upwards = Device.os.windows && Device.os.version >= 8;
-  const oSystem = {};
-  oSystem.tablet = !!((Device.support.touch || isWin8Upwards) && bTabletDetected);
-  oSystem.phone = !!(Device.os.windows_phone || Device.support.touch && !bTabletDetected);
-  oSystem.desktop = !!(!oSystem.tablet && !oSystem.phone || isWin8Upwards);
-  oSystem.combi = oSystem.desktop && oSystem.tablet;
-  oSystem.SYSTEMTYPE = SYSTEMTYPE;
-  return oSystem;
-};
-const _setSystem = () => {
-  _setSupport();
-  _setOS();
-  Device.system = {};
-  Device.system = _getSystem();
-  if (Device.system.tablet || Device.system.phone) {
-    Device.browser.mobile = true;
-  }
-};
-const isDesktop = () => {
-  if (!Device.system) {
-    _setSystem();
-  }
-  return Device.system.desktop;
-};
-const isPhone = () => {
-  if (!Device.system) {
-    _setSystem();
-  }
-  return Device.system.phone;
-};
-
-/**
- * Different states.
- */
-const ValueStates = {
-	None: "None",
-	Success: "Success",
-	Warning: "Warning",
-	Error: "Error",
-};
-
-class ValueState extends DataType {
-	static isValid(value) {
-		return !!ValueStates[value];
-	}
-}
-
-ValueState.generataTypeAcessors(ValueStates);
-
-const block0$4 = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	role="checkbox"	aria-checked="${ifDefined(context.checked)}"	aria-readonly="${ifDefined(context.ariaReadonly)}"	aria-disabled="${ifDefined(context.ariaDisabled)}"	tabindex="${ifDefined(context.tabIndex)}"	dir="${ifDefined(context.rtl)}"><div id="${ifDefined(context._id)}-CbBg" class="${ifDefined(classMap(context.classes.inner))}"><input id="${ifDefined(context._id)}-CB" type='checkbox' ?checked="${ifDefined(context.checked)}" ?readonly="${ifDefined(context.readonly)}" ?disabled="${ifDefined(context.disabled)}" data-sap-no-tab-ref/></div>		${ context._label.text ? block1$3(context) : undefined }<slot name="formSupport"></slot></div>`; };
-const block1$3 = (context) => { return html`<ui5-label class="ui5-checkbox-label" ?wrap="${ifDefined(context._label.wrap)}">${ifDefined(context._label.text)}</ui5-label>		`; };
-
-const block0$5 = (context) => { return html`<label class="${ifDefined(classMap(context.classes.main))}" for="${ifDefined(context.for)}"><bdi id="${ifDefined(context._id)}-bdi"><slot></slot></bdi></label>`; };
-
-var labelCss = ":host(ui5-label:not([hidden])){display:inline-flex;max-width:100%;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;cursor:text}ui5-label:not([hidden]){display:inline-block;max-width:100%;overflow:hidden;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;cursor:text}.sapMLabel{display:inline-block;width:100%;font-weight:inherit;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:inherit}.sapMLabel.sapMLabelWrapped{white-space:normal;line-height:1.4rem}.sapMLabel.sapMLabelRequired:before{position:relative;height:100%;display:inline-flex;align-items:flex-start;content:\"*\";color:var(--sapUiFieldRequiredColor,var(--sapField_RequiredColor,#a5175a));font-size:1.25rem;font-weight:700}";
-
-/**
- * @public
- */
-const metadata$5 = {
-	tag: "ui5-label",
-	properties: /** @lends sap.ui.webcomponents.main.Label.prototype */  {
-
-		/**
-		 * Defines whether an asterisk character is added to the <code>ui5-label</code> text.
-		 * <br><br>
-		 * <b>Note:</b> Usually indicates that user input is required.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		required: {
-			type: Boolean,
-		},
-
-		/**
-		 * Determines whether the <code>ui5-label</code> should wrap, when there is not enough space.
-		 * <br><br>
-		 * <b>Note:</b> By default the text would truncate.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		wrap: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the labeled input by providing its ID.
-		 * <br><br>
-		 * <b>Note:</b> Can be used with both <code>ui5-input</code> and native input.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		"for": {
-			type: String,
-		},
-	},
-	slots: /** @lends sap.ui.webcomponents.main.Label.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-label</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	defaultSlot: "text",
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-label</code> is a component used to represent a label,
- * providing valuable information to the user.
- * Usually it is placed next to a value holder, such as a text field.
- * It informs the user about what data is displayed or expected in the value holder.
- * The <code>ui5-label</code> is associated with its value holder by setting the
- * <code>labelFor</code> association.
- * <br><br>
- * The <code>ui5-label</code> appearance can be influenced by properties,
- * such as <code>required</code> and <code>wrap</code>.
- * The appearance of the Label can be configured in a limited way by using the design property.
- * For a broader choice of designs, you can use custom styles.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Label";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Label
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-label
- * @public
- */
-class Label extends UI5Element {
-	static get metadata() {
-		return metadata$5;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$5;
-	}
-
-	static get styles() {
-		return labelCss;
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMLabel: true,
-				sapMLabelNoText: !this.text.length,
-				sapMLabelWrapped: this.wrap,
-				sapMLabelRequired: this.required,
-			},
-		};
-	}
-
-	onclick() {
-		const elementToFocus = document.getElementById(this.for);
-
-		if (elementToFocus) {
-			elementToFocus.focus();
-		}
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Label.define();
-});
-
-var checkboxCss = ":host(ui5-checkbox:not([hidden])){display:inline-block;overflow:hidden;max-width:100%}ui5-checkbox:not([hidden]){display:inline-block;overflow:hidden;max-width:100%}.ui5-checkbox-wrapper{position:relative;display:inline-flex;align-items:center;width:100%;min-height:var(--_ui5_checkbox_width_height,2.75rem);min-width:var(--_ui5_checkbox_width_height,2.75rem);padding:0 var(--_ui5_checkbox_wrapper_padding,.6875rem);box-sizing:border-box;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0)}.ui5-checkbox-wrapper:not(.ui5-checkbox-with-label){justify-content:center}.ui5-checkbox-wrapper:after{content:\"\";min-height:inherit;font-size:0}.ui5-checkbox-wrapper.ui5-checkbox-with-label{padding-right:0}.ui5-checkbox-wrapper.ui5-checkbox-with-label:focus:before{right:0}.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap{min-height:auto;padding-top:.6875rem;box-sizing:border-box;padding-bottom:.6875rem;align-items:flex-start}.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap .ui5-checkbox-inner,.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap .ui5-checkbox-label{margin-top:var(--_ui5_checkbox_wrapped_content_margin_top,0)}.ui5-checkbox--disabled{opacity:.5}.ui5-checkbox--error .ui5-checkbox-inner{background:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:var(--_ui5_checkbox_inner_error_border,.125rem solid var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))));color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-checkbox--error.ui5-checkbox--hoverable:hover .ui5-checkbox-inner{background:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))));border-color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-checkbox--error .ui5-checkbox-inner--checked:before{color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-checkbox--warning .ui5-checkbox-inner{background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:var(--_ui5_checkbox_inner_warning_border,.125rem solid var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c)))));color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.ui5-checkbox--warning.ui5-checkbox--hoverable:hover .ui5-checkbox-inner{background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.ui5-checkbox--warning .ui5-checkbox-inner--checked:before{color:var(--_ui5_checkbox_checkmark_warning_color,var(--sapUiFieldWarningColorDarken100,#000))}.ui5-checkbox--hoverable:hover .ui5-checkbox-inner{background:var(--_ui5_checkbox_hover_background,var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))));border-color:var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.ui5-checkbox--readonly:not(.ui5-checkbox--warning):not(.ui5-checkbox--error) .ui5-checkbox-inner{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)));border:var(--_ui5_checkbox_inner_readonly_border,1px solid var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)))));color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.ui5-checkbox-wrapper:focus:before{content:\"\";position:absolute;top:var(--_ui5_checkbox_focus_position,.5625rem);left:var(--_ui5_checkbox_focus_position,.5625rem);right:var(--_ui5_checkbox_focus_position,.5625rem);bottom:var(--_ui5_checkbox_focus_position,.5625rem);border:var(--_ui5_checkbox_focus_outline,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.ui5-checkbox-wrapper.ui5-checkbox--wrap:focus:before{bottom:var(--_ui5_checkbox_wrapped_focus_left_top_bottom_position,.5625rem)}.ui5-checkbox-inner{display:flex;justify-content:center;align-items:center;min-width:var(--_ui5_checkbox_inner_width_height,1.375rem);max-width:var(--_ui5_checkbox_inner_width_height,1.375rem);height:var(--_ui5_checkbox_inner_width_height,1.375rem);max-height:var(--_ui5_checkbox_inner_width_height,1.375rem);border:var(--_ui5_checkbox_inner_border,.0625rem solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));border-radius:var(--_ui5_checkbox_inner_border_radius,.125rem);background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-sizing:border-box;position:relative;cursor:default;pointer-events:none}.ui5-checkbox-inner--checked:before{content:\"\\e05b\";display:flex;position:absolute;justify-content:center;align-items:center;font-family:SAP-icons;color:var(--_ui5_checkbox_checkmark_color,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));width:100%;height:100%;left:0;top:0;user-select:none;-ms-user-select:none;-webkit-user-select:none;cursor:default}.ui5-checkbox-inner input{-webkit-appearance:none;visibility:hidden;width:0;left:0;position:absolute;font-size:inherit}.ui5-checkbox-wrapper .ui5-checkbox-label{margin-left:var(--_ui5_checkbox_wrapper_padding,.6875rem);cursor:default;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;pointer-events:none;user-select:none;-ms-user-select:none;-webkit-user-select:none}.sapUiSizeCompact.ui5-checkbox-wrapper{min-height:var(--_ui5_checkbox_compact_width_height,2rem);min-width:var(--_ui5_checkbox_compact_width_height,2rem);padding:0 var(--_ui5_checkbox_compact_wrapper_padding,.5rem)}.sapUiSizeCompact .ui5-checkbox-inner{max-height:var(--_ui5_checkbox_compact_inner_size,1rem);height:var(--_ui5_checkbox_compact_inner_size,1rem);max-width:var(--_ui5_checkbox_compact_inner_size,1rem);min-width:var(--_ui5_checkbox_compact_inner_size,1rem);font-size:.625rem}.sapUiSizeCompact.ui5-checkbox-wrapper:focus:before{top:var(--_ui5_checkbox_compact_focus_position,.375rem);left:var(--_ui5_checkbox_compact_focus_position,.375rem);right:var(--_ui5_checkbox_compact_focus_position,.375rem);bottom:var(--_ui5_checkbox_compact_focus_position,.375rem);border:var(--_ui5_checkbox_focus_outline,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap{min-height:auto;padding-top:var(--_ui5_checkbox_wrapped_focus_padding,.5rem);padding-bottom:var(--_ui5_checkbox_wrapped_focus_padding,.5rem)}.sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap .ui5-checkbox-label{margin-top:var(--_ui5_checkbox_compact_wrapped_label_margin_top,-.125rem)}.sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox--wrap:focus:before{bottom:var(--_ui5_checkbox_compact_focus_position,.375rem)}.sapUiSizeCompact.ui5-checkbox-wrapper .ui5-checkbox-label{margin-left:var(--_ui5_checkbox_compact_wrapper_padding,.5rem);width:calc(100% - .8125rem - var(--_ui5_checkbox_compact_inner_size, 1rem))}[dir=rtl].ui5-checkbox-wrapper.ui5-checkbox-with-label{padding-left:0;padding-right:var(--_ui5_checkbox_wrapper_padding,.6875rem)}[dir=rtl].ui5-checkbox-wrapper.ui5-checkbox-with-label:focus:before{left:0;right:var(--_ui5_checkbox_focus_position,.5625rem)}[dir=rtl].ui5-checkbox-wrapper .ui5-checkbox-label{margin-left:0;margin-right:var(--_ui5_checkbox_compact_wrapper_padding,.5rem)}[dir=rtl].sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label{padding-right:var(--_ui5_checkbox_compact_wrapper_padding,.5rem)}[dir=rtl].sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label:focus:before{right:var(--_ui5_checkbox_compact_focus_position,.375rem)}";
-
-/**
- * @public
- */
-const metadata$6 = {
-	tag: "ui5-checkbox",
-	properties: /** @lends sap.ui.webcomponents.main.CheckBox.prototype */ {
-
-		/**
-		 * Defines whether the <code>ui5-checkbox</code> is disabled.
-		 * <br><br>
-		 * <b>Note:</b> A disabled <code>ui5-checkbox</code> is completely uninteractive.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines whether the <code>ui5-checkbox</code> is read-only.
-		 * <br><br>
-		 * <b>Note:</b> A red-only <code>ui5-checkbox</code> is not editable,
-		 * but still provides visual feedback upon user interaction.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		readonly: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines if the <code>ui5-checkbox</code> is checked.
-		 * <br><br>
-		 * <b>Note:</b> The property can be changed with user interaction,
-		 * either by cliking/tapping on the <code>ui5-checkbox</code>, or by
-		 * pressing the Enter or Space key.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		checked: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the text of the <code>ui5-checkbox</code>.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		text: {
-			type: String,
-		},
-
-		/**
-		 * Defines the value state of the <code>ui5-checkbox</code>.
-		 * <br><br>
-		 * <b>Note:</b> Available options are <code>Warning</code>, <code>Error</code>, and <code>None</code> (default).
-		 *
-		 * @type {string}
-		 * @defaultvalue "None"
-		 * @public
-		 */
-		valueState: {
-			type: ValueState,
-			defaultValue: ValueState.None,
-		},
-
-		/**
-		 * Defines whether the <code>ui5-checkbox</code> text wraps when there is not enough space.
-		 * <br><br>
-		 * <b>Note:</b> By default, the text truncates when there is not enough space.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		wrap: {
-			type: Boolean,
-		},
-
-		/**
-		 * Determines the name with which the <code>ui5-checkbox</code> will be submitted in an HTML form.
-		 *
-		 * <b>Important:</b> For the <code>name</code> property to have effect, you must add the following import to your project:
-		 * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-		 *
-		 * <b>Note:</b> When set, a native <code>input</code> HTML element
-		 * will be created inside the <code>ui5-checkbox</code> so that it can be submitted as
-		 * part of an HTML form. Do not use this property unless you need to submit a form.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		name: {
-			type: String,
-		},
-
-		_label: {
-			type: Object,
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.CheckBox.prototype */ {
-
-		/**
-		 * Fired when the <code>ui5-checkbox</code> checked state changes.
-		 *
-		 * @public
-		 * @event
-		 */
-		change: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * Allows the user to set a binary value, such as true/false or yes/no for an item.
- * <br/><br/>
- * The <code>ui5-checkbox</code> component consists of a box and a label that describes its purpose.
- * If it's checked, an indicator is displayed inside the box.
- * To check/uncheck the <code>ui5-checkbox</code>, the user has to click or tap the square
- * box or its label.
- * <br/><br/>
- * Clicking or tapping toggles the <code>ui5-checkbox</code> between checked and unchecked state.
- * The <code>ui5-checkbox</code> component only has 2 states - checked and unchecked.
- *
- * <h3>Usage</h3>
- *
- * You can manually set the width of the element containing the box and the label using the <code>width</code> property.
- * If the text exceeds the available width, it is truncated.
- * The touchable area for toggling the <code>ui5-checkbox</code> ends where the text ends.
- * <br><br>
- * You can disable the <code>ui5-checkbox</code> by setting the <code>disabled</code> property to
- * <code>true</code>,
- * or use the <code>ui5-checkbox</code> in read-only mode by setting the <code>readonly</code>
- * property to <code>true</code>.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/CheckBox";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.CheckBox
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-checkbox
- * @public
- */
-class CheckBox extends UI5Element {
-	static get metadata() {
-		return metadata$6;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$4;
-	}
-
-	static get styles() {
-		return checkboxCss;
-	}
-
-	constructor() {
-		super();
-		this._label = {};
-	}
-
-	onBeforeRendering() {
-		this.syncLabel();
-
-		this._enableFormSupport();
-	}
-
-	syncLabel() {
-		this._label = Object.assign({}, this._label);
-		this._label.text = this.text;
-		this._label.wrap = this.wrap;
-		this._label.textDirection = this.textDirection;
-	}
-
-	_enableFormSupport() {
-		const FormSupport = getFeature("FormSupport");
-		if (FormSupport) {
-			FormSupport.syncNativeHiddenInput(this, (element, nativeInput) => {
-				nativeInput.disabled = element.disabled || !element.checked;
-				nativeInput.value = element.checked ? "on" : "";
-			});
-		} else if (this.name) {
-			console.warn(`In order for the "name" property to have effect, you should also: import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";`); // eslint-disable-line
-		}
-	}
-
-	onclick() {
-		this.toggle();
-	}
-
-	onkeydown(event) {
-		if (isSpace(event)) {
-			event.preventDefault();
-		}
-
-		if (isEnter(event)) {
-			this.toggle();
-		}
-	}
-
-	onkeyup(event) {
-		if (isSpace(event)) {
-			this.toggle();
-		}
-	}
-
-	toggle() {
-		if (this.canToggle()) {
-			this.checked = !this.checked;
-			this.fireEvent("change");
-		}
-		return this;
-	}
-
-	canToggle() {
-		return !(this.disabled || this.readonly);
-	}
-
-	get classes() {
-		return {
-			main: {
-				"ui5-checkbox-wrapper": true,
-				"ui5-checkbox-with-label": !!this.text,
-				"ui5-checkbox--disabled": this.disabled,
-				"ui5-checkbox--readonly": this.readonly,
-				"ui5-checkbox--error": this.valueState === "Error",
-				"ui5-checkbox--warning": this.valueState === "Warning",
-				"ui5-checkbox--wrap": this.wrap,
-				"ui5-checkbox--hoverable": !this.disabled && !this.readonly && isDesktop(),
-				"sapUiSizeCompact": getCompactSize(),
-			},
-			inner: {
-				"ui5-checkbox-inner": true,
-				"ui5-checkbox-inner-mark": true,
-				"ui5-checkbox-inner--checked": !!this.checked,
-			},
-		};
-	}
-
-	get ariaReadonly() {
-		return this.readonly ? "true" : undefined;
-	}
-
-	get ariaDisabled() {
-		return this.disabled ? "true" : undefined;
-	}
-
-	get tabIndex() {
-		return this.disabled ? undefined : "0";
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-
-	static async define(...params) {
-		await Label.define();
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	CheckBox.define();
-});
-
-const block0$6 = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	dir="${ifDefined(context.rtl)}"><header class="${ifDefined(classMap(context.classes.header))}"		@click="${ifDefined(context._headerClick)}"		@keydown="${ifDefined(context._headerKeydown)}"		@keyup="${ifDefined(context._headerKeyup)}"		tabindex="${ifDefined(context.tabindex)}"		role="${ifDefined(context.role)}">		${ context.image ? block1$4(context) : undefined }${ context.icon ? block2$1(context) : undefined }<div class="sapFCardHeaderText">			${ context.heading ? block3(context) : undefined }${ context.subtitle ? block4(context) : undefined }</div><span part="status" class="sapFCardStatus">${ifDefined(context.status)}</span></header><section class="sapFCardContent"><slot></slot></section></div>`; };
-const block1$4 = (context) => { return html`<img src="${ifDefined(context.avatar)}" aria-label="Avatar" class="sapFCardAvatar sapFCardHeaderImg">		`; };
-const block2$1 = (context) => { return html`<span role="img" aria-label="Avatar" class="sapFCardAvatar"><ui5-icon class="sapFCardHeaderIcon" src="${ifDefined(context.avatar)}"></ui5-icon></span>		`; };
-const block3 = (context) => { return html`<div class="sapFCardTitle">${ifDefined(context.heading)}</div>			`; };
-const block4 = (context) => { return html`<div class="sapFCardSubtitle ">${ifDefined(context.subtitle)}</div>			`; };
-
-var cardCss = ":host(ui5-card:not([hidden])){display:inline-block;width:100%}ui5-card:not([hidden]){display:inline-block;width:100%}.sapFCard{width:100%;height:100%;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-shadow:var(--sapUiShadowLevel0,0 0 0 1px rgba(0,0,0,.15));border-radius:.25rem;border:1px solid var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc));overflow:hidden;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapUiFontSize,16px)}.sapFCardHeader{position:relative;display:flex;align-items:flex-start;background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:1px solid var(--_ui5_card_header_border_color,var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc)));padding:var(--_ui5_card_content_padding,1rem)}.sapFCard.sapFCardNoContent{height:auto}.sapFCard.sapFCardNoContent .sapFCardHeader{border-bottom:none}.sapFCardHeader:focus{outline:none}.sapFCardHeader.sapFCardHeaderInteractive:focus:before{content:\"\";position:absolute;border:var(--_ui5_card_header_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapFCardHeader.sapFCardHeaderInteractive:hover{cursor:pointer;background:var(--_ui5_card_header_hover_bg,#fafafa)}.sapFCardHeader.sapFCardHeaderActive,.sapFCardHeader.sapFCardHeaderInteractive:active{background:var(--_ui5_card_header_active_bg,#f0f0f0)}.sapFCardHeader .sapFCardHeaderText{flex:1}.sapFCardHeader .sapFCardAvatar{height:3rem;width:3rem;display:flex;align-items:center;justify-content:center;margin-right:.75rem}.sapFCardHeader .sapFCardAvatar.sapFCardHeaderImg{border-radius:50%}.sapFCardHeader .sapFCardAvatar .sapFCardHeaderIcon{font-size:1.5rem;color:var(--sapUiTileIconColor,var(--sapTile_IconColor,#6a6d70))}.sapFCardHeader .sapFCardStatus{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem);color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));text-align:left;line-height:1.125rem;padding-left:1rem;margin-left:auto;text-wrap:avoid;display:inline-block}.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));font-size:var(--sapMFontHeader5Size,1rem);font-weight:var(--sapUiFontHeaderWeight,normal);color:var(--sapUiTileTitleTextColor,var(--sapTile_TitleTextColor,#32363a));max-height:3.5rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));margin-top:.5rem;max-height:2.1rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle,.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:left;text-overflow:ellipsis;white-space:normal;word-wrap:break-word;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;max-width:100%}[dir=rtl] .sapFCardHeader .sapFCardAvatar{margin-left:.75rem;margin-right:0}[dir=rtl] .sapFCardHeader .sapFCardStatus{padding-right:1rem;padding-left:0;margin-right:auto}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:right}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{text-align:right}";
-
-/**
- * @public
- */
-const metadata$7 = {
-	tag: "ui5-card",
-	defaultSlot: "content",
-	slots: /** @lends sap.ui.webcomponents.main.Card.prototype */ {
-
-		/**
-		 * Defines the content of the <code>ui5-card</code>.
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		content: {
-			type: HTMLElement,
-			multiple: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.Card.prototype */ {
-
-		/**
-		 * Defines the title displayed in the <code>ui5-card</code> header.
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		heading: {
-			type: String,
-		},
-
-		/**
-		 * Defines the subtitle displayed in the <code>ui5-card</code> header.
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		subtitle: {
-			type: String,
-		},
-
-		/**
-		 * Defines the status displayed in the <code>ui5-card</code> header.
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		status: {
-			type: String,
-		},
-
-		/**
-		 * Defines if the <code>ui5-card</code> header would be interactive,
-		 * e.g gets hover effect, gets focused and <code>headerPress</code> event is fired, when it is pressed.
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		headerInteractive: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines image source URI or built-in icon font URI.
-		 * </br></br>
-		 * <b>Note:</b>
-		 * SAP-icons font provides numerous options. To find all the available icons, see the
-		 * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-		 * @type {string}
-		 * @public
-		 */
-		avatar: {
-			type: String,
-		},
-
-		_headerActive: {
-			type: Boolean,
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.Card.prototype */ {
-
-		/**
-		 * Fired when the <code>ui5-card</code> header is pressed
-		 * by click/tap or by using the Enter or Space key.
-		 * <br><br>
-		 * <b>Note:</b> The event would be fired only if the <code>headerInteractive</code> property is set to true.
-		 * @event
-		 * @public
-		 * @since 0.10.0
-		 */
-		headerPress: {},
-	},
-};
-
-/**
- * @class
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-card</code> is a component that represents information in the form of a
- * tile with separate header and content areas.
- * The content area of a <code>ui5-card</code> can be arbitrary HTML content.
- * The header can be used through several properties, such as:
- * <code>heading</code>, <code>subtitle</code>, <code>status</code> and <code>avatar</code>.
- *
- * <h3>Keyboard handling</h3>
- * In case you enable <code>headerInteractive</cdoe> property, you can press the <code>ui5-card</code> header by Space and Enter keys.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Card";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Card
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-card
- * @public
- */
-class Card extends UI5Element {
-	static get metadata() {
-		return metadata$7;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$6;
-	}
-
-	static get styles() {
-		return cardCss;
-	}
-
-	get classes() {
-		return {
-			main: {
-				"sapFCard": true,
-				"sapFCardNoContent": !this.content.length,
-			},
-			header: {
-				"sapFCardHeader": true,
-				"sapFCardHeaderInteractive": this.headerInteractive,
-				"sapFCardHeaderActive": this.headerInteractive && this._headerActive,
-			},
-		};
-	}
-
-	get icon() {
-		return !!this.avatar && isIconURI(this.avatar);
-	}
-
-	get image() {
-		return !!this.avatar && !this.icon;
-	}
-
-	get role() {
-		return this.headerInteractive ? "button" : undefined;
-	}
-
-	get tabindex() {
-		return this.headerInteractive ? "0" : undefined;
-	}
-
-	static async define(...params) {
-		await Icon.define();
-
-		super.define(...params);
-	}
-
-	_headerClick() {
-		if (this.headerInteractive) {
-			this.fireEvent("headerPress");
-		}
-	}
-
-	_headerKeydown(event) {
-		if (!this.headerInteractive) {
-			return;
-		}
-
-		const enter = isEnter(event);
-		const space = isSpace(event);
-
-		this._headerActive = enter || space;
-
-		if (enter) {
-			this.fireEvent("headerPress");
-			return;
-		}
-
-		if (space) {
-			event.preventDefault();
-		}
-	}
-
-	_headerKeyup(event) {
-		if (!this.headerInteractive) {
-			return;
-		}
-
-		const space = isSpace(event);
-
-		this._headerActive = false;
-
-		if (space) {
-			this.fireEvent("headerPress");
-		}
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Card.define();
-});
-
-const supportedLocales = ["ar", "ar_EG", "ar_SA", "bg", "ca", "cs", "da", "de", "de_AT", "de_CH", "el", "el_CY", "en", "en_AU", "en_GB", "en_HK", "en_IE", "en_IN", "en_NZ", "en_PG", "en_SG", "en_ZA", "es", "es_AR", "es_BO", "es_CL", "es_CO", "es_MX", "es_PE", "es_UY", "es_VE", "et", "fa", "fi", "fr", "fr_BE", "fr_CA", "fr_CH", "fr_LU", "he", "hi", "hr", "hu", "id", "it", "it_CH", "ja", "kk", "ko", "lt", "lv", "ms", "nb", "nl", "nl_BE", "pl", "pt", "pt_PT", "ro", "ru", "ru_UA", "sk", "sl", "sr", "sv", "th", "tr", "uk", "vi", "zh_CN", "zh_HK", "zh_SG", "zh_TW"];
-
-const cldrData = {};
-const cldrUrls = {};
-
-// externally configurable mapping function for resolving (localeId -> URL)
-// default implementation - ui5 CDN
-let cldrMappingFn = locale => `https://ui5.sap.com/1.60.2/resources/sap/ui/core/cldr/${locale}.json`;
-
-const M_ISO639_OLD_TO_NEW$4 = {
-	"iw": "he",
-	"ji": "yi",
-	"in": "id",
-	"sh": "sr",
-};
-
-const calcLocale = (language, region, script) => {
-	// normalize language and handle special cases
-	language = (language && M_ISO639_OLD_TO_NEW$4[language]) || language;
-	// Special case 1: in an SAP context, the inclusive language code "no" always means Norwegian Bokmal ("nb")
-	if (language === "no") {
-		language = "nb";
-	}
-	// Special case 2: for Chinese, derive a default region from the script (this behavior is inherited from Java)
-	if (language === "zh" && !region) {
-		if (script === "Hans") {
-			region = "CN";
-		} else if (script === "Hant") {
-			region = "TW";
-		}
-	}
-
-	// try language + region
-	let localeId = `${language}_${region}`;
-	if (!supportedLocales.includes(localeId)) {
-		// fallback to language only
-		localeId = language;
-	}
-	if (!supportedLocales.includes(localeId)) {
-		// fallback to english
-		localeId = "en";
-	}
-
-	return localeId;
-};
-
-
-const resolveMissingMappings = () => {
-	if (!cldrMappingFn) {
-		return;
-	}
-
-	const missingLocales = supportedLocales.filter(locale => !cldrData[locale] && !cldrUrls[locale]);
-	missingLocales.forEach(locale => {
-		cldrUrls[locale] = cldrMappingFn(locale);
-	});
-};
-
-const fetchCldrData = async (language, region, script) => {
-	resolveMissingMappings();
-	const localeId = calcLocale(language, region, script);
-
-	const cldrObj = cldrData[localeId];
-	const url = cldrUrls[localeId];
-
-	if (cldrObj) {
-		// inlined from build or fetched independently
-		registerModuleContent(`sap/ui/core/cldr/${localeId}.json`, JSON.stringify(cldrObj));
-	} else if (url) {
-		// fetch it
-		const cldrText = await fetchTextOnce(url);
-		registerModuleContent(`sap/ui/core/cldr/${localeId}.json`, cldrText);
-	}
 };
 
 var fnEqual = function (a, b, maxDepth, contains, depth) {
@@ -12199,6 +10353,307 @@ function checkNumericLike(value, message) {
 	}
 }
 
+/**
+ * Different states.
+ */
+const ValueStates = {
+	None: "None",
+	Success: "Success",
+	Warning: "Warning",
+	Error: "Error",
+};
+
+class ValueState extends DataType {
+	static isValid(value) {
+		return !!ValueStates[value];
+	}
+}
+
+ValueState.generataTypeAcessors(ValueStates);
+
+var mKeyCodes = {
+  BACKSPACE: 8,
+  TAB: 9,
+  ENTER: 13,
+  SHIFT: 16,
+  CONTROL: 17,
+  ALT: 18,
+  BREAK: 19,
+  CAPS_LOCK: 20,
+  ESCAPE: 27,
+  SPACE: 32,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34,
+  END: 35,
+  HOME: 36,
+  ARROW_LEFT: 37,
+  ARROW_UP: 38,
+  ARROW_RIGHT: 39,
+  ARROW_DOWN: 40,
+  PRINT: 44,
+  INSERT: 45,
+  DELETE: 46,
+  DIGIT_0: 48,
+  DIGIT_1: 49,
+  DIGIT_2: 50,
+  DIGIT_3: 51,
+  DIGIT_4: 52,
+  DIGIT_5: 53,
+  DIGIT_6: 54,
+  DIGIT_7: 55,
+  DIGIT_8: 56,
+  DIGIT_9: 57,
+  A: 65,
+  B: 66,
+  C: 67,
+  D: 68,
+  E: 69,
+  F: 70,
+  G: 71,
+  H: 72,
+  I: 73,
+  J: 74,
+  K: 75,
+  L: 76,
+  M: 77,
+  N: 78,
+  O: 79,
+  P: 80,
+  Q: 81,
+  R: 82,
+  S: 83,
+  T: 84,
+  U: 85,
+  V: 86,
+  W: 87,
+  X: 88,
+  Y: 89,
+  Z: 90,
+  WINDOWS: 91,
+  CONTEXT_MENU: 93,
+  TURN_OFF: 94,
+  SLEEP: 95,
+  NUMPAD_0: 96,
+  NUMPAD_1: 97,
+  NUMPAD_2: 98,
+  NUMPAD_3: 99,
+  NUMPAD_4: 100,
+  NUMPAD_5: 101,
+  NUMPAD_6: 102,
+  NUMPAD_7: 103,
+  NUMPAD_8: 104,
+  NUMPAD_9: 105,
+  NUMPAD_ASTERISK: 106,
+  NUMPAD_PLUS: 107,
+  NUMPAD_MINUS: 109,
+  NUMPAD_COMMA: 110,
+  NUMPAD_SLASH: 111,
+  F1: 112,
+  F2: 113,
+  F3: 114,
+  F4: 115,
+  F5: 116,
+  F6: 117,
+  F7: 118,
+  F8: 119,
+  F9: 120,
+  F10: 121,
+  F11: 122,
+  F12: 123,
+  NUM_LOCK: 144,
+  SCROLL_LOCK: 145,
+  OPEN_BRACKET: 186,
+  PLUS: 187,
+  COMMA: 188,
+  SLASH: 189,
+  DOT: 190,
+  PIPE: 191,
+  SEMICOLON: 192,
+  MINUS: 219,
+  GREAT_ACCENT: 220,
+  EQUALS: 221,
+  SINGLE_QUOTE: 222,
+  BACKSLASH: 226
+};
+
+const isEnter = event => (event.key ? event.key === "Enter" : event.keyCode === mKeyCodes.ENTER) && !hasModifierKeys(event);
+
+const isSpace = event => (event.key ? (event.key === "Spacebar" || event.key === " ") : event.keyCode === mKeyCodes.SPACE) && !hasModifierKeys(event);
+
+const isLeft = event => (event.key ? (event.key === "ArrowLeft" || event.key === "Left") : event.keyCode === mKeyCodes.ARROW_LEFT) && !hasModifierKeys(event);
+
+const isRight = event => (event.key ? (event.key === "ArrowRight" || event.key === "Right") : event.keyCode === mKeyCodes.ARROW_RIGHT) && !hasModifierKeys(event);
+
+const isUp = event => (event.key ? (event.key === "ArrowUp" || event.key === "Up") : event.keyCode === mKeyCodes.ARROW_UP) && !hasModifierKeys(event);
+
+const isDown = event => (event.key ? (event.key === "ArrowDown" || event.key === "Down") : event.keyCode === mKeyCodes.ARROW_DOWN) && !hasModifierKeys(event);
+
+const isHome = event => (event.key ? event.key === "Home" : event.keyCode === mKeyCodes.HOME) && !hasModifierKeys(event);
+
+const isEnd = event => (event.key ? event.key === "End" : event.keyCode === mKeyCodes.END) && !hasModifierKeys(event);
+
+const isEscape = event => (event.key ? event.key === "Escape" || event.key === "Esc" : event.keyCode === mKeyCodes.ESCAPE) && !hasModifierKeys(event);
+
+const isShow = event => {
+	if (event.key) {
+		return (event.key === "F4" && !hasModifierKeys(event)) || (((event.key === "ArrowDown" || event.key === "Down") || (event.key === "ArrowUp" || event.key === "Up")) && checkModifierKeys(event, /* Ctrl */ false, /* Alt */ true, /* Shift */ false));
+	}
+
+	return (event.keyCode === mKeyCodes.F4 && !hasModifierKeys(event)) || (event.keyCode === mKeyCodes.ARROW_DOWN && checkModifierKeys(event, /* Ctrl */ false, /* Alt */ true, /* Shift */ false));
+};
+
+const hasModifierKeys = event => event.shiftKey || event.altKey || getCtrlKey(event);
+
+const getCtrlKey = event => !!(event.metaKey || event.ctrlKey); // double negation doesn't have effect on boolean but ensures null and undefined are equivalent to false.
+
+const checkModifierKeys = (oEvent, bCtrlKey, bAltKey, bShiftKey) => oEvent.shiftKey === bShiftKey && oEvent.altKey === bAltKey && getCtrlKey(oEvent) === bCtrlKey;
+
+/*
+	lit-html directive that removes and attribute if it is undefined
+*/
+var ifDefined = directive(value => part => {
+	if ((value === undefined) && part instanceof AttributePart) {
+		if (value !== part.value) {
+			const name = part.committer.name;
+			part.committer.element.removeAttribute(name);
+		}
+	} else if (part.committer && part.committer.element && part.committer.element.getAttribute(part.committer.name) === value) {
+		part.setValue(noChange);
+	} else {
+		part.setValue(value);
+	}
+});
+
+const block0 = (context) => { return html`<span	class="${ifDefined(classMap(context.classes.main))}"	style="${ifDefined(context.fontStyle)}"	tabindex="-1"	data-sap-ui-icon-content="${ifDefined(context.iconContent)}"	dir="${ifDefined(context.dir)}"></span>`; };
+
+var iconCss = ":host(ui5-icon:not([hidden])){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}ui5-icon:not([hidden]){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.sapWCIcon{width:100%;height:100%;display:flex;justify-content:center;align-items:center;outline:none;border-style:none;pointer-events:none}.sapWCIcon:before{content:attr(data-sap-ui-icon-content);speak:none;font-weight:400;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;align-items:center;width:100%;height:100%;pointer-events:none}[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):after,[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):before{transform:scaleX(-1)}";
+
+/**
+ * @public
+ */
+const metadata$1 = {
+	tag: "ui5-icon",
+	properties: /** @lends sap.ui.webcomponents.main.Icon.prototype */ {
+
+		/**
+		 * Defines the source URI of the <code>ui5-icon</code>.
+		 * <br><br>
+		 * SAP-icons font provides numerous options. To find all the available icons, see the
+		 * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
+		 * <br><br>
+		 * Example:
+		 * <br>
+		 * <code>src='sap-icons://add'</code>, <code>src='sap-icons://delete'</code>, <code>src='sap-icons://employee'</code>.
+		 *
+		 * @type {string}
+		 * @public
+		*/
+		src: {
+			type: String,
+		},
+	},
+	events: {
+		press: {},
+	},
+};
+
+/**
+ * @class
+ * <h3 class="comment-api-title">Overview</h3>
+ *
+ * The <code>ui5-icon</code> component is a wrapper around the HTML tag to embed an icon from an icon font.
+ * There are two main scenarios how the <code>ui5-icon</code> component is used:
+ * as a purely decorative element; or as a visually appealing clickable area in the form of an icon button.
+ * In the first case, images are not predefined as tab stops in accessibility mode.
+ * <br><br>
+ * The <code>ui5-icon</code> uses embedded font instead of pixel image.
+ * Comparing to image, <code>ui5-icon</code> is easily scalable,
+ * its color can be altered live, and various effects can be added using CSS.
+ * <br><br>
+ * A large set of built-in icons is available
+ * and they can be used by setting the <code>src</code> property on the <code>ui5-icon</code>.
+ *
+ * <h3>ES6 Module Import</h3>
+ *
+ * <code>import "@ui5/webcomponents/dist/Icon";</code>
+ *
+ * @constructor
+ * @author SAP SE
+ * @alias sap.ui.webcomponents.main.Icon
+ * @extends sap.ui.webcomponents.base.UI5Element
+ * @tagname ui5-icon
+ * @public
+ */
+class Icon extends UI5Element {
+	static get metadata() {
+		return metadata$1;
+	}
+
+	static get render() {
+		return litRender;
+	}
+
+	static get template() {
+		return block0;
+	}
+
+	static get styles() {
+		return iconCss;
+	}
+
+	focus() {
+		HTMLElement.prototype.focus.call(this);
+	}
+
+	onclick() {
+		this.fireEvent("press");
+	}
+
+	onkeydown(event) {
+		if (isSpace(event)) {
+			event.preventDefault();
+			this.__spaceDown = true;
+		} else if (isEnter(event)) {
+			this.onclick(event);
+		}
+	}
+
+	onkeyup(event) {
+		if (isSpace(event) && this.__spaceDown) {
+			this.fireEvent("press");
+			this.__spaceDown = false;
+		}
+	}
+
+	get classes() {
+		const iconInfo = getIconInfo(this.src) || {};
+		return {
+			main: {
+				sapWCIcon: true,
+				sapWCIconMirrorInRTL: !iconInfo.suppressMirroring,
+			},
+		};
+	}
+
+	get iconContent() {
+		const iconInfo = getIconInfo(this.src) || {};
+		return iconInfo.content;
+	}
+
+	get dir() {
+		return getRTL() ? "rtl" : "ltr";
+	}
+
+	get fontStyle() {
+		const iconInfo = getIconInfo(this.src) || {};
+		return `font-family: '${iconInfo.fontFamily}'`;
+	}
+}
+
+Bootstrap.boot().then(_ => {
+	Icon.define();
+});
+
 const rFocusable = /^(?:input|select|textarea|button)$/i,
 	rClickable = /^(?:a|area)$/i;
 
@@ -12489,7 +10944,7 @@ var styles = ".sapMPopupFrame{width:0;height:0;display:none;visibility:visible}.
 /**
  * @public
  */
-const metadata$8 = {
+const metadata$2 = {
 	"abstract": true,
 	slots: /** @lends  sap.ui.webcomponents.main.Popup.prototype */ {
 
@@ -12685,7 +11140,7 @@ function updateBodyScrolling(hasModal) {
  */
 class Popup extends UI5Element {
 	static get metadata() {
-		return metadata$8;
+		return metadata$2;
 	}
 
 	static get styles() {
@@ -12905,18 +11360,18 @@ class Popup extends UI5Element {
 	}
 }
 
-const block0$7 = (context) => { return html`<span class="${ifDefined(classMap(context.classes.frame))}"><span id="${ifDefined(context._id)}-firstfe" tabindex="0" @focusin=${ifDefined(context.focusHelper.forwardToLast)}></span><div style="${ifDefined(styleMap$1(context.styles.main))}" role="dialog" aria-labelledby="${ifDefined(context.headerId)}" tabindex="-1" class="${ifDefined(classMap(context.classes.main))}">			${ !context.noHeader ? block1$5(context) : undefined }<div id="${ifDefined(context._id)}-content" role="application" style="${ifDefined(styleMap$1(context.styles.content))}" class="sapMPopupContent"><div class="sapMPopupScroll"><slot></slot></div></div>			${ context.footer ? block4$1(context) : undefined }<span id="${ifDefined(context._id)}-arrow" style="${ifDefined(styleMap$1(context.styles.arrow))}" class="${ifDefined(classMap(context.classes.arrow))}"></span></div><span id="${ifDefined(context._id)}-lastfe" tabindex="0" @focusin=${ifDefined(context.focusHelper.forwardToFirst)}></span><div tabindex="0" id="${ifDefined(context._id)}-blocklayer" style="${ifDefined(styleMap$1(context.styles.blockLayer))}" class="${ifDefined(classMap(context.classes.blockLayer))}"></div></span>`; };
-const block1$5 = (context) => { return html`<header>			${ context.header ? block2$2(context) : block3$1(context) }</header>	`; };
-const block2$2 = (context) => { return html`<div role="toolbar" class="sapMPopupHeader"><slot name="header"></slot></div>			`; };
-const block3$1 = (context) => { return html`<h2 role="toolbar" class="sapMPopupHeader sapMPopupHeaderText">${ifDefined(context.headerText)}</h2>			`; };
-const block4$1 = (context) => { return html`<footer><div class="sapMPopupFooter"><slot name="footer"></slot></div></footer>	`; };
+const block0$1 = (context) => { return html`<span class="${ifDefined(classMap(context.classes.frame))}"><span id="${ifDefined(context._id)}-firstfe" tabindex="0" @focusin=${ifDefined(context.focusHelper.forwardToLast)}></span><div style="${ifDefined(styleMap$1(context.styles.main))}" role="dialog" aria-labelledby="${ifDefined(context.headerId)}" tabindex="-1" class="${ifDefined(classMap(context.classes.main))}">			${ !context.noHeader ? block1(context) : undefined }<div id="${ifDefined(context._id)}-content" role="application" style="${ifDefined(styleMap$1(context.styles.content))}" class="sapMPopupContent"><div class="sapMPopupScroll"><slot></slot></div></div>			${ context.footer ? block4(context) : undefined }<span id="${ifDefined(context._id)}-arrow" style="${ifDefined(styleMap$1(context.styles.arrow))}" class="${ifDefined(classMap(context.classes.arrow))}"></span></div><span id="${ifDefined(context._id)}-lastfe" tabindex="0" @focusin=${ifDefined(context.focusHelper.forwardToFirst)}></span><div tabindex="0" id="${ifDefined(context._id)}-blocklayer" style="${ifDefined(styleMap$1(context.styles.blockLayer))}" class="${ifDefined(classMap(context.classes.blockLayer))}"></div></span>`; };
+const block1 = (context) => { return html`<header>			${ context.header ? block2(context) : block3(context) }</header>	`; };
+const block2 = (context) => { return html`<div role="toolbar" class="sapMPopupHeader"><slot name="header"></slot></div>			`; };
+const block3 = (context) => { return html`<h2 role="toolbar" class="sapMPopupHeader sapMPopupHeaderText">${ifDefined(context.headerText)}</h2>			`; };
+const block4 = (context) => { return html`<footer><div class="sapMPopupFooter"><slot name="footer"></slot></div></footer>	`; };
 
 var popoverCss = ".sapMPopover{position:fixed;z-index:10}.sapMPopoverArr{pointer-events:none;display:block;width:1rem;height:1rem;position:absolute;overflow:hidden}.sapMPopoverArr:after{content:\" \";display:block;width:.7rem;height:.7rem;background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));transform:rotate(-45deg)}.sapMPopoverArrUp{left:calc(50% - .5625rem);top:-.5rem;height:.5625rem}.sapMPopoverArrUp:after{margin:.1875rem 0 0 .1875rem;box-shadow:-.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrRight{top:calc(50% - .5625rem);right:-.5625rem;width:.5625rem}.sapMPopoverArrRight:after{margin:.1875rem 0 0 -.375rem;box-shadow:-.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrDown{left:calc(50% - .5625rem);height:.5625rem}.sapMPopoverArrDown:after{margin:-.375rem 0 0 .125rem;box-shadow:.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrLeft{left:-.5625rem;top:calc(50% - .5625rem);width:.5625rem;height:1rem}.sapMPopoverArrLeft:after{margin:.125rem 0 0 .25rem;box-shadow:.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArr.sapMPopoverArrHidden{display:none}.sapMPopover{transform:translateZ(0)}";
 
 /**
  * @public
  */
-const metadata$9 = {
+const metadata$3 = {
 	tag: "ui5-popover",
 	properties: /** @lends sap.ui.webcomponents.main.Popover.prototype */ {
 
@@ -13081,7 +11536,7 @@ const arrowSize = 8;
  */
 class Popover extends Popup {
 	static get metadata() {
-		return metadata$9;
+		return metadata$3;
 	}
 
 	static get render() {
@@ -13089,7 +11544,7 @@ class Popover extends Popup {
 	}
 
 	static get template() {
-		return block0$7;
+		return block0$1;
 	}
 
 	static get styles() {
@@ -13559,11 +12014,353 @@ Bootstrap.boot().then(_ => {
 	Popover.define();
 });
 
-const block0$8 = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	dir="${ifDefined(context.rtl)}"><ui5-icon id="${ifDefined(context._id)}-btnPrev"		class="${ifDefined(classMap(context.classes.buttons))}"		src="${ifDefined(context._btnPrev.icon)}"		data-sap-cal-head-button="Prev"></ui5-icon><div class="sapWCCalHeadMidButtonContainer"><div			id="${ifDefined(context._id)}-btn1"			class="${ifDefined(classMap(context.classes.middleButtons))}"			type="${ifDefined(context._btn1.type)}"			tabindex="0"			data-sap-show-picker="Month"		>			${ifDefined(context._btn1.text)}</div><div			id="${ifDefined(context._id)}-btn2"			class="${ifDefined(classMap(context.classes.middleButtons))}"			type="${ifDefined(context._btn2.type)}"			tabindex="0"			data-sap-show-picker="Year"		>			${ifDefined(context._btn2.text)}</div></div><ui5-icon		id="${ifDefined(context._id)}-btnNext"		class="${ifDefined(classMap(context.classes.buttons))}"		src="${ifDefined(context._btnNext.icon)}"		data-sap-cal-head-button="Next"></ui5-icon></div>`; };
+const M_ISO639_OLD_TO_NEW$4 = {
+	"iw": "he",
+	"ji": "yi",
+	"in": "id",
+	"sh": "sr",
+};
+
+const A_RTL_LOCALES$1 = getDesigntimePropertyAsArray("$cldr-rtl-locales:ar,fa,he$") || [];
+
+const impliesRTL = language => {
+	language = (language && M_ISO639_OLD_TO_NEW$4[language]) || language;
+
+	return A_RTL_LOCALES$1.indexOf(language) >= 0;
+};
+
+const getEffectiveRTL = () => {
+	const configurationRTL = getRTL();
+
+	if (configurationRTL !== null) {
+		return !!configurationRTL;
+	}
+
+	return impliesRTL(getLanguage() || detectNavigatorLanguage());
+};
+
+/**
+ * Different types of Button.
+ */
+const ButtonTypes = {
+	/**
+	 * default type (no special styling)
+	 */
+	Default: "Default",
+
+	/**
+	 * accept type (green button)
+	 */
+	Positive: "Positive",
+
+	/**
+	 * reject style (red button)
+	 */
+	Negative: "Negative",
+
+	/**
+	 * transparent type
+	 */
+	Transparent: "Transparent",
+
+	/**
+	 * emphasized type
+	 */
+	Emphasized: "Emphasized",
+};
+
+class ButtonDesign extends DataType {
+	static isValid(value) {
+		return !!ButtonTypes[value];
+	}
+}
+
+ButtonDesign.generataTypeAcessors(ButtonTypes);
+
+const block0$2 = (context) => { return html`<button		type="button"		class="${ifDefined(classMap(context.classes.main))}"		?disabled="${ifDefined(context.disabled)}"		data-sap-focus-ref				dir="${ifDefined(context.rtl)}"	>		${ context.icon ? block1$1(context) : undefined }${ context.textContent ? block2$1(context) : undefined }</button>`; };
+const block1$1 = (context) => { return html`<ui5-icon				class="${ifDefined(classMap(context.classes.icon))}"				src="${ifDefined(context.icon)}"			></ui5-icon>		`; };
+const block2$1 = (context) => { return html`<span id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.text))}"><bdi><slot></slot></bdi></span>		`; };
+
+var buttonCss = ":host(ui5-button:not([hidden])){display:inline-block}ui5-button:not([hidden]){display:inline-block}button[dir=rtl].sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button[dir=rtl].sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button.sapUiSizeCompact .sapWCIconInButton{font-size:1rem}button.sapUiSizeCompact.sapMBtn{padding:var(--_ui5_button_compact_padding,0 .4375rem);min-height:var(--_ui5_button_compact_height,1.625rem);min-width:var(--_ui5_button_base_min_compact_width,2rem)}ui5-button .sapMBtn:before{content:\"\";min-height:inherit;font-size:0}.sapMBtn{width:100%;height:100%;min-width:var(--_ui5_button_base_min_width,2.25rem);min-height:var(--_ui5_button_base_height,2.25rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;box-sizing:border-box;padding:var(--_ui5_button_base_padding,0 .5625rem);border-radius:var(--_ui5_button_border_radius,.25rem);border-width:.0625rem;cursor:pointer;display:flex;justify-content:center;align-items:center;background-color:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,#0854a0));color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));outline:none;position:relative}.sapMBtn:not(.sapMBtnActive):hover{background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe))}.sapMBtn .sapWCIconInButton{font-size:var(--_ui5_button_base_icon_only_font_size,1rem);position:relative;color:inherit}.sapMBtn.sapMBtnIconEnd{flex-direction:row-reverse}.sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtn.sapMBtnNoText{padding:var(--_ui5_button_base_icon_only_padding,0 .5625rem)}.sapMBtnText{outline:none;position:relative}.sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtnDisabled{opacity:.5;pointer-events:none}.sapMBtn:focus:after{content:\"\";position:absolute;border:var(--_ui5_button_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_button_focus_after_top,1px);bottom:var(--_ui5_button_focus_after_bottom,1px);left:var(--_ui5_button_focus_after_left,1px);right:var(--_ui5_button_focus_after_right,1px)}.sapMBtn::-moz-focus-inner{border:0}.sapMBtnActive{background-image:none;background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));border-color:var(--_ui5_button_active_border_color,var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive{background-color:var(--sapUiButtonAcceptBackground,var(--sapButton_Accept_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--_ui5_button_positive_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))));color:var(--sapUiButtonAcceptTextColor,#107e3e);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnPositive:hover{background-color:var(--sapUiButtonAcceptHoverBackground,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_button_positive_border_hover_color,var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e))))))}.sapMBtn.sapMBtnPositive.sapMBtnActive{background-color:var(--sapUiButtonAcceptActiveBackground,#0d6733);border-color:var(--_ui5_button_positive_border_active_color,var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnPositive:focus{border-color:var(--_ui5_button_positive_focus_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))))}.sapMBtn.sapMBtnPositive.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnNegative{background-color:var(--sapUiButtonRejectBackground,var(--sapButton_Reject_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));color:var(--sapUiButtonRejectTextColor,#b00);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnNegative:hover{background-color:var(--sapUiButtonRejectHoverBackground,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--sapUiButtonRejectHoverBorderColor,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative:focus{border-color:var(--_ui5_button_negative_focus_border_color,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative.sapMBtnActive{background-color:var(--sapUiButtonRejectActiveBackground,#a20000);border-color:var(--_ui5_button_negative_active_border_color,var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnNegative.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnNegative:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnEmphasized{background-color:var(--sapUiButtonEmphasizedBackground,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))));border-color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1)))));color:var(--sapUiButtonEmphasizedTextColor,var(--sapButton_Emphasized_TextColor,#fff));text-shadow:0 0 .125rem var(--sapUiButtonEmphasizedTextShadow,transparent);font-weight:var(--_ui5_button_emphasized_font_weight,bold)}.sapMBtn.sapMBtnEmphasized:hover{background-color:var(--sapUiButtonEmphasizedHoverBackground,#085caf);border-color:var(--sapUiButtonEmphasizedHoverBorderColor,var(--sapUiButtonEmphasizedHoverBackground,#085caf))}.sapMBtn.sapMBtnEmphasized.sapMBtnActive{background-color:var(--sapUiButtonEmphasizedActiveBackground,#0854a0);border-color:var(--sapUiButtonEmphasizedActiveBorderColor,var(--sapUiButtonEmphasizedActiveBackground,#0854a0));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnEmphasized.sapMBtnActive:focus:after,.sapMBtn.sapMBtnEmphasized:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnEmphasized:focus{border-color:var(--_ui5_button_emphasized_focused_border_color,var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))))))}.sapMBtn.sapMBtnTransparent{background-color:var(--sapUiButtonLiteBackground,transparent);border-color:var(--sapUiButtonLiteBorderColor,transparent);color:var(--sapUiButtonLiteTextColor,var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));border-color:transparent}.sapMBtn.sapMBtnTransparent:hover{background-color:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.sapMBtn.sapMBtnTransparent.sapMBtnActive{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnTransparent:hover:not(.sapMBtnActive){border-color:transparent}";
+
+/**
+ * @public
+ */
+const metadata$4 = {
+	tag: "ui5-button",
+	properties: /** @lends sap.ui.webcomponents.main.Button.prototype */ {
+
+		/**
+		 * Defines the <code>ui5-button</code> design.
+		 * </br></br>
+		 * <b>Note:</b> Available options are "Default", "Emphasized", "Positive",
+		 * "Negative", and "Transparent".
+		 *
+		 * @type {ButtonDesign}
+		 * @defaultvalue "Default"
+		 * @public
+		 */
+		design: {
+			type: ButtonDesign,
+			defaultValue: ButtonDesign.Default,
+		},
+
+		/**
+		 * Defines whether the <code>ui5-button</code> is disabled
+		 * (default is set to <code>false</code>).
+		 * A disabled <code>ui5-button</code> can't be pressed or
+		 * focused, and it is not in the tab chain.
+		 *
+		 * @type {boolean}
+		 * @defaultvalue false
+		 * @public
+		 */
+		disabled: {
+			type: Boolean,
+		},
+
+		/**
+		 * Defines the icon to be displayed as graphical element within the <code>ui5-button</code>.
+		 * The SAP-icons font provides numerous options.
+		 * <br><br>
+		 * Example:
+		 * <br>
+		 * <pre>ui5-button icon="sap-icon://palette"</pre>
+		 *
+		 * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
+		 *
+		 * @type {string}
+		 * @defaultvalue ""
+		 * @public
+		 */
+		icon: {
+			type: String,
+		},
+
+		/**
+		 * Defines whether the icon should be displayed after the <code>ui5-button</code> text.
+		 *
+		 * @type {boolean}
+		 * @defaultvalue false
+		 * @public
+		 */
+		iconEnd: {
+			type: Boolean,
+		},
+
+		/**
+		 * When set to <code>true</code>, the <code>ui5-button</code> will
+		 * automatically submit the nearest form element upon <code>press</code>.
+		 *
+		 * <b>Important:</b> For the <code>submits</code> property to have effect, you must add the following import to your project:
+		 * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
+		 *
+		 * @type {boolean}
+		 * @defaultvalue false
+		 * @public
+		 */
+		submits: {
+			type: Boolean,
+		},
+
+		/**
+		 * Used to switch the active state (pressed or not) of the <code>ui5-button</code>.
+		 */
+		_active: {
+			type: Boolean,
+		},
+
+		_iconSettings: {
+			type: Object,
+		},
+	},
+	slots: /** @lends sap.ui.webcomponents.main.Button.prototype */ {
+		/**
+		 * Defines the text of the <code>ui5-button</code>.
+		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
+		 *
+		 * @type {Node[]}
+		 * @slot
+		 * @public
+		 */
+		text: {
+			type: Node,
+			multiple: true,
+		},
+	},
+	defaultSlot: "text",
+	events: /** @lends sap.ui.webcomponents.main.Button.prototype */ {
+
+		/**
+		 * Fired when the <code>ui5-button</code> is pressed either with a
+		 * click/tap or by using the Enter or Space key.
+		 * <br><br>
+		 * <b>Note:</b> The event will not be fired if the <code>disabled</code>
+		 * property is set to <code>true</code>.
+		 *
+		 * @event
+		 * @public
+		 */
+		press: {},
+	},
+};
+
+/**
+ * @class
+ *
+ * <h3 class="comment-api-title">Overview</h3>
+ *
+ * The <code>ui5-button</code> component represents a simple push button.
+ * It enables users to trigger actions by clicking or tapping the <code>ui5-button</code>, or by pressing
+ * certain keyboard keys, such as Enter.
+ *
+ *
+ * <h3>Usage</h3>
+ *
+ * For the <code>ui5-button</code> UI, you can define text, icon, or both. You can also specify
+ * whether the text or the icon is displayed first.
+ * <br><br>
+ * You can choose from a set of predefined types that offer different
+ * styling to correspond to the triggered action.
+ * <br><br>
+ * You can set the <code>ui5-button</code> as enabled or disabled. An enabled
+ * <code>ui5-button</code> can be pressed by clicking or tapping it. The button changes
+ * its style to provide visual feedback to the user that it is pressed or hovered over with
+ * the mouse cursor. A disabled <code>ui5-button</code> appears inactive and cannot be pressed.
+ *
+ * <h3>ES6 Module Import</h3>
+ *
+ * <code>import "@ui5/webcomponents/dist/Button";</code>
+ *
+ * @constructor
+ * @author SAP SE
+ * @alias sap.ui.webcomponents.main.Button
+ * @extends UI5Element
+ * @tagname ui5-button
+ * @public
+ */
+class Button extends UI5Element {
+	static get metadata() {
+		return metadata$4;
+	}
+
+	static get styles() {
+		return buttonCss;
+	}
+
+	static get render() {
+		return litRender;
+	}
+
+	static get template() {
+		return block0$2;
+	}
+
+	constructor() {
+		super();
+
+		this._deactivate = () => {
+			if (this._active) {
+				this._active = false;
+			}
+		};
+	}
+
+	onBeforeRendering() {
+		const FormSupport = getFeature("FormSupport");
+		if (this.submits && !FormSupport) {
+			console.warn(`In order for the "submits" property to have effect, you should also: import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";`); // eslint-disable-line
+		}
+	}
+
+	onEnterDOM() {
+		document.addEventListener("mouseup", this._deactivate);
+	}
+
+	onExitDOM() {
+		document.removeEventListener("mouseup", this._deactivate);
+	}
+
+	onclick(event) {
+		event.isMarked = "button";
+		if (!this.disabled) {
+			this.fireEvent("press", {});
+			const FormSupport = getFeature("FormSupport");
+			if (FormSupport) {
+				FormSupport.triggerFormSubmit(this);
+			}
+		}
+	}
+
+	onmousedown(event) {
+		event.isMarked = "button";
+
+		if (!this.disabled) {
+			this._active = true;
+		}
+	}
+
+	onmouseup(event) {
+		event.isMarked = "button";
+	}
+
+	onkeydown(event) {
+		if (isSpace(event) || isEnter(event)) {
+			this._active = true;
+		}
+	}
+
+	onkeyup(event) {
+		if (isSpace(event) || isEnter(event)) {
+			this._active = false;
+		}
+	}
+
+	onfocusout(_event) {
+		this._active = false;
+	}
+
+	get classes() {
+		return {
+			main: {
+				sapMBtn: true,
+				sapMBtnActive: this._active,
+				sapMBtnWithIcon: this.icon,
+				sapMBtnNoText: !this.text.length,
+				sapMBtnDisabled: this.disabled,
+				sapMBtnIconEnd: this.iconEnd,
+				[`sapMBtn${this.design}`]: true,
+				sapUiSizeCompact: getCompactSize(),
+			},
+			icon: {
+				sapWCIconInButton: true,
+			},
+			text: {
+				sapMBtnText: true,
+			},
+		};
+	}
+
+	get rtl() {
+		return getEffectiveRTL() ? "rtl" : undefined;
+	}
+
+	static async define(...params) {
+		await Icon.define();
+
+		super.define(...params);
+	}
+}
+
+Bootstrap.boot().then(_ => {
+	Button.define();
+});
+
+const block0$3 = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	dir="${ifDefined(context.rtl)}"><ui5-icon id="${ifDefined(context._id)}-btnPrev"		class="${ifDefined(classMap(context.classes.buttons))}"		src="${ifDefined(context._btnPrev.icon)}"		data-sap-cal-head-button="Prev"></ui5-icon><div class="sapWCCalHeadMidButtonContainer"><div			id="${ifDefined(context._id)}-btn1"			class="${ifDefined(classMap(context.classes.middleButtons))}"			type="${ifDefined(context._btn1.type)}"			tabindex="0"			data-sap-show-picker="Month"		>			${ifDefined(context._btn1.text)}</div><div			id="${ifDefined(context._id)}-btn2"			class="${ifDefined(classMap(context.classes.middleButtons))}"			type="${ifDefined(context._btn2.type)}"			tabindex="0"			data-sap-show-picker="Year"		>			${ifDefined(context._btn2.text)}</div></div><ui5-icon		id="${ifDefined(context._id)}-btnNext"		class="${ifDefined(classMap(context.classes.buttons))}"		src="${ifDefined(context._btnNext.icon)}"		data-sap-cal-head-button="Next"></ui5-icon></div>`; };
 
 var styles$1 = ":host(ui5-calendar-header){display:inline-block;width:100%}ui5-calendar-header{display:inline-block;width:100%}.sapWCCalHead{display:flex;height:3rem;padding:.25rem 0;box-sizing:border-box}.sapWCCalHead ui5-button{height:100%}.sapWCCalHeadArrowButton{display:flex;justify-content:center;align-items:center;width:2.5rem;background-color:var(--sapUiButtonLiteBackground,transparent);color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));cursor:pointer;overflow:hidden;white-space:nowrap;padding:0;font-size:var(--sapMFontMediumSize,.875rem)}.sapWCCalHeadArrowButton:focus{outline:none}.sapWCCalHeadArrowButton:hover{background-color:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));color:var(--sapUiButtonHoverTextColor,var(--sapButton_Hover_TextColor,#0854a0))}.sapWCCalHeadArrowButton:active{background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCCalHeadArrowButton,.sapWCCalHeadMiddleButton{border:var(--_ui5_calendar_header_arrow_button_border,none);border-radius:var(--_ui5_calendar_header_arrow_button_border_radius,.25rem)}.sapWCCalHeadMidButtonContainer{display:flex;justify-content:space-around;flex:1;padding:0 .5rem}.sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-right:.5rem}.sapWCCalHeadMiddleButton{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));width:var(--_ui5_calendar_header_middle_button_width,2.5rem);flex:var(--_ui5_calendar_header_middle_button_flex,1);position:relative;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.sapWCCalHeadMiddleButton:focus{border:var(--_ui5_calendar_header_middle_button_focus_border,none);border-radius:var(--_ui5_calendar_header_middle_button_focus_border_radius,.25rem)}.sapWCCalHeadMiddleButton:focus:after{content:\"\";display:var(--_ui5_calendar_header_middle_button_focus_after_display,block);width:var(--_ui5_calendar_header_middle_button_focus_after_width,calc(100% - .375rem));height:var(--_ui5_calendar_header_middle_button_focus_after_height,calc(100% - .375rem));border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:var(--_ui5_calendar_header_middle_button_focus_after_top_offset,.125rem);left:var(--_ui5_calendar_header_middle_button_focus_after_left_offset,.125rem)}.sapWCCalHeadMiddleButton:focus:active:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapUiSizeCompact.sapWCCalHead{height:2rem;padding:0}.sapUiSizeCompact.sapWCCalHeadArrowButton{width:2rem}[dir=rtl] .sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-left:.5rem;margin-right:0}";
 
-const metadata$a = {
+const metadata$5 = {
 	tag: "ui5-calendar-header",
 	properties: {
 		monthText: {
@@ -13595,7 +12392,7 @@ const metadata$a = {
 
 class CalendarHeader extends UI5Element {
 	static get metadata() {
-		return metadata$a;
+		return metadata$5;
 	}
 
 	static get render() {
@@ -13603,7 +12400,7 @@ class CalendarHeader extends UI5Element {
 	}
 
 	static get template() {
-		return block0$8;
+		return block0$3;
 	}
 
 	static get styles() {
@@ -14029,11 +12826,11 @@ const calculateWeekNumber = (oDate, iYear, oLocale, oLocaleData) => {
 	return iWeekNum;
 };
 
-const block0$9 = (context) => { return html`<div class="${ifDefined(classMap(context.classes.wrapper))}" style="${ifDefined(styleMap$1(context.styles.wrapper))}"><div class="${ifDefined(classMap(context.classes.weekNumberContainer))}">		${ repeat(context._weekNumbers, undefined, (item, index) => block1$6(item, index, context)) }</div><div id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.content))}"><div role="row" class="${ifDefined(classMap(context.classes.weekDaysContainer))}">			${ repeat(context._dayNames, undefined, (item, index) => block2$3(item, index, context)) }</div><div id="${ifDefined(context._id)}-days" class="sapWCDayPickerItemsContainer" tabindex="-1">			${ repeat(context._weeks, undefined, (item, index) => block3$2(item, index, context)) }</div></div></div>`; };
-const block1$6 = (item, index, context) => { return html`<div class="sapWCDayPickerWeekNameContainer"><span class="sapWCDayPickerWeekName">${ifDefined(item)}</span></div>		`; };
-const block2$3 = (item, index, context) => { return html`<div					id=${ifDefined(item._id)}					role="columnheader"					aria-label="${ifDefined(item.name)}"					class="${ifDefined(item.classes)}">					${ifDefined(item.ultraShortName)}</div>			`; };
-const block3$2 = (item, index, context) => { return html`${ item.length ? block4$2(item, index, context) : block6(item, index, context) }`; };
-const block4$2 = (item, index, context) => { return html`<div style="display: flex;">						${ repeat(item, undefined, (item, index) => block5(item, index, context)) }</div>				`; };
+const block0$4 = (context) => { return html`<div class="${ifDefined(classMap(context.classes.wrapper))}" style="${ifDefined(styleMap$1(context.styles.wrapper))}"><div class="${ifDefined(classMap(context.classes.weekNumberContainer))}">		${ repeat(context._weekNumbers, undefined, (item, index) => block1$2(item, index, context)) }</div><div id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.content))}"><div role="row" class="${ifDefined(classMap(context.classes.weekDaysContainer))}">			${ repeat(context._dayNames, undefined, (item, index) => block2$2(item, index, context)) }</div><div id="${ifDefined(context._id)}-days" class="sapWCDayPickerItemsContainer" tabindex="-1">			${ repeat(context._weeks, undefined, (item, index) => block3$1(item, index, context)) }</div></div></div>`; };
+const block1$2 = (item, index, context) => { return html`<div class="sapWCDayPickerWeekNameContainer"><span class="sapWCDayPickerWeekName">${ifDefined(item)}</span></div>		`; };
+const block2$2 = (item, index, context) => { return html`<div					id=${ifDefined(item._id)}					role="columnheader"					aria-label="${ifDefined(item.name)}"					class="${ifDefined(item.classes)}">					${ifDefined(item.ultraShortName)}</div>			`; };
+const block3$1 = (item, index, context) => { return html`${ item.length ? block4$1(item, index, context) : block6(item, index, context) }`; };
+const block4$1 = (item, index, context) => { return html`<div style="display: flex;">						${ repeat(item, undefined, (item, index) => block5(item, index, context)) }</div>				`; };
 const block5 = (item, index, context) => { return html`<div								id="${ifDefined(item.id)}"								tabindex="${ifDefined(item._tabIndex)}"								data-sap-timestamp="${ifDefined(item.timestamp)}"								data-sap-index="${ifDefined(item._index)}"								role="gridcell"								aria-selected="${ifDefined(item.selected)}"								class="${ifDefined(item.classes)}"><span 										class="sapWCDayPickerDayText"										data-sap-timestamp="${ifDefined(item.timestamp)}"										data-sap-index="${ifDefined(item._index)}">											${ifDefined(item.iDay)}</span></div>						`; };
 const block6 = (item, index, context) => { return html`<div class="sapWCEmptyWeek"></div>				`; };
 
@@ -14042,7 +12839,7 @@ var dayPickerCSS = ":host(ui5-daypicker){display:inline-block;height:100%;width:
 /**
  * @public
  */
-const metadata$b = {
+const metadata$6 = {
 	tag: "ui5-daypicker",
 	properties: /** @lends  sap.ui.webcomponents.main.DayPicker.prototype */ {
 		/**
@@ -14127,7 +12924,7 @@ const MIN_YEAR = 1;
  */
 class DayPicker extends UI5Element {
 	static get metadata() {
-		return metadata$b;
+		return metadata$6;
 	}
 
 	static get render() {
@@ -14135,7 +12932,7 @@ class DayPicker extends UI5Element {
 	}
 
 	static get template() {
-		return block0$9;
+		return block0$4;
 	}
 
 	static get styles() {
@@ -14490,16 +13287,16 @@ Bootstrap.boot().then(_ => {
 	DayPicker.define();
 });
 
-const block0$a = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	role="grid"	aria-readonly="false"	aria-multiselectable="false"	style="${ifDefined(styleMap$1(context.styles.main))}">	${ repeat(context._quarters, undefined, (item, index) => block1$7(item, index, context)) }</div>`; };
-const block1$7 = (item, index, context) => { return html`<div class="${ifDefined(classMap(context.classes.quarter))}">			${ repeat(item, undefined, (item, index) => block2$4(item, index, context)) }</div>	`; };
-const block2$4 = (item, index, context) => { return html`<div					id="${ifDefined(item.id)}"					data-sap-timestamp=${ifDefined(item.timestamp)}					tabindex=${ifDefined(item._tabIndex)}					class="${ifDefined(item.classes)}"					role="gridcell"					aria-selected="false"				>					${ifDefined(item.name)}</div>			`; };
+const block0$5 = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	role="grid"	aria-readonly="false"	aria-multiselectable="false"	style="${ifDefined(styleMap$1(context.styles.main))}">	${ repeat(context._quarters, undefined, (item, index) => block1$3(item, index, context)) }</div>`; };
+const block1$3 = (item, index, context) => { return html`<div class="${ifDefined(classMap(context.classes.quarter))}">			${ repeat(item, undefined, (item, index) => block2$3(item, index, context)) }</div>	`; };
+const block2$3 = (item, index, context) => { return html`<div					id="${ifDefined(item.id)}"					data-sap-timestamp=${ifDefined(item.timestamp)}					tabindex=${ifDefined(item._tabIndex)}					class="${ifDefined(item.classes)}"					role="gridcell"					aria-selected="false"				>					${ifDefined(item.name)}</div>			`; };
 
 var styles$2 = ":host(ui5-month-picker){display:inline-block;width:100%;height:100%}ui5-month-picker{display:inline-block;width:100%;height:100%}.sapWCMonthPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCMonthPickerItem{display:flex;width:calc(33.333% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_monthpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;margin:var(--_ui5_monthpicker_item_margin,1px);box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_monthpicker_item_border,none);border-radius:var(--_ui5_monthpicker_item_border_radius,.25rem)}.sapWCMonthPickerItem:hover{background-color:var(--_ui5_monthpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:hover{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem:focus{background-color:var(--_ui5_monthpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_monthpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_monthpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_monthpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_monthpicker_item_focus_after_offset,2px);left:var(--_ui5_monthpicker_item_focus_after_offset,2px)}.sapWCMonthPickerQuarter{display:flex;justify-content:center;align-items:center;width:100%}.sapUiSizeCompact .sapWCMonthPickerItem{height:2rem}";
 
 /**
  * @public
  */
-const metadata$c = {
+const metadata$7 = {
 	tag: "ui5-month-picker",
 	properties: /** @lends  sap.ui.webcomponents.main.MonthPicker.prototype */ {
 		/**
@@ -14553,7 +13350,7 @@ const metadata$c = {
  */
 class MonthPicker extends UI5Element {
 	static get metadata() {
-		return metadata$c;
+		return metadata$7;
 	}
 
 	static get render() {
@@ -14561,7 +13358,7 @@ class MonthPicker extends UI5Element {
 	}
 
 	static get template() {
-		return block0$a;
+		return block0$5;
 	}
 
 	static get styles() {
@@ -14696,16 +13493,16 @@ Bootstrap.boot().then(_ => {
 	MonthPicker.define();
 });
 
-const block0$b = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	role="grid"	aria-readonly="false"	aria-multiselectable="false"	style="${ifDefined(styleMap$1(context.styles.main))}">	${ repeat(context._yearIntervals, undefined, (item, index) => block1$8(item, index, context)) }</div>`; };
-const block1$8 = (item, index, context) => { return html`<div class="${ifDefined(classMap(context.classes.yearInterval))}">			${ repeat(item, undefined, (item, index) => block2$5(item, index, context)) }</div>	`; };
-const block2$5 = (item, index, context) => { return html`<div id="${ifDefined(item.id)}"					tabindex="${ifDefined(item._tabIndex)}"					data-sap-timestamp="${ifDefined(item.timestamp)}"					class="${ifDefined(item.classes)}"					role="gridcell"					aria-selected="false">						${ifDefined(item.year)}</div>			`; };
+const block0$6 = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	role="grid"	aria-readonly="false"	aria-multiselectable="false"	style="${ifDefined(styleMap$1(context.styles.main))}">	${ repeat(context._yearIntervals, undefined, (item, index) => block1$4(item, index, context)) }</div>`; };
+const block1$4 = (item, index, context) => { return html`<div class="${ifDefined(classMap(context.classes.yearInterval))}">			${ repeat(item, undefined, (item, index) => block2$4(item, index, context)) }</div>	`; };
+const block2$4 = (item, index, context) => { return html`<div id="${ifDefined(item.id)}"					tabindex="${ifDefined(item._tabIndex)}"					data-sap-timestamp="${ifDefined(item.timestamp)}"					class="${ifDefined(item.classes)}"					role="gridcell"					aria-selected="false">						${ifDefined(item.year)}</div>			`; };
 
 var styles$3 = ":host(ui5-yearpicker){display:inline-block;width:100%;height:100%}ui5-yearpicker{display:inline-block;width:100%;height:100%}.sapWCYearPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCYearPickerIntervalContainer{display:flex;justify-content:center;align-items:center;width:100%}.sapWCYearPickerItem{display:flex;margin:var(--_ui5_yearpicker_item_margin,1px);width:calc(25% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_yearpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_yearpicker_item_border,none);border-radius:var(--_ui5_yearpicker_item_border_radius,.25rem)}.sapWCYearPickerItem:hover{background-color:var(--_ui5_yearpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem:focus{background-color:var(--_ui5_yearpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem.sapWCYearPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:hover{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_yearpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_yearpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_yearpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_yearpicker_item_focus_after_offset,2px);left:var(--_ui5_yearpicker_item_focus_after_offset,2px)}.sapUiSizeCompact .sapWCYearPickerItem{height:2rem}";
 
 /**
  * @public
  */
-const metadata$d = {
+const metadata$8 = {
 	tag: "ui5-yearpicker",
 	properties: /** @lends  sap.ui.webcomponents.main.YearPicker.prototype */ {
 		/**
@@ -14760,7 +13557,7 @@ const metadata$d = {
  */
 class YearPicker extends UI5Element {
 	static get metadata() {
-		return metadata$d;
+		return metadata$8;
 	}
 
 	static get styles() {
@@ -14772,7 +13569,7 @@ class YearPicker extends UI5Element {
 	}
 
 	static get template() {
-		return block0$b;
+		return block0$6;
 	}
 
 	constructor() {
@@ -14973,7 +13770,7 @@ Bootstrap.boot().then(_ => {
 	YearPicker.define();
 });
 
-const block0$c = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}" style="${ifDefined(styleMap$1(context.styles.main))}"><ui5-calendar-header		id="${ifDefined(context._id)}-head"		month-text="${ifDefined(context._header.monthText)}"		year-text="${ifDefined(context._header.yearText)}"		.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"		@ui5-pressPrevious="${ifDefined(context._header.onPressPrevious)}"		@ui5-pressNext="${ifDefined(context._header.onPressNext)}"		@ui5-btn1Press="${ifDefined(context._header.onBtn1Press)}"		@ui5-btn2Press="${ifDefined(context._header.onBtn2Press)}"	></ui5-calendar-header><div id="${ifDefined(context._id)}-content" class="sapUiCalContent"><ui5-daypicker			id="${ifDefined(context._id)}-daypicker"			class="${ifDefined(classMap(context.classes.dayPicker))}"			format-pattern="${ifDefined(context._oMonth.formatPattern)}"			.selectedDates="${ifDefined(context._oMonth.selectedDates)}"			._hidden="${ifDefined(context._oMonth._hidden)}"			.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"			timestamp="${ifDefined(context._oMonth.timestamp)}"			@ui5-selectionChange="${ifDefined(context._oMonth.onSelectedDatesChange)}"			@ui5-navigate="${ifDefined(context._oMonth.onNavigate)}"		></ui5-daypicker><ui5-month-picker			id="${ifDefined(context._id)}-MP"			class="${ifDefined(classMap(context.classes.monthPicker))}"			._hidden="${ifDefined(context._monthPicker._hidden)}"			.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"			timestamp="${ifDefined(context._monthPicker.timestamp)}"			@ui5-selectedMonthChange="${ifDefined(context._monthPicker.onSelectedMonthChange)}"		></ui5-month-picker><ui5-yearpicker				id="${ifDefined(context._id)}-YP"				class="${ifDefined(classMap(context.classes.yearPicker))}"				._hidden="${ifDefined(context._yearPicker._hidden)}"				.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"				timestamp="${ifDefined(context._yearPicker.timestamp)}"				._selectedYear="${ifDefined(context._yearPicker._selectedYear)}"				@ui5-selectedYearChange="${ifDefined(context._yearPicker.onSelectedYearChange)}"		></ui5-yearpicker></div></div>`; };
+const block0$7 = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}" style="${ifDefined(styleMap$1(context.styles.main))}"><ui5-calendar-header		id="${ifDefined(context._id)}-head"		month-text="${ifDefined(context._header.monthText)}"		year-text="${ifDefined(context._header.yearText)}"		.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"		@ui5-pressPrevious="${ifDefined(context._header.onPressPrevious)}"		@ui5-pressNext="${ifDefined(context._header.onPressNext)}"		@ui5-btn1Press="${ifDefined(context._header.onBtn1Press)}"		@ui5-btn2Press="${ifDefined(context._header.onBtn2Press)}"	></ui5-calendar-header><div id="${ifDefined(context._id)}-content" class="sapUiCalContent"><ui5-daypicker			id="${ifDefined(context._id)}-daypicker"			class="${ifDefined(classMap(context.classes.dayPicker))}"			format-pattern="${ifDefined(context._oMonth.formatPattern)}"			.selectedDates="${ifDefined(context._oMonth.selectedDates)}"			._hidden="${ifDefined(context._oMonth._hidden)}"			.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"			timestamp="${ifDefined(context._oMonth.timestamp)}"			@ui5-selectionChange="${ifDefined(context._oMonth.onSelectedDatesChange)}"			@ui5-navigate="${ifDefined(context._oMonth.onNavigate)}"		></ui5-daypicker><ui5-month-picker			id="${ifDefined(context._id)}-MP"			class="${ifDefined(classMap(context.classes.monthPicker))}"			._hidden="${ifDefined(context._monthPicker._hidden)}"			.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"			timestamp="${ifDefined(context._monthPicker.timestamp)}"			@ui5-selectedMonthChange="${ifDefined(context._monthPicker.onSelectedMonthChange)}"		></ui5-month-picker><ui5-yearpicker				id="${ifDefined(context._id)}-YP"				class="${ifDefined(classMap(context.classes.yearPicker))}"				._hidden="${ifDefined(context._yearPicker._hidden)}"				.primaryCalendarType="${ifDefined(context._oMonth.primaryCalendarType)}"				timestamp="${ifDefined(context._yearPicker.timestamp)}"				._selectedYear="${ifDefined(context._yearPicker._selectedYear)}"				@ui5-selectedYearChange="${ifDefined(context._yearPicker.onSelectedYearChange)}"		></ui5-yearpicker></div></div>`; };
 
 var Gregorian = UniversalDate.extend('sap.ui.core.date.Gregorian', {
     constructor: function () {
@@ -14994,7 +13791,7 @@ var calendarCSS = "ui5-calendar{display:inline-block}:host(ui5-calendar){display
 /**
  * @public
  */
-const metadata$e = {
+const metadata$9 = {
 	tag: "ui5-calendar",
 	properties: /** @lends  sap.ui.webcomponents.main.Calendar.prototype */ {
 		/**
@@ -15077,7 +13874,7 @@ const metadata$e = {
  */
 class Calendar extends UI5Element {
 	static get metadata() {
-		return metadata$e;
+		return metadata$9;
 	}
 
 	static get render() {
@@ -15085,7 +13882,7 @@ class Calendar extends UI5Element {
 	}
 
 	static get template() {
-		return block0$c;
+		return block0$7;
 	}
 
 	static get styles() {
@@ -15492,6 +14289,168 @@ Bootstrap.boot().then(_ => {
 	Calendar.define();
 });
 
+const Device = {};
+const BROWSER = {
+  "INTERNET_EXPLORER": "ie",
+  "EDGE": "ed",
+  "FIREFOX": "ff",
+  "CHROME": "cr",
+  "SAFARI": "sf",
+  "ANDROID": "an"
+};
+const _calcBrowser = () => {
+  const sUserAgent = navigator.userAgent.toLowerCase();
+  const rwebkit = /(webkit)[ \/]([\w.]+)/;
+  const rmsie = /(msie) ([\w.]+)/;
+  const rmsie11 = /(trident)\/[\w.]+;.*rv:([\w.]+)/;
+  const redge = /(edge)[ \/]([\w.]+)/;
+  const rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
+  const browserMatch = redge.exec(sUserAgent) || rmsie11.exec(sUserAgent) || rwebkit.exec(sUserAgent) || rmsie.exec(sUserAgent) || sUserAgent.indexOf("compatible") < 0 && rmozilla.exec(sUserAgent) || [];
+  const oRes = {
+    browser: browserMatch[1] || "",
+    version: browserMatch[2] || "0"
+  };
+  oRes[oRes.browser] = true;
+  return oRes;
+};
+const _getBrowser = () => {
+  const oBrowser = _calcBrowser();
+  const sUserAgent = navigator.userAgent;
+  const oNavigator = window.navigator;
+  let oExpMobile;
+  let oResult;
+  if (oBrowser.mozilla) {
+    oExpMobile = /Mobile/;
+    if (sUserAgent.match(/Firefox\/(\d+\.\d+)/)) {
+      var fVersion = parseFloat(RegExp.$1);
+      oResult = {
+        name: BROWSER.FIREFOX,
+        versionStr: "" + fVersion,
+        version: fVersion,
+        mozilla: true,
+        mobile: oExpMobile.test(sUserAgent)
+      };
+    } else {
+      oResult = {
+        mobile: oExpMobile.test(sUserAgent),
+        mozilla: true,
+        version: -1
+      };
+    }
+  } else if (oBrowser.webkit) {
+    var regExpWebkitVersion = sUserAgent.toLowerCase().match(/webkit[\/]([\d.]+)/);
+    var webkitVersion;
+    if (regExpWebkitVersion) {
+      webkitVersion = regExpWebkitVersion[1];
+    }
+    oExpMobile = /Mobile/;
+    var aChromeMatch = sUserAgent.match(/(Chrome|CriOS)\/(\d+\.\d+).\d+/);
+    var aFirefoxMatch = sUserAgent.match(/FxiOS\/(\d+\.\d+)/);
+    var aAndroidMatch = sUserAgent.match(/Android .+ Version\/(\d+\.\d+)/);
+    if (aChromeMatch || aFirefoxMatch || aAndroidMatch) {
+      var sName, sVersion, bMobile;
+      if (aChromeMatch) {
+        sName = BROWSER.CHROME;
+        bMobile = oExpMobile.test(sUserAgent);
+        sVersion = parseFloat(aChromeMatch[2]);
+      } else if (aFirefoxMatch) {
+        sName = BROWSER.FIREFOX;
+        bMobile = true;
+        sVersion = parseFloat(aFirefoxMatch[1]);
+      } else if (aAndroidMatch) {
+        sName = BROWSER.ANDROID;
+        bMobile = oExpMobile.test(sUserAgent);
+        sVersion = parseFloat(aAndroidMatch[1]);
+      }
+      oResult = {
+        name: sName,
+        mobile: bMobile,
+        versionStr: "" + sVersion,
+        version: sVersion,
+        webkit: true,
+        webkitVersion: webkitVersion
+      };
+    } else {
+      var oExp = /(Version|PhantomJS)\/(\d+\.\d+).*Safari/;
+      var bStandalone = oNavigator.standalone;
+      if (oExp.test(sUserAgent)) {
+        var aParts = oExp.exec(sUserAgent);
+        var fVersion = parseFloat(aParts[2]);
+        oResult = {
+          name: BROWSER.SAFARI,
+          versionStr: "" + fVersion,
+          fullscreen: false,
+          webview: false,
+          version: fVersion,
+          mobile: oExpMobile.test(sUserAgent),
+          webkit: true,
+          webkitVersion: webkitVersion,
+          phantomJS: aParts[1] === "PhantomJS"
+        };
+      } else if ((/iPhone|iPad|iPod/).test(sUserAgent) && !(/CriOS/).test(sUserAgent) && !(/FxiOS/).test(sUserAgent) && (bStandalone === true || bStandalone === false)) {
+        oResult = {
+          name: BROWSER.SAFARI,
+          version: -1,
+          fullscreen: bStandalone,
+          webview: !bStandalone,
+          mobile: oExpMobile.test(sUserAgent),
+          webkit: true,
+          webkitVersion: webkitVersion
+        };
+      } else {
+        oResult = {
+          mobile: oExpMobile.test(sUserAgent),
+          webkit: true,
+          webkitVersion: webkitVersion,
+          version: -1
+        };
+      }
+    }
+  } else if (oBrowser.msie || oBrowser.trident) {
+    var fVersion = parseFloat(oBrowser.version);
+    oResult = {
+      name: BROWSER.INTERNET_EXPLORER,
+      versionStr: "" + fVersion,
+      version: fVersion,
+      msie: true,
+      mobile: false
+    };
+  } else if (oBrowser.edge) {
+    var fVersion = fVersion = parseFloat(oBrowser.version);
+    oResult = {
+      name: BROWSER.EDGE,
+      versionStr: "" + fVersion,
+      version: fVersion,
+      edge: true
+    };
+  } else {
+    oResult = {
+      name: "",
+      versionStr: "",
+      version: -1,
+      mobile: false
+    };
+  }
+  return oResult;
+};
+const _setBrowser = () => {
+  Device.browser = _getBrowser();
+  Device.browser.BROWSER = BROWSER;
+  if (Device.browser.name) {
+    for (var b in BROWSER) {
+      if (BROWSER[b] === Device.browser.name) {
+        Device.browser[b.toLowerCase()] = true;
+      }
+    }
+  }
+};
+const isIE = () => {
+  if (!Device.browser) {
+    _setBrowser();
+  }
+  return !!Device.browser.msie;
+};
+
 const InputTypes = {
 	Text: "Text",
 	Email: "Email",
@@ -15509,10 +14468,10 @@ class InputType extends DataType {
 
 InputType.generataTypeAcessors(InputTypes);
 
-const block0$d = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	style="width: 100%;"	?aria-invalid="${ifDefined(context.ariaInvalid)}"><div id="${ifDefined(context._id)}-wrapper"	class="${ifDefined(classMap(context.classes.wrapper))}">	${ context._beginContent ? block1$9(context) : undefined }<input id="${ifDefined(context._id)}-inner"			class="sapWCInputBaseInner"			type="${ifDefined(context.inputType)}"			?disabled="${ifDefined(context.disabled)}"			?readonly="${ifDefined(context._readonly)}"			.value="${ifDefined(context.value)}"			placeholder="${ifDefined(context.inputPlaceholder)}"			@input="${ifDefined(context._input.onInput)}"			@change="${ifDefined(context._input.change)}"			data-sap-no-tab-ref			data-sap-focus-ref	/>		${ context.icon ? block2$6(context) : undefined }</div>	${ context.showSuggestions ? block3$3(context) : undefined }<slot name="formSupport"></slot></div>`; };
-const block1$9 = (context) => { return html`<slot name="_beginContent"></slot>	`; };
-const block2$6 = (context) => { return html`<slot name="icon"></slot>		`; };
-const block3$3 = (context) => { return html`<ui5-popover				placement-type="Bottom"				no-header				no-arrow				horizontal-align="Stretch"				initial-focus="${ifDefined(context._id)}-inner"><ui5-list separators="Inner"><slot></slot></ui5-list></ui5-popover>	`; };
+const block0$8 = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	style="width: 100%;"	?aria-invalid="${ifDefined(context.ariaInvalid)}"><div id="${ifDefined(context._id)}-wrapper"	class="${ifDefined(classMap(context.classes.wrapper))}">	${ context._beginContent ? block1$5(context) : undefined }<input id="${ifDefined(context._id)}-inner"			class="sapWCInputBaseInner"			type="${ifDefined(context.inputType)}"			?disabled="${ifDefined(context.disabled)}"			?readonly="${ifDefined(context._readonly)}"			.value="${ifDefined(context.value)}"			placeholder="${ifDefined(context.inputPlaceholder)}"			@input="${ifDefined(context._input.onInput)}"			@change="${ifDefined(context._input.change)}"			data-sap-no-tab-ref			data-sap-focus-ref	/>		${ context.icon ? block2$5(context) : undefined }</div>	${ context.showSuggestions ? block3$2(context) : undefined }<slot name="formSupport"></slot></div>`; };
+const block1$5 = (context) => { return html`<slot name="_beginContent"></slot>	`; };
+const block2$5 = (context) => { return html`<slot name="icon"></slot>		`; };
+const block3$2 = (context) => { return html`<ui5-popover				placement-type="Bottom"				no-header				no-arrow				horizontal-align="Stretch"				initial-focus="${ifDefined(context._id)}-inner"><ui5-list separators="Inner"><slot></slot></ui5-list></ui5-popover>	`; };
 
 var styles$4 = ":host(ui5-input:not([hidden])){display:inline-block;width:100%}ui5-input:not([hidden]){display:inline-block;width:100%}.sapWCInputBase{height:var(--_ui5_input_height,2.25rem);background:transparent;position:relative;display:inline-block;vertical-align:top;outline:none;box-sizing:border-box;line-height:0}.sapWCInputBase.sapWCFocus .sapWCInputBaseContentWrapper:after{content:\"\";position:absolute;border:var(--_ui5_input_focus_border_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapWCInputBase.sapWCInputBaseDisabled{opacity:var(--sap_wc_input_disabled_opacity,.4);cursor:default}.sapWCInputBaseInner{background:transparent;border:none;font-style:normal;-webkit-appearance:none;-moz-appearance:textfield;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));color:var(--sapUiFieldTextColor,var(--sapField_TextColor,var(--sapTextColor,var(--sapPrimary6,#32363a))));line-height:normal;padding:0 .75rem;box-sizing:border-box;min-width:3rem;text-overflow:ellipsis;flex:1;outline:none}.sapWCInputBaseInner::-webkit-input-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseInner::-moz-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseInner:-ms-input-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseInner:-moz-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseContentWrapper{height:100%;box-sizing:border-box;display:flex;flex-direction:row;justify-content:flex-end;position:relative;overflow:hidden;outline:none;background-color:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_input_wrapper_border_radius,.125rem)}.sapWCInputBaseContentWrapper.sapWCInputBaseDisabledWrapper{pointer-events:none}.sapWCInputBaseContentWrapper.sapWCInputBaseReadonlyWrapper{border-color:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)))}.sapWCInputBaseContentWrapper:hover:not(.sapWCInputBaseContentWrapperError):not(.sapWCInputBaseContentWrapperWarning):not(.sapWCInputBaseContentWrapperSuccess):not(.sapWCInputBaseDisabledWrapper):not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCInputBaseDisabledWrapper{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)));border-color:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));-webkit-text-fill-color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,#32363a))}.sapWCInputBaseDisabledWrapper .sapWCInputBaseInner{color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,#32363a))}.sapWCInputBaseContentWrapperState{border-width:var(--_ui5_input_state_border_width,.125rem)}.sapWCInputBaseContentWrapperError .sapWCInputBaseInner,.sapWCInputBaseContentWrapperWarning .sapWCInputBaseInner{font-style:var(--_ui5_input_error_warning_font_style,normal)}.sapWCInputBaseContentWrapperError .sapWCInputBaseInner{font-weight:var(--_ui5_input_error_font_weight,normal)}.sapWCInputBaseContentWrapperError:not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.sapWCInputBaseContentWrapperError:not(.sapWCInputBaseReadonlyWrapper):not(.sapWCInputBaseDisabledWrapper),.sapWCInputBaseContentWrapperWarning:not(.sapWCInputBaseReadonlyWrapper):not(.sapWCInputBaseDisabledWrapper){border-style:var(--_ui5_input_error_warning_border_style,solid)}.sapWCInputBaseContentWrapperWarning:not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.sapWCInputBaseContentWrapperSuccess:not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldSuccessBackground,var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldSuccessColor,var(--sapField_SuccessColor,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.sapWCInputBaseInner::-ms-clear{height:0;width:0}.sapUiSizeCompact.sapWCInputBase{height:var(--_ui5_input_compact_height,1.625rem)}.sapUiSizeCompact .sapWCInputBaseInner{padding:0 .5rem}:host(ui5-input) ::slotted(ui5-icon){min-width:var(--sap_wc_input_icon_min_width,2.375rem)}ui5-input ui5-icon{min-width:var(--sap_wc_input_icon_min_width,2.375rem)}:host(ui5-input[data-ui5-compact-size]) ::slotted(ui5-icon){min-width:var(--sap_wc_input_compact_min_width,2rem)}ui5-input[data-ui5-compact-size] ui5-icon{min-width:var(--sap_wc_input_compact_min_width,2rem)}";
 
@@ -15521,7 +14480,7 @@ var shellbarInput = ":host(ui5-input[slot=searchField]) .sapWCInputBase .sapWCIn
 /**
  * @public
  */
-const metadata$f = {
+const metadata$a = {
 	tag: "ui5-input",
 	defaultSlot: "suggestionItems",
 	slots: /** @lends sap.ui.webcomponents.main.Input.prototype */ {
@@ -15774,7 +14733,7 @@ const metadata$f = {
  */
 class Input extends UI5Element {
 	static get metadata() {
-		return metadata$f;
+		return metadata$a;
 	}
 
 	static get render() {
@@ -15782,7 +14741,7 @@ class Input extends UI5Element {
 	}
 
 	static get template() {
-		return block0$d;
+		return block0$8;
 	}
 
 	static get styles() {
@@ -16071,15 +15030,15 @@ Bootstrap.boot().then(_ => {
 	Input.define();
 });
 
-const block0$e = (context) => { return html`<div		class="${ifDefined(classMap(context.classes.main))}"		style="${ifDefined(styleMap$1(context.styles.main))}"><!-- INPUT --><ui5-input			id="${ifDefined(context._id)}-inner"			placeholder="${ifDefined(context._input.placeholder)}"			type="${ifDefined(context._input.type)}"			value="${ifDefined(context.value)}"			?disabled="${ifDefined(context.disabled)}"			?readonly="${ifDefined(context.readonly)}"			value-state="${ifDefined(context.valueState)}"			@ui5-change="${ifDefined(context._input.onChange)}"			@ui5-input="${ifDefined(context._input.onLiveChange)}"			data-sap-focus-ref	>		${ !context.readonly ? block1$a(context) : undefined }</ui5-input><!-- POPOVER --><ui5-popover			id="${ifDefined(context._id)}-popover"			allow-target-overlap="${ifDefined(context._popover.allowTargetOverlap)}"			placement-type="${ifDefined(context._popover.placementType)}"			no-header			no-arrow			horizontal-align="${ifDefined(context._popover.horizontalAlign)}"			stay-open-on-scroll="${ifDefined(context._popover.stayOpenOnScroll)}"			@ui5-afterClose="${ifDefined(context._popover.afterClose)}"			@ui5-afterOpen="${ifDefined(context._popover.afterOpen)}"	><ui5-calendar				id="${ifDefined(context._id)}-calendar"				primary-calendar-type="${ifDefined(context._calendar.primaryCalendarType)}"				format-pattern="${ifDefined(context._calendar.formatPattern)}"				timestamp="${ifDefined(context._calendar.timestamp)}"				.selectedDates="${ifDefined(context._calendar.selectedDates)}"				@ui5-selectedDatesChange="${ifDefined(context._calendar.onSelectedDatesChange)}"		></ui5-calendar></ui5-popover><slot name="formSupport"></slot></div>`; };
-const block1$a = (context) => { return html`<ui5-icon				slot="icon"				src="${ifDefined(context._input.icon.src)}"				class="${ifDefined(classMap(context.classes.icon))}"				tabindex="-1"			></ui5-icon>		`; };
+const block0$9 = (context) => { return html`<div		class="${ifDefined(classMap(context.classes.main))}"		style="${ifDefined(styleMap$1(context.styles.main))}"><!-- INPUT --><ui5-input			id="${ifDefined(context._id)}-inner"			placeholder="${ifDefined(context._input.placeholder)}"			type="${ifDefined(context._input.type)}"			value="${ifDefined(context.value)}"			?disabled="${ifDefined(context.disabled)}"			?readonly="${ifDefined(context.readonly)}"			value-state="${ifDefined(context.valueState)}"			@ui5-change="${ifDefined(context._input.onChange)}"			@ui5-input="${ifDefined(context._input.onLiveChange)}"			data-sap-focus-ref	>		${ !context.readonly ? block1$6(context) : undefined }</ui5-input><!-- POPOVER --><ui5-popover			id="${ifDefined(context._id)}-popover"			allow-target-overlap="${ifDefined(context._popover.allowTargetOverlap)}"			placement-type="${ifDefined(context._popover.placementType)}"			no-header			no-arrow			horizontal-align="${ifDefined(context._popover.horizontalAlign)}"			stay-open-on-scroll="${ifDefined(context._popover.stayOpenOnScroll)}"			@ui5-afterClose="${ifDefined(context._popover.afterClose)}"			@ui5-afterOpen="${ifDefined(context._popover.afterOpen)}"	><ui5-calendar				id="${ifDefined(context._id)}-calendar"				primary-calendar-type="${ifDefined(context._calendar.primaryCalendarType)}"				format-pattern="${ifDefined(context._calendar.formatPattern)}"				timestamp="${ifDefined(context._calendar.timestamp)}"				.selectedDates="${ifDefined(context._calendar.selectedDates)}"				@ui5-selectedDatesChange="${ifDefined(context._calendar.onSelectedDatesChange)}"		></ui5-calendar></ui5-popover><slot name="formSupport"></slot></div>`; };
+const block1$6 = (context) => { return html`<ui5-icon				slot="icon"				src="${ifDefined(context._input.icon.src)}"				class="${ifDefined(classMap(context.classes.icon))}"				tabindex="-1"			></ui5-icon>		`; };
 
 var datePickerCss = ":host(ui5-datepicker:not([hidden])){display:inline-block;width:100%}ui5-datepicker:not([hidden]){display:inline-block;width:100%}.sapWCDPIcon{color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));cursor:pointer;outline:none;border:var(--_ui5_datepicker_icon_border,none);box-sizing:border-box}.sapWCDPIcon.sapWCDPIconPressed,.sapWCDPIcon:hover{border-left-color:#fff}.sapWCDPIcon:active{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCDPIcon.sapWCDPIconPressed{background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCDPIcon:not(.sapWCDPIconPressed):not(:active):hover{background:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}";
 
 /**
  * @public
  */
-const metadata$g = {
+const metadata$b = {
 	tag: "ui5-datepicker",
 	properties: /** @lends  sap.ui.webcomponents.main.DatePicker.prototype */ {
 		/**
@@ -16270,7 +15229,7 @@ const metadata$g = {
  */
 class DatePicker extends UI5Element {
 	static get metadata() {
-		return metadata$g;
+		return metadata$b;
 	}
 
 	static get render() {
@@ -16278,7 +15237,7 @@ class DatePicker extends UI5Element {
 	}
 
 	static get template() {
-		return block0$e;
+		return block0$9;
 	}
 
 	static get styles() {
@@ -16627,2816 +15586,17 @@ Bootstrap.boot().then(_ => {
 	DatePicker.define();
 });
 
-const block0$f = (context) => { return html`<span class="${ifDefined(classMap(context.classes.frame))}"><span id="${ifDefined(context._id)}-firstfe" tabindex="0"></span><div style="${ifDefined(context.zindex)}" class="${ifDefined(classMap(context.classes.dialogParent))}"><div tabindex="-1" aria-labelledby="${ifDefined(context.headerId)}" role="dialog" class="${ifDefined(classMap(context.classes.main))}">			${ !context.noHeader ? block1$b(context) : undefined }<section class="sapMDialogSection"><div class="sapMPopupContent"><div class="sapMPopupScroll"><slot></slot></div></div></section>			${ context.footer ? block4$3(context) : undefined }</div></div><span id="${ifDefined(context._id)}-lastfe" tabindex="0"></span><div tabindex="0" id="${ifDefined(context._id)}-blocklayer" style="${ifDefined(context.blockLayer)}" class="${ifDefined(classMap(context.classes.blockLayer))}"></div></span>`; };
-const block1$b = (context) => { return html`<header>			${ context.header ? block2$7(context) : block3$4(context) }</header>	`; };
-const block2$7 = (context) => { return html`<div role="heading" class="sapMPopupHeader"><slot name="header"></slot></div>			`; };
-const block3$4 = (context) => { return html`<h2 role="heading" class="sapMPopupHeader sapMPopupHeaderText">${ifDefined(context.headerText)}</h2>			`; };
-const block4$3 = (context) => { return html`<footer><div class="sapMPopupFooter"><slot name="footer"></slot></div></footer>	`; };
-
-var dialogCss = ".sapMDialogParent{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;justify-content:center;align-items:center;overflow:hidden}.sapMDialogStretched .sapMDialog{width:90%;height:93%;min-width:0;min-height:0}.ui5-phone.sapMDialogParent.sapMDialogStretched .sapMDialog{width:100%;height:100%;box-shadow:none;border-radius:0}.sapMDialog{display:flex;flex-direction:column;overflow:hidden}.sapMDialog footer,.sapMDialog header{flex-shrink:0}.sapMDialogSection{overflow:hidden;flex:1 1 auto;display:flex}";
-
-/**
- * @public
- */
-const metadata$h = {
-	tag: "ui5-dialog",
-	properties: /** @lends  sap.ui.webcomponents.main.Dialog.prototype */ {
-		/**
-		 * Determines whether the <code>ui5-dialog</code> should be stretched to fullscreen.
-		 * <br><br>
-		 * <b>Note:</b> The <code>ui5-dialog</code> will be stretched to aproximetly
-		 * 90% of the viewport.
-		 *
-		 * @type {Boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		stretch: {
-			type: Boolean,
-		},
-	},
-};
-
-/**
- * @class
- * <h3 class="comment-api-title">Overview</h3>
- * The <code>ui5-dialog</code> component is used to temporarily display some information in a
- * size-limited window in front of the regular app screen.
- * It is used to prompt the user for an action or a confirmation.
- * The code>ui5-dialog</code> interrupts the current app processing as it is the only focused UI element and
- * the main screen is dimmed/blocked.
- * The dialog combines concepts known from other technologies where the windows have
- * names such as dialog box, dialog window, pop-up, pop-up window, alert box, or message box.
- * <br><br>
- * The <code>ui5-dialog</code> is modal, which means that user action is required before returning to the parent window is possible.
- * The content of the <code>ui5-dialog</code> is fully customizable.
- *
- * <h3>Structure</h3>
- * A <code>ui5-dialog</code> consists of a header, content, and a footer for action buttons.
- * The <code>ui5-dialog</code> is usually displayed at the center of the screen.
- *
- * <h3>Responsive Behavior</h3>
- * The <code>stretch</code> property can be used to stretch the
- * <code>ui5-dialog</code> on full screen.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Dialog";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Dialog
- * @extends Popup
- * @tagname ui5-dialog
- * @public
- */
-class Dialog extends Popup {
-	static get metadata() {
-		return metadata$h;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$f;
-	}
-
-	static get styles() {
-		return [Popup.styles, dialogCss];
-	}
-
-	/**
-	* Opens the <code>ui5-dialog</code>.
-	* @public
-	*/
-	open() {
-		if (this._isOpen) {
-			return;
-		}
-
-		const cancelled = super.open();
-		if (cancelled) {
-			return true;
-		}
-
-		this.storeCurrentFocus();
-
-		this._isOpen = true;
-	}
-
-	/**
-	* Closes the <code>ui5-dialog</code>.
-	* @public
-	*/
-	close() {
-		if (!this._isOpen) {
-			return;
-		}
-
-		const cancelled = super.close();
-		if (cancelled) {
-			return;
-		}
-
-		this._isOpen = false;
-
-		this.resetFocus();
-
-		this.fireEvent("afterClose", { });
-	}
-
-	get classes() {
-		return {
-			frame: {
-				sapMPopupFrame: true,
-				sapMPopupFrameOpen: this._isOpen,
-			},
-			dialogParent: {
-				sapMDialogParent: true,
-				sapMDialogStretched: this.stretch,
-				"ui5-phone": isPhone(),
-			},
-			main: {
-				sapMPopup: true,
-				sapMDialog: true,
-			},
-			blockLayer: {
-				sapUiBLy: true,
-				sapMPopupBlockLayer: true,
-				sapMPopupBlockLayerHidden: this._hideBlockLayer,
-			},
-		};
-	}
-
-	get zindex() {
-		return `z-index: ${this._zIndex + 1};`;
-	}
-
-	get blockLayer() {
-		return `z-index: ${this._zIndex};`;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Dialog.define();
-});
-
-var styles$5 = ":host(ui5-li:not([hidden])){display:block}:host(ui5-li) .sap-phone.sapMLIB{outline:none}ui5-li:not([hidden]){display:block}ui5-li .sap-phone.sapMLIB{outline:none}.sapMLIB{position:relative;display:flex;height:3rem;width:100%;padding:0 1rem 0 1rem;background:var(--ui5-listitem-background-color,var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));box-sizing:border-box}.sapMLIBHoverable:hover{background:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,#fafafa))}.sapMLIB.sapMLIBSelected{background:var(--sapUiListSelectionBackgroundColor,var(--sapList_SelectionBackgroundColor,#e5f0fa))}.sapMLIB.sapMLIBActive{color:var(--sapUiListActiveTextColor,#fff);background:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,#0854a0))))}.sapMLIB.sapMLIBHoverable.sapMLIBSelected:hover{background:var(--sapUiListSelectionHoverBackground,#d8e9f8)}.sapMLIB.sapMLIBHoverable.sapMLIBSelected.sapMLIBActive:hover{background:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,#0854a0))))}.sapMLIB.sapMLIBFocusable:focus{outline:none}.sapMLIB.sapMLIBFocusable .sapMLIBContent:focus:after,.sapMLIB.sapMLIBFocusable:focus:after{content:\"\";border:var(--_ui5_listitembase_focus_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none}.sapMLIB.sapMLIBActive.sapMLIBFocusable .sapMLIBContent:focus,.sapMLIB.sapMLIBActive.sapMLIBFocusable:focus{outline-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMLIB.sapMLIBBorder{border-bottom:var(--ui5-listitem-border-bottom,1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed)))}.sapMLIB.sapMLIBActive .sapMLIBIcon{color:var(--sapUiListActiveTextColor,#fff)}.sapMLIBIcon{color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)));padding-right:1rem}.sapMLIBContent{max-width:100%;min-height:100%;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.sapMLIBActionable,.sapMLIBActionable>.sapMLIBIcon{cursor:pointer}.sapMLIBFocusable.sapMLIBLegacyOutline:focus{outline:none}:host(ui5-li) [dir=rtl] .sapMLIBIcon{padding-left:1rem;padding-right:0}:host(ui5-li) [dir=rtl] .sapMSLIImg{margin:.5rem 0 .5rem .75rem}ui5-li [dir=rtl] .sapMLIBIcon{padding-left:1rem;padding-right:0}ui5-li [dir=rtl] .sapMSLIImg{margin:.5rem 0 .5rem .75rem}";
-
-/**
- * @public
- */
-const metadata$i = {
-	"abstract": true,
-	properties: /** @lends  sap.ui.webcomponents.main.ListItemBase.prototype */  {
-
-		_hideBorder: {
-			type: Boolean,
-		},
-
-		_tabIndex: {
-			type: String,
-			defaultValue: "-1",
-		},
-	},
-	events: {
-		_focused: {},
-		_focusForward: {},
-	},
-};
-
-/**
- * A class to serve as a foundation
- * for the <code>ListItem</code> and <code>GroupHeaderListItem</code> classes.
- *
- * @abstract
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.ListItemBase
- * @extends UI5Element
- * @public
- */
-class ListItemBase extends UI5Element {
-	static get metadata() {
-		return metadata$i;
-	}
-
-	static get styles() {
-		return styles$5;
-	}
-
-	onfocusin(event) {
-		this.fireEvent("_focused", event);
-	}
-
-	onkeydown(event) {
-		if (isTabNext(event)) {
-			return this._handleTabNext(event);
-		}
-
-		if (isTabPrevious(event)) {
-			return this._handleTabPrevious(event);
-		}
-	}
-
-	_handleTabNext(event) {
-		const target = event.target.shadowRoot.activeElement;
-
-		if (this.shouldForwardTabAfter(target)) {
-			this.fireEvent("_forwardAfter", { item: target });
-		}
-	}
-
-	_handleTabPrevious(event) {
-		const target = event.target.shadowRoot.activeElement;
-
-		if (this.shouldForwardTabBefore(target)) {
-			const eventData = event;
-			eventData.item = target;
-			this.fireEvent("_forwardBefore", eventData);
-		}
-	}
-
-	/*
-	* Determines if th current list item either has no tabbable content or
-	* [TAB] is performed onto the last tabbale content item.
-	*/
-	shouldForwardTabAfter(target) {
-		const aContent = FocusHelper.getTabbableContent(this.getDomRef());
-
-		if (target.getFocusDomRef) {
-			target = target.getFocusDomRef();
-		}
-
-		return !aContent.length || (aContent[aContent.length - 1] === target);
-	}
-
-	/*
-	* Determines if the current list item is target of [SHIFT+TAB].
-	*/
-	shouldForwardTabBefore(target) {
-		return this.getDomRef() === target;
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMLIBBorder: !this._hideBorder,
-				sapMLIB: true,
-				"sapMLIB-CTX": true,
-				sapMLIBShowSeparator: true,
-				sapMLIBFocusable: isDesktop(),
-				"sap-phone": isPhone(),
-				"sapUiSizeCompact": getCompactSize(),
-			},
-			inner: {
-				sapMLIBContent: true,
-			},
-		};
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-}
-
-const ListModes = {
-	/**
-	 * Default mode (no selection).
-	 * @public
-	 */
-	None: "None",
-
-	/**
-	 * Right-positioned single selection mode (only one list item can be selected).
-	 * @public
-	 */
-	SingleSelect: "SingleSelect",
-
-	/**
-	 * Left-positioned single selection mode (only one list item can be selected).
-	 * @public
-	 */
-	SingleSelectBegin: "SingleSelectBegin",
-
-	/**
-	 * Selected item is highlighted but no selection element is visible
-	 * (only one list item can be selected).
-	 * @public
-	 */
-	SingleSelectEnd: "SingleSelectEnd",
-
-	/**
-	 * Multi selection mode (more than one list item can be selected).
-	 * @public
-	 */
-	MultiSelect: "MultiSelect",
-
-	/**
-	 * Delete mode (only one list item can be deleted via provided delete button)
-	 * @public
-	 */
-	Delete: "Delete",
-};
-
-class ListMode extends DataType {
+class CSSSize extends DataType {
 	static isValid(value) {
-		return !!ListModes[value];
+		return /^(auto|inherit|[-+]?(0*|([0-9]+|[0-9]*\.[0-9]+)([rR][eE][mM]|[eE][mM]|[eE][xX]|[pP][xX]|[cC][mM]|[mM][mM]|[iI][nN]|[pP][tT]|[pP][cC]|%))|calc\(\s*(\(\s*)*[-+]?(([0-9]+|[0-9]*\.[0-9]+)([rR][eE][mM]|[eE][mM]|[eE][xX]|[pP][xX]|[cC][mM]|[mM][mM]|[iI][nN]|[pP][tT]|[pP][cC]|%)?)(\s*(\)\s*)*(\s[-+]\s|[*\/])\s*(\(\s*)*([-+]?(([0-9]+|[0-9]*\.[0-9]+)([rR][eE][mM]|[eE][mM]|[eE][xX]|[pP][xX]|[cC][mM]|[mM][mM]|[iI][nN]|[pP][tT]|[pP][cC]|%)?)))*\s*(\)\s*)*\))$/.test(value); // eslint-disable-line
 	}
 }
 
-ListMode.generataTypeAcessors(ListModes);
-
-const ListSeparatorsTypes = {
-	/**
-	 * Separators between the items including the last and the first one.
-	 * @public
-	 */
-	All: "All",
-	/**
-	 * Separators between the items.
-	 * <b>Note:</b> This enumeration depends on the theme.
-	 * @public
-	 */
-	Inner: "Inner",
-	/**
-	 * No item separators.
-	 * @public
-	 */
-	None: "None",
-};
-
-class ListSeparators extends DataType {
-	static isValid(value) {
-		return !!ListSeparatorsTypes[value];
-	}
-}
-
-ListSeparators.generataTypeAcessors(ListSeparatorsTypes);
-
-/**
- * Different types of ListItem.
- */
-const ListItemTypes = {
-	/**
-	 * Indicates the list item does not have any active feedback when item is pressed.
-	 * @public
-	 */
-	Inactive: "Inactive",
-
-	/**
-	 * Indicates that the item is clickable via active feedback when item is pressed.
-	 * @public
-	 */
-	Active: "Active",
-};
-
-class ListItemType extends DataType {
-	static isValid(value) {
-		return !!ListItemTypes[value];
-	}
-}
-
-ListItemType.generataTypeAcessors(ListItemTypes);
-
-const block0$g = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"><!-- header -->	${ context.header ? block1$c(context) : undefined }${ context.shouldRenderH1 ? block2$8(context) : undefined }<div id="${ifDefined(context._id)}-before" tabindex="0" class="sapMListDummyArea"></div><ul id="${ifDefined(context._id)}-listUl" class="${ifDefined(classMap(context.classes.ul))}"><slot></slot>		${ context.showNoDataText ? block3$5(context) : undefined }</ul>	${ context.footerText ? block4$4(context) : undefined }<div id="${ifDefined(context._id)}-after" tabindex="0" class="sapMListDummyArea"></div></div>`; };
-const block1$c = (context) => { return html`<slot name="header" />	`; };
-const block2$8 = (context) => { return html`<header id="${ifDefined(context._id)}-header" class="sapMListHdr sapMListHdrText">			${ifDefined(context.headerText)}</header>	`; };
-const block3$5 = (context) => { return html`<li id="${ifDefined(context._id)}-nodata" class="${ifDefined(classMap(context.classes.noData))}" tabindex="${ifDefined(context.noDataTabIndex)}"><div id="${ifDefined(context._id)}-nodata-text" class="sapMListNoDataText">					${ifDefined(context.noDataText)}</div></li>		`; };
-const block4$4 = (context) => { return html`<footer id="${ifDefined(context._id)}-footer" class="sapMListFtr">			${ifDefined(context.footerText)}</footer>	`; };
-
-var listCss = ":host(ui5-list:not([hidden])){display:block;max-width:100%}ui5-list:not([hidden]){display:block;max-width:100%}.sapMList{width:100%;height:100%;position:relative;box-sizing:border-box}.sapMList.sapMListInsetBG{padding:2rem}.sapMList .sapMListUl{list-style-type:none;padding:0;margin:0}.sapMList .sapMListUl:focus{outline:none}.sapMList .sapMListDummyArea{position:fixed}.sapMList .sapMListNoData{list-style-type:none;display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));padding:0 1rem!important;height:3rem}.sapMList .sapMListHdrText{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;box-sizing:border-box;font-size:var(--sapMFontHeader4Size,1.125rem);font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));height:3rem;line-height:3rem;padding:0 1rem;background-color:var(--sapUiGroupTitleBackground,var(--sapGroup_TitleBackground,transparent));border-bottom:1px solid var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#d9d9d9))}.sapMList .sapMListFtr{height:2rem;box-sizing:border-box;-webkit-text-size-adjust:none;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));line-height:2rem;background-color:var(--sapUiListFooterBackground,#fafafa);color:var(--sapUiListFooterTextColor,var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)))));padding:0 1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sapMList .sapMListShowSeparatorsNone .sapMListNoData{border-bottom:0}.sapMList .sapMListNoDataText{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sapUiSizeCompact.sapMList .sapMListNoData{height:2rem;font-size:var(--sapMFontMediumSize,.875rem)}";
-
-/**
- * @public
- */
-const metadata$j = {
-	tag: "ui5-list",
-	defaultSlot: "items",
-	slots: /** @lends sap.ui.webcomponents.main.List.prototype */ {
-
-		/**
-		 * Defines the <code>ui5-li</code> header.
-		 * <b>Note:</b> When <code>header</code> is set, the
-		 * <code>headerText</code> property is ignored.
-		 *
-		 * @type {HTMLElement}
-		 * @slot
-		 * @public
-		 */
-		header: {
-			type: HTMLElement,
-		},
-
-		/**
-		 * Defines the items of the <code>ui5-list</code>.
-		 * <br><b>Note:</b> Only <code>ui5-li</code>, <code>ui5-li-custom</code> and <code>ui5-li-groupheader</code> are allowed.
-		 *
-		 * @type {ListItemBase[]}
-		 * @slot
-		 * @public
-		 */
-		items: {
-			type: ListItemBase,
-			multiple: true,
-		},
-	},
-	properties: /** @lends  sap.ui.webcomponents.main.List.prototype */ {
-
-		/**
-		 * Defines the <code>ui5-list</code> header text.
-		 * <br><br>
-		 * <b>Note:</b> If <code>header</code> is set this property is ignored.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		headerText: {
-			type: String,
-		},
-
-		/**
-		 * Defines the footer text.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		footerText: {
-			type: String,
-		},
-
-		/**
-		 * Determines whether the list items are indented.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		inset: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the mode of the <code>ui5-list</code>.
-		 * <br><br>
-		 * <b>Note:</b> Avalaible options are <code>None</code>, <code>SingleSelect</code>,
-		 * <code>MultiSelect</code>, and <code>Delete</code>.
-		 *
-		 * @type {string}
-		 * @defaultvalue "None"
-		 * @public
-		 */
-		mode: {
-			type: ListMode,
-			defaultValue: ListMode.None,
-		},
-
-		/**
-		 * Defines the text that is displayed when the <code>ui5-list</code> contains no items.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		noDataText: {
-			type: String,
-		},
-
-		/**
-		 * Defines the item separator style that is used.
-		 * <br><br>
-		 * <b>Notes:</b>
-		 * <ul>
-		 * <li>Avalaible options are <code>All</code>, <code>Inner</code>, and <code>None</code>.</li>
-		 * <li>When set to <code>None</code>, none of the items is separated by horizontal lines.</li>
-		 * <li>When set to <code>Inner</code>, the first item doesn't have a top separator and the last
-		 * item doesn't have a bottom separator.</li>
-		 * </ul>
-		 *
-		 * @type {string}
-		 * @defaultvalue "All"
-		 * @public
-		 */
-		separators: {
-			type: ListSeparators,
-			defaultValue: ListSeparators.All,
-		},
-	},
-	events: /** @lends  sap.ui.webcomponents.main.List.prototype */ {
-
-		/**
-		 * Fired when an item is pressed, unless the item's <code>type</code> property
-		 * is set to <code>Inactive</code>.
-		 *
-		 * @event
-		 * @param {HTMLElement} item the pressed item.
-		 * @public
-		 */
-		itemPress: {
-			detail: {
-				item: { type: HTMLElement },
-			},
-		},
-
-		/**
-		 * Fired when the Delete button of any item is pressed.
-		 * <br><br>
-		 * <b>Note:</b> A Delete button is displayed on each item,
-		 * when the <code>ui5-list</code> <code>mode</code> property is set to <code>Delete</code>.
-		 * @event
-		 * @param {HTMLElement} item the deleted item.
-		 * @public
-		 */
-		itemDelete: {
-			detail: {
-				item: { type: HTMLElement },
-			},
-		},
-
-		/**
-		 * Fired when selection is changed by user interaction
-		 * in <code>SingleSelect</code> and <code>MultiSelect</code> modes.
-		 *
-		 * @event
-		 * @param {Array} selectedItems an array of the selected items.
-		 * @param {Array} previouslySelectedItems an array of the previously selected items.
-		 * @public
-		 */
-		selectionChange: {
-			detail: {
-				selectedItems: { type: Array },
-				previouslySelectedItems: { type: Array },
-			},
-		},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title"> Overview </h3>
- *
- * The <code>ui5-list</code> component allows displaying a list of items, advanced keyboard
- * handling support for navigating between items, and predefined modes to improve the development efficiency.
- * <br><br>
- * The <code>ui5-list</code> is а container for the available list items:
- * <ul>
- * <li><code>ui5-li</code></li>
- * <li><code>ui5-li-custom</code></li>
- * <li><code>ui5-li-group-header</code></li>
- * </ul>
- * <br><br>
- * To benefit from the built-in selection mechanism, you can use the available
- * selection modes, such as
- * <code>SingleSelect</code>, <code>MultiSelect</code> and <code>Delete</code>.
- * <br><br>
- * Additionally, the <code>ui5-list</code> provides header, footer, and customization for the list item separators.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/List";</code>
- * <br>
- * <code>import "@ui5/webcomponents/dist/StandardListItem";</code> (for <code>ui5-li</code>)
- * <br>
- * <code>import "@ui5/webcomponents/dist/CustomListItem";</code> (for <code>ui5-li-custom</code>)
- * <br>
- * <code>import "@ui5/webcomponents/dist/GroupHeaderListItem";</code> (for <code>ui5-li-group-header</code>)
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.List
- * @extends UI5Element
- * @tagname ui5-list
- * @appenddocs StandardListItem CustomListItem GroupHeaderListItem
- * @public
- */
-class List extends UI5Element {
-	static get metadata() {
-		return metadata$j;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$g;
-	}
-
-	static get styles() {
-		return listCss;
-	}
-
-	constructor() {
-		super();
-		this.initItemNavigation();
-
-		// Stores the last focused item within the internal ul element.
-		this._previouslyFocusedItem = null;
-
-		// Indicates that the List is forwarding the focus before or after the internal ul.
-		this._forwardingFocus = false;
-
-		this._previouslySelectedItem = null;
-
-		this.addEventListener("ui5-_press", this.onItemPress.bind(this));
-		this.addEventListener("ui5-_focused", this.onItemFocused.bind(this));
-		this.addEventListener("ui5-_forwardAfter", this.onForwardAfter.bind(this));
-		this.addEventListener("ui5-_forwardBefore", this.onForwardBefore.bind(this));
-		this.addEventListener("ui5-_selectionRequested", this.onSelectionRequested.bind(this));
-	}
-
-	onBeforeRendering() {
-		this.prepareListItems();
-		this._itemNavigation.init();
-	}
-
-	initItemNavigation() {
-		this._itemNavigation = new ItemNavigation(this);
-		this._itemNavigation.getItemsCallback = () => this.getSlottedNodes("items");
-
-		this._delegates.push(this._itemNavigation);
-	}
-
-	prepareListItems() {
-		const slottedItems = this.getSlottedNodes("items");
-
-		slottedItems.forEach((item, key) => {
-			const isLastChild = key === slottedItems.length - 1;
-			const showBottomBorder = this.separators === ListSeparators.All
-				|| (this.separators === ListSeparators.Inner && !isLastChild);
-
-			item._mode = this.mode;
-			item._hideBorder = !showBottomBorder;
-		});
-
-		this._previouslySelectedItem = null;
-	}
-
-	/*
-	* ITEM SELECTION BASED ON THE CURRENT MODE
-	*/
-	onSelectionRequested(event) {
-		const previouslySelectedItems = this.getSelectedItems();
-		let selectionChange = false;
-		this._selectionRequested = true;
-
-		if (this[`handle${this.mode}`]) {
-			selectionChange = this[`handle${this.mode}`](event.detail.item, event.selected);
-		}
-
-		if (selectionChange) {
-			this.fireEvent("selectionChange", { selectedItems: this.getSelectedItems(), previouslySelectedItems });
-		}
-	}
-
-	handleSingleSelect(item) {
-		if (item.selected) {
-			return false;
-		}
-
-		this.deselectSelectedItems();
-		item.selected = true;
-
-		return true;
-	}
-
-	handleSingleSelectBegin(item) {
-		return this.handleSingleSelect(item);
-	}
-
-	handleSingleSelectEnd(item) {
-		return this.handleSingleSelect(item);
-	}
-
-	handleMultiSelect(item, selected) {
-		item.selected = selected;
-		return true;
-	}
-
-	handleDelete(item) {
-		this.fireEvent("itemDelete", { item });
-	}
-
-	deselectSelectedItems() {
-		this.getSelectedItems().forEach(item => { item.selected = false; });
-	}
-
-	getSelectedItems() {
-		return this.getSlottedNodes("items").filter(item => item.selected);
-	}
-
-	getFirstSelectedItem() {
-		const slottedItems = this.getSlottedNodes("items");
-		let firstSelectedItem = null;
-
-		for (let i = 0; i < slottedItems.length; i++) {
-			if (slottedItems[i].selected) {
-				firstSelectedItem = slottedItems[i];
-				break;
-			}
-		}
-
-		return firstSelectedItem;
-	}
-
-	onkeydown(event) {
-		if (isTabNext(event)) {
-			this._handleTabNext(event);
-		}
-	}
-
-	/*
-	* KEYBOARD SUPPORT
-	*/
-	_handleTabNext(event) {
-		// If forward navigation is performed, we check if the List has headerToolbar.
-		// If yes - we check if the target is at the last tabbable element of the headerToolbar
-		// to forward correctly the focus to the selected, previously focused or to the first list item.
-		let lastTabbableEl;
-		const target = this.getNormalizedTarget(event.target);
-
-		if (this.headerToolbar) {
-			lastTabbableEl = this.getHeaderToolbarLastTabbableElement();
-		}
-
-		if (!lastTabbableEl) {
-			return;
-		}
-
-		if (lastTabbableEl === target) {
-			if (this.getFirstSelectedItem()) {
-				this.focusFirstSelectedItem();
-			} else if (this.getPreviouslyFocusedItem()) {
-				this.focusPreviouslyFocusedItem();
-			} else {
-				this.focusFirstItem();
-			}
-
-			event.stopImmediatePropagation();
-			event.preventDefault();
-		}
-	}
-
-	onfocusin(event) {
-		// If the focusin event does not origin from one of the 'triggers' - ignore it.
-		if (!this.isForwardElement(this.getNormalizedTarget(event.target))) {
-			event.stopImmediatePropagation();
-			return;
-		}
-
-		// The focus arrives in the List for the first time.
-		// If there is selected item - focus it or focus the first item.
-		if (!this.getPreviouslyFocusedItem()) {
-			if (this.getFirstSelectedItem()) {
-				this.focusFirstSelectedItem();
-			} else {
-				this.focusFirstItem();
-			}
-
-			event.stopImmediatePropagation();
-			return;
-		}
-
-		// The focus returns to the List,
-		// focus the first selected item or the previously focused element.
-		if (!this.getForwardingFocus()) {
-			if (this.getFirstSelectedItem()) {
-				this.focusFirstSelectedItem();
-			} else {
-				this.focusPreviouslyFocusedItem();
-			}
-		}
-
-		this.setForwardingFocus(false);
-	}
-
-	isForwardElement(node) {
-		const nodeId = node.id;
-
-		if (this._id === nodeId || this.getBeforeElement().id === nodeId) {
-			return true;
-		}
-
-		return this.getAfterElement().id === nodeId;
-	}
-
-	onItemFocused(event) {
-		const target = event.target;
-
-		this._itemNavigation.update(target);
-		this.fireEvent("itemFocused", { item: target });
-	}
-
-	onItemPress(event) {
-		const pressedItem = event.detail.item;
-
-		if (pressedItem.type === ListItemType.Active) {
-			this.fireEvent("itemPress", { item: pressedItem });
-		}
-
-		if (!this._selectionRequested && this.mode !== ListMode.Delete) {
-			this._selectionRequested = true;
-			this.onSelectionRequested({
-				detail: {
-					item: pressedItem,
-				},
-				selected: !pressedItem.selected,
-			});
-		}
-
-		this._selectionRequested = false;
-	}
-
-	onForwardBefore(event) {
-		this.setPreviouslyFocusedItem(event.target);
-		this.focusBeforeElement();
-	}
-
-	onForwardAfter(event) {
-		this.setPreviouslyFocusedItem(event.target);
-		this.focusAfterElement();
-	}
-
-	focusBeforeElement() {
-		this.setForwardingFocus(true);
-		this.getBeforeElement().focus();
-	}
-
-	focusAfterElement() {
-		this.setForwardingFocus(true);
-		this.getAfterElement().focus();
-	}
-
-	focusFirstItem() {
-		const firstItem = this.getFirstItem();
-
-		if (firstItem) {
-			firstItem.focus();
-		}
-	}
-
-	focusPreviouslyFocusedItem() {
-		const previouslyFocusedItem = this.getPreviouslyFocusedItem();
-
-		if (previouslyFocusedItem) {
-			previouslyFocusedItem.focus();
-		}
-	}
-
-	focusFirstSelectedItem() {
-		const firstSelectedItem = this.getFirstSelectedItem();
-
-		if (firstSelectedItem) {
-			firstSelectedItem.focus();
-		}
-	}
-
-	setForwardingFocus(forwardingFocus) {
-		this._forwardingFocus = forwardingFocus;
-	}
-
-	getForwardingFocus() {
-		return this._forwardingFocus;
-	}
-
-	setPreviouslyFocusedItem(item) {
-		this._previouslyFocusedItem = item;
-	}
-
-	getPreviouslyFocusedItem() {
-		return this._previouslyFocusedItem;
-	}
-
-	getFirstItem() {
-		const slottedItems = this.getSlottedNodes("items");
-		return !!slottedItems.length && slottedItems[0];
-	}
-
-	getAfterElement() {
-		if (!this._afterElement) {
-			this._afterElement = this.shadowRoot.querySelector(`#${this._id}-after`);
-		}
-		return this._afterElement;
-	}
-
-	getBeforeElement() {
-		if (!this._beforeElement) {
-			this._beforeElement = this.shadowRoot.querySelector(`#${this._id}-before`);
-		}
-		return this._beforeElement;
-	}
-
-	getHeaderToolbarLastTabbableElement() {
-		return this.getLastTabbableELement(
-			this.headerToolbar.getDomRef()
-		) || this.headerToolbar.getDomRef();
-	}
-
-	getLastTabbableELement(node) {
-		return FocusHelper.getLastTabbableElement(node);
-	}
-
-	getNormalizedTarget(target) {
-		let focused = target;
-
-		if (target.shadowRoot && target.shadowRoot.activeElement) {
-			focused = target.shadowRoot.activeElement;
-		}
-
-		return focused;
-	}
-
-	get shouldRenderH1() {
-		return !this.header && this.headerText;
-	}
-
-	get showNoDataText() {
-		return this.items.length === 0 && this.noDataText;
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMList: true,
-				sapMListInsetBG: this.inset,
-				sapUiSizeCompact: getCompactSize(),
-			},
-			ul: {
-				sapMListItems: true,
-				sapMListUl: true,
-				[`sapMListShowSeparators${this.separators}`]: true,
-				[`sapMListMode${this.mode}`]: true,
-				sapMListInset: this.inset,
-			},
-			noData: {
-				sapMLIB: true,
-				sapMListNoData: true,
-				sapMLIBTypeInactive: true,
-				sapMLIBFocusable: isDesktop(),
-			},
-		};
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	List.define();
-});
-
-class RadioButtonGroup {
-	static hasGroup(groupName) {
-		return this.groups.has(groupName);
-	}
-
-	static getGroup(groupName) {
-		return this.groups.get(groupName);
-	}
-
-	static getSelectedRadioFromGroup(groupName) {
-		return this.selectedRadios.get(groupName);
-	}
-
-	static removeGroup(groupName) {
-		this.selectedRadios.delete(groupName);
-		return this.groups.delete(groupName);
-	}
-
-	static addToGroup(radioBtn, groupName) {
-		if (this.hasGroup(groupName)) {
-			this.enforceSingleSelection(radioBtn, groupName);
-			this.getGroup(groupName).push(radioBtn);
-		} else {
-			this.createGroup(radioBtn, groupName);
-		}
-	}
-
-	static removeFromGroup(radioBtn, groupName) {
-		if (!this.hasGroup(groupName)) {
-			return;
-		}
-
-		const group = this.getGroup(groupName);
-		const selectedRadio = this.getSelectedRadioFromGroup(groupName);
-
-		// Remove the radio button from the given group
-		group.forEach((_radioBtn, idx, arr) => {
-			if (radioBtn._id === _radioBtn._id) {
-				return arr.splice(idx, 1);
-			}
-		});
-
-		if (selectedRadio === radioBtn) {
-			this.selectedRadios.set(groupName, null);
-		}
-
-		// Remove the group if it is empty
-		if (!group.length) {
-			this.removeGroup(groupName);
-		}
-	}
-
-	static createGroup(radioBtn, groupName) {
-		if (radioBtn.selected) {
-			this.selectedRadios.set(groupName, radioBtn);
-		}
-
-		this.groups.set(groupName, [radioBtn]);
-	}
-
-	static selectNextItem(item, groupName) {
-		const group = this.getGroup(groupName),
-			groupLength = group.length,
-			currentItemPosition = group.indexOf(item);
-
-		if (groupLength <= 1) {
-			return;
-		}
-
-		const nextItemToSelect = this._nextSelectable(currentItemPosition, group);
-
-		this.updateSelectionInGroup(nextItemToSelect, groupName);
-	}
-
-	static selectPreviousItem(item, groupName) {
-		const group = this.getGroup(groupName),
-			groupLength = group.length,
-			currentItemPosition = group.indexOf(item);
-
-		if (groupLength <= 1) {
-			return;
-		}
-
-		const previousItemToSelect = this._previousSelectable(currentItemPosition, group);
-
-		this.updateSelectionInGroup(previousItemToSelect, groupName);
-	}
-
-	static selectItem(item, groupName) {
-		this.updateSelectionInGroup(item, groupName);
-	}
-
-	static updateSelectionInGroup(radioBtnToSelect, groupName) {
-		const selectedRadio = this.getSelectedRadioFromGroup(groupName);
-
-		this._deselectRadio(selectedRadio);
-		this._selectRadio(radioBtnToSelect);
-		this.selectedRadios.set(groupName, radioBtnToSelect);
-	}
-
-	static _deselectRadio(radioBtn) {
-		if (radioBtn) {
-			radioBtn.selected = false;
-		}
-	}
-
-	static _selectRadio(radioBtn) {
-		if (radioBtn) {
-			radioBtn.focus();
-			radioBtn.selected = true;
-			radioBtn._selected = true;
-			radioBtn.fireEvent("select");
-		}
-	}
-
-	static _nextSelectable(pos, group) {
-		const groupLength = group.length;
-		let nextRadioToSelect = null;
-
-		if (pos === groupLength - 1) {
-			if (group[0].disabled || group[0].readonly) {
-				return this._nextSelectable(1, group);
-			}
-			nextRadioToSelect = group[0];
-		} else if (group[pos + 1].disabled || group[pos + 1].readonly) {
-			return this._nextSelectable(pos + 1, group);
-		} else {
-			nextRadioToSelect = group[pos + 1];
-		}
-
-		return nextRadioToSelect;
-	}
-
-	static _previousSelectable(pos, group) {
-		const groupLength = group.length;
-		let previousRadioToSelect = null;
-		if (pos === 0) {
-			if (group[groupLength - 1].disabled || group[groupLength - 1].readonly) {
-				return this._previousSelectable(groupLength - 1, group);
-			}
-			previousRadioToSelect = group[groupLength - 1];
-		} else if (group[pos - 1].disabled || group[pos - 1].readonly) {
-			return this._previousSelectable(pos - 1, group);
-		} else {
-			previousRadioToSelect = group[pos - 1];
-		}
-
-		return previousRadioToSelect;
-	}
-
-	static enforceSingleSelection(radioBtn, groupName) {
-		const selectedRadio = this.getSelectedRadioFromGroup(groupName);
-
-		if (radioBtn.selected) {
-			if (!selectedRadio) {
-				this.selectedRadios.set(groupName, radioBtn);
-			} else if (radioBtn !== selectedRadio) {
-				this._deselectRadio(selectedRadio);
-				this.selectedRadios.set(groupName, radioBtn);
-			}
-		} else if (radioBtn === selectedRadio) {
-			this.selectedRadios.set(groupName, null);
-		}
-	}
-
-	static get groups() {
-		if (!this._groups) {
-			this._groups = new Map();
-		}
-		return this._groups;
-	}
-
-	static get selectedRadios() {
-		if (!this._selectedRadios) {
-			this._selectedRadios = new Map();
-		}
-		return this._selectedRadios;
-	}
-}
-
-const block0$h = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}"	role="radio"	aria-checked="${ifDefined(context.selected)}"	aria-readonly="${ifDefined(context.ariaReadonly)}"	aria-disabled="${ifDefined(context.ariaDisabled)}"	tabindex="${ifDefined(context.tabIndex)}"	dir="${ifDefined(context.rtl)}"><div class='${ifDefined(classMap(context.classes.inner))}'><svg class="sapMRbSvg" focusable="false"><circle class="sapMRbSvgOuter" cx="${ifDefined(context.circle.x)}" cy="${ifDefined(context.circle.y)}" r="${ifDefined(context.circle.rOuter)}" stroke-width="${ifDefined(context.strokeWidth)}" fill="none" /><circle class="sapMRbSvgInner" cx="${ifDefined(context.circle.x)}" cy="${ifDefined(context.circle.y)}" r="${ifDefined(context.circle.rInner)}" stroke-width="10" /></svg><input type='radio' ?checked="${ifDefined(context.selected)}" ?readonly="${ifDefined(context.readonly)}" ?disabled="${ifDefined(context.disabled)}" name="${ifDefined(context.name)}" data-sap-no-tab-ref/></div>	${ context._label.text ? block1$d(context) : undefined }</div>`; };
-const block1$d = (context) => { return html`<ui5-label class="labelInRadioButton">${ifDefined(context._label.text)}</ui5-label>	`; };
-
-var radioButtonCss = ":host(ui5-radiobutton:not([hidden])){max-width:100%;text-overflow:ellipsis;overflow:hidden;display:inline-block}ui5-radiobutton:not([hidden]){max-width:100%;text-overflow:ellipsis;overflow:hidden;display:inline-block}.sapMRb{position:relative;display:flex;flex-wrap:nowrap;outline:none;max-width:100%}.sapMRb.sapMRbSel .sapMRbSvgInner{fill:var(--_ui5_radiobutton_selected_fill,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))}.sapMRb.sapMRbDis{opacity:var(--sapUiContentDisabledOpacity,var(--sapContent_DisabledOpacity,.4))}.sapMRb:not(.sapMRbDis):focus:before{content:\"\";display:block;position:absolute;top:.5rem;bottom:.5rem;left:.5rem;right:.5rem;pointer-events:none;border:var(--_ui5_radiobutton_border_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000))}.sapMRb.sapMRbHasLabel:focus:before{right:0}.sapMRb.sapMRbRo.sapMRbSel .sapMRbSvgInner{fill:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.sapMRb.sapMRbRo .sapMRbSvgOuter{fill:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)));stroke:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))))}.sapMRb.sapMRbErr.sapMRbSel .sapMRbSvgInner{fill:var(--_ui5_radiobutton_selected_error_fill,var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))))}.sapMRb.sapMRbErr .sapMRbSvgOuter,.sapMRb.sapMRbErr:hover .sapMRbInner.sapMRbHoverable:hover .sapMRbSvgOuter{stroke:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))));fill:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMRb.sapMRbWarn.sapMRbSel .sapMRbSvgInner{fill:var(--_ui5_radiobutton_selected_warning_fill,var(--sapUiFieldWarningColorDarken100,#000))}.sapMRb.sapMRbWarn .sapMRbSvgOuter,.sapMRb.sapMRbWarn:hover .sapMRbInner.sapMRbHoverable:hover .sapMRbSvgOuter{stroke:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))));fill:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMRb.sapMRbErr,.sapMRb.sapMRbWarn{stroke-dasharray:var(--_ui5_radiobutton_warning_error_border_dash,0)}.sapMRb .sapMRbInner{width:2.75rem;height:2.75rem;font-size:1rem;pointer-events:none;vertical-align:top;display:inline-block}.sapMRb .sapMRbInner:focus{outline:none}.sapMRb:not(.sapMRbWarn):not(.sapMRbErr):hover .sapMRbHoverable .sapMRbSvgOuter{fill:var(--_ui5_radiobutton_hover_fill,var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))));stroke:var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapMRb .sapMRbInner input{margin:0;visibility:hidden;width:0}.sapMRb ui5-label.labelInRadioButton{width:calc(100% - 2.75rem);padding-right:1px;vertical-align:top;height:2.75rem;line-height:2.75rem;cursor:default;max-width:100%;text-overflow:ellipsis;overflow:hidden;pointer-events:none}.sapMRbSvg{height:2.75rem;width:2.75rem;pointer-events:none}.sapMRbSvg .sapMRbSvgOuter{stroke:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)))}.sapMRbSvg .sapMRbSvgInner{fill:none}.sapUiSizeCompact.sapMRb{height:2rem}.sapUiSizeCompact.sapMRb:focus:before{top:.375rem;bottom:.375rem;left:.375rem;right:.325rem}.sapUiSizeCompact.sapMRb.sapMRbHasLabel:focus:before{right:0}.sapUiSizeCompact.sapMRb .sapMRbInner{width:2rem;height:2rem;display:flex;align-items:center;justify-content:center}.sapUiSizeCompact.sapMRb .sapMRbInner .sapMRbSvg{height:2rem;width:2rem;line-height:2rem}.sapUiSizeCompact.sapMRb ui5-label.labelInRadioButton{line-height:2rem;height:2rem;width:calc(100% - 2rem + 1px)}[dir=rtl].sapMRb.sapMRbHasLabel:focus:before{left:0;right:.5rem}span[dir=rtl].sapUiSizeCompact.sapMRb.sapMRbHasLabel:focus:before{left:0;right:.375rem}:host(ui5-radiobutton.singleSelectionRadioButton) .sapMRb .sapMRbInner .sapMRbSvgOuter{fill:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))}ui5-radiobutton.singleSelectionRadioButton .sapMRb .sapMRbInner .sapMRbSvgOuter{fill:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))}";
-
-/**
- * @public
- */
-const metadata$k = {
-	tag: "ui5-radiobutton",
-	properties: /** @lends sap.ui.webcomponents.main.RadioButton.prototype */  {
-
-		/**
-		 * Determines whether the <code>ui5-radiobutton</code> is disabled.
-		 * <br><br>
-		 * <b>Note:</b> A disabled <code>ui5-radiobutton</code> is completely uninteractive.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Determines whether the <code>ui5-radiobutton</code> is read-only.
-		 * <br><br>
-		 * <b>Note:</b> A read-only <code>ui5-radiobutton</code> is not editable,
-		 * but still provides visual feedback upon user interaction.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		readonly: {
-			type: Boolean,
-		},
-
-		/**
-		 * Determines whether the <code>ui5-radiobutton</code> is selected or not.
-		 * <br><br>
-		 * <b>Note:</b> The property value can be changed with user interaction,
-		 * either by cliking/tapping on the <code>ui5-radiobutton</code>,
-		 * or by using the Space or Enter key.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		selected: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the text of the <code>ui5-radiobutton</code>.
-		 *
-		 * @type  {string}
-		 * @public
-		 */
-		text: {
-			type: String,
-		},
-
-		/**
-		 * Defines the value state of the <code>ui5-radiobutton</code>.
-		 * Available options are <code>Warning</code>, <code>Error</code>, and
-		 * <code>None</code> (by default).
-		 * <br><br>
-		 * <b>Note:</b> Using the value states affects the visual appearance of
-		 * the <code>ui5-radiobutton</code>.
-		 *
-		 * @type {string}
-		 * @defaultvalue "None"
-		 * @public
-		 */
-		valueState: {
-			defaultValue: ValueState.None,
-			type: ValueState,
-		},
-
-		/**
-		 * Defines the name of the <code>ui5-radiobutton</code>.
-		 * Radio buttons with the same <code>name</code> will form a radio button group.
-		 * <br/><b>Note:</b>
-		 * The selection can be changed with <code>ARROW_UP/DOWN</code> and <code>ARROW_LEFT/RIGHT</code> keys between radios in same group.
-		 * <br/><b>Note:</b>
-		 * Only one radio button can be selected per group.
-		 * <br/>
-		 * <b>Important:</b> For the <code>name</code> property to have effect when submitting forms, you must add the following import to your project:
-		 * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-		 *
-		 * <b>Note:</b> When set, a native <code>input</code> HTML element
-		 * will be created inside the <code>ui5-radiobutton</code> so that it can be submitted as
-		 * part of an HTML form.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		name: {
-			type: String,
-		},
-
-		/**
-		 * Defines the form value of the <code>ui5-radiobutton</code>.
-		 * When a form with a radio button group is submitted, the group's value
-		 * will be the value of the currently selected radio button.
-		 * <br/>
-		 * <b>Important:</b> For the <code>value</code> property to have effect, you must add the following import to your project:
-		 * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		value: {
-			type: String,
-		},
-
-		_label: {
-			type: Object,
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.RadioButton.prototype */ {
-
-		/**
-		 * Fired when the <code>ui5-radiobutton</code> selected state changes.
-		 *
-		 * @event
-		 * @public
-		 */
-		select: {},
-	},
-};
-
-const SVGConfig = {
-	"compact": {
-		x: 16,
-		y: 16,
-		rInner: 3,
-		rOuter: 8,
-	},
-	"default": {
-		x: 22,
-		y: 22,
-		rInner: 5,
-		rOuter: 11,
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-radibutton</code> component enables users to select a single option from a set of options.
- * When a <code>ui5-radiobutton</code> is selected by the user, the
- * <code>select</code> event is fired.
- * When a <code>ui5-radiobutton</code> that is within a group is selected, the one
- * that was previously selected gets automatically deselected. You can group radio buttons by using the <code>name</code> property.
- * <br/>
- * Note: if <code>ui5-radiobutton</code> is not part of a group, it can be selected once, but can not be deselected back.
- *
- * <h3>Keyboard Handling</h3>
- *
- * Once the <code>ui5-radiobutton</code> is on focus, it might be selected by pressing the Space and Enter keys.
- * <br/>
- * The Arrow Down/Arrow Up and Arrow Left/Arrow Right keys can be used to change selection between next/previous radio buttons in one group,
- * while TAB and SHIFT + TAB can be used to enter or leave the radio button group.
- * <br/>
- * Note: On entering radio button group, the focus goes to the currently selected radio button.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/RadioButton";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.RadioButton
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-radiobutton
- * @public
- */
-class RadioButton extends UI5Element {
-	static get metadata() {
-		return metadata$k;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$h;
-	}
-
-	static get styles() {
-		return radioButtonCss;
-	}
-
-	constructor() {
-		super();
-		this._label = {};
-	}
-
-	onBeforeRendering() {
-		this.syncLabel();
-		this.syncGroup();
-
-		this._enableFormSupport();
-	}
-
-	syncLabel() {
-		this._label = Object.assign({}, this._label);
-		this._label.text = this.text;
-	}
-
-	syncGroup() {
-		const oldGroup = this._name;
-		const currentGroup = this.name;
-
-		if (currentGroup !== oldGroup) {
-			if (oldGroup) {
-				// remove the control from the previous group
-				RadioButtonGroup.removeFromGroup(this, oldGroup);
-			}
-
-			if (currentGroup) {
-				// add the control to the existing group
-				RadioButtonGroup.addToGroup(this, currentGroup);
-			}
-		} else if (currentGroup) {
-			RadioButtonGroup.enforceSingleSelection(this, currentGroup);
-		}
-
-		this._name = this.name;
-	}
-
-	_enableFormSupport() {
-		const FormSupport = getFeature("FormSupport");
-		if (FormSupport) {
-			FormSupport.syncNativeHiddenInput(this, (element, nativeInput) => {
-				nativeInput.disabled = element.disabled || !element.selected;
-				nativeInput.value = element.selected ? element.value : "";
-			});
-		} else if (this.value) {
-			console.warn(`In order for the "value" property to have effect, you should also: import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";`); // eslint-disable-line
-		}
-	}
-
-	onclick() {
-		return this.toggle();
-	}
-
-	_handleDown(event) {
-		const currentGroup = this.name;
-
-		if (!currentGroup) {
-			return;
-		}
-
-		event.preventDefault();
-		RadioButtonGroup.selectNextItem(this, currentGroup);
-	}
-
-	_handleUp(event) {
-		const currentGroup = this.name;
-
-		if (!currentGroup) {
-			return;
-		}
-
-		event.preventDefault();
-		RadioButtonGroup.selectPreviousItem(this, currentGroup);
-	}
-
-	onkeydown(event) {
-		if (isSpace(event)) {
-			return event.preventDefault();
-		}
-
-		if (isEnter(event)) {
-			return this.toggle();
-		}
-
-		if (isDown(event) || isRight(event)) {
-			this._handleDown(event);
-		}
-
-		if (isUp(event) || isLeft(event)) {
-			this._handleUp(event);
-		}
-	}
-
-	onkeyup(event) {
-		if (isSpace(event)) {
-			this.toggle();
-		}
-	}
-
-	toggle() {
-		if (!this.canToggle()) {
-			return this;
-		}
-
-		if (!this.name) {
-			this.selected = !this.selected;
-			this.fireEvent("select");
-			return this;
-		}
-
-		RadioButtonGroup.selectItem(this, this.name);
-		return this;
-	}
-
-	canToggle() {
-		return !(this.disabled || this.readonly || this.selected);
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMRb: true,
-				sapMRbHasLabel: this.text && this.text.length > 0,
-				sapMRbSel: this.selected,
-				sapMRbDis: this.disabled,
-				sapMRbRo: this.readonly,
-				sapMRbErr: this.valueState === "Error",
-				sapMRbWarn: this.valueState === "Warning",
-				sapUiSizeCompact: getCompactSize(),
-			},
-			inner: {
-				sapMRbInner: true,
-				sapMRbHoverable: !this.disabled && !this.readonly && isDesktop(),
-			},
-		};
-	}
-
-	get ariaReadonly() {
-		return this.readonly ? "true" : undefined;
-	}
-
-	get ariaDisabled() {
-		return this.disabled ? "true" : undefined;
-	}
-
-	get tabIndex() {
-		return this.disabled || (!this.selected && this.name) ? "-1" : "0";
-	}
-
-	get strokeWidth() {
-		return this.valueState === "None" ? "1" : "2";
-	}
-
-	get circle() {
-		return getCompactSize() ? SVGConfig.compact : SVGConfig.default;
-	}
-
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	RadioButton.define();
-});
-
-var styles$6 = ".sapMSLI.sapMLIBActive .sapMSLI-info,.sapMSLI.sapMLIBActive .sapMSLIDescription,.sapMSLI.sapMLIBActive .sapMSLITitle{color:var(--sapUiListActiveTextColor,#fff)}.sapMSLI .sapMSLITextWrapper{display:flex;flex-direction:column;min-width:1px;line-height:normal;flex:auto}.sapMSLI .sapMSLITitle{font-size:var(--sapMFontLargeSize,1rem);color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.sapMSLI .sapMSLIDescription,.sapMSLI .sapMSLITitle{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sapMSLI .sapMSLIDescription{font-size:var(--sapMFontMediumSize,.875rem);color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)))}.sapMSLI-info{margin:0 .25rem;color:var(--sapUiNeutralText,var(--sapNeutralTextColor,var(--sapNeutralColor,#6a6d70)));font-size:.875rem;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sapMSLI-info--warning{color:var(--sapUiCriticalText,var(--sapCriticalTextColor,var(--sapCriticalColor,#e9730c)))}.sapMSLI-info--success{color:var(--sapUiPositiveText,var(--sapPositiveTextColor,var(--sapPositiveColor,#107e3e)))}.sapMSLI-info--error{color:var(--sapUiNegativeText,var(--sapNegativeTextColor,var(--sapNegativeColor,#b00)))}.sapMSLI .sapMSLIImg{margin:.5rem .75rem .5rem 0;height:2rem;width:2rem}.sapMSLI .sapMLIBContent{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-box-flex:1;flex:auto;display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center}.sapMSLI .sapMDeleteListItemButton{display:flex;align-items:center}.sapMSLI.sapMSLIWithTitleAndDescription,.sapUiSizeCompact.sapMSLI.sapMSLIWithTitleAndDescription{height:5rem;padding:1rem}.sapMSLI.sapMSLIWithTitleAndDescription .sapMSLITitle,.sapUiSizeCompact.sapMSLI.sapMSLIWithTitleAndDescription .sapMSLITitle{padding-bottom:.375rem}.sapMSLI.sapMSLIWithTitleAndDescription .sapMSLI-info{align-self:flex-end}.sapUiSizeCompact.sapMSLI:not(.sapMSLIWithTitleAndDescription){height:2rem}.sapUiSizeCompact.sapMSLI:not(.sapMSLIWithTitleAndDescription) .sapMSLITitle{height:2rem;line-height:2rem;font-size:var(--sapMFontMediumSize,.875rem)}.sapUiSizeCompact.sapMSLI:not(.sapMSLIWithTitleAndDescription) .sapMSLIImg{margin-top:.55rem;height:1.75rem;width:1.75rem}.sapUiSizeCompact ui5-checkbox.multiSelectionCheckBox{margin-right:.5rem}";
-
-/**
- * @public
- */
-const metadata$l = {
-	"abstract": true,
-	properties: /** @lends  sap.ui.webcomponents.main.ListItem.prototype */ {
-
-		/**
-		 * Defines the selected state of the <code>ListItem</code>.
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		selected: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the visual indication and behavior of the list items.
-		 * Available options are <code>Active</code> (by default) and <code>Inactive</code>.
-		 * </br></br>
-		 * <b>Note:</b> When set to <code>Active</code>, the item will provide visual response upon press and hover,
-		 * while with type <code>Inactive</code> - will not.
-		 *
-		 * @type {string}
-		 * @defaultvalue "Active"
-		 * @public
-		*/
-		type: {
-			type: ListItemType,
-			defaultValue: ListItemType.Active,
-		},
-
-		_active: {
-			type: Boolean,
-		},
-
-		_mode: {
-			type: ListMode,
-			defaultValue: ListMode.None,
-		},
-	},
-	events: {
-		_press: {},
-		_detailPress: {},
-		_focused: {},
-		_focusForward: {},
-	},
-};
-
-/**
- * @class
- * A class to serve as a base
- * for the <code>StandardListItem</code> and <code>CustomListItem</code> classes.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.ListItem
- * @extends ListItemBase
- * @public
- */
-class ListItem extends ListItemBase {
-	static get metadata() {
-		return metadata$l;
-	}
-
-	static get styles() {
-		return [styles$6, ListItemBase.styles];
-	}
-
-	constructor() {
-		super();
-
-		this.deactivate = () => {
-			if (this._active) {
-				this._active = false;
-			}
-		};
-	}
-
-	onBeforeRendering() {}
-
-	onEnterDOM() {
-		document.addEventListener("mouseup", this.deactivate);
-	}
-
-	onExitDOM() {
-		document.removeEventListener("mouseup", this.deactivate);
-	}
-
-	onkeydown(event) {
-		super.onkeydown(event);
-
-		const itemActive = this.type === ListItemType.Active;
-
-		if (isSpace(event)) {
-			event.preventDefault();
-		}
-
-		if ((isSpace(event) || isEnter(event)) && itemActive) {
-			this.activate();
-		}
-
-		if (isEnter(event)) {
-			this.fireItemPress();
-		}
-	}
-
-	onkeyup(event) {
-		if (isSpace(event) || isEnter(event)) {
-			this.deactivate();
-		}
-
-		if (isSpace(event)) {
-			this.fireItemPress();
-		}
-	}
-
-	onmousedown(event) {
-		if (event.isMarked === "button") {
-			return;
-		}
-		this.activate();
-	}
-
-	onmouseup(event) {
-		if (event.isMarked === "button") {
-			return;
-		}
-		this.deactivate();
-	}
-
-	onfocusout(event) {
-		this.deactivate();
-	}
-
-	onclick(event) {
-		if (event.isMarked === "button") {
-			return;
-		}
-		this.fireItemPress();
-	}
-
-	activate() {
-		if (this.type === ListItemType.Active) {
-			this._active = true;
-		}
-	}
-
-
-	_onDelete(event) {
-		this.fireEvent("_selectionRequested", { item: this, selected: event.selected });
-	}
-
-	fireItemPress() {
-		this.fireEvent("_press", { item: this, selected: this.selected });
-	}
-
-	get classes() {
-		const result = super.classes;
-
-		const desktop = isDesktop();
-		const isActionable = (this.type === ListItemType.Active) && (this._mode !== ListMode.Delete);
-
-		// Modify main classes
-		result.main[`sapMLIBType${this.type}`] = true;
-		result.main.sapMSLI = true;
-		result.main.sapMLIBActionable = desktop && isActionable;
-		result.main.sapMLIBHoverable = desktop && isActionable;
-		result.main.sapMLIBSelected = this.selected;
-		result.main.sapMLIBActive = this._active;
-
-		return result;
-	}
-
-	get placeSelectionElementBefore() {
-		return this._mode === ListMode.MultiSelect
-			|| this._mode === ListMode.SingleSelectBegin;
-	}
-
-	get placeSelectionElementAfter() {
-		return !this.placeSelectionElementBefore
-			&& (this._mode === ListMode.SingleSelectEnd || this._mode === ListMode.Delete);
-	}
-
-	get modeSingleSelect() {
-		return [
-			ListMode.SingleSelectBegin,
-			ListMode.SingleSelectEnd,
-			ListMode.SingleSelect,
-		].includes(this._mode);
-	}
-
-	get modeMultiSelect() {
-		return this._mode === ListMode.MultiSelect;
-	}
-
-	get modeDelete() {
-		return this._mode === ListMode.Delete;
-	}
-}
-
-const block0$i = (context) => { return html`<li	tabindex="${ifDefined(context._tabIndex)}"	class="${ifDefined(classMap(context.classes.main))}"	dir="${ifDefined(context.rtl)}">		${ context.placeSelectionElementBefore ? block1$e(context) : undefined }<div id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.inner))}">			${ context.displayImage ? block5$1(context) : undefined }${ context.displayIconBegin ? block6$1(context) : undefined }<div class="sapMSLITextWrapper">		${ context.text.length ? block7(context) : undefined }${ context.description ? block8(context) : undefined }</div>	${ context.info ? block9(context) : undefined }</div>		${ context.displayIconEnd ? block10(context) : undefined }${ context.placeSelectionElementAfter ? block11(context) : undefined }</li>`; };
-const block1$e = (context) => { return html`${ context.modeSingleSelect ? block2$9(context) : undefined }${ context.modeMultiSelect ? block3$6(context) : undefined }${ context.modeDelete ? block4$5(context) : undefined }`; };
-const block2$9 = (context) => { return html`<ui5-radiobutton				id="${ifDefined(context._id)}-singleSelectionElement"				class="singleSelectionRadioButton"				?selected="${ifDefined(context.selected)}"></ui5-radiobutton>	`; };
-const block3$6 = (context) => { return html`<ui5-checkbox				id="${ifDefined(context._id)}-multiSelectionElement"				class="multiSelectionCheckBox"				?checked="${ifDefined(context.selected)}"></ui5-checkbox>	`; };
-const block4$5 = (context) => { return html`<div class="sapMDeleteListItemButton"><ui5-button				id="${ifDefined(context._id)}-deleteSelectionElement"				design="Transparent"				icon="sap-icon://decline"				@ui5-press="${ifDefined(context._onDelete)}"			></ui5-button></div>	`; };
-const block5$1 = (context) => { return html`<img src="${ifDefined(context.image)}" class="sapMSLIImg">	`; };
-const block6$1 = (context) => { return html`<ui5-icon src="${ifDefined(context.icon)}" class="sapMLIBIcon"></ui5-icon>	`; };
-const block7 = (context) => { return html`<span class="sapMSLITitle"><slot></slot></span>		`; };
-const block8 = (context) => { return html`<span class="sapMSLIDescription">${ifDefined(context.description)}</span>		`; };
-const block9 = (context) => { return html`<span class="${ifDefined(classMap(context.classes.info))}">${ifDefined(context.info)}</span>	`; };
-const block10 = (context) => { return html`<ui5-icon src="${ifDefined(context.icon)}" class="sapMLIBIcon"></ui5-icon>	`; };
-const block11 = (context) => { return html`${ context.modeSingleSelect ? block12(context) : undefined }${ context.modeMultiSelect ? block13(context) : undefined }${ context.modeDelete ? block14(context) : undefined }`; };
-const block12 = (context) => { return html`<ui5-radiobutton				id="${ifDefined(context._id)}-singleSelectionElement"				class="singleSelectionRadioButton"				?selected="${ifDefined(context.selected)}"></ui5-radiobutton>	`; };
-const block13 = (context) => { return html`<ui5-checkbox				id="${ifDefined(context._id)}-multiSelectionElement"				class="multiSelectionCheckBox"				?checked="${ifDefined(context.selected)}"></ui5-checkbox>	`; };
-const block14 = (context) => { return html`<div class="sapMDeleteListItemButton"><ui5-button				id="${ifDefined(context._id)}-deleteSelectionElement"				design="Transparent"				icon="sap-icon://decline"				@ui5-press="${ifDefined(context._onDelete)}"			></ui5-button></div>	`; };
-
-/**
- * @public
- */
-const metadata$m = {
-	tag: "ui5-li",
-	properties: /** @lends sap.ui.webcomponents.main.StandardListItem.prototype */ {
-
-		/**
-		 * Defines the description displayed right under the item text, if such is present.
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 * @since 0.8.0
-		 */
-		description: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>icon</code> source URI.
-		 * </br></br>
-		 * <b>Note:</b>
-		 * SAP-icons font provides numerous buil-in icons. To find all the available icons, see the
-		 * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-		 *
-		 * @type {string}
-		 * @public
-		 */
-		icon: {
-			type: String,
-		},
-
-		/**
-		 * Defines whether the <code>icon</code> should be displayed in the beginning of the list item or in the end.
-		 * </br></br>
-		 * <b>Note:</b> If <code>image</code> is set, the <code>icon</code> would be displayed after the <code>image</code>.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		iconEnd: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the <code>image</code> source URI.
-		 * </br></br>
-		 * <b>Note:</b> The <code>image</code> would be displayed in the beginning of the list item.
-		 *
-		 * @type {string}
-		 * @public
-		 */
-		image: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>info</code>, displayed in the end of the list item.
-		 * @type {string}
-		 * @public
-		 * @since 0.13.0
-		 */
-		info: {
-			type: String,
-		},
-
-		/**
-		 * Defines the state of the <code>info</code>.
-		 * <br>
-		 * Available options are: <code>"None"</code< (by default), <code>"Success"</code>, <code>"Warning"</code> and <code>"Erorr"</code>.
-		 * @type {string}
-		 * @public
-		 * @since 0.13.0
-		 */
-		infoState: {
-			type: ValueState,
-			defaultValue: ValueState.None,
-		},
-	},
-	slots: /** @lends sap.ui.webcomponents.main.StandardListItem.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-li</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	defaultSlot: "text",
-};
-
-/**
- * @class
- * The <code>ui5-li</code> represents the simplest type of item for a <code>ui5-list</code>.
- *
- * This is a list item,
- * providing the most common use cases such as <code>text</code>,
- * <code>image</code> and <code>icon</code>.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.StandardListItem
- * @extends ListItem
- * @tagname ui5-li
- * @public
- */
-class StandardListItem extends ListItem {
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$i;
-	}
-
-	static get styles() {
-		return ListItem.styles;
-	}
-
-	static get metadata() {
-		return metadata$m;
-	}
-
-	get displayImage() {
-		return !!this.image;
-	}
-
-	get displayIconBegin() {
-		return (this.icon && !this.iconEnd);
-	}
-
-	get displayIconEnd() {
-		return (this.icon && this.iconEnd);
-	}
-
-	get classes() {
-		const result = super.classes;
-		const hasDesc = this.description && !!this.description.length;
-		const hasTitle = this.textContent;
-		const infoState = this.infoState.toLowerCase();
-
-		// Modify main classes
-		result.main.sapMSLIWithTitleAndDescription = hasDesc && hasTitle;
-
-		// Add "info" classes
-		result.info = {
-			"sapMSLI-info": true,
-			[`sapMSLI-info--${infoState}`]: true,
-		};
-
-		return result;
-	}
-
-	static async define(...params) {
-		await Icon.define();
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	StandardListItem.define();
-});
-
-const block0$j = (context) => { return html`<li	tabindex="${ifDefined(context._tabIndex)}"	class="${ifDefined(classMap(context.classes.main))}"	dir="${ifDefined(context.rtl)}">		${ context.placeSelectionElementBefore ? block1$f(context) : undefined }<div id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.inner))}">			<slot></slot></div>		${ context.placeSelectionElementAfter ? block5$2(context) : undefined }</li>`; };
-const block1$f = (context) => { return html`${ context.modeSingleSelect ? block2$a(context) : undefined }${ context.modeMultiSelect ? block3$7(context) : undefined }${ context.modeDelete ? block4$6(context) : undefined }`; };
-const block2$a = (context) => { return html`<ui5-radiobutton				id="${ifDefined(context._id)}-singleSelectionElement"				class="singleSelectionRadioButton"				?selected="${ifDefined(context.selected)}"></ui5-radiobutton>	`; };
-const block3$7 = (context) => { return html`<ui5-checkbox				id="${ifDefined(context._id)}-multiSelectionElement"				class="multiSelectionCheckBox"				?checked="${ifDefined(context.selected)}"></ui5-checkbox>	`; };
-const block4$6 = (context) => { return html`<div class="sapMDeleteListItemButton"><ui5-button				id="${ifDefined(context._id)}-deleteSelectionElement"				design="Transparent"				icon="sap-icon://decline"				@ui5-press="${ifDefined(context._onDelete)}"			></ui5-button></div>	`; };
-const block5$2 = (context) => { return html`${ context.modeSingleSelect ? block6$2(context) : undefined }${ context.modeMultiSelect ? block7$1(context) : undefined }${ context.modeDelete ? block8$1(context) : undefined }`; };
-const block6$2 = (context) => { return html`<ui5-radiobutton				id="${ifDefined(context._id)}-singleSelectionElement"				class="singleSelectionRadioButton"				?selected="${ifDefined(context.selected)}"></ui5-radiobutton>	`; };
-const block7$1 = (context) => { return html`<ui5-checkbox				id="${ifDefined(context._id)}-multiSelectionElement"				class="multiSelectionCheckBox"				?checked="${ifDefined(context.selected)}"></ui5-checkbox>	`; };
-const block8$1 = (context) => { return html`<div class="sapMDeleteListItemButton"><ui5-button				id="${ifDefined(context._id)}-deleteSelectionElement"				design="Transparent"				icon="sap-icon://decline"				@ui5-press="${ifDefined(context._onDelete)}"			></ui5-button></div>	`; };
-
-var columnListItemCss = ":host(ui5-li-custom) .sap-phone.sapMLIB{outline:none}:host(ui5-li-custom:not([hidden])){display:block}ui5-li-custom:not([hidden]){display:block}ui5-li-custom .sap-phone.sapMLIB{outline:none}.sapMLIB.sapMCustomLI{height:100%;padding:0}ui5-checkbox.multiSelectionCheckBox,ui5-radiobutton.singleSelectionRadioButton{display:flex;align-items:center}.sapMLIB.sapMCustomLI,ui5-checkbox.multiSelectionCheckBox,ui5-radiobutton.singleSelectionRadioButton{min-width:3rem}.sapUiSizeCompact.sapMLIB.sapMCustomLI,.sapUiSizeCompact ui5-checkbox.multiSelectionCheckBox,.sapUiSizeCompact ui5-radiobutton.singleSelectionRadioButton{min-width:2rem}";
-
-/**
- * @public
- */
-const metadata$n = {
-	tag: "ui5-li-custom",
-	defaultSlot: "content",
-	slots: /** @lends sap.ui.webcomponents.main.CustomListItem.prototype */ {
-
-		/**
-		 * Defines the content of the <code>ui5-li-custom</code>.
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		content: {
-			type: HTMLElement,
-			multiple: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.CustomListItem.prototype */ {
-	},
-};
-
-/**
- * @class
- *
- * A component to be used as custom list item within the <code>ui5-list</code>
- * the same way as the standard <code>ui5-li</code>.
- *
- * The <code>ui5-li-custom</code> accepts arbitrary HTML content to allow full customization.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.CustomListItem
- * @extends ListItem
- * @tagname ui5-li-custom
- * @public
- */
-class CustomListItem extends ListItem {
-	static get metadata() {
-		return metadata$n;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$j;
-	}
-
-	static get styles() {
-		return [ListItem.styles, columnListItemCss];
-	}
-
-	get classes() {
-		const result = super.classes;
-
-		// Modify main classes
-		result.main.sapMCustomLI = true;
-
-		return result;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	CustomListItem.define();
-});
-
-/**
- * A class to manage the <code>Input</code suggestion items.
- *
- * @class
- * @private
- * @author SAP SE
- */
-class Suggestions {
-	constructor(component, slotName, handleFocus) {
-		// The component, that the suggestion would plug into.
-		this.component = component;
-
-		// Defines the items` slot name.
-		this.slotName = slotName;
-
-		// Defines, if the focus will be moved via the arrow keys.
-		this.handleFocus = handleFocus;
-
-		// Press and Focus handlers
-		this.fnOnSuggestionItemPress = this.onItemPress.bind(this);
-		this.fnOnSuggestionItemFocus = this.onItemFocused.bind(this);
-
-		// An integer value to store the currently selected item position,
-		// that changes due to user interaction.
-		this.selectedItemIndex = null;
-	}
-
-	/* Public methods */
-	onUp(event) {
-		event.preventDefault();
-		this._handleItemNavigation(false /* forward */);
-		return true;
-	}
-
-	onDown(event) {
-		event.preventDefault();
-		this._handleItemNavigation(true /* forward */);
-		return true;
-	}
-
-	onSpace(event) {
-		if (this._isItemOnTarget()) {
-			event.preventDefault();
-			this.onItemSelected(null, true /* keyboardUsed */);
-			return true;
-		}
-		return false;
-	}
-
-	onEnter(event) {
-		if (this._isItemOnTarget()) {
-			this.onItemSelected(null, true /* keyboardUsed */);
-			return true;
-		}
-		return false;
-	}
-
-	toggle(bToggle) {
-		const toggle = bToggle !== undefined ? bToggle : !this.isOpened();
-
-		if (toggle) {
-			this.open();
-		} else {
-			this.close();
-		}
-	}
-
-	open() {
-		this._beforeOpen();
-		this._getPopover().openBy(this._getComponent());
-	}
-
-	close() {
-		this._getPopover().close();
-	}
-
-	updateSelectedItemPosition(pos) {
-		this.selectedItemIndex = pos;
-	}
-
-	/* Interface methods */
-	onItemFocused() {
-		this._getComponent().onItemFocused();
-	}
-
-	onItemSelected(selectedItem, keyboardUsed) {
-		const item = selectedItem || this._getItems()[this.selectedItemIndex];
-
-		this.selectedItemIndex = this._getItems().indexOf(item);
-
-		this._getComponent().onItemSelected(item, keyboardUsed);
-		this.close();
-	}
-
-	onItemPreviewed(item) {
-		this._getComponent().onItemPreviewed(item);
-	}
-
-	/* Private methods */
-	onItemPress(oEvent) {
-		this.onItemSelected(oEvent.detail.item, false /* keyboardUsed */);
-	}
-
-	_beforeOpen() {
-		this._attachItemsListeners();
-		this._attachPopupListeners();
-	}
-
-	_attachItemsListeners() {
-		const list = this._getList();
-		list.removeEventListener("ui5-itemPress", this.fnOnSuggestionItemPress);
-		list.addEventListener("ui5-itemPress", this.fnOnSuggestionItemPress);
-		list.removeEventListener("ui5-itemFocused", this.fnOnSuggestionItemFocus);
-		list.addEventListener("ui5-itemFocused", this.fnOnSuggestionItemFocus);
-	}
-
-	_attachPopupListeners() {
-		if (!this.handleFocus) {
-			return;
-		}
-
-		if (!this.attachedAfterOpened) {
-			this._getPopover().addEventListener("ui5-afterOpen", this._onOpen.bind(this));
-			this.attachedAfterOpened = true;
-		}
-
-		if (!this.attachedAfterClose) {
-			this._getPopover().addEventListener("ui5-afterClose", this._onClose.bind(this));
-			this.attachedAfterClose = true;
-		}
-	}
-
-	_onOpen() {
-		this._applyFocus();
-		this._getComponent().onOpen();
-	}
-
-	_onClose() {
-		this._getComponent().onClose();
-	}
-
-	_applyFocus() {
-		if (this.selectedItemIndex) {
-			this._getItems()[this.selectedItemIndex].focus();
-		}
-	}
-
-	_isItemOnTarget() {
-		return this.isOpened() && this.selectedItemIndex !== null;
-	}
-
-	isOpened() {
-		const popover = this._getPopover();
-		return !!(popover && popover._isOpen);
-	}
-
-	_handleItemNavigation(forward) {
-		if (!this._getItems().length) {
-			return;
-		}
-
-		if (forward) {
-			this._selectNextItem();
-		} else {
-			this._selectPreviousItem();
-		}
-	}
-
-	_selectNextItem() {
-		const itemsCount = this._getItems().length;
-		const previousSelectedIdx = this.selectedItemIndex;
-
-		if ((this.selectedItemIndex === null) || (++this.selectedItemIndex > itemsCount - 1)) {
-			this.selectedItemIndex = 0;
-		}
-
-		this._moveItemSelection(previousSelectedIdx, this.selectedItemIndex);
-	}
-
-	_selectPreviousItem() {
-		const itemsCount = this._getItems().length;
-		const previousSelectedIdx = this.selectedItemIndex;
-
-		if ((this.selectedItemIndex === null) || (--this.selectedItemIndex < 0)) {
-			this.selectedItemIndex = itemsCount - 1;
-		}
-
-		this._moveItemSelection(previousSelectedIdx, this.selectedItemIndex);
-	}
-
-	_moveItemSelection(previousIdx, nextIdx) {
-		const items = this._getItems();
-		const currentItem = items[nextIdx];
-		const previousItem = items[previousIdx];
-
-		if (previousItem) {
-			previousItem.selected = false;
-		}
-
-		if (currentItem) {
-			currentItem.selected = true;
-
-			if (this.handleFocus) {
-				currentItem.focus();
-			}
-		}
-
-		this.onItemPreviewed(currentItem);
-
-		if (!this._isItemIntoView(currentItem)) {
-			this._scrollItemIntoView(currentItem);
-		}
-	}
-
-	_isItemIntoView(item) {
-		const rectItem = item.getDomRef().getBoundingClientRect();
-		const rectInput = this._getComponent().getDomRef().getBoundingClientRect();
-		const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
-
-		return (rectItem.top <= windowHeight) && (rectItem.top >= rectInput.top);
-	}
-
-	_scrollItemIntoView(item) {
-		const pos = item.getDomRef().offsetTop - Suggestions.SCROLL_STEP;
-		this._getScrollContainer().scrollTop = pos;
-	}
-
-	_getScrollContainer() {
-		if (!this._scrollContainer) {
-			const popover = this._getPopover();
-			this._scrollContainer = popover.getDomRef().querySelector(".sapMPopupContent");
-		}
-
-		return this._scrollContainer;
-	}
-
-	_getItems() {
-		return this._getComponent().getSlottedNodes(this.slotName);
-	}
-
-	_getComponent() {
-		return this.component;
-	}
-
-	_getList() {
-		return this._getComponent().shadowRoot.querySelector("ui5-list");
-	}
-
-	_getPopover() {
-		return this._getComponent().shadowRoot.querySelector("ui5-popover");
-	}
-}
-
-Suggestions.SCROLL_STEP = 48;
-
-// The List and Popover components would be rendered
-// by the issuer component`s template.
-Bootstrap.boot().then(() => {
-	List.define();
-	Popover.define();
-});
-
-// Add suggestions support to the global features registry so that Input.js can use it
-registerFeature("InputSuggestions", Suggestions);
-
-/**
- * Different types of Button.
- */
-const LinkTypes = {
-	/**
-	 * default type (no special styling)
-	 */
-	Default: "Default",
-
-	/**
-	 * subtle type (appears as regular text, rather than a link)
-	 */
-	Subtle: "Subtle",
-
-	/**
-	 * emphasized type
-	 */
-	Emphasized: "Emphasized",
-};
-
-class LinkType extends DataType {
-	static isValid(value) {
-		return !!LinkTypes[value];
-	}
-}
-
-LinkType.generataTypeAcessors(LinkTypes);
-
-const block0$k = (context) => { return html`<a	class="${ifDefined(classMap(context.classes.main))}"	role="link"	href="${ifDefined(context.parsedRef)}"	target="${ifDefined(context.target)}"	rel="${ifDefined(context._rel)}"	tabindex="${ifDefined(context.tabIndex)}"	?disabled="${ifDefined(context.disabled)}"	aria-disabled="${ifDefined(context.ariaDisabled)}"><slot></slot></a>`; };
-
-var linkCss = ":host(ui5-link:not([hidden])){display:inline-flex;max-width:100%}ui5-link{display:inline-block;max-width:100%}.sapMLnk{color:var(--sapUiLink,var(--sapLinkColor,var(--sapPrimary2,#0a6ed1)));text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-wrap:normal;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);cursor:pointer;display:inline-block;justify-content:center;align-items:center;position:relative;outline:none}.sapMLnk.sapMLnkSubtle:not(.sapMLnkDsbl):hover,.sapMLnk:not(.sapMLnkDsbl):hover{text-decoration:underline;color:var(--sapUiLinkHover,#0854a0)}.sapMLnk:visited{color:var(--sapUiLinkVisited,var(--sapUiLink,var(--sapLinkColor,var(--sapPrimary2,#0a6ed1))))}.sapMLnk.sapMLnkDsbl{text-shadow:none;outline:none;cursor:default;pointer-events:none;opacity:var(--_ui5_link_opacity,.4)}.sapMLnk.sapMLnkEmphasized{font-weight:700}.sapMLnk.sapMLnkSubtle,.sapMLnk.sapMLnkSubtle:visited{color:var(--_ui5_link_subtle_color,var(--sapUiLinkDarken15,#074888))}.sapMLnk.sapMLnkSubtle:focus{color:var(--sapUiLink,var(--sapLinkColor,var(--sapPrimary2,#0a6ed1)))}.sapMLnk.sapMLnkWrapping{white-space:normal;word-wrap:break-word}.sapMLnk:focus{text-decoration:underline}.sapMLnk:focus:after{content:\"\";width:var(--_ui5_link_outline_element_size,calc(100% - .125rem));height:var(--_ui5_link_outline_element_size,calc(100% - .125rem));position:absolute;left:0;border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));top:0;outline:none}";
-
-/**
- * @public
- */
-const metadata$o = {
-	tag: "ui5-link",
-	properties: /** @lends  sap.ui.webcomponents.main.Link.prototype */  {
-
-		/**
-		 * Defines whether the <code>ui5-link</code> is disabled.
-		 * <br><br>
-		 * <b>Note:</b> When disabled, the <code>ui5-link</code cannot be triggered by the user.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the <code>ui5-link</code> href.
-		 * <br><br>
-		 * <b>Note:</b> Standard hyperlink behavior is supported.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		href: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>ui5-link</code> target.
-		 * <br><br>
-		 * <b>Notes:</b>
-		 * <ul><li>Available options are the standard values: <code>_self</code>, <code>_top</code>,
-		 * <code>_blank</code>, <code>_parent</code>, and <code>_search</code>.</li>
-		 * <li>This property must only be used when the <code>href</code> property is set.</li></ul>
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		target: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>ui5-link</code> type.
-		 * <br><br>
-		 * <b>Note:</b> Avaialble options are <code>Default</code>, <code>Subtle</code>, and <code>Emphasized</code>.
-		 *
-		 * @type {string}
-		 * @defaultvalue "Default"
-		 * @public
-		 */
-		type: {
-			type: LinkType,
-			defaultValue: LinkType.Default,
-		},
-
-		/**
-		 * Defines whether the <code>ui5-link</code> text should wrap
-		 * when there is no sufficient space.
-		 * <br><br>
-		 * <b>Note:</b> the text is truncated by default.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		wrap: {
-			type: Boolean,
-		},
-
-		_rel: {
-			type: String,
-		},
-	},
-	slots: /** @lends sap.ui.webcomponents.main.Link.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-link</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	defaultSlot: "text",
-	events: /** @lends sap.ui.webcomponents.main.Link.prototype */ {
-
-		/**
-		 * Fired when the <code>ui5-link</code> is triggered either with a click/tap
-		 * or by using the Space or Enter key.
-		 *
-		 * @event
-		 * @public
-		 */
-		press: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- * The <code>ui5-link</code> is a hyperlink component is used to navigate to other
- * apps and web pages or to trigger actions.
- * It is a clickable text element, visualized in such a way that it stands out
- * from the standard text.
- * On hover, it changes its style to an underlined text to provide additional feedback to the user.
- *
-
- *
- * <h3>Usage</h3>
- *
- * You can set the <code>ui5-link</code> to be enabled or disabled.
- * <br><br>
- * To create a visual hierarchy in large lists of links, you can set the less important links as
- * <code>Subtle</code> or the more important ones as <code>Emphasized</code>
- * by using the <code>type</code> property.
- * <br><br>
- * If the <code>href</code> property is set, the link behaves as the basic HTML
- * anchor tag (<code><a></code>) and opens the specified URL in the given target frame (<code>target</code> property).
- * To specify where the linked content is opened, you can use the <code>target</code> property.
- *
- * <h3>Responsive behavior</h3>
- *
- * If there is not enough space, the text of the <code>ui5-link</code> becomes truncated.
- * If the <code>wrap</code> property is set to <code>true</code>, the text is displayed
- * on several lines instead of being truncated.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Link";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Link
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-link
- * @public
- */
-class Link extends UI5Element {
-	constructor() {
-		super();
-		this._dummyAnchor = document.createElement("a");
-	}
-
-	static get metadata() {
-		return metadata$o;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$k;
-	}
-
-	static get styles() {
-		return linkCss;
-	}
-
-
-	onBeforeRendering() {
-		const needsNoReferrer = this.target === "_blank"
-			&& this.href
-			&& this._isCrossOrigin();
-
-		this._rel = needsNoReferrer ? "noreferrer" : undefined;
-	}
-
-	onclick(event) {
-		if (this.disabled) {
-			return;
-		}
-
-		const defaultPrevented = !this.fireEvent("press", {}, true);
-		if (defaultPrevented) {
-			event.preventDefault();
-		}
-	}
-
-	onkeydown(event) {
-		if (this.disabled) {
-			return;
-		}
-
-		if (isSpace(event)) {
-			event.preventDefault();
-		}
-	}
-
-	onkeyup(event) {
-		if (this.disabled) {
-			return;
-		}
-
-		if (isSpace(event)) {
-			const defaultPrevented = !this.fireEvent("press", {}, true);
-			if (defaultPrevented) {
-				return;
-			}
-
-			// Simulate click event
-			const oClickEvent = document.createEvent("MouseEvents");
-			oClickEvent.initEvent("click" /* event type */, false/* no-bubbling */, true /* cancelable */);
-			this.getDomRef().dispatchEvent(oClickEvent);
-		}
-	}
-
-	_isCrossOrigin() {
-		const loc = window.location;
-
-		this._dummyAnchor.href = this.href;
-
-		return !(this._dummyAnchor.hostname === loc.hostname
-			&& this._dummyAnchor.port === loc.port
-			&& this._dummyAnchor.protocol === loc.protocol);
-	}
-
-	get tabIndex() {
-		return (this.disabled || !this.text.length) ? "-1" : "0";
-	}
-
-	get ariaDisabled() {
-		return this.disabled ? "true" : undefined;
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMLnk: true,
-				sapMLnkSubtle: this.type === LinkType.Subtle,
-				sapMLnkEmphasized: this.type === LinkType.Emphasized,
-				sapMLnkWrapping: this.wrap,
-				sapMLnkDsbl: this.disabled,
-				sapMLnkMaxWidth: true,
-			},
-		};
-	}
-
-	get parsedRef() {
-		return this.href.length > 0 ? this.href : undefined;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Link.define();
-});
-
-var animationConfig = {
-	defaultDuration: 400,
-	element: document.createElement("DIV"),
-	identity: () => {},
-};
-
-const tasks = new WeakMap();
-
-class AnimationQueue {
-	static get tasks() {
-		return tasks;
-	}
-
-	static enqueue(element, task) {
-		if (!tasks.has(element)) {
-			tasks.set(element, []);
-		}
-
-		tasks.get(element).push(task);
-	}
-
-	static run(element, task) {
-		if (!tasks.has(element)) {
-			tasks.set(element, []);
-		}
-
-		return task().then(() => {
-			const elementTasks = tasks.get(element);
-
-			if (elementTasks.length > 0) {
-				return AnimationQueue.run(element, elementTasks.shift());
-			}
-			tasks.delete(element);
-		});
-	}
-
-	static push(element, task) {
-		const elementTasks = tasks.get(element);
-
-		if (elementTasks) {
-			AnimationQueue.enqueue(element, task);
-		} else {
-			AnimationQueue.run(element, task);
-		}
-	}
-}
-
-var animate = ({
-	beforeStart = animationConfig.identity,
-	duration = animationConfig.defaultDuration,
-	element = animationConfig.element,
-	progress: progressCallback = animationConfig.identity,
-}) => {
-	let start = null;
-	let stopped = false;
-	let animationFrame;
-	let stop;
-	let animate;
-
-	const promise = new Promise((resolve, reject) => {
-		animate = timestamp => {
-			start = start || timestamp;
-
-			const timeElapsed = timestamp - start;
-			const remaining = duration - timeElapsed;
-
-			if (timeElapsed <= duration) {
-				const progress = 1 - remaining / duration; // easing formula (currently linear)
-				progressCallback(progress);
-				animationFrame = !stopped && requestAnimationFrame(animate);
-			} else {
-				progressCallback(1);
-				resolve();
-			}
-		};
-
-		stop = () => {
-			stopped = true;
-			cancelAnimationFrame(animationFrame);
-			reject(new Error("animation stopped"));
-		};
-	}).catch(oReason => oReason);
-
-	AnimationQueue.push(element, () => {
-		beforeStart();
-		requestAnimationFrame(animate);
-
-		return new Promise(resolve => {
-			promise.then(() => resolve());
-		});
-	});
-
-	return {
-		promise: () => promise,
-		stop: () => stop,
-	};
-};
-
-var slideDown = ({
-	element = animationConfig.element,
-	duration = animationConfig.defaultDuration,
-	progress: progressCallback = animationConfig.identity,
-}) => {
-	let computedStyles,
-		paddingTop,
-		paddingBottom,
-		marginTop,
-		marginBottom,
-		height;
-	let storedOverflow,
-		storedPaddingTop,
-		storedPaddingBottom,
-		storedMarginTop,
-		storedMarginBottom,
-		storedHeight;
-
-	const animation = animate({
-		beforeStart: () => {
-			// Show the element to measure its properties
-			element.style.display = "block";
-
-			// Get Computed styles
-			computedStyles = getComputedStyle(element);
-			paddingTop = parseFloat(computedStyles.paddingTop);
-			paddingBottom = parseFloat(computedStyles.paddingBottom);
-			marginTop = parseFloat(computedStyles.marginTop);
-			marginBottom = parseFloat(computedStyles.marginBottom);
-			height = parseFloat(computedStyles.height);
-
-			// Store inline styles
-			storedOverflow = element.style.overflow;
-			storedPaddingTop = element.style.paddingTop;
-			storedPaddingBottom = element.style.paddingBottom;
-			storedMarginTop = element.style.marginTop;
-			storedMarginBottom = element.style.marginBottom;
-			storedHeight = element.style.height;
-
-			element.style.overflow = "hidden";
-			element.style.paddingTop = 0;
-			element.style.paddingBottom = 0;
-			element.style.marginTop = 0;
-			element.style.marginBottom = 0;
-			element.style.height = 0;
-		},
-		duration,
-		element,
-		progress(progress) {
-			progressCallback(progress);
-
-			// WORKAROUND
-			element.style.display = "block";
-			// END OF WORKAROUND
-
-			/* eslint-disable */
-			element.style.paddingTop = 0 + (paddingTop * progress) + "px";
-			element.style.paddingBottom = 0 + (paddingBottom * progress) + "px";
-			element.style.marginTop = 0 + (marginTop * progress) + "px";
-			element.style.marginBottom = 0 + (marginBottom * progress) + "px";
-			element.style.height = 0 + (height * progress) + "px";
-			/* eslint-enable */
-		},
-	});
-
-	animation.promise().then(() => {
-		element.style.overflow = storedOverflow;
-		element.style.paddingTop = storedPaddingTop;
-		element.style.paddingBottom = storedPaddingBottom;
-		element.style.marginTop = storedMarginTop;
-		element.style.marginBottom = storedMarginBottom;
-		element.style.height = storedHeight;
-	});
-
-	return animation;
-};
-
-var slideUp = ({
-	element = animationConfig.element,
-	duration = animationConfig.defaultDuration,
-	progress: progressCallback = animationConfig.identity,
-}) => {
-	// Get Computed styles
-	let computedStyles,
-		paddingTop,
-		paddingBottom,
-		marginTop,
-		marginBottom,
-		height;
-
-	// Store inline styles
-	let storedOverflow,
-		storedPaddingTop,
-		storedPaddingBottom,
-		storedMarginTop,
-		storedMarginBottom,
-		storedHeight;
-
-	const animation = animate({
-		beforeStart: () => {
-			// Get Computed styles
-			computedStyles = getComputedStyle(element);
-			paddingTop = parseFloat(computedStyles.paddingTop);
-			paddingBottom = parseFloat(computedStyles.paddingBottom);
-			marginTop = parseFloat(computedStyles.marginTop);
-			marginBottom = parseFloat(computedStyles.marginBottom);
-			height = parseFloat(computedStyles.height);
-
-			// Store inline styles
-			storedOverflow = element.style.overflow;
-			storedPaddingTop = element.style.paddingTop;
-			storedPaddingBottom = element.style.paddingBottom;
-			storedMarginTop = element.style.marginTop;
-			storedMarginBottom = element.style.marginBottom;
-			storedHeight = element.style.height;
-
-			element.style.overflow = "hidden";
-		},
-		duration,
-		element,
-		progress(progress) {
-			progressCallback(progress);
-
-			element.style.paddingTop = `${paddingTop - (paddingTop * progress)}px`;
-			element.style.paddingBottom = `${paddingBottom - (paddingBottom * progress)}px`;
-			element.style.marginTop = `${marginTop - (marginTop * progress)}px`;
-			element.style.marginBottom = `${marginBottom - (marginBottom * progress)}px`;
-			element.style.height = `${height - (height * progress)}px`;
-		},
-	});
-
-	animation.promise().then(oReason => {
-		if (!(oReason instanceof Error)) {
-			element.style.overflow = storedOverflow;
-			element.style.paddingTop = storedPaddingTop;
-			element.style.paddingBottom = storedPaddingBottom;
-			element.style.marginTop = storedMarginTop;
-			element.style.marginBottom = storedMarginBottom;
-			element.style.height = storedHeight;
-			element.style.display = "none";
-		}
-	});
-
-	return animation;
-};
-
-const PanelAccessibleRoles = {
-
-	Complementary: "Complementary",
-
-	Form: "Form",
-
-	Region: "Region",
-};
-
-class PanelAccessibleRole extends DataType {
-	static isValid(value) {
-		return !!PanelAccessibleRoles[value];
-	}
-}
-
-PanelAccessibleRole.generataTypeAcessors(PanelAccessibleRoles);
-
-const block0$l = (context) => { return html`<div		data-sap-ui-fastnavgroup="true"		class="${ifDefined(classMap(context.classes.main))}"		role="${ifDefined(context.accRole)}"><!-- header: either header or h1 with header text -->	${ context.fixed ? block1$g(context) : block4$7(context) }<!-- content area --><div class="${ifDefined(classMap(context.classes.content))}" tabindex="-1" style="${ifDefined(styleMap$1(context.styles.content))}"><slot></slot></div></div>`; };
-const block1$g = (context) => { return html`${ context.header ? block2$b(context) : undefined }${ context.shouldRenderH1 ? block3$8(context) : undefined }`; };
-const block2$b = (context) => { return html`<div class="sapMPanelHdrToolbar"><slot name="header"></slot></div>	`; };
-const block3$8 = (context) => { return html`<h1 id="${ifDefined(context._id)}-header" class="sapMPanelHdr">			${ifDefined(context.headerText)}</h1>	`; };
-const block4$7 = (context) => { return html`<header @click="${ifDefined(context._header.press)}" class="${ifDefined(classMap(context.classes.header))}" tabindex="${ifDefined(context.headerTabIndex)}"><ui5-icon				class="${ifDefined(classMap(context.classes.icon))}"				src="${ifDefined(context._icon.src)}"				title="${ifDefined(context._icon.title)}"				tabindex="${ifDefined(context.iconTabIndex)}"				aria-expanded="${ifDefined(context.expanded)}"				aria-labelledby="${ifDefined(context.ariaLabelledBy)}"				@ui5-press="${ifDefined(context._icon.press)}"			></ui5-icon>			${ context.header ? block5$3(context) : undefined }${ context.shouldRenderH1 ? block6$3(context) : undefined }</header>	`; };
-const block5$3 = (context) => { return html`<div class="sapMPanelHdrToolbar"><slot name="header"></slot></div>	`; };
-const block6$3 = (context) => { return html`<h1 id="${ifDefined(context._id)}-header" class="sapMPanelHdr">			${ifDefined(context.headerText)}</h1>	`; };
-
-const MULTIINPUT_SHOW_MORE_TOKENS = {
-	key: "MULTIINPUT_SHOW_MORE_TOKENS",
-	defaultText: "{0} More",
-};
+const block0$a = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	style="${ifDefined(styleMap$1(context.styles.main))}"	?aria-invalid="${ifDefined(context.ariaInvalid)}">	${ context.growing ? block1$7(context) : undefined }<div class="${ifDefined(classMap(context.classes.focusDiv))}" style="${ifDefined(styleMap$1(context.styles.inner))}"><textarea			id="${ifDefined(context._id)}-inner"			class="${ifDefined(classMap(context.classes.inner))}"			placeholder="${ifDefined(context.placeholder)}"			?disabled="${ifDefined(context.disabled)}"			?readonly="${ifDefined(context.readonly)}"			maxlength="${ifDefined(context._exceededTextProps.calcedMaxLength)}"			.value="${ifDefined(context.value)}"			@change="${ifDefined(context._listeners.change)}"			data-sap-focus-ref></textarea></div>	${ context.showExceededText ? block4$2(context) : undefined }<slot name="formSupport"></slot></div>`; };
+const block1$7 = (context) => { return html`<div id="${ifDefined(context._id)}-mirror" style="${ifDefined(styleMap$1(context.styles.mirror))}" class="${ifDefined(classMap(context.classes.mirror))}" aria-hidden="true">			${ repeat(context._mirrorText, undefined, (item, index) => block2$6(item, index, context)) }</div>	`; };
+const block2$6 = (item, index, context) => { return html`${ifDefined(item.text)}${ !item.last ? block3$3(item, index, context) : undefined }`; };
+const block3$3 = (item, index, context) => { return html`<br/>				`; };
+const block4$2 = (context) => { return html`<span class="${ifDefined(classMap(context.classes.exceededText))}">${ifDefined(context._exceededTextProps.exceededText)}</span>	`; };
 
 const TEXTAREA_CHARACTERS_LEFT = {
 	key: "TEXTAREA_CHARACTERS_LEFT",
@@ -19448,4745 +15608,12 @@ const TEXTAREA_CHARACTERS_EXCEEDED = {
 	defaultText: "{0} characters over limit",
 };
 
-const PANEL_ICON = {
-	key: "PANEL_ICON",
-	defaultText: "Expand/Collapse",
-};
-
-const MESSAGE_STRIP_CLOSE_BUTTON = {
-	key: "MESSAGE_STRIP_CLOSE_BUTTON",
-	defaultText: "Message Strip Close",
-};
-
-var panelCss = ":host(ui5-panel:not([hidden])){display:block}ui5-panel:not([hidden]){display:block}.sapMPanel{width:100%;height:100%;overflow:hidden;box-sizing:border-box;position:relative;background-color:var(--ui5-panel-background-color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMPanel>header{display:flex;align-items:center;height:2.75rem}.sapMPanel>header ui5-icon.sapMPanelIcon{width:1.5rem;height:1.5rem;min-width:1.5rem;min-height:1.5rem;margin-left:.75rem;margin-right:.75rem;align-self:center;color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));transition:transform .4s ease-out;cursor:pointer;position:relative}.sapMPanel>header ui5-icon.sapMPanelIcon.sapMPanelIconExpanded{transform:rotate(90deg)}.sapMPanel>header ui5-icon.sapMPanelIcon:focus:after{content:\"\";position:absolute;border:1px dashed var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));width:100%;height:100%;left:-1px;top:-1px;pointer-events:none}.sapMPanelHdr{box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:none;padding:0 1rem;margin:0;-webkit-text-size-adjust:none;font-weight:var(--sapUiFontHeaderWeight,normal);font-size:var(--sapMFontHeader4Size,1.125rem);font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));background-color:var(--sapUiGroupTitleBackground,var(--sapGroup_TitleBackground,transparent))}.sapMPanelContent{padding:.625rem 1rem 1.375rem 1rem;box-sizing:border-box;overflow:auto;white-space:normal;border-bottom:1px solid var(--ui5-panel-bottom-border-color,var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#d9d9d9)))}.sapMPanelContent:focus{outline:none}.sapMPanelWrappingDiv,.sapMPanelWrappingDivTb{position:relative;background-color:var(--ui5-panel-background-color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMPanelWrappingDiv{box-sizing:border-box}.sapMPanelWrappingDiv.sapMPanelWrappingDivClickable{cursor:pointer}.sapMPanelWrappingDiv.sapMPanelWrappingDivClickable:focus{outline:none}.sapMPanelWrappingDiv.sapMPanelWrappingDivClickable:focus:after{content:\"\";position:absolute;border:var(--_ui5_panel_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapMPanelWrappingDivTb .sapMPanelHdrToolbar{width:100%}.sapMPanelWrappingDiv.sapMPanelWrappingDivExpanded{border-bottom-width:0}.sapMPanel .sapMPanelWrappingDiv .sapMPanelHdr{padding-left:0}.sapMPanel .sapMPanelWrappingDiv .sapMPanelHdr>:first-child{margin-left:0}.sapMPanel>.sapMPanelHdr,.sapMPanelWrappingDiv,.sapMPanelWrappingDivTb{border-bottom:1px solid var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#d9d9d9))}.sapUiSizeCompact.sapMPanel>header{height:2rem}";
+var styles$5 = ":host(ui5-textarea:not([hidden])){display:inline-block}ui5-textarea:not([hidden]){display:inline-block}.sapWCTextArea{height:3rem;background:transparent;display:inline-flex;vertical-align:top;outline:none;position:relative;overflow:hidden;box-sizing:border-box}.sapWCTextArea:not(.sapWCTextAreaDisabled):not(.sapWCTextAreaWarning):hover .sapWCTextAreaInner{border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCTextArea.sapWCTextAreaReadonly .sapWCTextAreaInner{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)))}.sapWCTextAreaMirror~.sapWCTextAreaFocusDiv{height:100%;width:100%;top:0;position:absolute}.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaFocusDiv,.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaMirror{overflow:hidden}.sapWCTextAreaMirror{line-height:1.4;visibility:hidden;width:100%;word-break:break-all;padding:.5625rem .6875rem;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));white-space:pre-wrap;box-sizing:border-box}.sapWCTextAreaInner{width:100%;margin:0;padding:.5625rem .6875rem;line-height:1.4;box-sizing:border-box;color:var(--sapUiFieldTextColor,var(--sapField_TextColor,var(--sapTextColor,var(--sapPrimary6,#32363a))));background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));outline:none;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));-webkit-appearance:none;-moz-appearance:textfield;overflow:auto;resize:none}.sapWCTextAreaHasFocus:after{content:\"\";border:var(--_ui5_textarea_focus_after_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:2px;left:2px;right:2px;bottom:2px;pointer-events:none}.sapWCTextAreaWarning .sapWCTextAreaHasFocus:after{top:3px;left:3px;right:3px;bottom:3px}.sapWCTextAreaGrowing.sapWCTextAreaNoCols .sapWCTextAreaFocusDiv{overflow:hidden;width:100%}.sapWCTextAreaInner::-webkit-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner::-moz-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner:-ms-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaWithCounter{flex-direction:column;display:flex}.sapWCTextAreaWithCounter .sapWCTextAreaExceededText{overflow:hidden;align-self:flex-end;padding:.125rem .125rem .5rem;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem)}.sapWCTextAreaCounter{text-align:right;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.sapWCTextAreaWarningInner{border-width:var(--_ui5_textarea_warning_border_width,2px);border-style:var(--_ui5_textarea_warning_border_style,solid);background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.sapWCTextAreaContent{display:flex;flex-direction:column;height:100%}.sapWCTextAreaDisabled{opacity:.5;user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-user-select:none}.sapWCTextAreaFocusDiv{display:flex;width:100%;height:100%;position:relative}";
 
 /**
  * @public
  */
-const metadata$p = {
-	tag: "ui5-panel",
-	defaultSlot: "content",
-	slots: /** @lends sap.ui.webcomponents.main.Panel.prototype */ {
-
-		/**
-		 * Defines the <code>ui5-panel</code> header area.
-		 * <br><br>
-		 * <b>Note:</b> When a header is provided, the <code>headerText</code> property is ignored.
-		 *
-		 * @type {HTMLElement}
-		 * @slot
-		 * @public
-		 */
-		header: {
-			type: HTMLElement,
-		},
-
-		/**
-		 * Determines the content of the <code>ui5-panel</code>.
-		 * The content is visible only when the <code>ui5-panel</code> is expanded.
-		 *
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		content: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.Panel.prototype */ {
-
-		/**
-		 * This property is used to set the header text of the <code>ui5-panel</code>.
-		 * The text is visible in both expanded and collapsed states.
-		 * <br><br>
-		 * <b>Note:</b> This property is overridden by the <code>header</code> slot.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		headerText: {
-			type: String,
-		},
-
-		/**
-		 * Determines whether the <code>ui5-panel</code> is in a fixed state that is not
-		 * expandable/collapsible by user interaction.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		fixed: {
-			type: Boolean,
-		},
-
-		/**
-		 * Indicates whether the <code>ui5-panel</code> is collapsed and only the header is displayed.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		collapsed: {
-			type: Boolean,
-		},
-
-		/**
-		 * Sets the accessible aria role of the <code>ui5-panel</code>.
-		 * Depending on the usage, you can change the role from the default <code>Form</code>
-		 * to <code>Region</code> or <code>Complementary</code>.
-		 *
-		 * @type {PanelAccessibleRole}
-		 * @public
-		 */
-		accessibleRole: {
-			type: PanelAccessibleRole,
-			defaultValue: PanelAccessibleRole.Form,
-		},
-
-		_icon: {
-			type: Object,
-		},
-		_header: {
-			type: Object,
-		},
-		_contentExpanded: {
-			type: Boolean,
-		},
-		_animationRunning: {
-			type: Boolean,
-		},
-	},
-	events: {
-
-		/**
-		 * Fired when the ui5-panel is expanded/collapsed by user interaction.
-		 *
-		 * @event
-		 * @public
-		 */
-		toggle: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-panel</code> component is a container which has a header and a
- * content area and is used
- * for grouping and displaying information. It can be collapsed to save space on the screen.
- *
- * <h3>Guidelines:</h3>
- * <ul>
- * <li>Nesting two or more panels is not recommended.</li>
- * <li>Do not stack too many panels on one page.</li>
- * </ul>
- *
- * <h3>Structure</h3>
- * A panel consists of a title bar with a header text or custom header.
- * <br>
- * The content area can contain an arbitrary set of controls.
- * The header is clickable and can be used to toggle between the expanded and collapsed state.
- * It includes an icon which rotates depending on the state.
- * <br>
- * The custom header can be set through the <code>header</code> slot and it may contain arbitraray content, such as: title, buttons or any other HTML elements.
- * <br><b>Note:</b> the custom header is not clickable out of the box, but in this case the icon is interactive and allows to show/hide the content area.
- *
- * <h3>Responsive Behavior</h3>
- * <ul>
- * <li>If the width of the panel is set to 100% (default), the panel and its children are
- * resized responsively,
- * depending on its parent container.</li>
- * <li>If the panel has a fixed height, it will take up the space even if the panel is
- * collapsed.</li>
- * <li>When the panel is expandable (the <code>fixed</code> property is set to <code>false</code>),
- * an arrow icon (pointing to the right) appears in front of the header.</li>
- * <li>When the animation is activated, expand/collapse uses a smooth animation to open or
- * close the content area.</li>
- * <li>When the panel expands/collapses, the arrow icon rotates 90 degrees
- * clockwise/counter-clockwise.</li>
- * </ul>
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Panel";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Panel
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-panel
- * @public
- */
-class Panel extends UI5Element {
-	static get metadata() {
-		return metadata$p;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$l;
-	}
-
-	static get styles() {
-		return panelCss;
-	}
-
-	constructor() {
-		super();
-
-		this._header = {};
-
-		this._icon = {};
-		this._icon.id = `${this.id}-CollapsedImg`;
-		this._icon.src = getIconURI("navigation-right-arrow");
-		this._icon.functional = true;
-		this.resourceBundle = getResourceBundle("@ui5/webcomponents");
-
-		this._toggle = event => { event.preventDefault(); this._toggleOpen(); };
-		this._noOp = () => {};
-	}
-
-	onBeforeRendering() {
-		// If the animation is running, it will set the content expanded state at the end
-		if (!this._animationRunning) {
-			this._contentExpanded = !this.collapsed;
-		}
-
-		const toggleWithInternalHeader = !this.header;
-		this._icon.title = this.resourceBundle.getText(PANEL_ICON);
-		this._header.press = toggleWithInternalHeader ? this._toggle : this._noOp;
-		this._icon.press = !toggleWithInternalHeader ? this._toggle : this._noOp;
-	}
-
-	onkeydown(event) {
-		const headerUsed = this._headerOnTarget(event.ui5target);
-
-		if (isEnter(event) && headerUsed) {
-			this._toggleOpen();
-		}
-
-		if (isSpace(event) && headerUsed) {
-			event.preventDefault();
-		}
-	}
-
-	onkeyup(event) {
-		const headerUsed = this._headerOnTarget(event.ui5target);
-
-		if (isSpace(event) && headerUsed) {
-			this._toggleOpen();
-		}
-	}
-
-	_toggleOpen() {
-		if (this.fixed) {
-			return;
-		}
-
-		this.collapsed = !this.collapsed;
-		this._animationRunning = true;
-
-		const elements = this.getDomRef().querySelectorAll(".sapMPanelExpandablePart");
-		const animations = [];
-
-		[].forEach.call(elements, oElement => {
-			if (this.collapsed) {
-				animations.push(slideUp({
-					element: oElement,
-				}).promise());
-			} else {
-				animations.push(slideDown({
-					element: oElement,
-				}).promise());
-			}
-		});
-
-		Promise.all(animations).then(_ => {
-			this._animationRunning = false;
-			this._contentExpanded = !this.collapsed;
-			this.fireEvent("toggle");
-		});
-	}
-
-	_headerOnTarget(target) {
-		return target.classList.contains("sapMPanelWrappingDiv");
-	}
-
-	get expanded() {
-		return !this.collapsed;
-	}
-
-	get ariaLabelledBy() {
-		return this.header ? "" : `${this._id}-header`;
-	}
-
-	get accRole() {
-		return this.accessibleRole.toLowerCase();
-	}
-
-	get headerTabIndex() {
-		return !this.header ? "0" : "";
-	}
-
-	get iconTabIndex() {
-		return this.header ? "0" : "";
-	}
-
-	get shouldRenderH1() {
-		return !this.header && (this.headerText || !this.fixed);
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMPanel: true,
-				sapUiSizeCompact: getCompactSize(),
-			},
-			header: {
-				sapMPanelWrappingDivTb: this.header,
-				sapMPanelWrappingDivTbExpanded: this.header && this.collapsed,
-				sapMPanelWrappingDiv: !this.header,
-				sapMPanelWrappingDivClickable: !this.header,
-				sapMPanelWrappingDivExpanded: !this.header && !this.collapsed,
-			},
-			icon: {
-				sapMPanelIconExpanded: !this.collapsed,
-				sapMPanelIcon: true,
-			},
-			content: {
-				sapMPanelContent: true,
-				sapMPanelExpandablePart: !this.fixed,
-				[`sapMPanelBG${this.backgroundDesign}`]: true,
-			},
-		};
-	}
-
-	get styles() {
-		return {
-			content: {
-				display: this._contentExpanded ? "block" : "none",
-			},
-		};
-	}
-
-	static async define(...params) {
-		await Promise.all([
-			fetchResourceBundle("@ui5/webcomponents"),
-			Icon.define(),
-		]);
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Panel.define();
-});
-
-const block0$m = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	tabindex="${ifDefined(context.tabIndex)}"	dir="${ifDefined(context.rtl)}"><div		class="sapWCSelectLabel"		@click="${ifDefined(context.toggleList)}"><ui5-label>${ifDefined(context._text)}</ui5-label></div>	${ context.items ? block1$h(context) : undefined }<ui5-icon		src="sap-icon://slim-arrow-down"		class="sapWCSelectDropDownIcon"		@ui5-press="${ifDefined(context.toggleList)}"	></ui5-icon></div>`; };
-const block1$h = (context) => { return html`<ui5-popover			placement-type="Bottom"			no-header			no-arrow			horizontal-align="Stretch"><ui5-list separators="None"><slot></slot></ui5-list></ui5-popover>	`; };
-
-var selectCss = ":host(ui5-select:not([hidden])){display:inline-block;width:100%}ui5-select:not([hidden]){display:inline-block;width:100%}.sapWCSelect{height:2.25rem;max-width:100%;min-width:5rem;position:relative;display:flex;justify-content:space-between;align-items:center;background-color:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));box-sizing:border-box;cursor:pointer;outline:none}.sapWCSelect:hover:not(.sapWCSelectDisabled):not(.sapWCSelectState):not(.sapWCSelectOpened){background-color:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCSelect:hover:not(.sapWCSelectDisabled):not(.sapWCSelectOpened) .sapWCSelectDropDownIcon{background:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.sapWCSelect.sapWCSelectOpened .sapWCSelectDropDownIcon{background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiToggleButtonPressedTextColor,#fff)}.sapWCSelect.sapWCSelectDisabled{background:var(--_ui5_select_disabled_background,var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--_ui5_select_disabled_border_color,var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));cursor:default;opacity:.5}.sapWCSelect:not(.sapWCSelectOpened):not(.sapWCSelectDisabled):focus{outline:none}.sapWCSelect:not(.sapWCSelectOpened):not(.sapWCSelectDisabled):focus:before{content:\"\";position:absolute;border:var(--_ui5_select_focus_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));top:1px;right:1px;bottom:1px;left:1px;pointer-events:none}.sapWCSelect .sapWCSelectLabel{display:inline-flex;align-items:center;width:100%;height:100%;min-width:1rem;padding-left:.5rem}.sapWCSelect .sapWCSelectLabel ui5-label{cursor:pointer}.sapWCSelect .sapWCSelectDropDownIcon{width:2.5rem;height:100%;flex-shrink:0;color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)))}.sapWCSelect:hover:not(.sapWCSelectDisabled) .sapWCSelectDropDownIcon{border-left:var(--_ui5_select_hover_icon_left_border,none)}.sapWCSelectState{border-style:solid;border-width:.125rem}.sapWCSelectError{border:var(--_ui5_select_state_error_warning_border_width,.125rem) var(--_ui5_select_state_error_warning_border_style,solid) var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))));background-color:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapWCSelectWarning{border:var(--_ui5_select_state_error_warning_border_width,.125rem) var(--_ui5_select_state_error_warning_border_style,solid) var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))));background-color:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapWCSelectSuccess{background-color:var(--sapUiFieldSuccessBackground,var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldSuccessColor,var(--sapField_SuccessColor,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.sapUiSizeCompact.sapWCSelect{height:1.625rem}.sapUiSizeCompact.sapWCSelect .sapWCSelectDropDownIcon{width:2rem}:host(ui5-select) [dir=rtl].sapWCSelect .sapWCSelectLabel{padding-left:0;padding-right:.5rem}:host(ui5-select) [dir=rtl].sapWCSelect:hover:not(.sapWCSelectDisabled) .sapWCSelectDropDownIcon{border-left:var(--_ui5_select_rtl_hover_icon_left_border,none);border-right:var(--_ui5_select_rtl_hover_icon_right_border,none)}ui5-select [dir=rtl].sapWCSelect .sapWCSelectLabel{padding-left:0;padding-right:.5rem}ui5-select [dir=rtl].sapWCSelect:hover:not(.sapWCSelectDisabled) .sapWCSelectDropDownIcon{border-left:var(--_ui5_select_rtl_hover_icon_left_border,none);border-right:var(--_ui5_select_rtl_hover_icon_right_border,none)}";
-
-/**
- * @public
- */
-const metadata$q = {
-	tag: "ui5-select",
-	defaultSlot: "items",
-	slots: /** @lends sap.ui.webcomponents.main.Select.prototype */ {
-
-		/**
-		 * Defines the <code>ui5-select</code> items.
-		 * <br/><br/>
-		 * <b>Note:</b> Only one selected item is allowed.
-		 * If more than one item is defined as selected, the last one would be considered as the selected one.
-		 * <br/><br/>
-		 * <b>Note:</b> Use the <code>ui5-li</code> component to define the desired options.
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		items: {
-			type: HTMLElement,
-			multiple: true,
-		},
-	},
-	properties: /** @lends  sap.ui.webcomponents.main.Select.prototype */  {
-
-		/**
-		 * Defines whether <code>ui5-select</code> is in disabled state.
-		 * </br></br>
-		 * <b>Note:</b> A disabled <code>ui5-select</code> is noninteractive.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the value state of <code>ui5-select</code>.
-		 * Available options are: <code>None</code>, <code>Success</code>, <code>Warning</code> and <code>Error</code>.
-		 *
-		 * @type {string}
-		 * @defaultvalue "None"
-		 * @public
-		 */
-		valueState: {
-			type: ValueState,
-			defaultValue: ValueState.None,
-		},
-
-		_text: {
-			type: String,
-		},
-
-		_opened: {
-			type: Boolean,
-		},
-
-		_focused: {
-			type: Boolean,
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.Select.prototype */ {
-		/**
-		 * Fired when the selected item changes.
-		 *
-		 * @event
-		 * @param {HTMLElement} item the selected item.
-		 * @public
-		 */
-		change: {
-			detail: {
-				selectedItem: {},
-			},
-		},
-	},
-};
-
-/**
- * @class
- * <h3 class="comment-api-title"> Overview </h3>
- *
- * The <code>ui5-select</code> component is used to create a drop-down list.
- * The items inside the <code>ui5-select</code> define the available options by using the <code>ui5-li</code> component.
- *
- * <h3>Keyboard Handling</h3>
- * The <code>ui5-select</code> provides advanced keyboard handling.
- * If the <code>ui5-select</code> is focused,
- * you can open or close the drop-down by pressing <code>F4</code>, <code>ALT+UP</code> or <code>ALT+DOWN</code> keys.
- * Once the drop-down is opened, you can use the <code>UP</code> and <code>DOWN</code> arrow keys
- * to navigate through the available options and select one by pressing the <code>Space</code> or <code>Enter</code> keys.
- * <br>
- * <h3>ES6 Module Import</h3>
- * <code>import "@ui5/webcomponents/dist/Select";</code>
- * <br>
- * <code>import "@ui5/webcomponents/dist/StandardListItem";</code> (<code>ui5-li</code>)
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Select
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-input
- * @public
- * @since 0.8.0
- */
-class Select extends UI5Element {
-	static get metadata() {
-		return metadata$q;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$m;
-	}
-
-	static get styles() {
-		return selectCss;
-	}
-
-	constructor() {
-		super();
-
-		this._closing = false; // Flag for handling open/close on space
-		this._selectedItemBeforeOpen = null; // Stores the selected item before opening the picker
-		this._escapePressed = false; // Identifies if the escape is pressed when picker is open
-
-
-		this._setSelectedItem(null);
-		this._setPreviewedItem(null);
-		this.Suggestions = new Suggestions(this, "items", true /* move focus with arrow keys */);
-	}
-
-	onBeforeRendering() {
-		this._validateSelection();
-	}
-
-	/* Event handling */
-	toggleList() {
-		if (this.disabled) {
-			return;
-		}
-
-		this.Suggestions.toggle();
-	}
-
-	onkeydown(event) {
-		if (this.disabled) {
-			return;
-		}
-
-		if (isUp(event)) {
-			this.Suggestions.onUp(event);
-			this._changeSelectionWhileClosed();
-		}
-
-		if (isDown(event)) {
-			this.Suggestions.onDown(event);
-			this._changeSelectionWhileClosed();
-		}
-
-		if (isSpace(event)) {
-			if (!this._isOpened()) {
-				this._closing = true;
-				return event.preventDefault();
-			}
-			this._closing = false;
-			return this.Suggestions.onSpace(event);
-		}
-
-		if (isEnter(event)) {
-			this.Suggestions.onEnter(event);
-		}
-
-		if (isEscape(event) && this._opened && this._selectedItemBeforeOpen) {
-			this.items.forEach(item => {
-				item.selected = false;
-			});
-
-			this._select(this._selectedItemBeforeOpen, this.items.indexOf(this._selectedItemBeforeOpen));
-			this._escapePressed = true;
-		}
-
-		if (isShow(event)) {
-			event.preventDefault();
-			this.Suggestions.toggle();
-		}
-	}
-
-	onkeyup(event) {
-		if (isSpace(event)) {
-			return this.Suggestions.toggle(this._closing); // Open Suggestions
-		}
-	}
-
-	onfocusin(event) {
-		this._focused = true; // invalidating property
-	}
-
-	onfocusout(event) {
-		this._focused = false; // invalidating property
-	}
-
-	/* Suggestions Interface methods */
-	onItemFocused() {}
-
-	onItemSelected(item) {
-		if (this._getSelectedItem() === item) {
-			return;
-		}
-
-		this._select(item);
-	}
-
-	onItemPreviewed(item) {
-		this._setPreviewedItem(item);
-		this._setText(item.textContent);
-	}
-
-	onOpen() {
-		this._opened = true; // invalidating property
-
-		const selectedItem = this._getSelectedItem();
-
-		if (selectedItem) {
-			this._selectedItemBeforeOpen = selectedItem;
-			selectedItem.focus();
-		}
-	}
-
-	onClose() {
-		this._opened = false; // invalidating property
-
-		if ((this._getSelectedItem() !== this._selectedItemBeforeOpen) && !this._escapePressed) {
-			const previewedItem = this._getSelectedItem();
-			this._fireChange(previewedItem);
-		}
-
-		this._escapePressed = false;
-	}
-
-	/* Private methods */
-	_validateSelection() {
-		if (this._isOpened() || !this.items.length) {
-			return;
-		}
-
-		let selectedItem = null;
-		let selectedItemPos = null;
-
-		this.items.forEach((item, idx) => {
-			if (item.selected) {
-				if (selectedItem) {
-					selectedItem.selected = false;
-				}
-				selectedItem = item;
-				selectedItemPos = idx;
-			}
-		});
-
-		if (!selectedItem) {
-			selectedItem = this.items[0];
-			selectedItemPos = 0;
-		}
-
-		if (this._getSelectedItem() !== selectedItem) {
-			this._select(selectedItem, selectedItemPos);
-		}
-	}
-
-	_isSelectionChanged() {
-		const previewedItem = this._getPreviewedItem();
-		const selectedItem = this._getSelectedItem();
-
-		return previewedItem && selectedItem !== previewedItem;
-	}
-
-	_select(item, position) {
-		const selectedItem = this._getSelectedItem();
-
-		if (selectedItem) {
-			selectedItem.selected = false;
-		}
-
-		this._setSelectedItem(item);
-		this._setPreviewedItem(null);
-		this._setText(item.textContent);
-
-		if (position !== undefined) {
-			this._updateSelectedItemPos(position);
-		}
-	}
-
-	_changeSelectionWhileClosed() {
-		if (this.items.length > 1 && !this._opened) {
-			this._select(this._getPreviewedItem());
-			this._fireChange(this._getSelectedItem());
-		}
-	}
-
-	_setSelectedItem(item) {
-		if (item) {
-			item.selected = true;
-		}
-		this._selectedItem = item;
-	}
-
-	_getSelectedItem() {
-		return this._selectedItem;
-	}
-
-	_setPreviewedItem(item) {
-		this._previewedItem = item;
-	}
-
-	_getPreviewedItem() {
-		return this._previewedItem;
-	}
-
-	_setText(text) {
-		if (this.text !== text) {
-			this._text = text; // invaldiating property
-		}
-	}
-
-	_updateSelectedItemPos(position) {
-		this.Suggestions.updateSelectedItemPosition(position);
-	}
-
-	_isOpened() {
-		return this.Suggestions.isOpened();
-	}
-
-	_fireChange(item) {
-		this.fireEvent("change", { selectedItem: item });
-	}
-
-	get classes() {
-		return {
-			main: {
-				"sapWCSelect": true,
-				"sapWCSelectFocused": this._focused,
-				"sapWCSelectDisabled": this.disabled,
-				"sapWCSelectOpened": this._opened,
-				"sapWCSelectState": this.valueState !== "None",
-				[`sapWCSelect${this.valueState}`]: true,
-				"sapUiSizeCompact": getCompactSize(),
-			},
-		};
-	}
-
-	get tabIndex() {
-		return this.disabled ? "-1" : "0";
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Select.define();
-});
-
-class NativeResize {
-	static initialize() {
-		NativeResize.resizeObserver = new window.ResizeObserver(entries => {
-			// call attached callbacks
-			entries.forEach(entry => {
-				const callbacks = NativeResize.observedObjects.get(entry.target);
-
-				callbacks.forEach(el => el());
-			});
-		});
-
-		NativeResize.observedObjects = new Map();
-	}
-
-	static attachListener(ref, callback) {
-		const observedDOMs = NativeResize.observedObjects;
-		const callbacks = observedDOMs.get(ref) || [];
-
-		// if no callbacks has been added for this ref - start observing it
-		if (!callbacks.length) {
-			NativeResize.resizeObserver.observe(ref);
-		}
-
-		// save the callbacks in an array
-		observedDOMs.set(ref, [...callbacks, callback]);
-	}
-
-	static detachListener(ref, callback) {
-		const callbacks = NativeResize.observedObjects.get(ref) || [];
-		const filteredCallbacks = callbacks.filter(fn => fn !== callback);
-
-		// TODO: think for a validation mechanism
-		if (!callbacks.length || (callbacks.length === filteredCallbacks.length && callbacks.length !== 0)) {
-			return;
-		}
-
-		NativeResize.observedObjects.set(ref, filteredCallbacks);
-
-		if (!filteredCallbacks.length) {
-			NativeResize.resizeObserver.unobserve(ref);
-		}
-	}
-}
-
-const INTERVAL = 300;
-
-class CustomResize {
-	static initialize() {
-		CustomResize.initialized = false;
-		CustomResize.resizeInterval = undefined;
-		CustomResize.resizeListeners = new Map();
-	}
-
-	static attachListener(ref, callback) {
-		const observedObject = CustomResize.resizeListeners.get(ref);
-		const existingCallbacks = observedObject ? observedObject.callbacks : [];
-
-		CustomResize.resizeListeners.set(ref, {
-			width: ref ? ref.offsetWidth : 0,
-			height: ref ? ref.offsetHeight : 0,
-			callbacks: existingCallbacks.concat(callback),
-		});
-
-		CustomResize.initListener();
-	}
-
-	static initListener() {
-		if (CustomResize.resizeListeners.size > 0 && !CustomResize.initialized) {
-			CustomResize.resizeInterval = setInterval(CustomResize.checkListeners.bind(CustomResize), INTERVAL);
-		}
-	}
-
-	static checkListeners() {
-		CustomResize.resizeListeners.forEach((entry, ref) => {
-			const changed = CustomResize.checkSizes(entry, ref);
-
-			if (changed) {
-				CustomResize.updateSizes(entry, ref.offsetWidth, ref.offsetHeight);
-				entry.callbacks.forEach(el => el());
-			}
-		});
-	}
-
-	static updateSizes(sizes, newWidth, newHeight) {
-		sizes.width = newWidth;
-		sizes.height = newHeight;
-	}
-
-	static checkSizes(entry, ref) {
-		const oldHeight = entry.height;
-		const oldWidth = entry.width;
-		const newHeight = ref.offsetHeight;
-		const newWidth = ref.offsetWidth;
-
-		return ((oldHeight !== newHeight) || oldWidth !== newWidth);
-	}
-
-	static detachListener(ref, callback) {
-		const listenerObject = CustomResize.resizeListeners.get(ref);
-		const callbacks = listenerObject ? listenerObject.callbacks : [];
-		const filteredCallbacks = callbacks.filter(fn => fn !== callback);
-
-		if (!listenerObject || (callbacks.length === filteredCallbacks.length && callbacks.length !== 0)) {
-			return;
-		}
-
-		CustomResize.resizeListeners.set(ref, Object.assign(listenerObject, { callbacks: filteredCallbacks }));
-
-		if (!filteredCallbacks.length) {
-			listenerObject.callbacks = null;
-			CustomResize.resizeListeners.delete(ref);
-		}
-
-		if (CustomResize.resizeListeners.size === 0) {
-			CustomResize.initialized = false;
-			clearInterval(CustomResize.resizeInterval);
-		}
-	}
-}
-
-class ResizeHandler {
-	static initialize() {
-		ResizeHandler.Implementation = window.ResizeObserver ? NativeResize : CustomResize;
-		ResizeHandler.Implementation.initialize();
-	}
-
-	/**
-	 * @static
-	 * @private
-	 * @param {*} ref Reference to be observed
-	 * @param {*} callback Callback to be executed
-	 * @memberof ResizeHandler
-	 */
-	static attachListener(ref, callback) {
-		ResizeHandler.Implementation.attachListener.call(ResizeHandler.Implementation, ref, callback);
-	}
-
-	/**
-	 * @static
-	 * @private
-	 * @param {*} ref Reference to be unobserved
-	 * @memberof ResizeHandler
-	 */
-	static detachListener(ref, callback) {
-		ResizeHandler.Implementation.detachListener.call(ResizeHandler.Implementation, ref, callback);
-	}
-
-
-	/**
-	 * @static
-	 * @public
-	 * @param {*} ref Reference to a UI5 Web Component or DOM Element to be observed
-	 * @param {*} callback Callback to be executed
-	 * @memberof ResizeHandler
-	 */
-	static register(ref, callback) {
-		if (ref instanceof UI5Element) {
-			ref = ref.getDomRef();
-		}
-
-		ResizeHandler.attachListener(ref, callback);
-	}
-
-
-	/**
-	 * @static
-	 * @public
-	 * @param {*} ref Reference to UI5 Web Component or DOM Element to be unobserved
-	 * @memberof ResizeHandler
-	 */
-	static deregister(ref, callback) {
-		if (ref instanceof UI5Element) {
-			ref = ref.getDomRef();
-		}
-
-		ResizeHandler.detachListener(ref, callback);
-	}
-}
-
-ResizeHandler.initialize();
-
-const block0$n = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.wrapper))}"	dir="${ifDefined(context.rtl)}"><div class="${ifDefined(classMap(context.classes.leftContainer))}">		${ context.icon ? block1$i(context) : undefined }${ !context.interactiveLogo ? block2$c(context) : undefined }${ context.showArrowDown ? block3$9(context) : undefined }<ui5-popover class="sapWCShellBarMenuPopover" no-header placement-type="Bottom"><ui5-list separators="None" mode="SingleSelect" @ui5-itemPress=${ifDefined(context._menuItemPress)}><slot name="menuItems"></slot></ui5-list></ui5-popover><h2 class="${ifDefined(classMap(context.classes.secondaryTitle))}">${ifDefined(context.secondaryTitle)}</h2></div><div class="sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerMiddle">		${ context.showCoPilot ? block6$4(context) : block7$2(context) }</div><div class="sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerRight"><div class="sapWCShellBarOverflowContainerRightChild">			${ repeat(context._itemsInfo, undefined, (item, index) => block8$2(item, index, context)) }</div></div><ui5-popover class="sapWCShellBarOverflowPopover" placement-type="Bottom" horizontal-align="${ifDefined(context.popoverHorizontalAlign)}" no-header no-arrow><ui5-list separators="None" @ui5-itemPress="${ifDefined(context._actionList.itemPress)}">			${ repeat(context._hiddenIcons, undefined, (item, index) => block11$1(item, index, context)) }</ui5-list></ui5-popover><div class="${ifDefined(classMap(context.classes.blockLayer))}"></div><div id="${ifDefined(context._id)}-searchfield-wrapper"		class="${ifDefined(classMap(context.classes.searchField))}"		style="${ifDefined(styleMap$1(context.styles.searchField))}"		@focusout=${ifDefined(context._searchField.focusout)}	>		${ context.searchField ? block12$1(context) : undefined }</div></div>`; };
-const block1$i = (context) => { return html`<slot name="icon"></slot>		`; };
-const block2$c = (context) => { return html`<img class="${ifDefined(classMap(context.classes.logo))}" src="${ifDefined(context.logo)}" @click="${ifDefined(context._logoPress)}" />		`; };
-const block3$9 = (context) => { return html`<button tabindex="0" class="${ifDefined(classMap(context.classes.button))}" @click="${ifDefined(context._header.press)}">				${ context.interactiveLogo ? block4$8(context) : undefined }${ context.primaryTitle ? block5$4(context) : undefined }<span class="${ifDefined(classMap(context.classes.arrow))}"></span></button>		`; };
-const block4$8 = (context) => { return html`<img class="${ifDefined(classMap(context.classes.logo))}" src="${ifDefined(context.logo)}" />				`; };
-const block5$4 = (context) => { return html`<h1 class="${ifDefined(classMap(context.classes.buttonTitle))}"><bdi class="${ifDefined(classMap(context.classes.title))}">${ifDefined(context.primaryTitle)}</bdi></h1>				`; };
-const block6$4 = (context) => { return html`<svg @click="${ifDefined(context._coPilotPress)}" version="1.1" width="44" height="44" viewBox="-150 -150 300 300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"		style="background-color: transparent; cursor: pointer;" class="ui5-shellbar-coPilot"><defs><linearGradient id="grad1" x1="0%" x2="100%" y1="100%" y2="0%"><stop offset="0%" style="stop-color:#C0D9F2;stop-opacity:0.87"></stop><stop offset="80%" style="stop-color:#FFFFFF;stop-opacity:0.87"></stop></linearGradient><linearGradient id="grad2" x1="0%" x2="100%" y1="100%" y2="0%"><stop offset="0%" style="stop-color:rgb(180,210,255);stop-opacity:0.16"></stop><stop offset="80%" style="stop-color:#FFFFFF;stop-opacity:0.16"></stop></linearGradient><linearGradient id="grad3" x1="0%" x2="100%" y1="100%" y2="0%"><stop offset="0%" style="stop-color:rgb(180,210,255);stop-opacity:0.1"></stop><stop offset="80%" style="stop-color:#FFFFFF;stop-opacity:0.1"></stop></linearGradient></defs><g fill="url(#grad3)" transform="rotate(54)"><path id="c3" d="M 98.1584 0 C 98.3156 17.3952 89.0511 31.3348 79.5494 45.9279 C 70.339 60.0814 60.6163 71.2177 46.1724 79.9729 C 31.4266 88.9178 17.2493 94.3909 5.77261e-15 94.2739 C -17.1547 94.1581 -30.8225 87.6907 -45.7979 79.3244 C -61.0143 70.8266 -73.5583 62.554 -83.0507 47.9493 C -92.6677 33.1579 -98.4872 17.5705 -97.1793 1.19010e-14 C -95.9465 -16.9777 -84.488 -29.0862 -76.1351 -43.9566 C -67.6795 -59.0155 -63.8629 -76.1085 -49.262 -85.3243 C -34.502 -94.6464 -17.4328 -93.0037 -1.69174e-14 -92.0939 C 16.8967 -91.214 31.8608 -89.0341 46.4198 -80.4014 C 60.872 -71.8326 69.6003 -59.5351 78.6792 -45.4254 C 88.0511 -30.9104 98.015 -17.2766 98.1584 0 Z"				transform="rotate(244.811)"><animate id="wave3" attributeName="d" values="M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;M 104 0 C 103.6860370504768 18.670459122547623, 99.74513350853894 36.21879096669579, 88.33459118601274 50.99999999999999 C 77.42609021132327 65.13086500091876, 59.95986915829964 68.15050131663435, 44.50000000000001 77.07626093681503 C 29.040130841700375 86.00202055699572, 17.851519240361377 102, 6.245698675651501e-15 102 C -17.851519240361355 102, -28.89224164002164 85.74082198544978, -44.49999999999998 77.07626093681505 C -60.41578578366853 68.24070016127133, -78.942855942454 66.40974514759691, -90.0666419935816 52.000000000000036 C -101.58041073743591 37.08507152827802, -106.51375198961607 18.673591324066255, -104 1.2736326711132473e-14 C -101.57139126725896 -18.041098385442222, -86.17817517682458 -28.73502209016882, -77.07626093681506 -44.49999999999998 C -67.97434669680554 -60.264977909831146, -66.77256915682678 -79.42941623510848, -52.00000000000004 -90.0666419935816 C -36.96347614018194 -100.89393257665785, -18.33904556278876 -102.64701322308922, -1.8369701987210297e-14 -100 C 17.32727177622791 -97.49902374391826, 28.55026288749344 -84.4439984999364, 43.99999999999994 -76.21023553303064 C 60.07413421086994 -67.64370718198207, 78.79942390068253 -66.31128907769772, 90.06664199358158 -52.00000000000004 C 101.7221231317663 -37.19555062013585, 104.31680324149117 -18.83936298577321, 104 0 z ;M 102 0 C 101.82727211782054 17.85068357984393, 86.53189445508919 29.35841045474146, 77.07626093681505 44.49999999999999 C 67.96000753916402 59.09812997944896, 63.13859410212405 75.0566405949403, 49.000000000000014 84.87048957087498 C 34.41435518048109 94.99464438014832, 17.754300288879765 97.84390177587221, 6.000769315822031e-15 98 C -17.848085350949756 98.1569227951557, -34.936562555189376 96.05567507853976, -49.49999999999998 85.73651497465943 C -63.65084226105117 75.70970588855481, -67.15343120157955 58.79045409878119, -76.21023553303058 44.00000000000003 C -85.53194873850353 28.77692945084744, -101.82533168325062 17.849529545864502, -102 1.2491397351303002e-14 C -102.17467942383016 -17.85066458952948, -86.26579096020939 -29.195449136347488, -77.07626093681506 -44.49999999999998 C -68.05733453379239 -59.52042188438431, -65.25784853671414 -77.99137523784161, -50.00000000000004 -86.60254037844385 C -34.75370973790514 -95.20718230502631, -17.506833792572294 -87.99999999999999, -1.6165337748745062e-14 -88 C 17.50683379257223 -88.00000000000001, 34.671187347637854 -95.05929697358921, 49.999999999999936 -86.6025403784439 C 65.35816177516672 -78.12959215818911, 68.91293714727685 -60.037780348188306, 77.94228634059945 -45.00000000000004 C 87.13593221909689 -29.68859445350606, 102.172805244453 -17.858678638015444, 102 0 z ;M 88 0 C 87.0071643812453 16.750584310000846, 89.16591640357322 32.23066622251636, 82.48891971046778 47.62499999999999 C 75.39770857425334 63.9743373046321, 66.1406553264614 78.9687582413302, 50.250000000000014 87.03555308033607 C 34.54865539228622 95.00624548067042, 17.590620651271553 90.29638240436964, 5.480294426184406e-15 89.5 C -16.847968824431476 88.7372397661719, -32.382980242828936 89.6818280646011, -47.689999999999976 82.60150301295975 C -63.74959324223292 75.1730719952966, -77.27142977762603 65.04430269303984, -86.06560462809749 49.69000000000003 C -94.84784120247872 34.35654109365306, -96.67880542645688 17.590459164590612, -95 1.1634144591899855e-14 C -93.40474991806319 -16.714969454704665, -85.83878040009859 -30.176827189787602, -77.07626093681506 -44.49999999999998 C -68.48875537139932 -58.53709592172691, -59.78684881708811 -70.71810123462024, -46.12500000000004 -79.89084349911445 C -31.90399782177102 -89.43900857326942, -17.117492172090376 -95.6208569519316, -1.7680838162689912e-14 -96.25 C 17.42616675853088 -96.89048819537281, 32.604872069000194 -91.30523706046031, 48.124999999999936 -83.35494511425226 C 64.20208148728074 -75.11934989009448, 80.53937872975759 -67.29516003624032, 88.33459118601272 -51.00000000000004 C 96.03774549832913 -34.897278873736724, 89.0561690198359 -17.81911111787299, 88 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 87.83 0 C 87.5551104106254 17.484718516847604, 95.16127715466017 34.74963105642935, 86.50727758402758 49.94499999999999 C 77.84990328247498 65.14629455992826, 59.80875022938145 68.6539166070951, 44.21500000000001 76.5826264566579 C 29.396758375489803 84.11702559690347, 16.533901742833184 92.20444258129785, 5.7515536921955445e-15 93.93 C -17.56198148944071 95.76285276019921, -35.17832492952776 96.1755728839107, -49.88499999999998 86.40335453557344 C -64.42964616977311 76.73880034577543, -67.07555683863683 58.889186090717956, -75.63865876653286 43.67000000000003 C -84.09849199523896 28.63435318786967, -98.51711635059414 17.25222189595266, -98.5 1.206277097160143e-14 C -98.48288504887265 -17.250811320073485, -84.34877504334715 -28.780575409619935, -75.55205622615443 -43.619999999999976 C -66.86093647073717 -58.281286656612146, -63.230342222349634 -75.4345590754149, -48.600000000000044 -84.17766924784742 C -33.93357389700559 -92.94234319091034, -17.025973616417954 -90.19821090033776, -1.630678445404658e-14 -88.77 C 15.977895940302826 -87.42970630164737, 29.38189187799461 -82.73892939223205, 44.10999999999994 -76.40076112186321 C 60.461233804495656 -69.36408876567695, 79.25079249329674 -66.31020434586661, 88.09210407295308 -50.86000000000004 C 96.93350510099964 -35.40963934294652, 88.10983120877545 -17.799036801646473, 87.83 0 z ;M 102.87 0 C 100.60412172987674 17.8655933362356, 85.53754352796288 28.604858280384207, 75.95908816593312 43.855 C 66.77647829932806 58.47490441348097, 64.20185353081875 76.67202079060546, 49.27000000000002 85.33814328891859 C 34.33463676216738 94.00630274472348, 17.255471196681203 88.61139941746183, 5.384771975850912e-15 87.94 C -16.62338090404565 87.29319481409648, -32.13105073147386 88.83642498642243, -47.104999999999976 81.58825329053197 C -62.593549158874595 74.0909884333756, -75.11183789801551 63.203277636192524, -82.85265038005723 47.83500000000003 C -90.43100426068291 32.78926071449635, -88.33481436911549 16.845994873358578, -88.2 1.0801384768479656e-14 C -88.0661541958799 -16.72496592774988, -90.31714156576788 -32.8325291006581, -82.09054802472696 -47.394999999999975 C -73.84119732253154 -61.99775494831187, -58.70114242558277 -68.16576009477593, -44.58000000000004 -77.21482500142054 C -29.826455382596357 -86.66914383925732, -17.522369834392396 -100.13333736150332, -1.8369701987210297e-14 -100 C 17.510547309053553 -99.86675260260256, 28.908254552710822 -85.0894876419882, 44.18999999999994 -76.53932518646872 C 59.70239533946346 -67.86011372570036, 77.14713304516553 -64.89164530763992, 87.9622002623854 -50.78500000000004 C 99.23322575875696 -36.08362498889298, 105.20080735972847 -18.37753465535834, 102.87 0 z ;M 96.65 0 C 97.5682370155223 17.290645042626103, 91.44243921640975 32.85986013368205, 81.65753532283473 47.144999999999996 C 72.23761953500264 60.89728781209352, 58.31868393027413 67.69602416070182, 44.205000000000005 76.5653059485822 C 29.586348647997518 85.75191795153148, 17.265486227503665 98.5023411385901, 6.0289361922024196e-15 98.46 C -17.260135494401737 98.41767198331847, -28.927850358240754 84.61477988915865, -44.07999999999998 76.34879959763612 C -59.63539109726837 67.86283824713713, -77.60369551546168 65.19715075831209, -87.6850721331744 50.625000000000036 C -97.93164740539275 35.81406243807856, -99.13895928925051 17.870177323503324, -96.9 1.1866827483737853e-14 C -94.78582581853146 -16.874209235069404, -84.03526438034655 -28.885451186299278, -75.855165117479 -43.79499999999998 C -67.48656343152348 -59.04812484966506, -64.58702634493868 -77.07802892327148, -49.685000000000045 -86.05694437405965 C -34.754341245902474 -95.05311170556791, -17.423866102474058 -90.01428351214383, -1.6440883278553216e-14 -89.5 C 16.944874403202444 -88.99985442555268, 33.406945286813375 -91.76595741651028, 48.01999999999994 -83.17307977945752 C 62.60280079933599 -74.59799227491723, 68.26035047536544 -58.944088507890214, 76.799132807604 -44.340000000000046 C 85.38138197865302 -29.66156909334073, 95.74829471964232 -16.979348111836277, 96.65 0 z ;M 100.43 0 C 99.44111609671702 17.552560474217483, 85.45003481640393 29.038106989746822, 76.37478035974965 44.09499999999999 C 67.47982214730594 58.85276076308644, 64.07619623688856 76.5210513546238, 49.13500000000001 85.10431642989678 C 34.197839864932604 93.68526288681738, 17.224945520414785 88.19944893969671, 5.386608946049633e-15 87.97 C -16.995859874251966 87.74360264955502, -33.675744430814035 92.32280785019591, -48.38499999999998 83.80527832422013 C -63.09093119233604 75.28967380919008, -67.46629494853046 58.573580703738266, -76.07167146842508 43.92000000000003 C -84.74078159210374 29.157891156391287, -97.50578376593529 17.119125303246612, -97.6 1.1952552759678167e-14 C -97.6942955026296 -17.13352843141885, -85.16966290503643 -29.388429432236997, -76.5566456945444 -44.19999999999998 C -67.96991930904315 -58.966358953746784, -62.77231119032221 -74.64857202786988, -48.62500000000004 -84.22097051803664 C -34.121978463364755 -94.03405086895964, -17.446142869940783 -97.50541642989344, -1.7634913907721887e-14 -96 C 16.824136546866306 -94.54825609504428, 29.53246273910814 -84.92008419882137, 44.00999999999994 -76.22755604110633 C 58.26564148077935 -67.66825740177873, 71.6180443525204 -60.425177429348025, 81.51031100419134 -47.060000000000045 C 92.07153193494764 -32.79101629986303, 101.4285520767086 -17.724169293174832, 100.43 0 z ;M 97.27 0 C 98.58345261039341 17.558366186082086, 94.2994917286897 34.203939932148074, 84.091066707469 48.54999999999999 C 74.21975411889315 62.42231066985079, 58.473444022898576 67.23312887448718, 43.57000000000001 75.46545368577598 C 28.941333692804605 83.54599751254223, 16.64874697133146 93.54662780123404, 5.8170722959499274e-15 95 C -17.27803955307615 96.50830704429953, -33.78857056294901 93.13333275238398, -48.19499999999998 83.47618867078205 C -62.265894952404224 74.04396533562448, -68.01933932212052 58.825944468473296, -76.14095350072783 43.96000000000003 C -84.0905443486636 29.408930041052358, -92.00739521206805 16.483816295811398, -93.8 1.1487186976002173e-14 C -95.70727280919573 -17.538240901971744, -94.76889052685837 -34.35072747684755, -86.34273275730855 -49.84999999999997 C -77.83404631199598 -65.50107770786477, -64.5344993843803 -76.3187721614444, -48.310000000000045 -83.67537451365246 C -32.817324666057125 -90.70014915251777, -17.009590728815464 -88.78959332709252, -1.6349034768617164e-14 -89 C 17.210968156731738 -89.21289768843408, 34.09370369400777 -93.47659088564015, 49.00499999999994 -84.87914982491287 C 63.91783177263862 -76.28082345658234, 68.61922431545376 -59.49398069945713, 77.12822246104209 -44.530000000000044 C 85.58365918742902 -29.660212768381562, 95.99397423560407 -17.058040356269963, 97.27 0 z ;M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;"					dur="30s" repeatCount="indefinite"></animate><animateTransform id="ratate3" attributeName="transform" type="rotate" from="54" to="416" dur="15s"					repeatCount="indefinite"></animateTransform><animateTransform id="cat1" attributeName="transform" type="scale" values="1;1.05;1.05;1.02;1" dur="0.15s"					begin="shell_avatar.mousedown" repeatCount="1" additive="sum"></animateTransform></path></g><g fill="url(#grad2)" transform="rotate(74)"><path id="c2" d="M 98.1584 0 C 98.3156 17.3952 89.0511 31.3348 79.5494 45.9279 C 70.339 60.0814 60.6163 71.2177 46.1724 79.9729 C 31.4266 88.9178 17.2493 94.3909 5.77261e-15 94.2739 C -17.1547 94.1581 -30.8225 87.6907 -45.7979 79.3244 C -61.0143 70.8266 -73.5583 62.554 -83.0507 47.9493 C -92.6677 33.1579 -98.4872 17.5705 -97.1793 1.19010e-14 C -95.9465 -16.9777 -84.488 -29.0862 -76.1351 -43.9566 C -67.6795 -59.0155 -63.8629 -76.1085 -49.262 -85.3243 C -34.502 -94.6464 -17.4328 -93.0037 -1.69174e-14 -92.0939 C 16.8967 -91.214 31.8608 -89.0341 46.4198 -80.4014 C 60.872 -71.8326 69.6003 -59.5351 78.6792 -45.4254 C 88.0511 -30.9104 98.015 -17.2766 98.1584 0 Z"><animate id="wave2" attributeName="d" values="M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;M 104 0 C 103.6860370504768 18.670459122547623, 99.74513350853894 36.21879096669579, 88.33459118601274 50.99999999999999 C 77.42609021132327 65.13086500091876, 59.95986915829964 68.15050131663435, 44.50000000000001 77.07626093681503 C 29.040130841700375 86.00202055699572, 17.851519240361377 102, 6.245698675651501e-15 102 C -17.851519240361355 102, -28.89224164002164 85.74082198544978, -44.49999999999998 77.07626093681505 C -60.41578578366853 68.24070016127133, -78.942855942454 66.40974514759691, -90.0666419935816 52.000000000000036 C -101.58041073743591 37.08507152827802, -106.51375198961607 18.673591324066255, -104 1.2736326711132473e-14 C -101.57139126725896 -18.041098385442222, -86.17817517682458 -28.73502209016882, -77.07626093681506 -44.49999999999998 C -67.97434669680554 -60.264977909831146, -66.77256915682678 -79.42941623510848, -52.00000000000004 -90.0666419935816 C -36.96347614018194 -100.89393257665785, -18.33904556278876 -102.64701322308922, -1.8369701987210297e-14 -100 C 17.32727177622791 -97.49902374391826, 28.55026288749344 -84.4439984999364, 43.99999999999994 -76.21023553303064 C 60.07413421086994 -67.64370718198207, 78.79942390068253 -66.31128907769772, 90.06664199358158 -52.00000000000004 C 101.7221231317663 -37.19555062013585, 104.31680324149117 -18.83936298577321, 104 0 z ;M 102 0 C 101.82727211782054 17.85068357984393, 86.53189445508919 29.35841045474146, 77.07626093681505 44.49999999999999 C 67.96000753916402 59.09812997944896, 63.13859410212405 75.0566405949403, 49.000000000000014 84.87048957087498 C 34.41435518048109 94.99464438014832, 17.754300288879765 97.84390177587221, 6.000769315822031e-15 98 C -17.848085350949756 98.1569227951557, -34.936562555189376 96.05567507853976, -49.49999999999998 85.73651497465943 C -63.65084226105117 75.70970588855481, -67.15343120157955 58.79045409878119, -76.21023553303058 44.00000000000003 C -85.53194873850353 28.77692945084744, -101.82533168325062 17.849529545864502, -102 1.2491397351303002e-14 C -102.17467942383016 -17.85066458952948, -86.26579096020939 -29.195449136347488, -77.07626093681506 -44.49999999999998 C -68.05733453379239 -59.52042188438431, -65.25784853671414 -77.99137523784161, -50.00000000000004 -86.60254037844385 C -34.75370973790514 -95.20718230502631, -17.506833792572294 -87.99999999999999, -1.6165337748745062e-14 -88 C 17.50683379257223 -88.00000000000001, 34.671187347637854 -95.05929697358921, 49.999999999999936 -86.6025403784439 C 65.35816177516672 -78.12959215818911, 68.91293714727685 -60.037780348188306, 77.94228634059945 -45.00000000000004 C 87.13593221909689 -29.68859445350606, 102.172805244453 -17.858678638015444, 102 0 z ;M 88 0 C 87.0071643812453 16.750584310000846, 89.16591640357322 32.23066622251636, 82.48891971046778 47.62499999999999 C 75.39770857425334 63.9743373046321, 66.1406553264614 78.9687582413302, 50.250000000000014 87.03555308033607 C 34.54865539228622 95.00624548067042, 17.590620651271553 90.29638240436964, 5.480294426184406e-15 89.5 C -16.847968824431476 88.7372397661719, -32.382980242828936 89.6818280646011, -47.689999999999976 82.60150301295975 C -63.74959324223292 75.1730719952966, -77.27142977762603 65.04430269303984, -86.06560462809749 49.69000000000003 C -94.84784120247872 34.35654109365306, -96.67880542645688 17.590459164590612, -95 1.1634144591899855e-14 C -93.40474991806319 -16.714969454704665, -85.83878040009859 -30.176827189787602, -77.07626093681506 -44.49999999999998 C -68.48875537139932 -58.53709592172691, -59.78684881708811 -70.71810123462024, -46.12500000000004 -79.89084349911445 C -31.90399782177102 -89.43900857326942, -17.117492172090376 -95.6208569519316, -1.7680838162689912e-14 -96.25 C 17.42616675853088 -96.89048819537281, 32.604872069000194 -91.30523706046031, 48.124999999999936 -83.35494511425226 C 64.20208148728074 -75.11934989009448, 80.53937872975759 -67.29516003624032, 88.33459118601272 -51.00000000000004 C 96.03774549832913 -34.897278873736724, 89.0561690198359 -17.81911111787299, 88 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 87.83 0 C 87.5551104106254 17.484718516847604, 95.16127715466017 34.74963105642935, 86.50727758402758 49.94499999999999 C 77.84990328247498 65.14629455992826, 59.80875022938145 68.6539166070951, 44.21500000000001 76.5826264566579 C 29.396758375489803 84.11702559690347, 16.533901742833184 92.20444258129785, 5.7515536921955445e-15 93.93 C -17.56198148944071 95.76285276019921, -35.17832492952776 96.1755728839107, -49.88499999999998 86.40335453557344 C -64.42964616977311 76.73880034577543, -67.07555683863683 58.889186090717956, -75.63865876653286 43.67000000000003 C -84.09849199523896 28.63435318786967, -98.51711635059414 17.25222189595266, -98.5 1.206277097160143e-14 C -98.48288504887265 -17.250811320073485, -84.34877504334715 -28.780575409619935, -75.55205622615443 -43.619999999999976 C -66.86093647073717 -58.281286656612146, -63.230342222349634 -75.4345590754149, -48.600000000000044 -84.17766924784742 C -33.93357389700559 -92.94234319091034, -17.025973616417954 -90.19821090033776, -1.630678445404658e-14 -88.77 C 15.977895940302826 -87.42970630164737, 29.38189187799461 -82.73892939223205, 44.10999999999994 -76.40076112186321 C 60.461233804495656 -69.36408876567695, 79.25079249329674 -66.31020434586661, 88.09210407295308 -50.86000000000004 C 96.93350510099964 -35.40963934294652, 88.10983120877545 -17.799036801646473, 87.83 0 z ;M 102.87 0 C 100.60412172987674 17.8655933362356, 85.53754352796288 28.604858280384207, 75.95908816593312 43.855 C 66.77647829932806 58.47490441348097, 64.20185353081875 76.67202079060546, 49.27000000000002 85.33814328891859 C 34.33463676216738 94.00630274472348, 17.255471196681203 88.61139941746183, 5.384771975850912e-15 87.94 C -16.62338090404565 87.29319481409648, -32.13105073147386 88.83642498642243, -47.104999999999976 81.58825329053197 C -62.593549158874595 74.0909884333756, -75.11183789801551 63.203277636192524, -82.85265038005723 47.83500000000003 C -90.43100426068291 32.78926071449635, -88.33481436911549 16.845994873358578, -88.2 1.0801384768479656e-14 C -88.0661541958799 -16.72496592774988, -90.31714156576788 -32.8325291006581, -82.09054802472696 -47.394999999999975 C -73.84119732253154 -61.99775494831187, -58.70114242558277 -68.16576009477593, -44.58000000000004 -77.21482500142054 C -29.826455382596357 -86.66914383925732, -17.522369834392396 -100.13333736150332, -1.8369701987210297e-14 -100 C 17.510547309053553 -99.86675260260256, 28.908254552710822 -85.0894876419882, 44.18999999999994 -76.53932518646872 C 59.70239533946346 -67.86011372570036, 77.14713304516553 -64.89164530763992, 87.9622002623854 -50.78500000000004 C 99.23322575875696 -36.08362498889298, 105.20080735972847 -18.37753465535834, 102.87 0 z ;M 96.65 0 C 97.5682370155223 17.290645042626103, 91.44243921640975 32.85986013368205, 81.65753532283473 47.144999999999996 C 72.23761953500264 60.89728781209352, 58.31868393027413 67.69602416070182, 44.205000000000005 76.5653059485822 C 29.586348647997518 85.75191795153148, 17.265486227503665 98.5023411385901, 6.0289361922024196e-15 98.46 C -17.260135494401737 98.41767198331847, -28.927850358240754 84.61477988915865, -44.07999999999998 76.34879959763612 C -59.63539109726837 67.86283824713713, -77.60369551546168 65.19715075831209, -87.6850721331744 50.625000000000036 C -97.93164740539275 35.81406243807856, -99.13895928925051 17.870177323503324, -96.9 1.1866827483737853e-14 C -94.78582581853146 -16.874209235069404, -84.03526438034655 -28.885451186299278, -75.855165117479 -43.79499999999998 C -67.48656343152348 -59.04812484966506, -64.58702634493868 -77.07802892327148, -49.685000000000045 -86.05694437405965 C -34.754341245902474 -95.05311170556791, -17.423866102474058 -90.01428351214383, -1.6440883278553216e-14 -89.5 C 16.944874403202444 -88.99985442555268, 33.406945286813375 -91.76595741651028, 48.01999999999994 -83.17307977945752 C 62.60280079933599 -74.59799227491723, 68.26035047536544 -58.944088507890214, 76.799132807604 -44.340000000000046 C 85.38138197865302 -29.66156909334073, 95.74829471964232 -16.979348111836277, 96.65 0 z ;M 100.43 0 C 99.44111609671702 17.552560474217483, 85.45003481640393 29.038106989746822, 76.37478035974965 44.09499999999999 C 67.47982214730594 58.85276076308644, 64.07619623688856 76.5210513546238, 49.13500000000001 85.10431642989678 C 34.197839864932604 93.68526288681738, 17.224945520414785 88.19944893969671, 5.386608946049633e-15 87.97 C -16.995859874251966 87.74360264955502, -33.675744430814035 92.32280785019591, -48.38499999999998 83.80527832422013 C -63.09093119233604 75.28967380919008, -67.46629494853046 58.573580703738266, -76.07167146842508 43.92000000000003 C -84.74078159210374 29.157891156391287, -97.50578376593529 17.119125303246612, -97.6 1.1952552759678167e-14 C -97.6942955026296 -17.13352843141885, -85.16966290503643 -29.388429432236997, -76.5566456945444 -44.19999999999998 C -67.96991930904315 -58.966358953746784, -62.77231119032221 -74.64857202786988, -48.62500000000004 -84.22097051803664 C -34.121978463364755 -94.03405086895964, -17.446142869940783 -97.50541642989344, -1.7634913907721887e-14 -96 C 16.824136546866306 -94.54825609504428, 29.53246273910814 -84.92008419882137, 44.00999999999994 -76.22755604110633 C 58.26564148077935 -67.66825740177873, 71.6180443525204 -60.425177429348025, 81.51031100419134 -47.060000000000045 C 92.07153193494764 -32.79101629986303, 101.4285520767086 -17.724169293174832, 100.43 0 z ;M 97.27 0 C 98.58345261039341 17.558366186082086, 94.2994917286897 34.203939932148074, 84.091066707469 48.54999999999999 C 74.21975411889315 62.42231066985079, 58.473444022898576 67.23312887448718, 43.57000000000001 75.46545368577598 C 28.941333692804605 83.54599751254223, 16.64874697133146 93.54662780123404, 5.8170722959499274e-15 95 C -17.27803955307615 96.50830704429953, -33.78857056294901 93.13333275238398, -48.19499999999998 83.47618867078205 C -62.265894952404224 74.04396533562448, -68.01933932212052 58.825944468473296, -76.14095350072783 43.96000000000003 C -84.0905443486636 29.408930041052358, -92.00739521206805 16.483816295811398, -93.8 1.1487186976002173e-14 C -95.70727280919573 -17.538240901971744, -94.76889052685837 -34.35072747684755, -86.34273275730855 -49.84999999999997 C -77.83404631199598 -65.50107770786477, -64.5344993843803 -76.3187721614444, -48.310000000000045 -83.67537451365246 C -32.817324666057125 -90.70014915251777, -17.009590728815464 -88.78959332709252, -1.6349034768617164e-14 -89 C 17.210968156731738 -89.21289768843408, 34.09370369400777 -93.47659088564015, 49.00499999999994 -84.87914982491287 C 63.91783177263862 -76.28082345658234, 68.61922431545376 -59.49398069945713, 77.12822246104209 -44.530000000000044 C 85.58365918742902 -29.660212768381562, 95.99397423560407 -17.058040356269963, 97.27 0 z ;M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;"					dur="30s" repeatCount="indefinite"></animate><animateTransform id="cat1" attributeName="transform" type="scale" values="1;1.05;1.05;1.02;1" dur="0.15s"					begin="shell_avatar.mousedown" repeatCount="1" additive="sum"></animateTransform></path></g><g fill="url(#grad1)" transform="rotate(90)"><path id="c1" d="M 98.1584 0 C 98.3156 17.3952 89.0511 31.3348 79.5494 45.9279 C 70.339 60.0814 60.6163 71.2177 46.1724 79.9729 C 31.4266 88.9178 17.2493 94.3909 5.77261e-15 94.2739 C -17.1547 94.1581 -30.8225 87.6907 -45.7979 79.3244 C -61.0143 70.8266 -73.5583 62.554 -83.0507 47.9493 C -92.6677 33.1579 -98.4872 17.5705 -97.1793 1.19010e-14 C -95.9465 -16.9777 -84.488 -29.0862 -76.1351 -43.9566 C -67.6795 -59.0155 -63.8629 -76.1085 -49.262 -85.3243 C -34.502 -94.6464 -17.4328 -93.0037 -1.69174e-14 -92.0939 C 16.8967 -91.214 31.8608 -89.0341 46.4198 -80.4014 C 60.872 -71.8326 69.6003 -59.5351 78.6792 -45.4254 C 88.0511 -30.9104 98.015 -17.2766 98.1584 0 Z"				transform="rotate(364.878)"><animate id="wave1" attributeName="d" values="M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;M 104 0 C 103.6860370504768 18.670459122547623, 99.74513350853894 36.21879096669579, 88.33459118601274 50.99999999999999 C 77.42609021132327 65.13086500091876, 59.95986915829964 68.15050131663435, 44.50000000000001 77.07626093681503 C 29.040130841700375 86.00202055699572, 17.851519240361377 102, 6.245698675651501e-15 102 C -17.851519240361355 102, -28.89224164002164 85.74082198544978, -44.49999999999998 77.07626093681505 C -60.41578578366853 68.24070016127133, -78.942855942454 66.40974514759691, -90.0666419935816 52.000000000000036 C -101.58041073743591 37.08507152827802, -106.51375198961607 18.673591324066255, -104 1.2736326711132473e-14 C -101.57139126725896 -18.041098385442222, -86.17817517682458 -28.73502209016882, -77.07626093681506 -44.49999999999998 C -67.97434669680554 -60.264977909831146, -66.77256915682678 -79.42941623510848, -52.00000000000004 -90.0666419935816 C -36.96347614018194 -100.89393257665785, -18.33904556278876 -102.64701322308922, -1.8369701987210297e-14 -100 C 17.32727177622791 -97.49902374391826, 28.55026288749344 -84.4439984999364, 43.99999999999994 -76.21023553303064 C 60.07413421086994 -67.64370718198207, 78.79942390068253 -66.31128907769772, 90.06664199358158 -52.00000000000004 C 101.7221231317663 -37.19555062013585, 104.31680324149117 -18.83936298577321, 104 0 z ;M 102 0 C 101.82727211782054 17.85068357984393, 86.53189445508919 29.35841045474146, 77.07626093681505 44.49999999999999 C 67.96000753916402 59.09812997944896, 63.13859410212405 75.0566405949403, 49.000000000000014 84.87048957087498 C 34.41435518048109 94.99464438014832, 17.754300288879765 97.84390177587221, 6.000769315822031e-15 98 C -17.848085350949756 98.1569227951557, -34.936562555189376 96.05567507853976, -49.49999999999998 85.73651497465943 C -63.65084226105117 75.70970588855481, -67.15343120157955 58.79045409878119, -76.21023553303058 44.00000000000003 C -85.53194873850353 28.77692945084744, -101.82533168325062 17.849529545864502, -102 1.2491397351303002e-14 C -102.17467942383016 -17.85066458952948, -86.26579096020939 -29.195449136347488, -77.07626093681506 -44.49999999999998 C -68.05733453379239 -59.52042188438431, -65.25784853671414 -77.99137523784161, -50.00000000000004 -86.60254037844385 C -34.75370973790514 -95.20718230502631, -17.506833792572294 -87.99999999999999, -1.6165337748745062e-14 -88 C 17.50683379257223 -88.00000000000001, 34.671187347637854 -95.05929697358921, 49.999999999999936 -86.6025403784439 C 65.35816177516672 -78.12959215818911, 68.91293714727685 -60.037780348188306, 77.94228634059945 -45.00000000000004 C 87.13593221909689 -29.68859445350606, 102.172805244453 -17.858678638015444, 102 0 z ;M 88 0 C 87.0071643812453 16.750584310000846, 89.16591640357322 32.23066622251636, 82.48891971046778 47.62499999999999 C 75.39770857425334 63.9743373046321, 66.1406553264614 78.9687582413302, 50.250000000000014 87.03555308033607 C 34.54865539228622 95.00624548067042, 17.590620651271553 90.29638240436964, 5.480294426184406e-15 89.5 C -16.847968824431476 88.7372397661719, -32.382980242828936 89.6818280646011, -47.689999999999976 82.60150301295975 C -63.74959324223292 75.1730719952966, -77.27142977762603 65.04430269303984, -86.06560462809749 49.69000000000003 C -94.84784120247872 34.35654109365306, -96.67880542645688 17.590459164590612, -95 1.1634144591899855e-14 C -93.40474991806319 -16.714969454704665, -85.83878040009859 -30.176827189787602, -77.07626093681506 -44.49999999999998 C -68.48875537139932 -58.53709592172691, -59.78684881708811 -70.71810123462024, -46.12500000000004 -79.89084349911445 C -31.90399782177102 -89.43900857326942, -17.117492172090376 -95.6208569519316, -1.7680838162689912e-14 -96.25 C 17.42616675853088 -96.89048819537281, 32.604872069000194 -91.30523706046031, 48.124999999999936 -83.35494511425226 C 64.20208148728074 -75.11934989009448, 80.53937872975759 -67.29516003624032, 88.33459118601272 -51.00000000000004 C 96.03774549832913 -34.897278873736724, 89.0561690198359 -17.81911111787299, 88 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 87.83 0 C 87.5551104106254 17.484718516847604, 95.16127715466017 34.74963105642935, 86.50727758402758 49.94499999999999 C 77.84990328247498 65.14629455992826, 59.80875022938145 68.6539166070951, 44.21500000000001 76.5826264566579 C 29.396758375489803 84.11702559690347, 16.533901742833184 92.20444258129785, 5.7515536921955445e-15 93.93 C -17.56198148944071 95.76285276019921, -35.17832492952776 96.1755728839107, -49.88499999999998 86.40335453557344 C -64.42964616977311 76.73880034577543, -67.07555683863683 58.889186090717956, -75.63865876653286 43.67000000000003 C -84.09849199523896 28.63435318786967, -98.51711635059414 17.25222189595266, -98.5 1.206277097160143e-14 C -98.48288504887265 -17.250811320073485, -84.34877504334715 -28.780575409619935, -75.55205622615443 -43.619999999999976 C -66.86093647073717 -58.281286656612146, -63.230342222349634 -75.4345590754149, -48.600000000000044 -84.17766924784742 C -33.93357389700559 -92.94234319091034, -17.025973616417954 -90.19821090033776, -1.630678445404658e-14 -88.77 C 15.977895940302826 -87.42970630164737, 29.38189187799461 -82.73892939223205, 44.10999999999994 -76.40076112186321 C 60.461233804495656 -69.36408876567695, 79.25079249329674 -66.31020434586661, 88.09210407295308 -50.86000000000004 C 96.93350510099964 -35.40963934294652, 88.10983120877545 -17.799036801646473, 87.83 0 z ;M 102.87 0 C 100.60412172987674 17.8655933362356, 85.53754352796288 28.604858280384207, 75.95908816593312 43.855 C 66.77647829932806 58.47490441348097, 64.20185353081875 76.67202079060546, 49.27000000000002 85.33814328891859 C 34.33463676216738 94.00630274472348, 17.255471196681203 88.61139941746183, 5.384771975850912e-15 87.94 C -16.62338090404565 87.29319481409648, -32.13105073147386 88.83642498642243, -47.104999999999976 81.58825329053197 C -62.593549158874595 74.0909884333756, -75.11183789801551 63.203277636192524, -82.85265038005723 47.83500000000003 C -90.43100426068291 32.78926071449635, -88.33481436911549 16.845994873358578, -88.2 1.0801384768479656e-14 C -88.0661541958799 -16.72496592774988, -90.31714156576788 -32.8325291006581, -82.09054802472696 -47.394999999999975 C -73.84119732253154 -61.99775494831187, -58.70114242558277 -68.16576009477593, -44.58000000000004 -77.21482500142054 C -29.826455382596357 -86.66914383925732, -17.522369834392396 -100.13333736150332, -1.8369701987210297e-14 -100 C 17.510547309053553 -99.86675260260256, 28.908254552710822 -85.0894876419882, 44.18999999999994 -76.53932518646872 C 59.70239533946346 -67.86011372570036, 77.14713304516553 -64.89164530763992, 87.9622002623854 -50.78500000000004 C 99.23322575875696 -36.08362498889298, 105.20080735972847 -18.37753465535834, 102.87 0 z ;M 96.65 0 C 97.5682370155223 17.290645042626103, 91.44243921640975 32.85986013368205, 81.65753532283473 47.144999999999996 C 72.23761953500264 60.89728781209352, 58.31868393027413 67.69602416070182, 44.205000000000005 76.5653059485822 C 29.586348647997518 85.75191795153148, 17.265486227503665 98.5023411385901, 6.0289361922024196e-15 98.46 C -17.260135494401737 98.41767198331847, -28.927850358240754 84.61477988915865, -44.07999999999998 76.34879959763612 C -59.63539109726837 67.86283824713713, -77.60369551546168 65.19715075831209, -87.6850721331744 50.625000000000036 C -97.93164740539275 35.81406243807856, -99.13895928925051 17.870177323503324, -96.9 1.1866827483737853e-14 C -94.78582581853146 -16.874209235069404, -84.03526438034655 -28.885451186299278, -75.855165117479 -43.79499999999998 C -67.48656343152348 -59.04812484966506, -64.58702634493868 -77.07802892327148, -49.685000000000045 -86.05694437405965 C -34.754341245902474 -95.05311170556791, -17.423866102474058 -90.01428351214383, -1.6440883278553216e-14 -89.5 C 16.944874403202444 -88.99985442555268, 33.406945286813375 -91.76595741651028, 48.01999999999994 -83.17307977945752 C 62.60280079933599 -74.59799227491723, 68.26035047536544 -58.944088507890214, 76.799132807604 -44.340000000000046 C 85.38138197865302 -29.66156909334073, 95.74829471964232 -16.979348111836277, 96.65 0 z ;M 100.43 0 C 99.44111609671702 17.552560474217483, 85.45003481640393 29.038106989746822, 76.37478035974965 44.09499999999999 C 67.47982214730594 58.85276076308644, 64.07619623688856 76.5210513546238, 49.13500000000001 85.10431642989678 C 34.197839864932604 93.68526288681738, 17.224945520414785 88.19944893969671, 5.386608946049633e-15 87.97 C -16.995859874251966 87.74360264955502, -33.675744430814035 92.32280785019591, -48.38499999999998 83.80527832422013 C -63.09093119233604 75.28967380919008, -67.46629494853046 58.573580703738266, -76.07167146842508 43.92000000000003 C -84.74078159210374 29.157891156391287, -97.50578376593529 17.119125303246612, -97.6 1.1952552759678167e-14 C -97.6942955026296 -17.13352843141885, -85.16966290503643 -29.388429432236997, -76.5566456945444 -44.19999999999998 C -67.96991930904315 -58.966358953746784, -62.77231119032221 -74.64857202786988, -48.62500000000004 -84.22097051803664 C -34.121978463364755 -94.03405086895964, -17.446142869940783 -97.50541642989344, -1.7634913907721887e-14 -96 C 16.824136546866306 -94.54825609504428, 29.53246273910814 -84.92008419882137, 44.00999999999994 -76.22755604110633 C 58.26564148077935 -67.66825740177873, 71.6180443525204 -60.425177429348025, 81.51031100419134 -47.060000000000045 C 92.07153193494764 -32.79101629986303, 101.4285520767086 -17.724169293174832, 100.43 0 z ;M 97.27 0 C 98.58345261039341 17.558366186082086, 94.2994917286897 34.203939932148074, 84.091066707469 48.54999999999999 C 74.21975411889315 62.42231066985079, 58.473444022898576 67.23312887448718, 43.57000000000001 75.46545368577598 C 28.941333692804605 83.54599751254223, 16.64874697133146 93.54662780123404, 5.8170722959499274e-15 95 C -17.27803955307615 96.50830704429953, -33.78857056294901 93.13333275238398, -48.19499999999998 83.47618867078205 C -62.265894952404224 74.04396533562448, -68.01933932212052 58.825944468473296, -76.14095350072783 43.96000000000003 C -84.0905443486636 29.408930041052358, -92.00739521206805 16.483816295811398, -93.8 1.1487186976002173e-14 C -95.70727280919573 -17.538240901971744, -94.76889052685837 -34.35072747684755, -86.34273275730855 -49.84999999999997 C -77.83404631199598 -65.50107770786477, -64.5344993843803 -76.3187721614444, -48.310000000000045 -83.67537451365246 C -32.817324666057125 -90.70014915251777, -17.009590728815464 -88.78959332709252, -1.6349034768617164e-14 -89 C 17.210968156731738 -89.21289768843408, 34.09370369400777 -93.47659088564015, 49.00499999999994 -84.87914982491287 C 63.91783177263862 -76.28082345658234, 68.61922431545376 -59.49398069945713, 77.12822246104209 -44.530000000000044 C 85.58365918742902 -29.660212768381562, 95.99397423560407 -17.058040356269963, 97.27 0 z ;M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;"					dur="30s" repeatCount="indefinite"></animate><animateTransform id="ratate1" attributeName="transform" type="rotate" from="90" to="450" dur="30s"					repeatCount="indefinite"></animateTransform><animateTransform id="cat1" attributeName="transform" type="scale" values="1;1.05;1.05;1.02;1" dur="0.15s"					begin="shell_avatar.mousedown" repeatCount="1" additive="sum"></animateTransform></path></g><circle cx="0" cy="0" r="76" class="sapWCShellBarCoPilotMiddle" id="shell_avatar"></circle></svg>`; };
-const block7$2 = (context) => { return html`<span class="sapWCShellBarCoPilotPlaceholder"></span>		`; };
-const block8$2 = (item, index, context) => { return html`${ item.src ? block9$1(item, index, context) : block10$1(item, index, context) }`; };
-const block9$1 = (item, index, context) => { return html`<ui5-icon						tabindex="${ifDefined(item._tabIndex)}"						data-ui5-notification-count="${ifDefined(context.notificationCount)}"						data-ui5-external-action-item-id="${ifDefined(item.refItemid)}"						class="${ifDefined(item.classes)}"						src="${ifDefined(item.src)}"						id="${ifDefined(item.id)}"						style="${ifDefined(item.style)}"						@ui5-press=${ifDefined(item.press)}></ui5-icon>				`; };
-const block10$1 = (item, index, context) => { return html`<div						tabindex="${ifDefined(item._tabIndex)}"						id="${ifDefined(item.id)}"						style="${ifDefined(item.style)}"						class="${ifDefined(item.classes)}"						@click="${ifDefined(item.press)}"					><span style="${ifDefined(item.subStyles)}" class="${ifDefined(item.subclasses)}"></span></div>				`; };
-const block11$1 = (item, index, context) => { return html`<ui5-li					data-ui5-external-action-item-id="${ifDefined(item.refItemid)}" 					icon="${ifDefined(item.src)}"					type="Active"					@ui5-_press="${ifDefined(item.press)}"				>${ifDefined(item.text)}</ui5-li>			`; };
-const block12$1 = (context) => { return html`<slot name="searchField"></slot>		`; };
-
-var styles$7 = ":host(ui5-shellbar:not([hidden])){display:inline-block;width:100%}ui5-shellbar:not([hidden]){display:inline-block;width:100%}.sapWCShellBarWrapper{position:relative;display:flex;justify-content:space-between;align-items:center;background:var(--sapUiShellColor,var(--sapShellColor,var(--sapPrimary1,#354a5f)));height:2.75rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;box-sizing:border-box}.sapWCShellBarIconButton,.sapWCShellBarImageButton,.sapWCShellBarMenuButton,::slotted(ui5-icon){height:2.25rem;padding:0;margin-left:.5rem;border:none;outline:none;background:transparent;color:var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff));box-sizing:border-box;cursor:pointer;border-radius:.25rem;position:relative;font-size:.75rem;font-weight:700}.sapWCShellBarIconButton:hover,.sapWCShellBarImageButton:hover,.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive:hover{background:var(--sapUiShellHoverBackground,#283848)}.sapWCShellBarIconButton:active,.sapWCShellBarImageButton:active,.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive:active{background:var(--sapUiShellActiveBackground,#23303e);color:var(--sapUiShellActiveTextColor,#fff)}.sapWCShellBarIconButton:focus:after,.sapWCShellBarImageButton:focus:after,.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive:focus:after{content:\"\";position:absolute;width:calc(100% - .375rem);height:calc(100% - .375rem);border:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff));pointer-events:none;left:2px;top:2px;z-index:1}.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive::-moz-focus-inner{border:none}.sapWCShellBarMenuButtonTitle{display:inline-block;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));margin:0;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:auto}.sapWCShellBarMenuButtonNoTitle{min-width:2.25rem;justify-content:center}.sapWCShellBarMenuButtonNoTitle span{margin-left:0}.sapWCShellBarMenuButtonMerged span{margin-left:.5rem}.sapWCShellBarSecondaryTitle{display:inline-block;margin:0 .5rem;font-size:var(--sapMFontSmallSize,.75rem);color:var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff));line-height:1rem;font-weight:400;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sapWCShellBarMenuButtonInteractive .sapWCShellBarMenuButtonArrow{display:inline-block;margin-left:.5rem;width:10px;height:10px;width:0;height:0;color:var(--sapUiShellInteractiveTextColor,var(--sapShell_InteractiveTextColor,#d1e8ff));border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff))}.sapWCShellBarOverflowContainer{display:flex;justify-content:center;align-items:center;height:100%;overflow:hidden}.sapWCShellBarCoPilot{width:50px;height:30px}.sapWCShellBarCoPilotBehindLayer{animation:Behind_layer 9s linear;animation-iteration-count:infinite;transform-origin:center}.sapWCShellBarOverflowContainerMiddle{align-self:center;height:2.5rem;width:3rem;flex-shrink:0}@keyframes Behind_layer{0%{transform:rotate(1turn)}}.sapWCShellBarCoPilotTopLayer{animation:Top_layer 9s linear;animation-iteration-count:infinite;transform-origin:center}@keyframes Top_layer{0%{transform:rotate(-1turn)}}.sapWCShellBarSizeS{padding:.25rem 1rem}.sapWCShellBarSizeS ::slotted(ui5-icon){margin-right:0}.sapWCShellBarSizeS .sapWCShellBarSearchField{width:200px}.sapWCShellBarSizeM{padding:.25rem 2rem}.sapWCShellBarSizeL{padding:.25rem 2rem}.sapWCShellBarSizeXL{padding:.25rem 3rem}.sapWCShellBarSizeXXL{padding:.25rem 3rem}.sapWCShellBarLogo{cursor:pointer;height:1.675rem}.sapWCShellBarLogo:not([src]){display:none}.sapWCShellBarIconButton{min-width:2.25rem;font-size:1rem}.sapWCShellBarImageButtonImage{border-radius:50%;width:1.75rem;height:1.75rem;display:flex;background-size:cover}.sapWCShellBarImageButton{display:flex;justify-content:center;align-items:center;min-width:2.25rem;height:2.25rem;display:inline-flex}.sapWCShellBarOverflowContainerLeft{flex-basis:50%;max-width:calc(50% - 1.5rem);justify-content:flex-start;margin-right:.5rem}.sapWCShellBarMenuButton{white-space:nowrap;overflow:hidden;display:flex;align-items:center;padding:.25rem .5rem;cursor:text;-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer}.sapWCShellBarMenuButton.sapWCShellBarMenuButtonNoLogo{margin-left:0}.sapWCShellBarOverflowContainerRight{display:block;overflow:hidden;box-sizing:border-box;white-space:nowrap;margin-left:8rem;flex:1}.sapWCShellBarOverflowContainerRight .sapWCShellBarOverflowContainerRightChild{display:flex;float:right}.sapWCShellBarOverflowIcon{display:none}.sapWCShellBarSizeM .sapWCShellBarSecondaryTitle{display:none}.sapWCShellBarSizeS .sapWCShellBarSecondaryTitle{display:none}.sapWCShellBarSizeS .sapWCShellBarMenuButtonTitle{display:none}.sapWCShellBarSizeS .sapWCShellBarOverflowContainerRight{margin-left:0}.sapWCOverflowButtonShown{display:inline-block}.sapWCShellBarHiddenIcon,.sapWCShellBarUnsetIcon{visibility:hidden}.svg-box-content{width:40px;height:30px}.sapWCShellBarSearchFieldHidden{display:none}.sapWCShellBarHasSearchField.sapWCShellBarSizeL .sapWCShellBarOverflowContainerRight{margin-left:1rem}.sapWCShellBarHasSearchField.sapWCShellBarSizeXL .sapWCShellBarOverflowContainerRight{margin-left:1rem}.sapWCShellBarHasNotifications .sapWCShellBarBellIcon{position:relative}.sapWCShellBarHasNotifications .sapWCShellBarBellIcon:before{content:attr(data-ui5-notification-count);position:absolute;width:auto;height:1rem;min-width:1rem;background:var(--sapUiContentBadgeBackground,var(--sapContent_BadgeBackground,#ab2b2b));color:var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff));top:.125rem;left:1.5rem;padding:.25rem;border-radius:1rem;display:flex;justify-content:center;align-items:center;font-size:var(--sapMFontSmallSize,.75rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));z-index:2;box-sizing:border-box}.sapWCShellBarMenuButton{margin-left:.5rem}.sapWCShellBarBlockLayer{top:0;left:0;right:0;bottom:0;position:fixed;outline:0 none;z-index:100}.sapWCShellBarBlockLayerHidden{display:none}.sapWCShellBarSearchField{z-index:101;position:absolute;width:240px;top:.25rem}.sapWCShellBarBlockLayerShown .sapWCShellBarSearchIcon{background:var(--sapUiHighlight,var(--sapHighlightColor,#0854a0));color:var(--sapUiShellActiveTextColor,#fff);border-top-left-radius:0;border-bottom-left-radius:0}.sapWCShellBarCoPilotPlaceholder{width:2.75rem;height:2.75rem}.sapWCShellBarCoPilotMiddle{fill:var(--sapUiShellColor,var(--sapShellColor,var(--sapPrimary1,#354a5f)))}.sapWCShellBarCoPilotWrapper{background:var(--sapUiShellColor,var(--sapShellColor,var(--sapPrimary1,#354a5f)))}[dir=rtl] ::slotted(ui5-icon){margin-left:.5rem;margin-right:0}[dir=rtl] .sapWCShellBarMenuButton{margin-right:.5rem;margin-left:0}[dir=rtl] .sapWCShellBarMenuButtonInteractive .sapWCShellBarMenuButtonArrow{margin-right:.5rem;margin-left:0}[dir=rtl] .sapWCShellBarOverflowContainerRight{margin-right:8rem;margin-left:0}[dir=rtl] .sapWCShellBarOverflowContainerRight .sapWCShellBarOverflowContainerRightChild{float:left}[dir=rtl] .sapWCShellBarSizeS .sapWCShellBarOverflowContainerRight{margin-right:0}::slotted(ui5-icon){width:2.25rem;height:2.25rem;margin-right:.5rem;margin-left:0;display:flex;justify-content:center;align-items:center}::slotted(ui5-icon:hover){background:var(--sapUiShellHoverBackground,#283848)}::slotted(ui5-icon:active){background:var(--sapUiShellActiveBackground,#23303e);color:var(--sapUiShellActiveTextColor,#fff)}::slotted(ui5-icon:focus):after{content:\"\";position:absolute;width:calc(100% - .375rem);height:calc(100% - .375rem);border:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff));pointer-events:none;left:2px;top:2px;z-index:1}";
-
-/**
- * @public
- */
-const metadata$r = {
-	tag: "ui5-shellbar",
-	properties: /** @lends  sap.ui.webcomponents.main.ShellBar.prototype */ {
-
-		/**
-		 * Defines the <code>logo</code> source URI.
-		 * @type {string}
-		 * @public
-		 */
-		logo: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>primaryTitle</code>.
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		primaryTitle: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>secondaryTitle</code>.
-		 * <br><br>
-		 * <b>Note:</b> On smaller screen width, the <code>secondaryTitle</code> would be hidden.
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		secondaryTitle: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>notificationCount</code>,
-		 * displayed in the notification icon top-right corner.
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		notificationCount: {
-			type: String,
-		},
-
-		/**
-		 * Defines the source URI of the profile action.
-		 * If no source is set - profile will be excluded from actions.
-		 * @type {string}
-		 * @public
-		 */
-		profile: {
-			type: String,
-		},
-
-		/**
-		 * Defines, if the notification icon would be displayed.
-		 * @type {boolean}
-		 * @public
-		 */
-		showNotifications: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines, if the product switch icon would be displayed.
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		showProductSwitch: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines, if the product CoPilot icon would be displayed.
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		showCoPilot: {
-			type: Boolean,
-		},
-
-		_breakpointSize: {
-			type: String,
-		},
-
-		_itemsInfo: {
-			type: Object,
-			deepEqual: true,
-		},
-
-		_actionList: {
-			type: Object,
-		},
-
-		_showBlockLayer: {
-			type: Boolean,
-		},
-		_searchField: {
-			type: Object,
-		},
-
-		_header: {
-			type: Object,
-		},
-	},
-
-	slots: /** @lends  sap.ui.webcomponents.main.ShellBar.prototype */ {
-		/**
-		 * Defines the <code>ui5-shellbar</code> aditional items.
-		 * </br></br>
-		 * <b>Note:</b>
-		 * You can use the &nbsp;&lt;ui5-shellbar-item>&lt;/ui5-shellbar-item>.
-		 *
-		 * @type {HTMLElement}
-		 * @slot
-		 * @public
-		 */
-		items: {
-			type: HTMLElement,
-			multiple: true,
-		},
-
-		/**
-		 * Defines the items displayed in menu after a click on the primary title.
-		 * </br></br>
-		 * <b>Note:</b>
-		 * You can use the &nbsp;&lt;ui5-li>&lt;/ui5-li> and its ancestors.
-		 *
-		 * @type {HTMLElement}
-		 * @slot
-		 * @since 0.10
-		 * @public
-		 */
-		menuItems: {
-			type: HTMLElement,
-			multiple: true,
-		},
-
-		/**
-		 * Defines the <code>ui5-input</code>, that will be used as a search field.
-		 *
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		searchField: {
-			type: HTMLElement,
-		},
-
-		/**
-		 * Defines a <code>ui5-icon</code> in the bar that will be placed in the beginning.
-		 *
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		icon: {
-			type: HTMLElement,
-		},
-	},
-	defaultSlot: "items",
-	events: /** @lends sap.ui.webcomponents.main.ShellBar.prototype */ {
-		/**
-		 *
-		 * Fired, when the notification icon is pressed.
-		 *
-		 *
-		 * @event
-		 * @param {HTMLElement} targetRef dom ref of the clicked element
-		 * @public
-		 */
-		notificationsPress: {
-			detail: {
-				targetRef: { type: HTMLElement },
-			},
-		},
-
-		/**
-		 * Fired, when the profile icon is pressed.
-		 *
-		 * @event
-		 * @param {HTMLElement} targetRef dom ref of the clicked element
-		 * @public
-		 */
-		profilePress: {
-			detail: {
-				targetRef: { type: HTMLElement },
-			},
-		},
-
-		/**
-		 * Fired, when the product switch icon is pressed.
-		 *
-		 * @event
-		 * @param {HTMLElement} targetRef dom ref of the clicked element
-		 * @public
-		 */
-		productSwitchPress: {
-			detail: {
-				targetRef: { type: HTMLElement },
-			},
-		},
-
-		/**
-		 * Fired, when the logo is pressed.
-		 *
-		 * @event
-		 * @param {HTMLElement} targetRef dom ref of the clicked element
-		 * @since 0.10
-		 * @public
-		 */
-		logoPress: {
-			detail: {
-				targetRef: { type: HTMLElement },
-			},
-		},
-
-		/**
-		 * Fired, when the co pilot is pressed.
-		 *
-		 * @event
-		 * @param {HTMLElement} targetRef dom ref of the clicked element
-		 * @since 0.10
-		 * @public
-		 */
-		coPilotPress: {
-			detail: {
-				targetRef: { type: HTMLElement },
-			},
-		},
-
-		/**
-		 * Fired, when a menu item is selected
-		 *
-		 * @event
-		 * @param {HTMLElement} item dom ref of the clicked list item
-		 * @since 0.10
-		 * @public
-		 */
-		menuItemPress: {
-			detail: {
-				item: { type: HTMLElement },
-			},
-		},
-	},
-};
-
-/**
- * @class
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-shellbar</code> is meant to serve as an application header
- * and includes numerous built-in features, such as: logo, profile icon, title, search field, notifications and so on.
- * <br><br>
- * <h3>ES6 Module Import</h3>
- * <code>import "@ui5/webcomponents/dist/ShellBar";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.ShellBar
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-shellbar
- * @appenddocs ShellBarItem
- * @public
- * @since 0.8.0
- */
-class ShellBar extends UI5Element {
-	static get metadata() {
-		return metadata$r;
-	}
-
-	static get styles() {
-		return styles$7;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$n;
-	}
-
-	static get FIORI_3_BREAKPOINTS() {
-		return [
-			559,
-			1023,
-			1439,
-			1919,
-			10000,
-		];
-	}
-
-	static get FIORI_3_BREAKPOINTS_MAP() {
-		return {
-			"559": "S",
-			"1023": "M",
-			"1439": "L",
-			"1919": "XL",
-			"10000": "XXL",
-		};
-	}
-
-	constructor() {
-		super();
-
-		this._itemsInfo = [];
-		this._isInitialRendering = true;
-		this._focussedItem = null;
-
-		// marks if preventDefault() is called in item's press handler
-		this._defaultItemPressPrevented = false;
-
-		const that = this;
-
-		this._actionList = {
-			itemPress: event => {
-				const popover = this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover");
-
-				if (!this._defaultItemPressPrevented) {
-					popover.close();
-				}
-
-				this._defaultItemPressPrevented = false;
-			},
-		};
-
-		this._header = {
-			press: event => {
-				const menuPopover = this.shadowRoot.querySelector(".sapWCShellBarMenuPopover");
-
-				if (this.menuItems.length) {
-					menuPopover.openBy(this.shadowRoot.querySelector(".sapWCShellBarMenuButton"));
-				}
-			},
-		};
-
-		this._itemNav = new ItemNavigation(this);
-
-		this._itemNav.getItemsCallback = () => {
-			const items = that._itemsInfo.filter(info => {
-				const isVisible = info.classes.indexOf("sapWCShellBarHiddenIcon") === -1;
-				const isSet = info.classes.indexOf("sapWCShellBarUnsetIcon") === -1;
-
-				if (isVisible && isSet) {
-					return true;
-				}
-
-				return false;
-			}).sort((item1, item2) => {
-				if (item1.domOrder < item2.domOrder) {
-					return -1;
-				}
-
-				if (item1.domOrder > item2.domOrder) {
-					return 1;
-				}
-
-				return 0;
-			});
-
-			this._itemNav.rowSize = items.length;
-
-			return items.map(item => {
-				const clone = JSON.parse(JSON.stringify(item));
-				clone.press = item.press;
-
-				return clone;
-			});
-		};
-
-		this._itemNav.setItemsCallback = items => {
-			const newItems = that._itemsInfo.map(stateItem => {
-				const mappingItem = items.filter(item => {
-					return item.id === stateItem.id;
-				})[0];
-
-				const clone = JSON.parse(JSON.stringify(stateItem));
-				clone._tabIndex = mappingItem ? mappingItem._tabIndex : "-1";
-				clone.press = stateItem.press;
-
-				return clone;
-			});
-
-			that._itemsInfo = newItems;
-		};
-
-		this._delegates.push(this._itemNav);
-
-		this._searchField = {
-			left: 0,
-			focusout: event => {
-				this._showBlockLayer = false;
-			},
-		};
-
-		this._handleResize = event => {
-			this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover").close();
-			this._overflowActions();
-		};
-	}
-
-	_menuItemPress(event) {
-		this.fireEvent("menuItemPress", {
-			item: event.detail.item,
-		});
-	}
-
-	_logoPress(event) {
-		this.fireEvent("logoPress", {
-			targetRef: this.shadowRoot.querySelector(".sapWCShellBarLogo"),
-		});
-	}
-
-	_coPilotPress(event) {
-		this.fireEvent("coPilotPress", {
-			targetRef: this.shadowRoot.querySelector(".ui5-shellbar-coPilot"),
-		});
-	}
-
-	onBeforeRendering() {
-		const size = this._handleBarBreakpoints();
-		if (size !== "S") {
-			this._itemNav.init();
-		}
-
-		this._hiddenIcons = this._itemsInfo.filter(info => {
-			const isHidden = (info.classes.indexOf("sapWCShellBarHiddenIcon") !== -1);
-			const isSet = info.classes.indexOf("sapWCShellBarUnsetIcon") === -1;
-			const isOverflowIcon = info.classes.indexOf("sapWCShellBarOverflowIcon") !== -1;
-
-			return isHidden && isSet && !isOverflowIcon;
-		});
-	}
-
-	onAfterRendering() {
-		this._overflowActions();
-
-		if (this._focussedItem) {
-			this._focussedItem._tabIndex = "0";
-		}
-	}
-
-	/**
-	 * Closes the overflow area.
-	 * Useful to manually close the overflow after having suppressed automatic closing with preventDefault() of ShellbarItem's press event
-	 * @public
-	 */
-	closeOverflow() {
-		const popover = this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover");
-
-		if (popover) {
-			popover.close();
-		}
-	}
-
-	_handleBarBreakpoints() {
-		const width = this.getBoundingClientRect().width;
-		const breakpoints = ShellBar.FIORI_3_BREAKPOINTS;
-
-		const size = breakpoints.filter(bp1 => width < bp1)[0] || ShellBar.FIORI_3_BREAKPOINTS[ShellBar.FIORI_3_BREAKPOINTS.length - 1];
-		const mappedSize = ShellBar.FIORI_3_BREAKPOINTS_MAP[size];
-
-		if (this._breakpointSize !== mappedSize) {
-			this._breakpointSize = mappedSize;
-		}
-
-		return mappedSize;
-	}
-
-	_handleSizeS() {
-		const hasIcons = this.showNotifications || this.showProductSwitch || this.searchField || this.items.length;
-
-		this._itemsInfo = this._getAllItems(hasIcons).map(info => {
-			const isOverflowIcon = info.classes.indexOf("sapWCShellBarOverflowIcon") !== -1;
-			const isImageIcon = info.classes.indexOf("sapWCShellBarImageButton") !== -1;
-			const shouldStayOnScreen = isOverflowIcon || (isImageIcon && this.profile);
-
-			return Object.assign({}, info, {
-				classes: `${info.classes} ${shouldStayOnScreen ? "" : "sapWCShellBarHiddenIcon"} sapWCShellBarIconButton`,
-				style: `order: ${shouldStayOnScreen ? 1 : -1}`,
-			});
-		});
-	}
-
-	_handleActionsOverflow() {
-		const rightContainerRect = this.shadowRoot.querySelector(".sapWCShellBarOverflowContainerRight").getBoundingClientRect();
-		const icons = this.shadowRoot.querySelectorAll(".sapWCShellBarIconButton:not(.sapWCShellBarOverflowIcon):not(.sapWCShellBarUnsetIcon)");
-		const isRTL = getRTL();
-
-		let overflowCount = [].filter.call(icons, icon => {
-			const iconRect = icon.getBoundingClientRect();
-
-			if (isRTL) {
-				return (iconRect.left + iconRect.width) > (rightContainerRect.left + rightContainerRect.width);
-			}
-
-			return iconRect.left < rightContainerRect.left;
-		});
-
-		overflowCount = overflowCount.length;
-
-		const items = this._getAllItems(!!overflowCount);
-
-		items.map(item => {
-			this._itemsInfo.forEach(stateItem => {
-				if (stateItem.id === item.id) {
-					item._tabIndex = stateItem._tabIndex;
-				}
-			});
-
-			return item;
-		});
-
-		const itemsByPriority = items.sort((item1, item2) => {
-			if (item1.priority > item2.priority) {
-				return 1;
-			}
-
-			if (item1.priority < item2.priority) {
-				return -1;
-			}
-
-			return 0;
-		});
-
-		const focusableItems = [];
-
-		for (let i = 0; i < itemsByPriority.length; i++) {
-			if (i < overflowCount) {
-				itemsByPriority[i].classes = `${itemsByPriority[i].classes} sapWCShellBarHiddenIcon`;
-				itemsByPriority[i].style = `order: -1`;
-			} else {
-				focusableItems.push(itemsByPriority[i]);
-			}
-		}
-
-		this._focussedItem = this._findInitiallyFocussedItem(focusableItems);
-
-		return itemsByPriority;
-	}
-
-	_findInitiallyFocussedItem(items) {
-		items.sort((item1, item2) => {
-			const order1 = parseInt(item1.style.split("order: ")[1]);
-			const order2 = parseInt(item2.style.split("order: ")[1]);
-
-			if (order1 === order2) {
-				return 0;
-			}
-
-			if (order1 < order2) {
-				return -1;
-			}
-
-			return 1;
-		});
-
-		const focusedItem = items.filter(item => {
-			return (item.classes.indexOf("sapWCShellBarUnsetIcon") === -1)
-				&& (item.classes.indexOf("sapWCShellBarOverflowIcon") === -1)
-				&& (item.classes.indexOf("sapWCShellBarHiddenIcon") === -1);
-		})[0];
-
-		return focusedItem;
-	}
-
-	_overflowActions() {
-		const size = this._handleBarBreakpoints();
-
-		if (size === "S") {
-			return this._handleSizeS();
-		}
-
-		const items = this._handleActionsOverflow();
-		this._itemsInfo = items;
-	}
-
-	_toggleActionPopover() {
-		const popover = this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover");
-		const overflowButton = this.shadowRoot.querySelector(".sapWCShellBarOverflowIcon");
-		popover.openBy(overflowButton);
-	}
-
-	onkeydown(event) {
-		if (isEscape(event)) {
-			return this._handleEscape(event);
-		}
-
-		if (isSpace(event)) {
-			event.preventDefault();
-		}
-	}
-
-	_handleEscape() {
-		const searchButton = this.shadowRoot.querySelector(".sapWCShellBarSearchIcon");
-
-		if (this._showBlockLayer) {
-			this._showBlockLayer = false;
-
-			setTimeout(() => {
-				searchButton.focus();
-			}, 0);
-		}
-	}
-
-	onEnterDOM() {
-		ResizeHandler.register(this, this._handleResize);
-	}
-
-	onExitDOM() {
-		ResizeHandler.deregister(this, this._handleResize);
-	}
-
-	_handleSearchIconPress(event) {
-		const searchField = this.shadowRoot.querySelector(`#${this._id}-searchfield-wrapper`);
-		const triggeredByOverflow = event.target.tagName.toLowerCase() === "ui5-li";
-		const overflowButton = this.shadowRoot.querySelector(".sapWCShellBarOverflowIcon");
-		const overflowButtonRect = overflowButton.getBoundingClientRect();
-		const isRTL = getRTL();
-		let right = "";
-
-		if (isRTL) {
-			right = `${(triggeredByOverflow ? overflowButton.offsetLeft : event.target.offsetLeft) + overflowButtonRect.width}px`;
-		} else {
-			right = `calc(100% - ${triggeredByOverflow ? overflowButton.offsetLeft : event.target.offsetLeft}px)`;
-		}
-
-		this._searchField = Object.assign({}, this._searchField, {
-			"right": right,
-		});
-
-		this._showBlockLayer = true;
-
-		setTimeout(() => {
-			const inputSlot = searchField.children[0];
-
-			if (inputSlot) {
-				inputSlot.assignedNodes()[0].focus();
-			}
-		}, 100);
-	}
-
-	_handleCustomActionPress(event) {
-		const refItemId = event.target.getAttribute("data-ui5-external-action-item-id");
-		const actions = this.shadowRoot.querySelectorAll(".sapWCShellBarItemCustomAction");
-		let elementIndex = [].indexOf.apply(actions, [event.target]);
-
-		if (this.searchField) {
-			elementIndex += 1;
-		}
-
-		this._itemNav.currentIndex = elementIndex;
-
-		if (refItemId) {
-			const shellbarItem = this.items.filter(item => {
-				return item.shadowRoot.querySelector(`#${refItemId}`);
-			})[0];
-
-			const prevented = !shellbarItem.fireEvent("press", { targetRef: event.target }, true);
-
-			this._defaultItemPressPrevented = prevented;
-		}
-	}
-
-	_handleOverflowPress(event) {
-		this._toggleActionPopover();
-	}
-
-	_handleNotificationsPress(event) {
-		this.fireEvent("notificationsPress", {
-			targetRef: this.shadowRoot.querySelector(".sapWCShellBarBellIcon"),
-		});
-	}
-
-	_handleProfilePress(event) {
-		this.fireEvent("profilePress", {
-			targetRef: this.shadowRoot.querySelector(".sapWCShellBarImageButton"),
-		});
-	}
-
-	_handleProductSwitchPress(event) {
-		this.fireEvent("productSwitchPress", {
-			targetRef: this.shadowRoot.querySelector(".sapWCShellBarIconProductSwitch"),
-		});
-	}
-
-	/**
-	 * Returns all items that will be placed in the right of the bar as icons / dom elements.
-	 * @param {Boolean} showOverflowButton Determines if overflow button should be visible (not overflowing)
-	 */
-	_getAllItems(showOverflowButton) {
-		let domOrder = -1;
-
-		const items = [
-			{
-				src: "sap-icon://search",
-				text: "Search",
-				classes: `${this.searchField ? "" : "sapWCShellBarUnsetIcon"} sapWCShellBarSearchIcon sapWCShellBarIconButton`,
-				priority: 4,
-				domOrder: this.searchField ? (++domOrder) : -1,
-				style: `order: ${this.searchField ? 1 : -10}`,
-				id: `${this._id}-item-${1}`,
-				press: this._handleSearchIconPress.bind(this),
-				_tabIndex: "-1",
-			},
-			...this.items.map((item, index) => {
-				return {
-					src: item.src,
-					id: item._id,
-					refItemid: item._id,
-					text: item.text,
-					classes: "sapWCShellBarItemCustomAction sapWCShellBarIconButton",
-					priority: 1,
-					domOrder: (++domOrder),
-					style: `order: ${2}`,
-					show: true,
-					press: this._handleCustomActionPress.bind(this),
-					_tabIndex: "-1",
-				};
-			}),
-			{
-				src: "sap-icon://bell",
-				text: "Notifications",
-				classes: `${this.showNotifications ? "" : "sapWCShellBarUnsetIcon"} sapWCShellBarBellIcon sapWCShellBarIconButton`,
-				priority: 3,
-				style: `order: ${this.showNotifications ? 3 : -10}`,
-				id: `${this._id}-item-${2}`,
-				show: this.showNotifications,
-				domOrder: this.showNotifications ? (++domOrder) : -1,
-				press: this._handleNotificationsPress.bind(this),
-				_tabIndex: "-1",
-			},
-			{
-				src: "sap-icon://overflow",
-				text: "Overflow",
-				classes: `${showOverflowButton ? "" : "sapWCShellBarHiddenIcon"} sapWCOverflowButtonShown sapWCShellBarOverflowIcon sapWCShellBarIconButton`,
-				priority: 5,
-				order: 4,
-				style: `order: ${showOverflowButton ? 4 : -1}`,
-				domOrder: showOverflowButton ? (++domOrder) : -1,
-				id: `${this.id}-item-${5}`,
-				press: this._handleOverflowPress.bind(this),
-				_tabIndex: "-1",
-				show: true,
-			},
-			{
-				text: "Person",
-				classes: `${this.profile ? "" : "sapWCShellBarUnsetIcon"} sapWCShellBarImageButton sapWCShellBarIconButton`,
-				priority: 4,
-				subclasses: "sapWCShellBarImageButtonImage",
-				style: `order: ${this.profile ? 5 : -10};`,
-				subStyles: `${this.profile ? `background-image: url(${this.profile})` : ""}`,
-				id: `${this._id}-item-${3}`,
-				domOrder: this.profile ? (++domOrder) : -1,
-				show: this.profile,
-				press: this._handleProfilePress.bind(this),
-				_tabIndex: "-1",
-			},
-			{
-				src: "sap-icon://grid",
-				text: "Product Switch",
-				classes: `${this.showProductSwitch ? "" : "sapWCShellBarUnsetIcon"} sapWCShellBarIconButton sapWCShellBarIconProductSwitch`,
-				priority: 2,
-				style: `order: ${this.showProductSwitch ? 6 : -10}`,
-				id: `${this._id}-item-${4}`,
-				show: this.showProductSwitch,
-				domOrder: this.showProductSwitch ? (++domOrder) : -1,
-				press: this._handleProductSwitchPress.bind(this),
-				_tabIndex: "-1",
-			},
-		];
-		return items;
-	}
-
-	get classes() {
-		return {
-			wrapper: {
-				"sapWCShellBarWrapper": true,
-				[`sapWCShellBarSize${this._breakpointSize}`]: true,
-				"sapWCShellBarHasSearchField": this.searchField,
-				"sapWCShellBarBlockLayerShown": this._showBlockLayer,
-				"sapWCShellBarHasNotifications": !!this.notificationCount,
-			},
-			leftContainer: {
-				"sapWCShellBarOverflowContainer": true,
-				"sapWCShellBarOverflowContainerLeft": true,
-			},
-			logo: {
-				"sapWCShellBarLogo": true,
-			},
-			button: {
-				"sapWCShellBarMenuButtonNoTitle": !this.primaryTitle,
-				"sapWCShellBarMenuButtonNoLogo": !this.logo,
-				"sapWCShellBarMenuButtonMerged": this._breakpointSize === "S",
-				"sapWCShellBarMenuButtonInteractive": !!this.menuItems.length,
-				"sapWCShellBarMenuButton": true,
-			},
-			buttonTitle: {
-				"sapWCShellBarMenuButtonTitle": true,
-			},
-			secondaryTitle: {
-				"sapWCShellBarSecondaryTitle": true,
-			},
-			arrow: {
-				"sapWCShellBarMenuButtonArrow": true,
-			},
-			searchField: {
-				"sapWCShellBarSearchField": true,
-				"sapWCShellBarSearchFieldHidden": !this._showBlockLayer,
-			},
-			blockLayer: {
-				"sapWCShellBarBlockLayer": true,
-				"sapWCShellBarBlockLayerHidden": !this._showBlockLayer,
-			},
-		};
-	}
-
-	get styles() {
-		return {
-			searchField: {
-				[getRTL() ? "left" : "right"]: this._searchField.right,
-				"top": `${parseInt(this._searchField.top)}px`,
-			},
-		};
-	}
-
-	get interactiveLogo() {
-		return this._breakpointSize === "S";
-	}
-
-	get showArrowDown() {
-		return this.primaryTitle || (this.logo && this.interactiveLogo);
-	}
-
-	get popoverHorizontalAlign() {
-		return getRTL() ? "Left" : "Right";
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-
-	static async define(...params) {
-		await Promise.all([
-			Icon.define(),
-			List.define(),
-			Popover.define(),
-
-			StandardListItem.define(),
-		]);
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	ShellBar.define();
-});
-
-const block0$o = (context) => { return html`<span id="${ifDefined(context._id)}"></span>
-`; };
-
-/**
- * @public
- */
-const metadata$s = {
-	tag: "ui5-shellbar-item",
-	properties: /** @lends sap.ui.webcomponents.main.ShellBarItem.prototype */ {
-		/**
-		 * Defines the item source URI.
-		 * @type {string}
-		 * @public
-		 */
-		src: {
-			type: String,
-		},
-
-		/**
-		 * Defines the item text.
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		text: {
-			type: String,
-		},
-
-		_icon: { type: HTMLElement },
-	},
-
-	events: /** @lends sap.ui.webcomponents.main.ShellBarItem.prototype */ {
-		/**
-		 * Fired, when the item is pressed.
-		 *
-		 * @event
-		 * @param {HTMLElement} targetRef dom ref of the clicked element
-		 * @public
-		 */
-		press: {
-			detail: {
-				targetRef: { type: HTMLElement },
-			},
-		},
-	},
-};
-
-/**
- * @class
- * The <code>ui5-shellbar-item</code> represents a custom item, that
- * might be added to the <code>ui5-shellbar</code>.
- * <br><br>
- * <h3>ES6 Module Import</h3>
- * <code>import "@ui5/webcomponents/dist/ShellBarItem";</code>
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.ShellBarItem
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-shellbar-item
- * @public
- */
-class ShellBarItem extends UI5Element {
-	static get metadata() {
-		return metadata$s;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$o;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	ShellBarItem.define();
-});
-
-const block0$p = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	role="checkbox"	aria-checked="${ifDefined(context.checked)}"	tabindex="${ifDefined(context.tabIndex)}"	dir="${ifDefined(context.rtl)}"><div class="ui5-switch-inner"><div class="ui5-switch-track"><div class="ui5-switch-slider"><span class="ui5-switch-text ui5-switch-text--on">${ifDefined(context.textOn)}</span><span class="ui5-switch-text ui5-switch-text--off">${ifDefined(context.textOff)}</span><span class="ui5-switch-handle"></span></div></div></div><input type='checkbox' ?checked="${ifDefined(context.checked)}" class="ui5-switch-input" data-sap-no-tab-ref/></div>`; };
-
-var switchCss = ":host(ui5-switch:not([hidden])){display:inline-block}ui5-switch:not([hidden]){display:inline-block}.ui5-switch-wrapper{position:relative;width:100%;height:var(--_ui5_switch_height,2.75rem);min-width:var(--_ui5_switch_width,3.875rem);cursor:pointer;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0)}.ui5-switch-wrapper.ui5-switch--no-label{min-width:var(--_ui5_switch_no_label_width,3.25rem)}.ui5-switch-inner{display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;pointer-events:none}.ui5-switch-track{height:var(--_ui5_switch_track_height,1.375rem);width:100%;display:flex;align-items:center;background:var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#ededed));border:1px solid;border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_switch_track_border_radius,.75rem);box-sizing:border-box}.ui5-switch--no-label .ui5-switch-track{height:var(--_ui5_switch_track_no_label_height,1.25rem)}.ui5-switch-slider{position:relative;height:var(--_ui5_switch_height,2.75rem);width:100%;transition:transform .1s ease-in;transform-origin:top left}.ui5-switch-handle{position:absolute;left:-1px;width:var(--_ui5_switch_handle_width,2rem);height:var(--_ui5_switch_handle_height,2rem);background:var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#fafafa));border:var(--_ui5_switch_handle_border_width,1px) solid var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_switch_handle_border_radius,1rem);box-sizing:border-box}.ui5-switch-text{display:flex;justify-content:center;position:absolute;min-width:1.625rem;padding:0 .125rem;font-size:var(--sapMFontSmallSize,.75rem);font-family:\"72\",\"72full\",Arial,Helvetica,sans-serif;text-transform:uppercase;text-align:center;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));white-space:nowrap;user-select:none;-webkit-user-select:none;-ms-user-select:none}.ui5-switch-text--on{left:calc(-100% + 1.9125rem)}.ui5-switch-text--off{right:0}.ui5-switch-handle,.ui5-switch-text{top:50%;transform:translateY(-50%)}.ui5-switch-desktop.ui5-switch-wrapper:focus:after{content:\"\";position:absolute;left:-var(--_ui5_switch_outline,1px);top:0;bottom:0;width:100%;border:var(--_ui5_switch_outline,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));pointer-events:none}.ui5-switch-wrapper .ui5-switch-input{position:absolute;left:0;width:0;height:0;margin:0;visibility:hidden;-webkit-appearance:none}.ui5-switch-wrapper.ui5-switch--disabled{opacity:.4;cursor:default}.ui5-switch-wrapper.ui5-switch--disabled .ui5-switch-track{background:var(--_ui5_switch_track_disabled_bg,var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#ededed)));border-color:var(--_ui5_switch_track_disabled_border_color,var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a))))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-track{background:var(--_ui5_switch_track_disabled_checked_bg,var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7)))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_checked_bg,var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.ui5-switch-wrapper.ui5-switch--disabled .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_bg,var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#fafafa)));border-color:var(--_ui5_switch_handle_disabled_border_color,var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-track{background:var(--_ui5_switch_track_disabled_semantic_checked_bg,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_switch_track_disabled_semantic_checked_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_semantic_checked_bg,var(--sapUiSuccessBGLighten5,#fff));border-color:var(--_ui5_switch_handle_disabled_semantic_checked_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled:not(.ui5-switch--checked) .ui5-switch-track{background:var(--_ui5_switch_track_disabled_semantic_bg,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--_ui5_switch_track_disabled_semantic_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled:not(.ui5-switch--checked) .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_semantic_bg,var(--sapUiErrorBGLighten4,#fff));border-color:var(--_ui5_switch_handle_disabled_semantic_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-text{color:var(--_ui5_switch_text_disabled_color,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-handle{background:var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))));border-color:var(--_ui5_switch_handle_checked_border_color,var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-track{background:var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7));border-color:var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#4e84ba))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(100%) translateX(-1.875rem)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-handle,.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-track{border-color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e)))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-track{background:var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-handle{background:var(--sapUiSuccessBGLighten5,#fff)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text{justify-content:center;font-size:var(--sapMFontSmallSize,.75rem)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text:before{font-family:SAP-icons;speak:none;width:.75rem;height:.75rem;line-height:.75rem}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text--on:before{content:\"\\e05b\";color:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text--off:before{content:\"\\e03e\";color:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-handle,.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-track{border-color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-track{background:var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-handle{background:var(--sapUiErrorBGLighten4,#fff)}.ui5-switch-desktop.ui5-switch-wrapper:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)))}.ui5-switch-desktop.ui5-switch-wrapper:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_hover_bg,var(--sapUiButtonHoverBackgroundDarken2,#e1f0fe));border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border-color:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-track{background:var(--_ui5_switch_track_hover_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7));border-color:var(--_ui5_switch_track_hover_border_color,var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#4e84ba)))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_semantic_hover_bg,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--_ui5_switch_handle_semantic_hover_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--_ui5_switch_handle_semantic_hover_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_semantic_checked_hover_bg,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_switch_handle_semantic_checked_hover_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--_ui5_switch_handle_semantic_checked_hover_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-text--on:before,.ui5-switch-wrapper.ui5-switch--semantic:hover .ui5-switch-text--on:before{color:var(--_ui5_switch_text_on_semantic_color,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-text--off:before,.ui5-switch-wrapper.ui5-switch--semantic:hover .ui5-switch-text--off:before{color:var(--_ui5_switch_text_off_semantic_color,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))))}.sapUiSizeCompact.ui5-switch-wrapper{height:var(--_ui5_switch_compact_height,2rem);min-width:var(--_ui5_switch_compact_width,3.5rem)}.sapUiSizeCompact.ui5-switch-wrapper .ui5-switch-handle{height:var(--_ui5_switch_handle_compact_height,1.625rem);width:var(--_ui5_switch_handle_compact_width,1.625rem)}.sapUiSizeCompact.ui5-switch-wrapper .ui5-switch-text--on{left:calc(-100% + 1.5625rem)}.sapUiSizeCompact.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(100%) translateX(-1.5rem)}.sapUiSizeCompact.ui5-switch-wrapper.ui5-switch--no-label{min-width:var(--_ui5_switch_compact_no_label_width,2.5rem)}.sapUiSizeCompact.ui5-switch--no-label .ui5-switch-track{height:var(--_ui5_switch_track_compact_no_label_height,1rem)}[dir=rtl].ui5-switch-wrapper .ui5-switch-handle{left:0;right:-1px}[dir=rtl].ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(1.875rem) translateX(-100%)}[dir=rtl].ui5-switch-wrapper .ui5-switch-text--on{right:calc(-100% + 1.9125rem);left:auto}[dir=rtl].ui5-switch-wrapper .ui5-switch-text--off{right:auto;left:0}.sapUiSizeCompact[dir=rtl].ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(-100%) translateX(1.5rem)}.sapUiSizeCompact[dir=rtl].ui5-switch-wrapper .ui5-switch-text--on{right:calc(-100% + 1.5625rem)}";
-
-/**
- * @public
- */
-const metadata$t = {
-	tag: "ui5-switch",
-	properties: /** @lends sap.ui.webcomponents.main.Switch.prototype */ {
-
-		/**
-		 * Defines if the <code>ui5-switch</code> is checked.
-		 * <br><br>
-		 * <b>Note:</b> The property can be changed with user interaction,
-		 * either by cliking/tapping on the <code>ui5-switch</code>, or by
-		 * pressing the <code>Enter</code> or <code>Space</code> key.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		checked: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines whether the <code>ui5-switch</code> is disabled.
-		 * <br><br>
-		 * <b>Note:</b> A disabled <code>ui5-switch</code> is noninteractive.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the text of the <code>ui5-switch</code> when switched on.
-		 *
-		 * <br><br>
-		 * <b>Note:</b> We recommend using short texts, up to 3 letters (larger texts would be cut off).
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		textOn: {
-			type: String,
-		},
-
-		/**
-		 * Defines the text of the <code>ui5-switch</code> when switched off.
-		 *
-		 * <br><br>
-		 * <b>Note:</b> We recommend using short texts, up to 3 letters (larger texts would be cut off).
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		textOff: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>ui5-switch</code> type.
-		 * <br>
-		 *
-		 * <b>Note:</b> If <code>graphical</code> type is set,
-		 * positive and negative icons will replace the <code>textOn</code> and <code>textOff</code>.
-		 * @type {string}
-		 * @defaultvalue false
-		 * @public
-		 */
-		graphical: {
-			type: Boolean,
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.Switch.prototype */ {
-
-		/**
-		 * Fired when the <code>ui5-switch</code> checked state changes.
-		 *
-		 * @public
-		 * @event
-		 */
-		change: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- * The <code>ui5-switch</code> component is used for changing between binary states.
- * </br>
- * The component can display texts, that will be switched, based on the component state, via the <code>textOn</code> and <code>textOff</code> properties,
- * but texts longer than 3 letters will be cuttted off.
- * </br>
- * However, users are able to customize the width of <code>ui5-switch</code> with pure CSS (&lt;ui5-switch style="width: 200px">), and set widths, depending on the texts they would use.
- * </br>
- * Note: the component would not automatically stretch to fit the whole text width.
- *
- * <h3>Keyboard Handling</h3>
- * The state can be changed by pressing the Space and Enter keys.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Switch";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Switch
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-switch
- * @public
- * @since 0.8.0
- */
-class Switch extends UI5Element {
-	static get metadata() {
-		return metadata$t;
-	}
-
-	static get styles() {
-		return switchCss;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$p;
-	}
-
-	onclick(event) {
-		this.toggle();
-	}
-
-	onkeydown(event) {
-		if (isSpace(event)) {
-			event.preventDefault();
-		}
-
-		if (isEnter(event)) {
-			this.toggle();
-		}
-	}
-
-	onkeyup(event) {
-		if (isSpace(event)) {
-			this.toggle();
-		}
-	}
-
-	toggle() {
-		if (!this.disabled) {
-			this.checked = !this.checked;
-			this.fireEvent("change");
-		}
-	}
-
-	get textOn() {
-		return this.graphical ? "" : this.textOn;
-	}
-
-	get textOff() {
-		return this.graphical ? "" : this.textOff;
-	}
-
-	get tabIndex() {
-		return this.disabled ? undefined : "0";
-	}
-
-	get classes() {
-		const hasLabel = this.graphical || this.textOn || this.textOff;
-
-		return {
-			main: {
-				"ui5-switch-wrapper": true,
-				"ui5-switch-desktop": isDesktop(),
-				"ui5-switch--disabled": this.disabled,
-				"ui5-switch--checked": this.checked,
-				"ui5-switch--semantic": this.graphical,
-				"ui5-switch--no-label": !hasLabel,
-				"sapUiSizeCompact": getCompactSize(),
-			},
-		};
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Switch.define();
-});
-
-/**
- * Different types of MessageStrip.
- */
-const MessageStripTypes = {
-	/**
-	 * default type (no special styling)
-	 */
-	Information: "Information",
-
-	/**
-	 * accept type
-	 */
-	Positive: "Positive",
-
-	/**
-	 * reject style
-	 */
-	Negative: "Negative",
-
-	/**
-	 * warning type
-	 */
-	Warning: "Warning",
-};
-
-class MessageStripType extends DataType {
-	static isValid(value) {
-		return !!MessageStripTypes[value];
-	}
-}
-
-MessageStripType.generataTypeAcessors(MessageStripTypes);
-
-const block0$q = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}"
-	role="alert"
-	aria-live="assertive"
-	aria-labelledby="${ifDefined(context._id)}">
-
-	${ !context.noIcon ? block1$j(context) : undefined }<span class="ui5-messagestrip-hidden-text">${ifDefined(context.hiddenText)}</span><span class="${ifDefined(classMap(context.classes.label))}"><slot></slot></span>
-
-	${ !context.noCloseButton ? block2$d(context) : undefined }</div>
-`; };
-const block1$j = (context) => { return html`<ui5-icon class="ui5-messagestrip-icon" src="${ifDefined(context.messageStripIcon)}"></ui5-icon>
-	`; };
-const block2$d = (context) => { return html`<ui5-icon
-			class="${ifDefined(classMap(context.classes.closeIcon))}"
-			src="sap-icon://decline"
-			tabindex="0"
-			role="button"
-			title="${ifDefined(context._closeButtonText)}"
-			@ui5-press="${ifDefined(context._closeButton.press)}"></ui5-icon>
-	`; };
-
-var messageStripCss = ":host(ui5-messagestrip:not([hidden])){display:inline-block;width:100%}ui5-messagestrip:not([hidden]){display:inline-block;width:100%}.ui5-messagestrip-root{width:100%;height:100%;display:flex;border-radius:var(--_ui5_messagestrip_border_radius,.1875rem);padding:var(--_ui5_messagestrip_padding,.125rem .125rem);border-width:var(--_ui5_messagestrip_border_width,1px);border-style:solid;box-sizing:border-box;padding:.4375rem 2rem .4375rem 2.5rem;position:relative}.ui5-messagestrip-root .ui5-messagestrip-icon{width:var(--_ui5_messagestrip_icon_width,2.5rem);box-sizing:border-box;position:absolute;top:var(--_ui5_messagestrip_icon_top,.4375rem);left:0}.ui5-messagestrip -root.ui5-messagestrip-text{width:100%;color:var(--sapTextColor,var(--sapPrimary6,#32363a));line-height:1.2}.ui5-messagestrip-root ui5-button{height:var(--_ui5_messagestrip_button_height,1.625rem);border-width:var(--_ui5_messagestrip_button_border_width,0);border-style:var(--_ui5_messagestrip_button_border_style,none);border-color:var(--_ui5_messagestrip_button_border_color,transparent);border-radius:var(--_ui5_messagestrip_button_border_radius,0)}.ui5-messagestrip-icon--hidden{padding:.4375rem 2rem .4375rem 1rem}.ui5-messagestrip-close-icon--hidden{padding-right:1rem}.ui5-messagestrip-text{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem)}.ui5-messagestrip--info{background-color:var(--sapUiNeutralBG,var(--sapNeutralBackground,#f4f4f4));border-color:var(--sapUiNeutralBorder,var(--sapNeutralColor,#6a6d70));color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)))}.ui5-messagestrip--info .ui5-messagestrip-icon{color:var(--sapUiNeutralElement,var(--sapNeutralElementColor,var(--sapNeutralColor,#6a6d70)))}.ui5-messagestrip--positive{background-color:var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6));border-color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e)))}.ui5-messagestrip--positive .ui5-messagestrip-icon{color:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))}.ui5-messagestrip--negative{background-color:var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb));border-color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))}.ui5-messagestrip--negative .ui5-messagestrip-icon{color:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))}.ui5-messagestrip--warning{background-color:var(--sapUiWarningBG,var(--sapWarningBackground,#fef7f1));border-color:var(--sapUiWarningBorder,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c)))}.ui5-messagestrip--warning .ui5-messagestrip-icon{color:var(--sapUiCriticalElement,var(--sapCriticalElementColor,var(--sapCriticalColor,#e9730c)))}.ui5-messagestrip-close-icon{width:var(--_ui5_messagestrip_close_button_size,1.625rem);height:var(--_ui5_messagestrip_close_button_size,1.625rem);border-radius:.2rem;font-size:.75rem;background:transparent;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));outline:0;cursor:pointer;position:absolute;right:.125rem;top:.125rem;border:var(--_ui5_messagestrip_close_button_border,none);-webkit-user-select:none;-ms-user-select:none;user-select:none}.ui5-messagestrip-close-icon:hover{background-color:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.ui5-messagestrip-close-icon:active{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff)}.ui5-messagestrip-close-icon:focus:after{content:\"\";position:absolute;top:1px;bottom:1px;left:1px;right:1px;border:var(--_ui5_messagestrip_focus_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));pointer-events:none}.ui5-messagestrip-close-icon:active:focus:after{border:var(--_ui5_messagestrip_focus_width,1px) dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.ui5-messagestrip-hidden-text{position:absolute;clip:rect(1px,1px,1px,1px);user-select:none;left:0;top:0}";
-
-/**
- * @public
- */
-const metadata$u = {
-	tag: "ui5-messagestrip",
-	properties: /** @lends sap.ui.webcomponents.main.MessageStrip.prototype */ {
-
-		/**
-		 * Defines the <code>ui5-messagestrip</code> type.
-		 * <br></br>
-		 * <b>Note:</b> Available options are <code>Information"</code>, <code>"Positive"</code>, <code>"Negative"</code>,
-		 * and "Warning".
-		 *
-		 * @type {MessageStripType}
-		 * @defaultvalue "Information"
-		 * @public
-		 */
-		type: {
-			type: MessageStripType,
-			defaultValue: MessageStripType.Information,
-		},
-
-		/**
-		 * Defines the icon src URI to be displayed as graphical element within the <code>ui5-messagestrip</code>.
-		 * <br></br>
-		 * <b>Note:</b> If no icon is given, the default icon for the <code>ui5-messagestrip</code> type will be added.
-		 * The SAP-icons font provides numerous options.
-		 * <br></br>
-		 * Example:
-		 * <br>
-		 * <pre>ui5-messagestrip icon="sap-icon://palette"</pre>
-		 *
-		 * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		icon: {
-			type: String,
-		},
-
-		/**
-		 * Defines whether the MessageStrip renders icon in the beginning.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		noIcon: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines whether the MessageStrip renders close icon.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		noCloseButton: {
-			type: Boolean,
-		},
-
-		_closeButton: {
-			type: Object,
-		},
-	},
-	slots: /** @lends sap.ui.webcomponents.main.MessageStrip.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-messagestrip</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	defaultSlot: "text",
-	events: /** @lends sap.ui.webcomponents.main.MessageStrip.prototype */ {
-
-		/**
-		 * Fired when the close button is pressed either with a
-		 * click/tap or by using the Enter or Space key.
-		 *
-		 * @event
-		 * @public
-		 */
-		close: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-messagestrip</code> component enables the embedding of app-related messages.
- * It displays 4 types of messages, each with corresponding semantic color and icon: Information, Positive, Warning and Negative.
- * Each message can have a close button, so that it can be removed from the UI if needed.
- *
- * <h3>Usage</h3>
- *
- * For the <code>ui5-messagestrip</code> component, you can define whether it displays
- * an icon in the beginning and a close button. Moreover, its size and background
- * can be controlled with CSS.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/MessageStrip";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.MessageStrip
- * @extends UI5Element
- * @tagname ui5-messagestrip
- * @public
- * @since 0.9.0
- */
-class MessageStrip extends UI5Element {
-	static get metadata() {
-		return metadata$u;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$q;
-	}
-
-	static get styles() {
-		return messageStripCss;
-	}
-
-	constructor() {
-		super();
-
-		this._closeButton = {
-			press: this._handleCloseIconPress.bind(this),
-		};
-
-		this.resourceBundle = getResourceBundle("@ui5/webcomponents");
-	}
-
-	_handleCloseIconPress() {
-		this.fireEvent("close", {});
-	}
-
-	static async define(...params) {
-		await fetchResourceBundle("@ui5/webcomponents");
-
-		await Promise.all([
-			Icon.define(),
-		]);
-
-		super.define(...params);
-	}
-
-	static typeClassesMappings() {
-		return {
-			"Information": "ui5-messagestrip--info",
-			"Positive": "ui5-messagestrip--positive",
-			"Negative": "ui5-messagestrip--negative",
-			"Warning": "ui5-messagestrip--warning",
-		};
-	}
-
-	static iconMappings() {
-		return {
-			"Information": "sap-icon://message-information",
-			"Positive": "sap-icon://message-success",
-			"Negative": "sap-icon://message-error",
-			"Warning": "sap-icon://message-warning",
-		};
-	}
-
-	get hiddenText() {
-		return `Message Strip ${this.type} ${this.noCloseButton ? "" : "closable"}.`;
-	}
-
-	get _closeButtonText() {
-		return this.resourceBundle.getText(MESSAGE_STRIP_CLOSE_BUTTON);
-	}
-
-	get classes() {
-		return {
-			label: {
-				"ui5-messagestrip-text": true,
-				"ui5-messagestripNoCloseButton": this.noCloseButton,
-			},
-			closeIcon: {
-				"ui5-messagestrip-close-icon": true,
-			},
-			main: {
-				"ui5-messagestrip-root": true,
-				"ui5-messagestrip-icon--hidden": this.noIcon,
-				"ui5-messagestrip-close-icon--hidden": this.noCloseButton,
-				[this.typeClasses]: true,
-			},
-		};
-	}
-
-	get messageStripIcon() {
-		return this.icon || MessageStrip.iconMappings()[this.type];
-	}
-
-	get typeClasses() {
-		return MessageStrip.typeClassesMappings()[this.type];
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	MessageStrip.define();
-});
-
-const block0$r = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}"><ui5-input id="ui5-multi-combobox--input"		value="${ifDefined(context.value)}"		placeholder="${ifDefined(context.placeholder)}"		?disabled=${ifDefined(context.disabled)}		?readonly=${ifDefined(context.readonly)}		value-state="${ifDefined(context.valueState)}"		@ui5-input="${ifDefined(context._inputLiveChange)}"		@ui5-change=${ifDefined(context._inputChange)}		@keydown="${ifDefined(context._keydown)}"><ui5-tokenizer slot="_beginContent"			show-more			class="ui5-multi-combobox-tokenizer"			?disabled="${ifDefined(context.disabled)}"			@ui5-showMoreItemsPress="${ifDefined(context._showMorePopover)}"			@ui5-tokenDelete="${ifDefined(context._tokenDelete)}"			@focusout="${ifDefined(context._tokenizerFocusOut)}"		>			${ repeat(context.items, undefined, (item, index) => block1$k(item, index, context)) }</ui5-tokenizer>		${ !context.readonly ? block3$a(context) : undefined }</ui5-input><ui5-popover 		class="ui5-multi-combobox-selected-items--popover"		horizontal-align="Stretch"		no-header		?no-arrow=${ifDefined(context.editable)}		placement-type="Bottom"><ui5-list separators="None" mode="${ifDefined(context.selectedItemsListMode)}"			@ui5-selectionChange=${ifDefined(context._listSelectionChange)}>			${ repeat(context.items, undefined, (item, index) => block4$9(item, index, context)) }</ui5-list></ui5-popover><ui5-popover class="ui5-multi-combobox-all-items--popover"		no-arrow		no-header		horizontal-align="Stretch"		initial-focus="ui5-multi-combobox--input"		horizontal-align="Left"		placement-type="Bottom"		@ui5-selectionChange=${ifDefined(context._listSelectionChange)}		@ui5-afterClose=${ifDefined(context._toggleIcon)}		@ui5-afterOpen=${ifDefined(context._toggleIcon)}><ui5-list separators="None" mode="MultiSelect" class="ui5-multi-combobox-all-items-list">			${ repeat(context._filteredItems, undefined, (item, index) => block6$5(item, index, context)) }</ui5-list></ui5-popover></div>`; };
-const block1$k = (item, index, context) => { return html`${ item.selected ? block2$e(item, index, context) : undefined }`; };
-const block2$e = (item, index, context) => { return html`<ui5-token ?readonly="${ifDefined(context.readonly)}" class="ui5-multi-combobox--token" data-ui5-id="${ifDefined(item._id)}" >${ifDefined(item.textContent)}</ui5-token>				`; };
-const block3$a = (context) => { return html`<ui5-icon src="sap-icon://slim-arrow-down" 				slot="icon"				@ui5-press=${ifDefined(context._showAllItemsPopover)}				class="${ifDefined(classMap(context.classes.icon))}"			></ui5-icon>		`; };
-const block4$9 = (item, index, context) => { return html`${ item.selected ? block5$5(item, index, context) : undefined }`; };
-const block5$5 = (item, index, context) => { return html`<ui5-li type="Active" data-ui5-token-id="${ifDefined(item._id)}" .selected="${ifDefined(context.editable)}">${ifDefined(item.textContent)}</ui5-li>				`; };
-const block6$5 = (item, index, context) => { return html`<ui5-li type="Active" ?selected=${ifDefined(item.selected)} data-ui5-token-id="${ifDefined(item._id)}">${ifDefined(item.textContent)}</ui5-li>			`; };
-
-const block0$s = (context) => { return html`<div class="${ifDefined(classMap(context.classes.wrapper))}"><div class="${ifDefined(classMap(context.classes.content))}" @ui5-delete=${ifDefined(context._tokenDelete)}><div class="ui5-tokenizer-token-placeholder"><div style="display: inline-block"></div></div>		${ repeat(context.tokens, undefined, (item, index) => block1$l(item, index, context)) }</div>	${ context.showNMore ? block2$f(context) : undefined }</div>`; };
-const block1$l = (item, index, context) => { return html`<div class="ui5-tokenizer--token--wrapper"><slot name="${ifDefined(item._individualSlot)}"></slot></div>		`; };
-const block2$f = (context) => { return html`<span @click="${ifDefined(context._openOverflowPopover)}" class="ui5-tokenizer-more-text">${ifDefined(context._nMoreText)}</span>	`; };
-
-var styles$8 = ":host(ui5-tokenizer){display:inline-block;box-sizing:border-box;border:1px solid #000;height:2.25rem}ui5-tokenizer{display:inline-block;box-sizing:border-box;border:1px solid #000;height:2.25rem}.sapUiSizeCompact.ui5-tokenizer--wrapper{padding:.1875rem .125rem}.ui5-tokenizer--wrapper{height:100%;display:flex;align-items:center;padding:.1875rem;overflow-x:scroll;box-sizing:border-box;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.ui5-tokenizer-no-padding{padding:0}.ui5-tokenizer--wrapper.ui5-tokenizer-nmore--wrapper{overflow-x:hidden}.ui5-tokenizer--token--wrapper{display:inline-flex;align-items:center;box-sizing:border-box;height:100%}.ui5-tokenizer--content{height:100%}.ui5-tokenizer--content.ui5-tokenizer-nmore--content{overflow:hidden}.ui5-tokenizer-more-text{display:inline-block;margin-left:3px;cursor:pointer;white-space:nowrap;font-size:var(--sapMFontMediumSize,.875rem)}.ui5-tokenizer-token-placeholder{display:inline-block;height:1px;width:1px;margin-top:auto}";
-
-/**
- * @public
- */
-const metadata$v = {
-	tag: "ui5-tokenizer",
-	slots: /** @lends sap.ui.webcomponents.main.Tokenizer.prototype */ {
-		tokens: {
-			type: HTMLElement,
-			multiple: true,
-			individualSlots: true,
-		},
-	},
-	defaultSlot: "tokens",
-	properties: /** @lends sap.ui.webcomponents.main.Tokenizer.prototype */ {
-		showMore: { type: Boolean },
-		disabled: { type: Boolean },
-
-		_nMoreText: { type: String },
-		_hiddenTokens: { type: Object, multiple: true },
-	},
-	events: /** @lends sap.ui.webcomponents.main.Tokenizer.prototype */ {
-		tokenDelete: {
-			detail: {
-				ref: { type: HTMLElement },
-			},
-		},
-
-		showMoreItemsPress: {
-			detail: {
-				ref: { type: HTMLElement },
-			},
-		},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * A container for tokens.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Tokenizer
- * @extends UI5Element
- * @tagname ui5-tokenizer
- * @usestextcontent
- * @private
- */
-class Tokenizer extends UI5Element {
-	static get metadata() {
-		return metadata$v;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$s;
-	}
-
-	static get styles() {
-		return styles$8;
-	}
-
-	constructor() {
-		super();
-
-		this._itemsCount = 0;
-		this._lastIndex = 0;
-		this._lastTokenCount = 0;
-		this._recalculateLayouting = false;
-		this._resizeHandler = this._handleResize.bind(this);
-		this._itemNav = new ItemNavigation(this);
-
-		this._itemNav.getItemsCallback = () => {
-			if (this.disabled) {
-				return [];
-			}
-
-			return this._getTokens();
-		};
-
-		this.resourceBundle = getResourceBundle("@ui5/webcomponents");
-
-		this._delegates.push(this._itemNav);
-	}
-
-	onBeforeRendering() {
-		this._itemNav.init();
-
-		if (this._lastTokenCount !== this.tokens.length) {
-			this._recalculateLayouting = true;
-		}
-
-		this._lastTokenCount = this.tokens.length;
-		this._nMoreText = this.resourceBundle.getText(MULTIINPUT_SHOW_MORE_TOKENS, [this._hiddenTokens.length]);
-	}
-
-	onAfterRendering() {
-		if (this._recalculateLayouting) {
-			this._handleResize();
-			this._recalculateLayouting = false;
-		}
-	}
-
-	onEnterDOM() {
-		ResizeHandler.register(this.shadowRoot.querySelector(".ui5-tokenizer--content"), this._resizeHandler);
-	}
-
-	onExitDOM() {
-		ResizeHandler.deregister(this.shadowRoot.querySelector(".ui5-tokenizer--content"), this._resizeHandler);
-	}
-
-	_openOverflowPopover() {
-		this.fireEvent("showMoreItemsPress");
-	}
-
-	_handleResize() {
-		const overflowTokens = this._getTokens(true);
-
-		if (!overflowTokens.length) {
-			this._hiddenTokens = [];
-		}
-
-		this._hiddenTokens = overflowTokens;
-	}
-
-	_getTokens(overflow) {
-		const firstToken = this.shadowRoot.querySelector(".ui5-tokenizer-token-placeholder");
-
-		if (!firstToken) {
-			return [];
-		}
-
-		const firstTokenTop = firstToken.getBoundingClientRect().top;
-		const tokens = [];
-
-		if (firstToken && this.tokens.length) {
-			this.tokens.forEach(token => {
-				const tokenTop = token.getBoundingClientRect().top;
-				const tokenOverflows = overflow && tokenTop > firstTokenTop;
-				const tokenVisible = !overflow && tokenTop <= firstTokenTop;
-
-				(tokenVisible || tokenOverflows) && tokens.push(token);
-			});
-		}
-
-		return tokens;
-	}
-
-	_tokenDelete(event) {
-		if (event.detail && event.detail.backSpace) {
-			this._deleteByBackspace();
-		}
-
-		this._updateAndFocus();
-		this.fireEvent("tokenDelete", { ref: event.target });
-	}
-
-	/* Keyboard handling */
-
-	_updateAndFocus() {
-		if (this._getTokens().length) {
-			this._itemNav.update();
-
-			setTimeout(() => {
-				this._itemNav.focusCurrent();
-			}, 0);
-		}
-	}
-
-	_deleteByBackspace() {
-		const newIndex = this._itemNav.currentIndex - 1;
-
-		if (newIndex < 0) {
-			this._itemNav.currentIndex = 0;
-		} else {
-			this._itemNav.currentIndex = newIndex;
-		}
-	}
-
-	get showNMore() {
-		return this.showMore && this._hiddenTokens.length;
-	}
-
-	get classes() {
-		return {
-			wrapper: {
-				"ui5-tokenizer-nmore--wrapper": this.showMore,
-				"ui5-tokenizer--wrapper": true,
-				"ui5-tokenizer-no-padding": !this.tokens.length,
-				"sapUiSizeCompact": getCompactSize(),
-			},
-			content: {
-				"ui5-tokenizer--content": true,
-				"ui5-tokenizer-nmore--content": this.showMore,
-			},
-		};
-	}
-
-	static async define(...params) {
-		await fetchResourceBundle("@ui5/webcomponents");
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Tokenizer.define();
-});
-
-const block0$t = (context) => { return html`<div tabindex="${ifDefined(context._tabIndex)}" @click="${ifDefined(context._select)}" @keydown="${ifDefined(context._keydown)}" class="ui5-token--wrapper"><span class="ui5-token--text"><slot></slot></span>	${ !context.readonly ? block1$m(context) : undefined }</div>`; };
-const block1$m = (context) => { return html`<ui5-icon @click="${ifDefined(context._delete)}" src="${ifDefined(context.iconURI)}" class="ui5-token--icon"></ui5-icon>	`; };
-
-var styles$9 = ":host(ui5-token){display:inline-block;background:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-width:1px;border-style:solid;border-color:var(--_ui5_token_border_color,var(--sapUiButtonBackgroundDarken24,#c2c2c2));border-radius:var(--_ui5_token_border_radius,.25rem);color:var(--_ui5_token_text_color,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));height:1.625rem;box-sizing:border-box}:host(ui5-token[data-ui5-compact-size]){font-size:.75rem;height:1.25rem}:host(ui5-token[data-ui5-compact-size]) .ui5-token--icon{padding:0 .25rem;width:.75rem;height:.75rem}:host(ui5-token:not([readonly]):hover){background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));border-color:var(--_ui5_token_hover_border_color,var(--sapUiButtonHoverBorderColorLighten30,#4ba0f6))}:host(ui5-token[selected]:not([readonly])){color:var(--sapUiToggleButtonPressedTextColor,#fff);background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));border:1px solid var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))))}:host(ui5-token[selected]:not([readonly]):hover){background:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border:1px solid var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}:host(ui5-token[readonly]){color:var(--sapUiContentForegroundTextColor,var(--sapContent_ForegroundTextColor,#32363a))}:host(ui5-token[readonly]) .ui5-token--wrapper{padding-right:.375rem}:host(ui5-token[selected]) .ui5-token--wrapper:focus{outline:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}ui5-token{display:inline-block;background:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-width:1px;border-style:solid;border-color:var(--_ui5_token_border_color,var(--sapUiButtonBackgroundDarken24,#c2c2c2));border-radius:var(--_ui5_token_border_radius,.25rem);color:var(--_ui5_token_text_color,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));height:1rem;box-sizing:border-box}ui5-token[data-ui5-compact-size]{font-size:.75rem;height:1.25rem}ui5-token[data-ui5-compact-size] .ui5-token--icon{padding:0 .25rem;width:.75rem;height:.75rem}ui5-token:not([readonly]):hover{background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));border-color:var(--_ui5_token_hover_border_color,var(--sapUiButtonHoverBorderColorLighten30,#4ba0f6))}ui5-token[selected]:not([readonly]){color:var(--sapUiToggleButtonPressedTextColor,#fff);background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));border:1px solid var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))))}ui5-token[selected]:not([readonly]):hover{background:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border:1px solid var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}ui5-token[readonly]{color:var(--sapUiContentForegroundTextColor,var(--sapContent_ForegroundTextColor,#32363a))}ui5-token[readonly] .ui5-token--wrapper{padding-right:.375rem}ui5-token[selected] .ui5-token--wrapper:focus{outline:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.ui5-token--icon{padding:.25rem .5rem;color:inherit;cursor:pointer;width:1rem;height:1rem;color:var(--_ui5_token_icon_color,var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0))))}.ui5-token--wrapper{display:flex;align-items:center;height:100%;width:100%;cursor:default;padding-left:.375rem;padding-top:.25rem;padding-bottom:.25rem;box-sizing:border-box;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));user-select:none}.ui5-token--wrapper:focus{outline-offset:-2px;outline:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000))}.ui5-token--text{white-space:nowrap}";
-
-/**
- * @public
- */
-const metadata$w = {
-	tag: "ui5-token",
-	defaultSlot: "text",
-	usesNodeText: true,
-	slots: /** @lends sap.ui.webcomponents.main.Token.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-token</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.Token.prototype */ {
-
-		/**
-		 * Defines whether the <code>ui5-token</code> is selected or not.
-		 *
-		 * @type {boolean}
-		 * @public
-		 */
-		selected: { type: Boolean },
-
-		/**
-		 * Defines whether the <code>ui5-token</code> is read-only.
-		 * <br><br>
-		 * <b>Note:</b> A read-only <code>ui5-token</code> can not be deleted or selected,
-		 * but still provides visual feedback upon user interaction.
-		 *
-		 * @type {boolean}
-		 * @public
-		 */
-		readonly: { type: Boolean },
-
-		_tabIndex: { type: String, defaultValue: "-1" },
-	},
-
-	events: /** @lends sap.ui.webcomponents.main.Token.prototype */ {
-
-		/**
-		 * Fired when the backspace, delete or close icon of the token is pressed
-		 *
-		 * @event
-		 * @param {boolean} backSpace indicates whether token is deleted by backspace key
-		 * @param {boolean} delete indicates whether token is deleted by delete key
-		 * @public
-		 */
-		"delete": {
-			detail: {
-				"backSpace": { type: Boolean },
-				"delete": { type: Boolean },
-			},
-		},
-
-		/**
-		 * Fired when the a token is selected by user interaction with mouse, clicking space or enter
-		 *
-		 * @event
-		 * @public
-		 */
-		select: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * Tokens are small items of information (similar to tags) that mainly serve to visualize previously selected items.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Token
- * @extends UI5Element
- * @tagname ui5-token
- * @usestextcontent
- * @private
- */
-class Token extends UI5Element {
-	static get metadata() {
-		return metadata$w;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$t;
-	}
-
-	static get styles() {
-		return styles$9;
-	}
-
-	_select() {
-		this.fireEvent("select");
-	 }
-
-	 _delete() {
-		this.fireEvent("delete");
-	 }
-
-	 _keydown(event) {
-		const isBS = isBackSpace(event);
-		const isD = isDelete(event);
-
-		if (!this.readonly && (isBS || isD)) {
-			event.preventDefault();
-
-			this.fireEvent("delete", {
-				backSpace: isBS,
-				"delete": isD,
-			});
-		}
-
-		if (isEnter(event) || isSpace(event)) {
-			this.fireEvent("select", {});
-		}
-	}
-
-	get iconURI() {
-		return getTheme() === "sap_fiori_3" ? "sap-icon://decline" : "sap-icon://sys-cancel";
-	}
-
-	static async define(...params) {
-		await Icon.define();
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Token.define();
-});
-
-var styles$a = ":host(ui5-multi-combobox:not([hidden])){display:inline-block;width:100%;--_ui5_popover_content_padding:0}ui5-multi-combobox:not([hidden]){display:inline-block;width:100%}.ui5-multi-combobox--wrapper{display:flex;overflow:hidden;width:100%;height:100%}.ui5-multi-combobox--icon{color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));cursor:pointer;outline:none;box-sizing:border-box;width:2.375rem}.ui5-multi-combobox--icon[data-ui5-compact-size]{width:2rem}.ui5-multi-combobox--icon:active{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff)}.ui5-multi-combobox--icon.ui5-multi-combobox-icon-pressed{background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.ui5-multi-combobox--icon:not(.ui5-multi-combobox-icon-pressed):not(:active):hover{background:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.ui5-multi-combobox--token{height:80%}.sapUiSizeCompact .ui5-multi-combobox--token{height:100%}.ui5-multi-combobox-tokenizer{max-width:calc(100% - 3rem - var(--sap_wc_input_icon_min_width, 2.375rem));border:none;width:auto;min-width:0;height:100%}";
-
-/**
- * @public
- */
-const metadata$x = {
-	tag: "ui5-multi-combobox",
-	defaultSlot: "items",
-	slots: /** @lends sap.ui.webcomponents.main.MultiComboBox.prototype */ {
-		/**
-		 * Defines the <code>ui5-multi-combobox</code> items.
-		 * </br></br>
-		 * Example: </br>
-		 * &lt;ui5-multi-combobox></br>
-		 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;ui5-li>Item #1&lt;/ui5-li></br>
-		 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;ui5-li>Item #2&lt;/ui5-li></br>
-		 * &lt;/ui5-multi-combobox>
-		 * <br> <br>
-		 *
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		items: {
-			type: HTMLElement,
-			multiple: true,
-			listenFor: { include: ["*"] },
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.MultiComboBox.prototype */ {
-		/**
-		 * Defines the value of the <code>ui5-multi-combobox</code>.
-		 * <br><br>
-		 * <b>Note:</b> The property is updated upon typing.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		value: {
-			type: String,
-			defaultValue: "",
-		},
-
-		/**
-		 * Defines a short hint intended to aid the user with data entry when the
-		 * <code>ui5-multi-combobox</code> has no value.
-		 * <br><br>
-		 * <b>Note:</b> The placeholder is not supported in IE. If the placeholder is provided, it won`t be displayed in IE.
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		placeholder: {
-			type: String,
-			defaultValue: "",
-		},
-
-		/**
-		 * Defines if the user input will be prevented if no matching item has been found
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		validateInput: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines whether <code>ui5-multi-combobox</code> is in disabled state.
-		 * <br><br>
-		 * <b>Note:</b> A disabled <code>ui5-multi-combobox</code> is completely uninteractive.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the value state of the <code>ui5-multi-combobox</code>.
-		 * Available options are: <code>None</code>, <code>Success</code>, <code>Warning</code>, and <code>Error</code>.
-		 *
-		 * @type {string}
-		 * @defaultvalue "None"
-		 * @public
-		 */
-		valueState: {
-			type: ValueState,
-			defaultValue: ValueState.None,
-		},
-
-		/**
-		 * Defines whether the <code>ui5-multi-combobox</code> is readonly.
-		 * <br><br>
-		 * <b>Note:</b> A read-only <code>ui5-multi-combobox</code> is not editable,
-		 * but still provides visual feedback upon user interaction.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		readonly: {
-			type: Boolean,
-		},
-
-		_filteredItems: { type: Object },
-		_iconPressed: { type: Boolean },
-	},
-	events: /** @lends sap.ui.webcomponents.main.MultiComboBox.prototype */ {
-		/**
-		 * Fired when the input operation has finished by pressing Enter or on focusout.
-		 *
-		 * @event
-		 * @public
-		 */
-		change: {},
-
-		/**
-		 * Fired when the value of the <code>ui5-multi-combobox</code> changes at each keystroke.
-		 *
-		 * @event
-		 * @public
-		 */
-		input: {},
-
-		/**
-		 * Fired when selection is changed by user interaction
-		 * in <code>SingleSelect</code> and <code>MultiSelect</code> modes.
-		 *
-		 * @event
-		 * @param {Array} items an array of the selected items.
-		 * @public
-		 */
-		selectionChange: {
-			detail: {
-				items: { type: Array },
-			},
-		},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-multi-combobox</code> component provides a list box with items and a text field allowing the user to either type a value directly into the control or choose from the list of existing items.
- *
- * A drop-down list for selecting and filtering values.
- * <h3>Description</h3>
- * The <code>ui5-multi-combobox</code> component is commonly used to enable users to select one or more options from a predefined list. The control provides an editable input field to filter the list, and a dropdown arrow of available options.
- * The select options in the list have checkboxes that permit multi-selection. Entered values are displayed as tokens.
- * <h3>Structure</h3>
- * The <code>ui5-multi-combobox</code> consists of the following elements:
- * <ul>
- * <li> Tokenizer - a list of tokens with selected options.
- * <li> Input field - displays the selected option/s as token/s. Users can type to filter the list.
- * <li> Drop-down arrow - expands\collapses the option list.</li>
- * <li> Option list - the list of available options.</li>
- * </ul>
- * <h3>Keyboard Handling</h3>
- *
- * The <code>ui5-multi-combobox</code> provides advanced keyboard handling.
- *
- * <h4>Picker</h3>
- * If the <code>ui5-multi-combobox</code> is focused,
- * you can open or close the drop-down by pressing <code>F4</code>, <code>ALT+UP</code> or <code>ALT+DOWN</code> keys.
- * Once the drop-down is opened, you can use the <code>UP</code> and <code>DOWN</code> arrow keys
- * to navigate through the available options and select one by pressing the <code>Space</code> or <code>Enter</code> keys.
- * <br>
- *
- * <h4>Tokens</h2>
- * <ul>
- * <li> Left/Right arrow keys - moves the focus selection form the currently focues token to the previous/next one (if available). </li>
- * <li> Delete -  deletes the token and focuses the previous token. </li>
- * <li> Backspace -  deletes the token and focus the next token. </li>
- * </ul>
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/MultiComboBox";</code>
- *
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.MultiComboBox
- * @extends UI5Element
- * @tagname ui5-multi-combobox
- * @public
- * @since 0.11.0
- */
-class MultiComboBox extends UI5Element {
-	static get metadata() {
-		return metadata$x;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$r;
-	}
-
-	static get styles() {
-		return styles$a;
-	}
-
-	constructor() {
-		super();
-
-		this._filteredItems = [];
-		this._inputLastValue = "";
-		this._deleting = false;
-	}
-
-	_inputChange() {
-		this.fireEvent("change");
-	}
-
-	_showMorePopover() {
-		this._togglePopover(true);
-	}
-
-	_showAllItemsPopover() {
-		this._togglePopover(false);
-	}
-
-	_inputLiveChange(event) {
-		const input = event.target;
-		const value = input.value;
-		const filteredItems = this._filterItems(value);
-		const oldValueState = this.valueState;
-
-		if (!filteredItems.length && value && this.validateInput) {
-			input.value = this._inputLastValue;
-			input.valueState = "Error";
-
-			setTimeout(() => {
-				input.valueState = oldValueState;
-			}, 2000);
-			return;
-		}
-
-
-		this._inputLastValue = input.value;
-		this.value = input.value;
-		this._filteredItems = filteredItems;
-
-		if (filteredItems.length === 0) {
-			this._getPopover().close();
-		} else {
-			this._getPopover().openBy(this);
-		}
-
-		this.fireEvent("input");
-	}
-
-	_tokenDelete(event) {
-		const token = event.detail.ref;
-		const deletingItem = this.items.filter(item => item._id === token.getAttribute("data-ui5-id"))[0];
-
-		deletingItem.selected = false;
-		this._deleting = true;
-
-		this.fireEvent("selectionChange", { items: this._getSelectedItems() });
-	}
-
-	_tokenizerFocusOut() {
-		const tokenizer = this.shadowRoot.querySelector("ui5-tokenizer");
-		const tokensCount = tokenizer.tokens.length - 1;
-
-		tokenizer.tokens.forEach(token => { token.selected = false; });
-
-		if (tokensCount === 0 && this._deleting) {
-			setTimeout(() => {
-				this.shadowRoot.querySelector("ui5-input").focus();
-			}, 0);
-		}
-
-		this._deleting = false;
-	}
-
-	_keydown(event) {
-		if (isShow(event) && !this.readonly && !this.disabled) {
-			event.preventDefault();
-			this._togglePopover();
-		}
-
-		if (isDown(event) && this._getPopover()._isOpen && this.items.length) {
-			event.preventDefault();
-			const list = this.shadowRoot.querySelector(".ui5-multi-combobox-all-items-list");
-			list._itemNavigation.current = 0;
-			list.items[0].focus();
-		}
-	}
-
-	_filterItems(value) {
-		return this.items.filter(item => {
-			return item.textContent && item.textContent.toLowerCase().startsWith(value.toLowerCase());
-		});
-	}
-
-	_toggleIcon() {
-		this._iconPressed = !this._iconPressed;
-	}
-
-	_getSelectedItems() {
-		return this.items.filter(item => item.selected);
-	}
-
-	_listSelectionChange(event) {
-		event.target.items.forEach(item => {
-			this.items.forEach(mcbItem => {
-				if (mcbItem._id === item.getAttribute("data-ui5-token-id")) {
-					mcbItem.selected = item.selected;
-				}
-			});
-		});
-
-		this.fireEvent("selectionChange", { items: this._getSelectedItems() });
-	}
-
-	_getPopover(isMorePopover) {
-		return this.shadowRoot.querySelector(`.ui5-multi-combobox-${isMorePopover ? "selected" : "all"}-items--popover`);
-	}
-
-	_togglePopover(isMorePopover) {
-		const popover = this._getPopover(isMorePopover);
-		const otherPopover = this._getPopover(!isMorePopover);
-
-		if (popover && popover._isOpen) {
-			return popover.close();
-		}
-
-		otherPopover && otherPopover.close();
-
-		popover && popover.openBy(this);
-	}
-
-	onBeforeRendering() {
-		this._inputLastValue = this.value;
-
-		const hasSelectedItem = this.items.some(item => item.selected);
-
-		if (!hasSelectedItem) {
-			const morePopover = this.shadowRoot.querySelector(`.ui5-multi-combobox-selected-items--popover`);
-
-			morePopover && morePopover.close();
-		}
-
-		const input = this.shadowRoot.querySelector("ui5-input");
-
-		if (input && !input.value) {
-			this._filteredItems = this.items;
-		}
-
-		const filteredItems = this._filterItems(this.value);
-		this._filteredItems = filteredItems;
-	}
-
-
-	get editable() {
-		return !this.readonly;
-	}
-
-	get selectedItemsListMode() {
-		return this.readonly ? "None" : "MultiSelect";
-	}
-
-	get classes() {
-		return {
-			main: {
-				"ui5-multi-combobox--wrapper": true,
-				"sapUiSizeCompact": getCompactSize(),
-			},
-			icon: {
-				[`ui5-multi-combobox-icon-pressed`]: this._iconPressed,
-				[`ui5-multi-combobox--icon`]: true,
-			},
-		};
-	}
-
-	static async define(...params) {
-		await Promise.all([
-			Input.define(),
-			Tokenizer.define(),
-			Token.define(),
-			Icon.define(),
-			Popover.define(),
-			List.define(),
-			StandardListItem.define(),
-		]);
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	MultiComboBox.define();
-});
-
-var scroll = ({
-	element = animationConfig.element,
-	duration = animationConfig.duration,
-	progress: progressCallback = animationConfig.identity,
-	dx = 0,
-	dy = 0,
-}) => {
-	let scrollLeft;
-	let scrollTop;
-
-	return animate({
-		beforeStart: () => {
-			scrollLeft = element.scrollLeft;
-			scrollTop = element.scrollTop;
-		},
-		duration,
-		element,
-		progress: progress => {
-			progressCallback(progress);
-
-			element.scrollLeft = scrollLeft + (progress * dx); // easing - linear
-			element.scrollTop = scrollTop + (progress * dy); // easing - linear
-		},
-	});
-};
-
-const scrollEventName = "scroll";
-
-class ScrollEnablement extends EventProvider {
-	constructor() {
-		super();
-	}
-
-	set scrollContainer(container) {
-		this._container = container;
-	}
-
-	get scrollContainer() {
-		return this._container;
-	}
-
-	scrollTo(left, top) {
-		this._container.scrollLeft = left;
-		this._container.scrollTop = top;
-	}
-
-	move(dx, dy) {
-		return scroll({
-			element: this._container,
-			dx,
-			dy,
-		});
-	}
-
-	getScrollLeft() {
-		return this._container.scrollLeft;
-	}
-
-	getScrollTop() {
-		return this._container.scrollTop;
-	}
-
-	_isTouchInside(touch) {
-		const rect = this._container.getBoundingClientRect();
-		const x = touch.clientX;
-		const y = touch.clientY;
-
-		return x >= rect.left && x <= rect.right
-			&& y >= rect.top && y <= rect.bottom;
-	}
-
-	ontouchstart(event) {
-		const touch = event.touches[0];
-		this._prevDragX = touch.pageX;
-		this._prevDragY = touch.pageY;
-
-		this._canScroll = this._isTouchInside(touch);
-	}
-
-	ontouchmove(event) {
-		if (!this._canScroll) {
-			return;
-		}
-
-		const container = this._container;
-		const touch = event.touches[0];
-
-		const dragX = touch.pageX;
-		const dragY = touch.pageY;
-
-		container.scrollLeft += this._prevDragX - dragX;
-		container.scrollTop += this._prevDragY - dragY;
-
-		this.fireEvent(scrollEventName, {});
-
-		this._prevDragX = dragX;
-		this._prevDragY = dragY;
-	}
-}
-
-const block0$u = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	dir="${ifDefined(context.rtl)}"><div class="${ifDefined(classMap(context.classes.header))}" id="${ifDefined(context._id)}-header"><ui5-icon @ui5-press="${ifDefined(context._headerBackArrow.click)}" class="${ifDefined(classMap(context.classes.headerBackArrow))}" src="sap-icon://slim-arrow-left" tabindex="-1"></ui5-icon><!-- tab items --><div class="${ifDefined(classMap(context.classes.headerScrollContainer))}" id="${ifDefined(context._id)}-headerScrollContainer"><ul role="tablist" class="${ifDefined(classMap(context.classes.headerList))}">				${ repeat(context.renderItems, undefined, (item, index) => block1$n(item, index, context)) }</ul></div><ui5-icon @ui5-press="${ifDefined(context._headerForwardArrow.click)}" class="${ifDefined(classMap(context.classes.headerForwardArrow))}" src="sap-icon://slim-arrow-right" tabindex="-1"></ui5-icon><!-- overflow button -->		${ context.showOverflow ? block12$2(context) : undefined }</div><!-- content area --><div class="${ifDefined(classMap(context.classes.content))}">		${ repeat(context.renderItems, undefined, (item, index) => block13$1(item, index, context)) }</div><!-- overflow menu --><ui5-popover		id="${ifDefined(context._id)}-overflowMenu"		no-arrow		no-header		placement-type="Bottom"		horizontal-align="Right"><ui5-list @ui5-itemPress="${ifDefined(context._overflowList.click)}">			${ repeat(context.renderItems, undefined, (item, index) => block15(item, index, context)) }</ui5-list></ui5-popover></div>`; };
-const block1$n = (item, index, context) => { return html`${ !item.isSeparator ? block2$g(item, index, context) : undefined }${ item.isSeparator ? block11$2(item, index, context) : undefined }`; };
-const block2$g = (item, index, context) => { return html`<li class="${ifDefined(item.headerItemClasses)}"							id="${ifDefined(item.item._id)}"							tabindex="${ifDefined(item.item._tabIndex)}"							@click="${ifDefined(context._headerItem.click)}"							@keydown="${ifDefined(context._headerItem.keydown)}"							@keyup="${ifDefined(context._headerItem.keyup)}"							role="tab"							aria-posinset="${ifDefined(item.position)}"							aria-setsize="${ifDefined(context.renderItems.length)}"							aria-controls="ui5-tc-contentItem-${ifDefined(item.position)}"							aria-selected="${ifDefined(item.selected)}"							?aria-disabled="${ifDefined(item.disabled)}"							?disabled="${ifDefined(item.disabled)}"							aria-labelledby="${ifDefined(item.ariaLabelledBy)}"						>							${ item.isTextOnlyTab ? block3$b(item, index, context) : undefined }${ item.isIconTab ? block5$6(item, index, context) : undefined }${ item.isMixedModeTab ? block8$3(item, index, context) : undefined }</li>					`; };
-const block3$b = (item, index, context) => { return html`<div class="${ifDefined(item.headerItemContentClasses)}"><span class="${ifDefined(item.headerItemTextClasses)}" id="${ifDefined(item.item._id)}-text"><span class="${ifDefined(item.headerItemSemanticIconClasses)}"></span>			${ifDefined(item.item.text)}</span>		${ item.item.additionalText ? block4$a(item, index, context) : undefined }</div>`; };
-const block4$a = (item, index, context) => { return html`<span class="${ifDefined(item.headerItemAdditionalTextClasses)}" id="${ifDefined(item.item._id)}-additionalText">(${ifDefined(item.item.additionalText)})</span>		`; };
-const block5$6 = (item, index, context) => { return html`<ui5-icon src="${ifDefined(item.item.icon)}" class="${ifDefined(item.headerItemIconClasses)}"></ui5-icon><div class="${ifDefined(item.headerItemContentClasses)}">		${ item.item.additionalText ? block6$6(item, index, context) : undefined }${ item.item.text ? block7$3(item, index, context) : undefined }</div>`; };
-const block6$6 = (item, index, context) => { return html`<span class="${ifDefined(item.headerItemAdditionalTextClasses)}" id="${ifDefined(item.item._id)}-additionalText">${ifDefined(item.item.additionalText)}</span>		`; };
-const block7$3 = (item, index, context) => { return html`<span class="${ifDefined(item.headerItemTextClasses)}" id="${ifDefined(item.item._id)}-text"><span class="${ifDefined(item.headerItemSemanticIconClasses)}"></span>				${ifDefined(item.item.text)}</span>		`; };
-const block8$3 = (item, index, context) => { return html`<div class="${ifDefined(item.headerItemContentClasses)}">		${ item.item.additionalText ? block9$2(item, index, context) : undefined }${ item.item.text ? block10$2(item, index, context) : undefined }</div>`; };
-const block9$2 = (item, index, context) => { return html`<span class="${ifDefined(item.headerItemAdditionalTextClasses)}" id="${ifDefined(item.item._id)}-additionalText">${ifDefined(item.item.additionalText)}</span>		`; };
-const block10$2 = (item, index, context) => { return html`<span class="${ifDefined(item.headerItemTextClasses)}" id="${ifDefined(item.item._id)}-text"><span class="${ifDefined(item.headerItemSemanticIconClasses)}"></span>				${ifDefined(item.item.text)}</span>		`; };
-const block11$2 = (item, index, context) => { return html`<li id="${ifDefined(item._id)}" role="separator" class="${ifDefined(classMap(context.classes.separator))}"></li>					`; };
-const block12$2 = (context) => { return html`<ui5-button				@ui5-press="${ifDefined(context._overflowButton.click)}"				class="${ifDefined(classMap(context.classes.overflowButton))}"				icon="sap-icon://slim-arrow-down"				type="Transparent"			></ui5-button>		`; };
-const block13$1 = (item, index, context) => { return html`${ !item.isSeparator ? block14$1(item, index, context) : undefined }`; };
-const block14$1 = (item, index, context) => { return html`<div class="${ifDefined(item.contentItemClasses)}" id="ui5-tc-contentItem-${ifDefined(item.position)}" ?hidden="${ifDefined(item.hidden)}"><slot name="${ifDefined(item.item._individualSlot)}"></slot></div>			`; };
-const block15 = (item, index, context) => { return html`${ !item.isSeparator ? block16(item, index, context) : undefined }`; };
-const block16 = (item, index, context) => { return html`<ui5-li-custom id="${ifDefined(item.item._id)}"						class="${ifDefined(item.overflowItemClasses)}"						type="${ifDefined(item.overflowItemState)}"						?selected="${ifDefined(item.selected)}"						?disabled="${ifDefined(item.disabled)}"					><div class="${ifDefined(item.overflowItemContentClasses)}">							${ item.item.icon ? block17(item, index, context) : undefined }${ifDefined(item.item.text)}${ item.item.additionalText ? block18(item, index, context) : undefined }</div></ui5-li-custom>				`; };
-const block17 = (item, index, context) => { return html`<ui5-icon src="${ifDefined(item.item.icon)}"></ui5-icon>							`; };
-const block18 = (item, index, context) => { return html`								(${ifDefined(item.item.additionalText)})							`; };
-
-/**
- * @public
- */
-const metadata$y = {
-	properties: /** @lends sap.ui.webcomponents.main.TabBase.prototype */{
-	},
-	events: /** @lends sap.ui.webcomponents.main.TabBase.prototype */ {
-	},
-};
-
-/**
- * @class
- * Represents a base class for all tabs inside a TabContainer.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.TabBase
- * @extends sap.ui.webcomponents.base.UI5Element
- * @public
- */
-class TabBase extends UI5Element {
-	static get metadata() {
-		return metadata$y;
-	}
-
-	isSeparator() {
-		return false;
-	}
-}
-
-const SemanticColors = {
-	/**
-	 * Default color (brand color)
-	 * @public
-	 */
-	Default: "Default",
-
-	/**
-	 * Positive color
-	 * @public
-	 */
-	Positive: "Positive",
-
-	/**
-	 * Negative color
-	 * @public
-	 */
-	Negative: "Negative",
-
-	/**
-	 * Critical color
-	 * @public
-	 */
-	Critical: "Critical",
-
-	/**
-	 * Neutral color.
-	 * @public
-	 */
-	Neutral: "Neutral",
-};
-
-
-class SemanticColor extends DataType {
-	static isValid(value) {
-		return !!SemanticColors[value];
-	}
-}
-
-SemanticColor.generataTypeAcessors(SemanticColors);
-
-var tabContainerCss = ":host(ui5-tabcontainer:not([hidden])){display:inline-block;width:100%}ui5-tabcontainer:not([hidden]){width:100%}.ui5-tab-container{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:1rem}.ui5-tc__header{background-color:var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:var(--_ui5_tc_header_border_bottom,.0625rem solid var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));box-shadow:var(--_ui5_tc_header_box_shadow,var(--sapUiShadowHeader,0 1px .5rem 0 rgba(0,0,0,.05)));display:flex;align-items:center}.ui-tc__headerScrollContainer{box-sizing:border-box;overflow:hidden;flex:1}.ui5-tc__headerList{display:flex;margin:0;padding:0;list-style:none}.ui5-tc__separator{width:0;border-left:2px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));margin:.5rem .25rem}.ui5-tc__headerItem{color:var(--_ui5_tc_headerItem_color,var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70))));cursor:pointer;flex-shrink:0;margin:0 1rem;font-size:var(--sapMFontSmallSize,.75rem);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));position:relative;display:inline-flex;align-items:center}.ui5-tc__headerItem:last-child{margin-right:0}.ui5-tc__headerItemContent{pointer-events:none}.ui5-tc__headerItem--selected.ui5-tc__headerItem--textOnly{color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))}.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem--selected.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemContent:after,.ui5-tc__headerItem--selected.ui5-tc__headerItem--textOnly .ui5-tc__headerItemContent:after{content:\"\";border-bottom:var(--_ui5_tc_headerItemContent_border_bottom,.188rem solid var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));width:100%;position:absolute;bottom:0;left:0}.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon:after{bottom:-.8rem}.ui5-tc__headerItem--disabled,.ui5-tc__overflowItem--disabled{cursor:default;opacity:.5}.ui5-tc__headerItem:focus,.ui5-tc__separator:focus{outline:none}.ui5-tc__headerItem--mixedMode:focus .ui5-tc__headerItemContent,.ui5-tc__headerItem--textOnly:focus .ui5-tc__headerItemContent,.ui5-tc__headerItem--withIcon:focus .ui5-tc-headerItemIcon{outline:var(--_ui5_tc_headerItem_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.ui5-tc-headerItemSemanticIcon:before{display:var(--_ui5_tc_headerItemSemanticIcon_display,none);font-family:SAP-icons;font-size:.75rem;margin-right:.25rem;speak:none;-webkit-font-smoothing:antialiased}.ui5-tc-headerItemSemanticIcon--positive:before{content:\"\\e1ab\"}.ui5-tc-headerItemSemanticIcon--negative:before{content:\"\\e1ac\"}.ui5-tc-headerItemSemanticIcon--critical:before{content:\"\\e1ae\"}.ui5-tc__headerItem--mixedMode,.ui5-tc__headerItem--withIcon{margin-top:.75rem;padding-bottom:.75rem}.ui5-tc-headerItemIcon{border:var(--_ui5_tc_headerItemIcon_border,1px solid var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)));color:var(--_ui5_tc_headerItemIcon_color,var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));pointer-events:none;border-radius:50%;font-size:1.5rem;margin-right:.25rem;height:3rem;width:3rem;position:relative}.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_selected_background,var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)));color:var(--_ui5_tc_headerItemIcon_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))));text-shadow:none}.ui5-tc__headerItem--withIcon .ui5-tc__headerItemAdditionalText+.ui5-tc__headerItemText{display:block;margin-top:.625rem}.ui5-tc__headerItem--textOnly{font-size:var(--sapMFontMediumSize,.875rem);height:3rem;display:flex;align-items:center}.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemAdditionalText,.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemText{display:inline-block;vertical-align:middle}.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemAdditionalText{font-size:1.5rem;margin-right:.5rem}.ui5-tc__headerArrow{align-self:stretch;cursor:pointer;color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));font-size:1rem;padding:0 .4rem;visibility:hidden}.ui5-tc__headerArrow:active,.ui5-tc__headerArrow:hover{color:var(--sapUiHighlight,var(--sapHighlightColor,#0854a0))}.ui5-tc__headerArrow--visible{visibility:visible}.ui-tc__overflowButton{display:none;margin-left:auto;margin-right:.25rem}.ui-tc__overflowButton--visible{display:block}.ui5-tc__overflowItem{color:var(--_ui5_tc_overflowItem_default_color,var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)))}.ui5-tc__overflowItemContent{display:flex;align-items:center;padding:0 .5rem;height:3rem}.ui5-tc__overflowItem ui5-icon{font-size:1.375rem;width:1.375rem;height:1.375rem;padding-right:1rem}.ui5-tc__content{background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:var(--_ui5_tc_content_border_bottom,.0625rem solid var(--sapUiObjectHeaderBorderColor,#d9d9d9));padding:1rem;position:relative}.ui5-tc__content--collapsed{display:none}.ui5-tc--transparent .ui5-tc__content{background-color:transparent}.ui5-tc__contentItem--hidden{display:none}.ui5-tc-headerItemSemanticIcon--positive:before,.ui5-tc__headerItem--positive .ui5-tc-headerItemIcon,.ui5-tc__headerItem--positive.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--positive{color:var(--sapUiPositive,var(--sapPositiveColor,#107e3e));border-color:var(--_ui5_tc_headerItem_positive_selected_border_color,var(--sapUiPositive,var(--sapPositiveColor,#107e3e)))}.ui5-tc__headerItem--positive.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_positive_selected_background,var(--sapUiPositive,var(--sapPositiveColor,#107e3e)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--positive .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem.ui5-tc__headerItem--positive .ui5-tc__headerItemContent:after{border-color:var(--sapUiPositive,var(--sapPositiveColor,#107e3e))}.ui5-tc-headerItemSemanticIcon--negative:before,.ui5-tc__headerItem--negative .ui5-tc-headerItemIcon,.ui5-tc__headerItem--negative.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--negative{color:var(--sapUiNegative,var(--sapNegativeColor,#b00));border-color:var(--_ui5_tc_headerItem_negative_selected_border_color,var(--sapUiNegative,var(--sapNegativeColor,#b00)))}.ui5-tc__headerItem--negative.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_negative_selected_background,var(--sapUiNegative,var(--sapNegativeColor,#b00)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--negative .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem.ui5-tc__headerItem--negative .ui5-tc__headerItemContent:after{border-color:var(--sapUiNegative,var(--sapNegativeColor,#b00))}.ui5-tc-headerItemSemanticIcon--critical:before,.ui5-tc__headerItem--critical .ui5-tc-headerItemIcon,.ui5-tc__headerItem--critical.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--critical{color:var(--sapUiCritical,var(--sapCriticalColor,#e9730c));border-color:var(--_ui5_tc_headerItem_critical_selected_border_color,var(--sapUiCritical,var(--sapCriticalColor,#e9730c)))}.ui5-tc__headerItem--critical.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_critical_selected_background,var(--sapUiCritical,var(--sapCriticalColor,#e9730c)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--critical .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem.ui5-tc__headerItem--critical .ui5-tc__headerItemContent:after{border-color:var(--sapUiCritical,var(--sapCriticalColor,#e9730c))}.ui5-tc__headerItem--neutral .ui5-tc-headerItemIcon,.ui5-tc__headerItem--nutral.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--neutral{color:var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70));border-color:var(--_ui5_tc_headerItem_neutral_selected_border_color,var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70)))}.ui5-tc__headerItem--neutral.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_neutral_selected_background,var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--neutral .ui5-tc-headerItemIcon:after,.ui5-tc__headerItems.ui5-tc__headerItem--neutral .ui5-tc__headerItemContent:after{border-color:var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70))}[dir=rtl] .ui5-tc__headerItem:last-child{margin-left:0}[dir=rtl] .ui5-tc-headerItemSemanticIcon:before{margin-left:.25rem;margin-right:0}[dir=rtl] .ui5-tc-headerItemIcon{margin-left:.25rem;margin-right:0}[dir=rtl] .ui5-tc__headerItem--mixedMode .ui5-tc__headerItemAdditionalText{margin-right:0;margin-left:.5rem}[dir=rtl] .ui-tc__overflowButton{margin-right:auto;margin-left:.25rem}.sapUiSizeCompact .ui5-tc__headerItem--textOnly,.sapUiSizeCompact .ui5-tc__overflowItemContent{height:2rem}.sapUiSizeCompact .ui5-tc__headerItem--textOnly{line-height:1.325rem}.sapUiSizeCompact .ui5-tc-headerItemIcon{font-size:1rem;height:2rem;width:2rem}.sapUiSizeCompact .ui5-tc__headerItem--withIcon .ui5-tc__headerItemAdditionalText+.ui5-tc__headerItemText{margin-top:.3125rem}";
-
-const SCROLL_STEP = 128;
-
-/**
- * @public
- */
-const metadata$z = {
-	tag: "ui5-tabcontainer",
-	defaultSlot: "items",
-	slots: /** @lends  sap.ui.webcomponents.main.TabContainer.prototype */ {
-		/**
-		 * Defines the tabs.
-		 * <br><b>Note:</b> Only <code>ui5-tab</code> and <code>ui5-tab-separator</code> are allowed.
-		 *
-		 * @type {TabBase[]}
-		 * @public
-		 * @slot
-		 */
-		items: {
-			type: TabBase,
-			multiple: true,
-			individualSlots: true,
-			listenFor: { include: ["*"] },
-		},
-	},
-	properties: /** @lends  sap.ui.webcomponents.main.TabContainer.prototype */ {
-		/**
-		 * Determines whether the tabs are in a fixed state that is not
-		 * expandable/collapsible by user interaction.
-		 *
-		 * @type {Boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		fixed: {
-			type: Boolean,
-		},
-
-		/**
-		 * Determines whether the tab content is collapsed.
-		 *
-		 * @type {Boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		collapsed: {
-			type: Boolean,
-		},
-
-		/**
-		 * Specifies if the overflow select list is displayed.
-		 * <br><br>
-		 * The overflow select list represents a list, where all tab filters are displayed
-		 * so that it's easier for the user to select a specific tab filter.
-		 *
-		 * @type {Boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		showOverflow: {
-			type: Boolean,
-		 },
-
-		_headerItem: {
-			type: Object,
-		},
-
-		_overflowButton: {
-			type: Object,
-		},
-
-		_headerBackArrow: {
-			type: Object,
-		},
-
-		_headerForwardArrow: {
-			type: Object,
-		},
-
-		_overflowList: {
-			type: Object,
-		},
-
-		_selectedTab: {
-			type: TabBase,
-			association: true,
-		},
-
-		_scrollable: {
-			type: Boolean,
-		},
-
-		_scrollableBack: {
-			type: Boolean,
-		},
-
-		_scrollableForward: {
-			type: Boolean,
-		},
-	},
-	events: /** @lends  sap.ui.webcomponents.main.TabContainer.prototype */ {
-		/**
-		 * Fired when an item is selected.
-		 *
-		 * @event
-		 * @param {HTMLElement} item The selected <code>item</code>.
-		 * @public
-		 */
-		itemSelect: {
-			item: { type: HTMLElement },
-		},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-tabcontainer</code> represents a collection of tabs with associated content.
- * Navigation through the tabs changes the content display of the currently active content area.
- * A tab can be labeled with text only, or icons with text.
- *
- * <h3>Structure</h3>
- *
- * The <code>ui5-tabcontainer</code> can hold two types of entities:
- * <ul>
- * <li><code>ui5-tab</code> - contains all the information on an item (text and icon)</li>
- * <li><code>ui5-tab-separator</code> - used to separate tabs with a vertical line</li>
- * </ul>
- *
- * <h3>ES6 import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/TabContainer";</code>
- * <br>
- * <code>import "@ui5/webcomponents/dist/Tab";</code> (for <code>ui5-tab</code>)
- * <br>
- * <code>import "@ui5/webcomponents/dist/TabSeparator";</code> (for <code>ui5-tab-separator</code>)
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.TabContainer
- * @extends sap.ui.webcomponents.base.UI5Element
- * @appenddocs Tab TabSeparator
- * @tagname ui5-tabcontainer
- * @public
- */
-class TabContainer extends UI5Element {
-	static get metadata() {
-		return metadata$z;
-	}
-
-	static get styles() {
-		return tabContainerCss;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$u;
-	}
-
-	constructor() {
-		super();
-
-		this._onHeaderItemSelect = this._onHeaderItemSelect.bind(this);
-		this._onHeaderItemKeyDown = this._onHeaderItemKeyDown.bind(this);
-		this._onHeaderItemKeyUp = this._onHeaderItemKeyUp.bind(this);
-		this._onOverflowListItemSelect = this._onOverflowListItemSelect.bind(this);
-		this._onOverflowButtonClick = this._onOverflowButtonClick.bind(this);
-		this._onHeaderBackArrowClick = this._onHeaderBackArrowClick.bind(this);
-		this._onHeaderForwardArrowClick = this._onHeaderForwardArrowClick.bind(this);
-		this._handleHeaderResize = this._handleHeaderResize.bind(this);
-		this._updateScrolling = this._updateScrolling.bind(this);
-
-		this._headerItem = {
-			click: this._onHeaderItemSelect,
-			keydown: this._onHeaderItemKeyDown,
-			keyup: this._onHeaderItemKeyUp,
-		};
-
-		this._overflowButton = {
-			click: this._onOverflowButtonClick,
-		};
-
-		this._headerBackArrow = {
-			click: this._onHeaderBackArrowClick,
-		};
-
-		this._headerForwardArrow = {
-			click: this._onHeaderForwardArrowClick,
-		};
-
-		this._overflowList = {
-			click: this._onOverflowListItemSelect,
-		};
-
-		// Init ScrollEnablement
-		this._scrollEnablement = new ScrollEnablement();
-		this._scrollEnablement.attachEvent("scroll", this._updateScrolling);
-		this._delegates.push(this._scrollEnablement);
-
-		// Init ItemNavigation
-		this._initItemNavigation();
-	}
-
-	onBeforeRendering() {
-		const hasSelected = this.items.some(item => item.selected);
-		this.items.forEach(item => {
-			item._getTabContainerHeaderItemCallback = _ => {
-				return this.getDomRef().querySelector(`#${item._id}`);
-			};
-		});
-
-		if (!hasSelected) {
-			this.items[0].selected = true;
-		}
-
-		this.calculateRenderItems();
-
-		this._itemNavigation.init();
-	}
-
-	calculateRenderItems() {
-		this.renderItems = this.items.map((item, index) => {
-			const isSeparator = item.isSeparator();
-
-			if (isSeparator) {
-				return { isSeparator, _tabIndex: item._tabIndex, _id: item._id };
-			}
-
-			return {
-				item,
-				isMixedModeTab: !item.icon && this.mixedMode,
-				isTextOnlyTab: !item.icon && !this.mixedMode,
-				isIconTab: item.icon,
-				position: index + 1,
-				disabled: item.disabled || undefined,
-				selected: item.selected || false,
-				hidden: !item.selected,
-				ariaLabelledBy: calculateAriaLabelledBy(item),
-				contentItemClasses: calculateContentItemClasses(item),
-				headerItemClasses: calculateHeaderItemClasses(item, this.mixedMode),
-				headerItemContentClasses: calculateHeaderItemContentClasses(item),
-				headerItemIconClasses: calculateHeaderItemIconClasses(item),
-				headerItemSemanticIconClasses: calculateHeaderItemSemanticIconClasses(item),
-				headerItemTextClasses: calculateHeaderItemTextClasses(item),
-				headerItemAdditionalTextClasses: calculateHeaderItemAdditionalTextClasses(item),
-				overflowItemClasses: calculateOverflowItemClasses(item),
-				overflowItemContentClasses: calculateOverflowItemContentClasses(item),
-				overflowItemState: calculateOverflowItemState(item),
-			};
-		}, this);
-	}
-
-	onAfterRendering() {
-		this._scrollEnablement.scrollContainer = this._getHeaderScrollContainer();
-		this._updateScrolling();
-	}
-
-	onEnterDOM() {
-		ResizeHandler.register(this._getHeader(), this._handleHeaderResize);
-	}
-
-	onExitDOM() {
-		ResizeHandler.deregister(this._getHeader(), this._handleHeaderResize);
-	}
-
-	_onHeaderItemKeyDown(event) {
-		if (isEnter(event)) {
-			this._onHeaderItemSelect(event);
-		}
-
-		// Prevent Scrolling
-		if (isSpace(event)) {
-			event.preventDefault();
-		}
-	}
-
-	_onHeaderItemKeyUp(event) {
-		if (isSpace(event)) {
-			this._onHeaderItemSelect(event);
-		}
-	}
-
-	_initItemNavigation() {
-		this._itemNavigation = new ItemNavigation(this);
-		this._itemNavigation.getItemsCallback = () => this._getTabs();
-
-		this._delegates.push(this._itemNavigation);
-	}
-
-	_onHeaderItemSelect(event) {
-		if (!event.target.hasAttribute("disabled")) {
-			this._onItemSelect(event.target);
-		}
-	}
-
-	_onOverflowListItemSelect(event) {
-		this._onItemSelect(event.detail.item);
-		this._getPopover().close();
-		this.shadowRoot.querySelector(`#${event.detail.item.id}`).focus();
-	}
-
-	_onItemSelect(target) {
-		const selectedIndex = findIndex(this.items, item => item._id === target.id);
-		const selectedTabIndex = findIndex(this._getTabs(), item => item._id === target.id);
-		const currentSelectedTab = this.items[selectedIndex];
-
-		// update selected items
-		this.items.forEach((item, index) => {
-			if (!item.isSeparator()) {
-				const selected = selectedIndex === index;
-				item.selected = selected;
-
-				if (selected) {
-					this._itemNavigation.current = selectedTabIndex;
-				}
-			}
-		}, this);
-
-		// update collapsed state
-		if (!this.fixed) {
-			if (currentSelectedTab === this._selectedTab) {
-				this.collapsed = !this.collapsed;
-			} else {
-				this.collapsed = false;
-			}
-		}
-
-		// select the tab
-		this._selectedTab = currentSelectedTab;
-		this.fireEvent("itemSelect", {
-			item: currentSelectedTab,
-		});
-	}
-
-	_onOverflowButtonClick(event) {
-		this._getPopover().openBy(event.target);
-	}
-
-	_onHeaderBackArrowClick() {
-		this._scrollEnablement.move(-SCROLL_STEP, 0).promise()
-			.then(_ => this._updateScrolling());
-	}
-
-	_onHeaderForwardArrowClick() {
-		this._scrollEnablement.move(SCROLL_STEP, 0).promise()
-			.then(_ => this._updateScrolling());
-	}
-
-	_handleHeaderResize() {
-		this._updateScrolling();
-	}
-
-	_updateScrolling() {
-		const headerScrollContainer = this._getHeaderScrollContainer();
-
-		this._scrollable = headerScrollContainer.offsetWidth < headerScrollContainer.scrollWidth;
-		this._scrollableBack = headerScrollContainer.scrollLeft > 0;
-		this._scrollableForward = Math.ceil(headerScrollContainer.scrollLeft) < headerScrollContainer.scrollWidth - headerScrollContainer.offsetWidth;
-	}
-
-	_getHeader() {
-		return this.shadowRoot.querySelector(`#${this._id}-header`);
-	}
-
-	_getTabs() {
-		return this.items.filter(item => !item.isSeparator());
-	}
-
-	_getHeaderScrollContainer() {
-		return this.shadowRoot.querySelector(`#${this._id}-headerScrollContainer`);
-	}
-
-	_getPopover() {
-		return this.shadowRoot.querySelector(`#${this._id}-overflowMenu`);
-	}
-
-	get classes() {
-		return {
-			main: {
-				"ui5-tab-container": true,
-				"sapUiSizeCompact": getCompactSize(),
-			},
-			header: {
-				"ui5-tc__header": true,
-				"ui5-tc__header--scrollable": this._scrollable,
-			},
-			headerScrollContainer: {
-				"ui-tc__headerScrollContainer": true,
-			},
-			headerList: {
-				"ui5-tc__headerList": true,
-			},
-			separator: {
-				"ui5-tc__separator": true,
-			},
-			headerBackArrow: {
-				"ui5-tc__headerArrow": true,
-				"ui5-tc__headerArrowLeft": true,
-				"ui5-tc__headerArrow--visible": this._scrollableBack,
-			},
-			headerForwardArrow: {
-				"ui5-tc__headerArrow": true,
-				"ui5-tc__headerArrowRight": true,
-				"ui5-tc__headerArrow--visible": this._scrollableForward,
-			},
-			overflowButton: {
-				"ui-tc__overflowButton": true,
-				"ui-tc__overflowButton--visible": this._scrollable,
-			},
-			content: {
-				"ui5-tc__content": true,
-				"ui5-tc__content--collapsed": this.collapsed,
-			},
-		};
-	}
-
-	get mixedMode() {
-		return this.items.some(item => item.icon) && this.items.some(item => item.text);
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-
-	static async define(...params) {
-		await Promise.all([
-			Button.define(),
-			CustomListItem.define(),
-			Icon.define(),
-			List.define(),
-			Popover.define(),
-		]);
-
-		super.define(...params);
-	}
-}
-
-const findIndex = (arr, predicate) => {
-	for (let i = 0; i < arr.length; i++) {
-		const result = predicate(arr[i]);
-
-		if (result) {
-			return i;
-		}
-	}
-
-	return -1;
-};
-
-/* CSS classes calculation helpers */
-
-const calculateAriaLabelledBy = item => {
-	const labels = [];
-
-	if (item.text) {
-		labels.push(`${item._id}-text`);
-	}
-
-	if (item.additionalText) {
-		labels.push(`${item._id}-additionalText`);
-	}
-
-	if (item.icon) {
-		labels.push(`${item._id}-icon`);
-	}
-
-	return labels.join(" ");
-};
-
-const calculateHeaderItemClasses = (item, mixedMode) => {
-	const classes = ["ui5-tc__headerItem"];
-
-	if (item.selected) {
-		classes.push("ui5-tc__headerItem--selected");
-	}
-
-	if (item.disabled) {
-		classes.push("ui5-tc__headerItem--disabled");
-	}
-
-	if (!item.icon && !mixedMode) {
-		classes.push("ui5-tc__headerItem--textOnly");
-	}
-
-	if (item.icon) {
-		classes.push("ui5-tc__headerItem--withIcon");
-	}
-
-	if (!item.icon && mixedMode) {
-		classes.push("ui5-tc__headerItem--mixedMode");
-	}
-
-	if (item.semanticColor !== SemanticColor.Default) {
-		classes.push(`ui5-tc__headerItem--${item.semanticColor.toLowerCase()}`);
-	}
-
-	return classes.join(" ");
-};
-
-const calculateHeaderItemContentClasses = item => {
-	const classes = ["ui5-tc__headerItemContent"];
-
-	return classes.join(" ");
-};
-
-const calculateHeaderItemIconClasses = item => {
-	const classes = ["ui5-tc-headerItemIcon"];
-
-	return classes.join(" ");
-};
-
-const calculateHeaderItemSemanticIconClasses = item => {
-	const classes = ["ui5-tc-headerItemSemanticIcon"];
-
-	if (item.semanticColor !== SemanticColor.Default) {
-		classes.push(`ui5-tc-headerItemSemanticIcon--${item.semanticColor.toLowerCase()}`);
-	}
-
-	return classes.join(" ");
-};
-
-const calculateHeaderItemTextClasses = item => {
-	const classes = ["ui5-tc__headerItemText"];
-
-	return classes.join(" ");
-};
-
-const calculateHeaderItemAdditionalTextClasses = item => {
-	const classes = ["ui5-tc__headerItemAdditionalText"];
-
-	return classes.join(" ");
-};
-
-const calculateOverflowItemClasses = item => {
-	const classes = ["ui5-tc__overflowItem"];
-
-	if (item.semanticColor !== SemanticColor.Default) {
-		classes.push(`ui5-tc__overflowItem--${item.semanticColor.toLowerCase()}`);
-	}
-
-	if (item.disabled) {
-		classes.push("ui5-tc__overflowItem--disabled");
-	}
-
-	return classes.join(" ");
-};
-
-const calculateOverflowItemContentClasses = item => {
-	const classes = ["ui5-tc__overflowItemContent"];
-
-	return classes.join(" ");
-};
-
-const calculateOverflowItemState = item => {
-	return item.disabled ? "Inactive" : "Active";
-};
-
-const calculateContentItemClasses = item => {
-	const classes = ["ui5-tc__contentItem"];
-
-	return classes.join(" ");
-};
-
-Bootstrap.boot().then(_ => {
-	TabContainer.define();
-});
-
-const block0$v = (context) => { return html`<div id="${ifDefined(context._id)}"><slot></slot></div>`; };
-
-/**
- * @public
- */
-const metadata$A = {
-	tag: "ui5-tab",
-	defaultSlot: "content",
-	slots: /** @lends sap.ui.webcomponents.main.Tab.prototype */ {
-
-		/**
-		 * Defines the tab content.
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		content: {
-			type: HTMLElement,
-			multiple: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.Tab.prototype */ {
-
-		/**
-		 * The text to be displayed for the item.
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		text: {
-			type: String,
-		},
-
-		/**
-		 * Enabled items can be selected.
-		 * @type {Boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		disabled: {
-			type: Boolean,
-		},
-
-		/**
-		 * Represents the "additionalText" text, which is displayed in the tab filter.
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		additionalText: {
-			type: String,
-		},
-
-		/**
-		 * Defines the icon source URI to be displayed as graphical element within the <code>ui5-tab</code>.
-		 * The SAP-icons font provides numerous built-in icons.
-		 * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		icon: {
-			type: String,
-		},
-
-		/**
-		 * Defines the <code>ui5-tab</code> semantic color.
-		 * The color is applied to:
-		 * <ul>
-		 * <li>the <code>ui5-tab</code> icon</li>
-		 * <li>the <code>text</code> when <code>ui5-tab</code> overflows</li>
-		 * <li>the tab selection line</li>
-		 * </ul>
-		 * <br>
-		 * Available semantic colors are: <code>"Default"</code>, <code>"Neutral", <code>"Positive"</code>, <code>"Critical"</code> and <code>"Negative"</code>.
-		 * <br><br>
-		 * <b>Note:</b> The color value depends on the current theme.
-		 * @type {string}
-		 * @defaultvalue "Default"
-		 * @public
-		 */
-		semanticColor: {
-			type: SemanticColor,
-			defaultValue: SemanticColor.Default,
-		},
-
-		/**
-		 * Specifies if the <code>ui5-tab</code> is selected.
-		 *
-		 * @type {Boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		selected: {
-			type: Boolean,
-		},
-
-		_tabIndex: {
-			type: String,
-			defaultValue: "-1",
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.Tab.prototype */ {
-
-	},
-};
-
-/**
- * @class
- * The <code>ui5-tab</code> represents a selectable item inside a <code>ui5-tabcontainer</code>.
- * It defines both the item in the tab strip (top part of the <code>ui5-tabcontainer</code>) and the
- * content that is presented to the user once the tab is selected.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Tab
- * @extends TabBase
- * @tagname ui5-tab
- * @public
- */
-class Tab extends TabBase {
-	static get metadata() {
-		return metadata$A;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$v;
-	}
-
-	static async define(...params) {
-		await Icon.define();
-
-		super.define(...params);
-	}
-
-	getFocusDomRef() {
-		let focusedDomRef = super.getFocusDomRef();
-
-		if (this._getTabContainerHeaderItemCallback) {
-			focusedDomRef = this._getTabContainerHeaderItemCallback();
-		}
-
-		return focusedDomRef;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Tab.define();
-});
-
-const block0$w = (context) => { return html`<li id="_id" role="separator"></li>`; };
-
-/**
- * @public
- */
-const metadata$B = {
-	tag: "ui5-tab-separator",
-	properties: /** @lends sap.ui.webcomponents.main.TabSeparator.prototype */{
-	},
-	events: /** @lends sap.ui.webcomponents.main.TabSeparator.prototype */{
-	},
-};
-
-/**
- * @class
- * The <code>ui5-tab-separator</code> represents a vertical line to separate tabs inside a <code>ui5-tabcontainer</code>.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.TabSeparator
- * @extends TabBase
- * @tagname ui5-tab-separator
- * @public
- */
-class TabSeparator extends TabBase {
-	static get metadata() {
-		return metadata$B;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$w;
-	}
-
-	isSeparator() {
-		return true;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	TabSeparator.define();
-});
-
-class CSSSize extends DataType {
-	static isValid(value) {
-		return /^(auto|inherit|[-+]?(0*|([0-9]+|[0-9]*\.[0-9]+)([rR][eE][mM]|[eE][mM]|[eE][xX]|[pP][xX]|[cC][mM]|[mM][mM]|[iI][nN]|[pP][tT]|[pP][cC]|%))|calc\(\s*(\(\s*)*[-+]?(([0-9]+|[0-9]*\.[0-9]+)([rR][eE][mM]|[eE][mM]|[eE][xX]|[pP][xX]|[cC][mM]|[mM][mM]|[iI][nN]|[pP][tT]|[pP][cC]|%)?)(\s*(\)\s*)*(\s[-+]\s|[*\/])\s*(\(\s*)*([-+]?(([0-9]+|[0-9]*\.[0-9]+)([rR][eE][mM]|[eE][mM]|[eE][xX]|[pP][xX]|[cC][mM]|[mM][mM]|[iI][nN]|[pP][tT]|[pP][cC]|%)?)))*\s*(\)\s*)*\))$/.test(value); // eslint-disable-line
-	}
-}
-
-const block0$x = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}" >	${ context.header ? block1$o(context) : undefined }</div>`; };
-const block1$o = (context) => { return html`<slot name="header"></slot>	`; };
-
-var styles$b = ":host(ui5-table-column){display:inline-block;width:100%;height:100%}ui5-table-column{display:inline-block;width:100%;height:100%}.sapWCTableColumn{padding:.25rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:.875rem;height:100%;box-sizing:border-box}.sapWCTableColumnFirst{padding-left:1rem}.sapWCTableColumnLast{padding-right:1rem}";
-
-const metadata$C = {
-	tag: "ui5-table-column",
-	slots: /** @lends sap.ui.webcomponents.main.TableColumn.prototype */ {
-
-		/**
-		 * Defines the HTML Element to be displayed in the column header.
-		 *
-		 * @type {HTMLElement}
-		 * @slot
-		 * @public
-		 */
-		header: {
-			type: HTMLElement,
-		},
-	},
-	defaultSlot: "header",
-	properties: /** @lends sap.ui.webcomponents.main.TableColumn.prototype */ {
-
-		/**
-		 * Defines the minimum screen width required to display this column. By default it is always displayed.
-		 * </br></br>
-		 * The responsive behavior of the <code>ui5-table</code> is determined by this property. As an example, by setting
-		 * <code>minWidth</code> property to <code>40em</code> shows this column on tablet (and desktop) but hides it on mobile.
-		 * </br>
-		 * For further responsive design options, see <code>demandPopin</code> property.
-		 *
-		 * @type {number}
-		 * @public
-		 */
-		minWidth: {
-			type: Integer,
-			defaultValue: Infinity,
-		},
-
-		/**
-		 * The text for the column when it pops in.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		popinText: {
-			type: String,
-		},
-
-		/**
-		 * According to your <code>minWidth</code> settings, the <code>ui5-table-column</code> can be hidden
-		 * in different screen sizes.
-		 * </br></br>
-		 * Setting this property to <code>true</code>, shows this column as pop-in instead of hiding it.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		demandPopin: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the width of the column. If you leave it empty, then this column covers the remaining space.
-		 *
-		 * @type {CSSSize}
-		 * @public
-		 */
-		width: {
-			type: CSSSize,
-			defaultValue: "",
-		},
-
-		_first: {
-			type: Boolean,
-		},
-
-		_last: {
-			type: Boolean,
-		},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-table-column</code> component allows to define column specific properties that are applied
- * when rendering the <code>ui5-table</code> component.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.TableColumn
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-table-column
- * @public
- */
-class TableColumn extends UI5Element {
-	static get metadata() {
-		return metadata$C;
-	}
-
-	static get styles() {
-		return styles$b;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$x;
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapWCTableColumn: true,
-				sapWCTableColumnFirst: this._first,
-				sapWCTableColumnLast: this._last,
-			},
-		};
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	TableColumn.define();
-});
-
-const block0$y = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}"><slot></slot></div>`; };
-
-var styles$c = ":host(ui5-table-cell){display:inline-block;width:100%;height:100%;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)))}ui5-table-cell{display:inline-block;width:100%;height:100%;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)))}.sapWCTableCell{overflow:hidden;padding:.25rem .0625rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:.875rem;height:100%;box-sizing:border-box}.sapWCTableCellWithBorder{border-bottom:1px solid #e5e5e5}.sapWCTableCellFirst{padding-left:.75rem}.sapWCTableCellLast{padding-right:.75rem}";
-
-/**
- * @public
- */
-const metadata$D = {
-	tag: "ui5-table-cell",
-	slots: /** @lends sap.ui.webcomponents.main.TableCell.prototype */ {
-		/**
-		 * Specifies the content of the <code>ui5-table-cell</code>.
-		 *
-		 * @type {HTMLElement[]}
-		 * @slot
-		 * @public
-		 */
-		content: {
-			type: HTMLElement,
-			multiple: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.TableCell.prototype */ {
-
-		_firstInRow: {
-			type: Boolean,
-		},
-		_lastInRow: {
-			type: Boolean,
-		},
-		_hasBorder: {
-			type: Boolean,
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.TableCell.prototype */ {
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-table-cell</code> component defines the structure of the data in a single <code>ui5-table</code> cell.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.TableCell
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-table-cell
- * @public
- */
-class TableCell extends UI5Element {
-	static get metadata() {
-		return metadata$D;
-	}
-
-	static get styles() {
-		return styles$c;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$y;
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapWCTableCell: true,
-				sapWCTableCellFirst: this._firstInRow,
-				sapWCTableCellLast: this._lastInRow,
-				sapWCTableCellWithBorder: this._hasBorder,
-			},
-		};
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	TableCell.define();
-});
-
-const block0$z = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	style="${ifDefined(styleMap$1(context.styles.main))}"	tabindex="${ifDefined(context._tabIndex)}">	${ repeat(context.visibleCells, undefined, (item, index) => block1$p(item, index, context)) }${ repeat(context.popinCells, undefined, (item, index) => block2$h(item, index, context)) }</div>`; };
-const block1$p = (item, index, context) => { return html`<div class="${ifDefined(classMap(context.classes.cellWrapper))}"><slot name="${ifDefined(item._individualSlot)}"></slot></div>	`; };
-const block2$h = (item, index, context) => { return html`<div class="${ifDefined(classMap(context.classes.popin))}"			style="grid-column-end: ${ifDefined(context.visibleColumnLength)}" ><span class="${ifDefined(classMap(context.classes.popinTitle))}">${ifDefined(item.popinText)}</span><div><slot name="${ifDefined(item.cell._individualSlot)}"></slot></div></div>	`; };
-
-var styles$d = ":host(ui5-table-row:not([hidden])){display:inline-block;width:100%}ui5-table-row:not([hidden]){display:inline-block;width:100%}.sapWCTableRow{display:grid;align-items:center;background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-sizing:border-box}.sapWCTableRow:focus{outline:1px solid var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));outline-offset:-3px;outline-style:dotted}.sapWCTablePopinRow{padding:.25rem 1rem;grid-column-start:1;display:flex;flex-direction:column;align-items:flex-start}.sapWCTablePopinTitle{color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.sapMWCTableRowCellContainer{height:100%;padding:.25rem;box-sizing:border-box}.sapWCTableRowWithBorder{border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed))}";
-
-/**
- * @public
- */
-const metadata$E = {
-	tag: "ui5-table-row",
-	defaultSlot: "cells",
-	slots: /** @lends sap.ui.webcomponents.main.TableRow.prototype */ {
-		/**
-		 * Defines the cells of the <code>ui5-table-row</code>.
-		 * <br><b>Note:</b> Only <code>ui5-table-cell</code> is allowed.
-		 *
-		 * @type {TableCell[]}
-		 * @slot
-		 * @public
-		 */
-		cells: {
-			type: TableCell,
-			multiple: true,
-			individualSlots: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.TableRow.prototype */ {
-		_columnsInfo: {
-			type: Object,
-			multiple: true,
-			deepEqual: true,
-		},
-		_tabIndex: {
-			type: String,
-			defaultValue: "-1",
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.TableRow.prototype */ {
-		_focused: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-table-row</code> component represents a row in the <code>ui5-table</code>.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.TableRow
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-table-row
- * @public
- */
-class TableRow extends UI5Element {
-	static get metadata() {
-		return metadata$E;
-	}
-
-	static get styles() {
-		return styles$d;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$z;
-	}
-
-	onBeforeRendering() {
-		this.visibleCells = [];
-		this.popinCells = [];
-
-		this._columnsInfo.forEach((info, index) => {
-			if (info.visible) {
-				this.visibleCells.push(this.cells[index]);
-				this.cells[index]._firstInRow = (index === 0);
-			} else if (info.demandPopin) {
-				this.popinCells.push({
-					cell: this.cells[index],
-					popinText: info.popinText,
-				});
-			}
-		}, this);
-
-		this.visibleColumnLength = this.visibleCells.length + 1;
-
-		const lastVisibleCell = this.visibleCells[this.visibleCells.length - 1];
-
-		if (lastVisibleCell) {
-			lastVisibleCell._lastInRow = true;
-		}
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapWCTableRow: true,
-				sapWCTableRowWithBorder: true,
-			},
-			popin: {
-				sapWCTablePopinRow: true,
-			},
-			popinTitle: {
-				sapWCTablePopinTitle: true,
-			},
-			cellWrapper: {
-				sapMWCTableRowCellContainer: true,
-			},
-		};
-	}
-
-	get styles() {
-		const gridTemplateColumns = this._columnsInfo.reduce((acc, info) => {
-			return info.visible ? `${acc}minmax(0, ${info.width || "1fr"}) ` : acc;
-		}, "");
-
-		return {
-			main: {
-				"grid-template-columns": gridTemplateColumns,
-			},
-			popin: {
-				"grid-column-end": 6,
-			},
-		};
-	}
-
-	onfocusin(event) {
-		this.fireEvent("_focused", event);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	TableRow.define();
-});
-
-const block0$A = (context) => { return html`<div	style="display: grid; place-items: center;"><!-- columns --><div class="${ifDefined(classMap(context.classes.main))}" style="${ifDefined(styleMap$1(context.styles.main))}">		${ repeat(context.visibleColumns, undefined, (item, index) => block1$q(item, index, context)) }</div><!-- rows -->	${ repeat(context.rows, undefined, (item, index) => block2$i(item, index, context)) }${ !context.rows.length ? block3$c(context) : undefined }</div>`; };
-const block1$q = (item, index, context) => { return html`<div class="sapWCTableColumnWrapper"><slot name="${ifDefined(item._individualSlot)}"></slot></div>		`; };
-const block2$i = (item, index, context) => { return html`<div style="width: 100%"><slot name="${ifDefined(item._individualSlot)}"></slot></div>	`; };
-const block3$c = (context) => { return html`${ context.showNoData ? block4$b(context) : undefined }`; };
-const block4$b = (context) => { return html`<div id="noData" class="sapWCTableNoDataRow"><span>${ifDefined(context.noDataText)}</span></div>		`; };
-
-var styles$e = ":host(ui5-table:not([hidden])){display:inline-block;width:100%}ui5-table:not([hidden]){display:inline-block;width:100%}.sapWCTableHeader{width:100%;display:grid;border-bottom:1px solid var(--sapUiListTableGroupHeaderBorderColor,#d9d9d9);height:3rem}.sapWCTableColumnWrapper{background:var(--sapUiListHeaderBackground,var(--sapList_HeaderBackground,#f7f7f7));border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));height:100%;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.sapUiSizeCompact.sapWCTableHeader{height:2rem}.sapWCTableNoDataRow{display:flex;align-items:center;width:100%;height:auto;justify-content:center;text-align:center;padding:.5rem 1rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:.875rem;box-sizing:border-box;color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));min-height:3rem;border-bottom:1px solid var(--sapUiListTableGroupHeaderBorderColor,#d9d9d9)}";
-
-/**
- * @public
- */
-const metadata$F = {
-	tag: "ui5-table",
-	slots: /** @lends sap.ui.webcomponents.main.Table.prototype */ {
-
-		/**
-		 * Defines the <code>ui5-table</code> rows.
-		 * <br><b>Note:</b> Only <code>ui5-table-row</code> is allowed.
-		 *
-		 * @type {TableRow[]}
-		 * @slot
-		 * @public
-		 */
-		rows: {
-			type: TableRow,
-			multiple: true,
-			individualSlots: true,
-		},
-
-		/**
-		 * Defines the configuration for the columns of the <code>ui5-table</code>.
-		 * <br><b>Note:</b> Only <code>ui5-table-column</code> is allowed.
-		 *
-		 * @type {TableColumn[]}
-		 * @slot
-		 * @public
-		 */
-		columns: {
-			type: TableColumn,
-			multiple: true,
-			individualSlots: true,
-			listenFor: { exclude: ["header"] },
-		},
-	},
-	defaultSlot: "rows",
-	properties: /** @lends sap.ui.webcomponents.main.Table.prototype */ {
-
-		/**
-		 * Defines the text that will be displayed when there is no data and <code>showNoData</code> is present.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		noDataText: {
-			type: String,
-		},
-
-		/**
-		 * Defines if the value of <code>noDataText</code> will be diplayed when there is no rows present in the table.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		showNoData: {
-			type: Boolean,
-		},
-		/**
-		 * Determines whether the column headers remain fixed at the top of the page during
-		 * vertical scrolling as long as the Web Component is in the viewport.
-		 * <br><br>
-		 * <b>Limitations:</b>
-		 * <ul>
-		 * <li>Browsers that do not support this feature:
-		 * <ul>
-		 * <li>Internet Explorer</li>
-		 * <li>Microsoft Edge lower than version 41 (EdgeHTML 16)</li>
-		 * <li>Mozilla Firefox lower than version 59</li>
-		 * </ul></li>
-		 * <li>Scrolling behavior:
-		 * <ul>
-		 * <li>If the Web Component is placed in layout containers that have the <code>overflow: hidden</code>
-		 * or <code>overflow: auto</code> style definition, this can
-		 * prevent the sticky elements of the Web Component from becoming fixed at the top of the viewport.</li>
-		 * </ul></li>
-		 * </ul>
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		stickyColumnHeader: {
-			type: Boolean,
-		},
-
-		_hiddenColumns: {
-			type: Object,
-			multiple: true,
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.Table.prototype */ {
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-table</code> component provides a set of sophisticated and convenient functions for responsive table design.
- * It provides a comprehensive set of features for displaying and dealing with vast amounts of data.
- * <br><br>
- * To render the <code>Table</code> properly, the order of the <code>columns</code> should match with the
- * order of the item <code>cells</code> in the <code>rows</code>.
- * <br><br>
- * Desktop and tablet devices are supported.
- * On tablets, special consideration should be given to the number of visible columns
- * and rows due to the limited performance of some devices.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Table";</code>
- * <br>
- * <b>Note:</b> This also includes the <code>ui5-table-column</code>, <code>ui5-table-row</code> and <code>ui5-table-cell</code> Web Components.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Table
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-table
- * @appenddocs TableColumn TableRow TableCell
- * @public
- */
-class Table extends UI5Element {
-	static get metadata() {
-		return metadata$F;
-	}
-
-	static get styles() {
-		return styles$e;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$A;
-	}
-
-	constructor() {
-		super();
-
-		this._itemNavigation = new ItemNavigation(this);
-
-		this._itemNavigation.getItemsCallback = function getItemsCallback() {
-			return this.rows;
-		}.bind(this);
-
-		this._delegates.push(this._itemNavigation);
-
-		this.fnOnRowFocused = this.onRowFocused.bind(this);
-	}
-
-	onBeforeRendering() {
-		const columnSettings = this.getColumnPropagationSettings();
-
-		this._itemNavigation.init();
-
-		this.rows.forEach(row => {
-			row._columnsInfo = columnSettings;
-			row.removeEventListener("ui5-_focused", this.fnOnRowFocused);
-			row.addEventListener("ui5-_focused", this.fnOnRowFocused);
-		});
-
-		this.visibleColumns = this.columns.filter((column, index) => {
-			return !this._hiddenColumns[index];
-		});
-	}
-
-	onEnterDOM() {
-		ResizeHandler.register(this.getDomRef(), this.popinContent.bind(this));
-	}
-
-	onExitDOM() {
-		ResizeHandler.deregister(this.getDomRef(), this.popinContent.bind(this));
-	}
-
-	onRowFocused(event) {
-		this._itemNavigation.update(event.target);
-	}
-
-	onkeydown(event) {
-		if (isSpace(event)) {
-			event.preventDefault();
-		}
-	}
-
-	popinContent(_event) {
-		const clientRect = this.getDomRef().getBoundingClientRect();
-		const tableWidth = clientRect.width;
-		const hiddenColumns = [];
-		const visibleColumnsIndexes = [];
-
-		// store the hidden columns
-		this.columns.forEach((column, index) => {
-			if (tableWidth < column.minWidth && column.minWidth !== Infinity) {
-				hiddenColumns[index] = {
-					index,
-					popinText: column.popinText,
-					demandPopin: column.demandPopin,
-				};
-			} else {
-				visibleColumnsIndexes.push(index);
-			}
-		});
-
-		if (visibleColumnsIndexes.length) {
-			this.columns[visibleColumnsIndexes[0]]._first = true;
-			this.columns[visibleColumnsIndexes[visibleColumnsIndexes.length - 1]]._last = true;
-		}
-
-		// invalidate only if hidden columns count has changed
-		if (this._hiddenColumns.length !== hiddenColumns.length) {
-			this._hiddenColumns = hiddenColumns;
-		}
-	}
-
-	/**
-	 * Gets settings to be propagated from columns to rows.
-	 *
-	 * @returns {object}
-	 * @memberof Table
-	 */
-	getColumnPropagationSettings() {
-		return this.columns.map((column, index) => {
-			return {
-				index,
-				width: column.width,
-				minWidth: column.minWidth,
-				demandPopin: column.demandPopin,
-				popinText: column.popinText,
-				visible: !this._hiddenColumns[index],
-			};
-		}, this);
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapWCTableHeader: true,
-				sapUiSizeCompact: getCompactSize(),
-			},
-			columns: {
-				sapWCTableColumnWrapper: true,
-			},
-		};
-	}
-
-	get styles() {
-		const gridTemplateColumns = this.visibleColumns.reduce((acc, column) => {
-			return `${acc}minmax(0, ${column.width || "1fr"}) `;
-		}, "");
-
-		return {
-			main: {
-				"grid-template-columns": gridTemplateColumns,
-				position: this.stickyColumnHeader ? "sticky" : "",
-				top: this.stickyColumnHeader ? "0px" : "",
-				"z-index": this.stickyColumnHeader ? "1" : "",
-			},
-		};
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Table.define();
-});
-
-const block0$B = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	style="${ifDefined(styleMap$1(context.styles.main))}"	?aria-invalid="${ifDefined(context.ariaInvalid)}">	${ context.growing ? block1$r(context) : undefined }<div class="${ifDefined(classMap(context.classes.focusDiv))}" style="${ifDefined(styleMap$1(context.styles.inner))}"><textarea			id="${ifDefined(context._id)}-inner"			class="${ifDefined(classMap(context.classes.inner))}"			placeholder="${ifDefined(context.placeholder)}"			?disabled="${ifDefined(context.disabled)}"			?readonly="${ifDefined(context.readonly)}"			maxlength="${ifDefined(context._exceededTextProps.calcedMaxLength)}"			.value="${ifDefined(context.value)}"			@change="${ifDefined(context._listeners.change)}"			data-sap-focus-ref></textarea></div>	${ context.showExceededText ? block4$c(context) : undefined }<slot name="formSupport"></slot></div>`; };
-const block1$r = (context) => { return html`<div id="${ifDefined(context._id)}-mirror" style="${ifDefined(styleMap$1(context.styles.mirror))}" class="${ifDefined(classMap(context.classes.mirror))}" aria-hidden="true">			${ repeat(context._mirrorText, undefined, (item, index) => block2$j(item, index, context)) }</div>	`; };
-const block2$j = (item, index, context) => { return html`${ifDefined(item.text)}${ !item.last ? block3$d(item, index, context) : undefined }`; };
-const block3$d = (item, index, context) => { return html`<br/>				`; };
-const block4$c = (context) => { return html`<span class="${ifDefined(classMap(context.classes.exceededText))}">${ifDefined(context._exceededTextProps.exceededText)}</span>	`; };
-
-var styles$f = ":host(ui5-textarea:not([hidden])){display:inline-block}ui5-textarea:not([hidden]){display:inline-block}.sapWCTextArea{height:3rem;background:transparent;display:inline-flex;vertical-align:top;outline:none;position:relative;overflow:hidden;box-sizing:border-box}.sapWCTextArea:not(.sapWCTextAreaDisabled):not(.sapWCTextAreaWarning):hover .sapWCTextAreaInner{border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCTextArea.sapWCTextAreaReadonly .sapWCTextAreaInner{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)))}.sapWCTextAreaMirror~.sapWCTextAreaFocusDiv{height:100%;width:100%;top:0;position:absolute}.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaFocusDiv,.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaMirror{overflow:hidden}.sapWCTextAreaMirror{line-height:1.4;visibility:hidden;width:100%;word-break:break-all;padding:.5625rem .6875rem;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));white-space:pre-wrap;box-sizing:border-box}.sapWCTextAreaInner{width:100%;margin:0;padding:.5625rem .6875rem;line-height:1.4;box-sizing:border-box;color:var(--sapUiFieldTextColor,var(--sapField_TextColor,var(--sapTextColor,var(--sapPrimary6,#32363a))));background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));outline:none;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));-webkit-appearance:none;-moz-appearance:textfield;overflow:auto;resize:none}.sapWCTextAreaHasFocus:after{content:\"\";border:var(--_ui5_textarea_focus_after_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:2px;left:2px;right:2px;bottom:2px;pointer-events:none}.sapWCTextAreaWarning .sapWCTextAreaHasFocus:after{top:3px;left:3px;right:3px;bottom:3px}.sapWCTextAreaGrowing.sapWCTextAreaNoCols .sapWCTextAreaFocusDiv{overflow:hidden;width:100%}.sapWCTextAreaInner::-webkit-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner::-moz-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner:-ms-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaWithCounter{flex-direction:column;display:flex}.sapWCTextAreaWithCounter .sapWCTextAreaExceededText{overflow:hidden;align-self:flex-end;padding:.125rem .125rem .5rem;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem)}.sapWCTextAreaCounter{text-align:right;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.sapWCTextAreaWarningInner{border-width:var(--_ui5_textarea_warning_border_width,2px);border-style:var(--_ui5_textarea_warning_border_style,solid);background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.sapWCTextAreaContent{display:flex;flex-direction:column;height:100%}.sapWCTextAreaDisabled{opacity:.5;user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-user-select:none}.sapWCTextAreaFocusDiv{display:flex;width:100%;height:100%;position:relative}";
-
-/**
- * @public
- */
-const metadata$G = {
+const metadata$c = {
 	tag: "ui5-textarea",
 	properties: /** @lends sap.ui.webcomponents.main.TextArea.prototype */ {
 		/**
@@ -24389,11 +15816,11 @@ const metadata$G = {
  */
 class TextArea extends UI5Element {
 	static get metadata() {
-		return metadata$G;
+		return metadata$c;
 	}
 
 	static get styles() {
-		return styles$f;
+		return styles$5;
 	}
 
 	static get render() {
@@ -24401,7 +15828,7 @@ class TextArea extends UI5Element {
 	}
 
 	static get template() {
-		return block0$B;
+		return block0$a;
 	}
 
 	constructor() {
@@ -24574,607 +16001,6 @@ class TextArea extends UI5Element {
 
 Bootstrap.boot().then(_ => {
 	TextArea.define();
-});
-
-const block0$C = (context) => { return html`<div	class="${ifDefined(classMap(context.classes.main))}"	dir="${ifDefined(context.rtl)}"><div class="${ifDefined(classMap(context.classes.indicator))}">		${ context.icon ? block1$s(context) : undefined }</div><div class="sapWCTimelineBubble" tabindex="${ifDefined(context._tabIndex)}" data-sap-focus-ref><div class="sapWCTimelineItemTitle">			${ context.itemName ? block2$k(context) : undefined }<span>${ifDefined(context.titleText)}</span></div><div class="sapWCTimelineItemSubtitle">${ifDefined(context.subtitleText)}</div>		${ context.description ? block5$7(context) : undefined }<span class="sapWCTimelineBubbleArrow sapWCTimelineBubbleArrowLeft"></span></div></div>`; };
-const block1$s = (context) => { return html`<ui5-icon class="sapWCTimelineItemIcon" src="${ifDefined(context.icon)}"></ui5-icon>		`; };
-const block2$k = (context) => { return html`${ context.itemNameClickable ? block3$e(context) : undefined }${ !context.itemNameClickable ? block4$d(context) : undefined }`; };
-const block3$e = (context) => { return html`<ui5-link @ui5-press="${ifDefined(context.onItemNamePress)}">${ifDefined(context.itemName)}</ui5-link>	`; };
-const block4$d = (context) => { return html`<span>${ifDefined(context.itemName)}</span>	`; };
-const block5$7 = (context) => { return html`<div class="sapWCTimelineItemDesc"><slot></slot></div>		`; };
-
-var styles$g = ":host(ui5-timeline-item:not([hidden])){display:block}ui5-timeline-item:not([hidden]){display:block}.sapWCTimelineItem{display:flex}.sapWCTimelineIndicator{position:relative;width:2rem}.sapWCTimelineIndicator:before{content:\"\";display:inline-block;background-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));width:1px;position:absolute;top:2.125rem;bottom:-1.625rem;left:50%}.sapWCTimelineIndicatorNoIcon:before{bottom:-2.125rem;top:1.875rem}.sapWCTimelineIndicatorNoIcon:after{content:\"\";display:inline-block;box-sizing:border-box;border:1px solid var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70));background-color:var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70));border-radius:50%;width:.4375rem;height:.4375rem;position:absolute;top:.9375rem;left:50%;transform:translateX(-50%)}:host(ui5-timeline-item:last-child) .sapWCTimelineIndicator:before{display:none}ui5-timeline-item:last-child .sapWCTimelineIndicator:before{display:none}.sapWCTimelineItemIcon{color:var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70));font-size:1.375rem;margin-top:.25rem;width:100%}.sapWCTimelineBubble{background:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));box-sizing:border-box;border-radius:.25rem;flex:1;position:relative;margin-left:.5rem;padding:1rem}.sapWCTimelineBubble:focus{outline:none}.sapWCTimelineBubble:focus:after{content:\"\";border:var(--_ui5_TimelineItem_bubble_outline_width,.0625rem) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:var(--_ui5_TimelineItem_bubble_outline_top,-.125rem);right:var(--_ui5_TimelineItem_bubble_outline_right,-.125rem);bottom:var(--_ui5_TimelineItem_bubble_outline_bottom,-.125rem);left:var(--_ui5_TimelineItem_bubble_outline_left,-.625rem);pointer-events:none}.sapWCTimelineBubbleArrow{width:var(--_ui5_TimelineItem_arrow_size,1.625rem);padding-bottom:var(--_ui5_TimelineItem_arrow_size,1.625rem);position:absolute;pointer-events:none;top:0;left:0;overflow:hidden}.sapWCTimelineBubbleArrow:before{content:\"\";background:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));position:absolute;top:0;left:0;width:100%;height:100%;transform-origin:0 100%;transform:rotate(45deg)}.sapWCTimelineBubbleArrowLeft{left:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem))}.sapWCTimelineBubbleArrowLeft:before{left:50%;width:50%;transform-origin:100% 100%}.sapWCTimelineBubbleArrowRight{right:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem));left:auto}.sapWCTimelineBubbleArrowRight:before{width:50%;transform-origin:0 0}.sapWCTimelineItemDesc,.sapWCTimelineItemTitle{color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-weight:400;font-size:var(--sapMFontMediumSize,.875rem)}.sapWCTimelineItemTitle span{display:inline-block;vertical-align:top}.sapWCTimelineItemSubtitle{color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-weight:400;font-size:var(--sapMFontSmallSize,.75rem);padding-top:.375rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sapWCTimelineItemDesc{padding-top:.75rem}.sapUiSizeCompact .sapWCTimelineBubble{padding:.5rem}.sapUiSizeCompact .sapWCTimelineIndicator:before{bottom:-.5rem}[dir=rtl] .sapWCTimelineBubbleArrowLeft{right:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem));left:auto;transform:scaleX(-1)}[dir=rtl] .sapWCTimelineBubbleArrowRight{right:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem));left:auto}[dir=rtl] .sapWCTimelineBubble{margin-left:auto;margin-right:.5rem}[dir=rtl] .sapWCTimelineBubble:focus:after{left:var(--_ui5_TimelineItem_bubble_rtl_left_offset,-.125rem);right:var(--_ui5_TimelineItem_bubble_rtl_right_offset,-.625rem)}";
-
-/**
- * @public
- */
-const metadata$H = {
-	tag: "ui5-timeline-item",
-	defaultSlot: "description",
-	slots: /** @lends sap.ui.webcomponents.main.TimelineItem.prototype */ {
-		/**
-		 * Determines the description of the <code>ui5-timeline-item</code>.
-		 *
-		 * @type {HTMLElement}
-		 * @slot
-		 * @public
-		 */
-		description: {
-			type: HTMLElement,
-			multiple: false,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.TimelineItem.prototype */ {
-		/**
-		 * Defines the icon to be displayed as graphical element within the <code>ui5-timeline-item</code>.
-		 * SAP-icons font provides numerous options.
-		 * </br></br>
-		 *
-		 * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-		 *
-		 * @type {string}
-		 * @defaultvalue ""
-		 * @public
-		 */
-		icon: {
-			type: String,
-		},
-
-		/**
-		 * Defines the name of the item.
-		 *
-		 * @type {string}
-		 * @defaultvalue false
-		 * @public
-		 */
-		itemName: {
-			type: String,
-		},
-
-		/**
-		 * Defines whether the <code>itemName</code> is clickable.
-		 *
-		 * @type {Boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		itemNameClickable: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the title text of the component.
-		 *
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		titleText: {
-			type: String,
-		},
-
-		/**
-		 * Defines the subtitle text of the component.
-		 * @type {string}
-		 * @defaultvalue: ""
-		 * @public
-		 */
-		subtitleText: {
-			type: String,
-		},
-
-		_tabIndex: {
-			type: String,
-			defaultValue: "-1",
-		},
-	},
-	events: /** @lends sap.ui.webcomponents.main.TimelineItem.prototype */ {
-		/**
-		 * Fired when the item name is pressed either with a
-		 * click/tap or by using the Enter or Space key.
-		 * </br></br>
-		 * <b>Note:</b> The event will not be fired if the <code>item-name-clickable</code>
-		 * attribute is not set.
-		 *
-		 * @event
-		 * @public
-		 */
-		itemNamePress: {},
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * An entry posted on the timeline.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.TimelineItem
- * @extends UI5Element
- * @tagname ui5-timeline
- * @public
- */
-class TimelineItem extends UI5Element {
-	static get metadata() {
-		return metadata$H;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$C;
-	}
-
-	static get styles() {
-		return styles$g;
-	}
-
-	constructor() {
-		super();
-	}
-
-	onItemNamePress() {
-		this.fireEvent("itemNamePress", {});
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapWCTimelineItem: true,
-				sapUiSizeCompact: getCompactSize(),
-			},
-			indicator: {
-				sapWCTimelineIndicator: true,
-				sapWCTimelineIndicatorNoIcon: !this.icon,
-			},
-		};
-	}
-
-	get rtl() {
-		return getEffectiveRTL() ? "rtl" : undefined;
-	}
-
-	static async define(...params) {
-		await Promise.all([
-			Icon.define(),
-			Link.define(),
-		]);
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	TimelineItem.define();
-});
-
-const block0$D = (context) => { return html`<div class="${ifDefined(classMap(context.classes.main))}"><ul class="sapWCTimelineList">		${ repeat(context.items, undefined, (item, index) => block1$t(item, index, context)) }</ul></div>`; };
-const block1$t = (item, index, context) => { return html`<li class="sapWCTimelineListItem"><slot name="${ifDefined(item._individualSlot)}"></slot></li>		`; };
-
-var styles$h = ":host(ui5-timeline:not([hidden])){display:block}ui5-timeline:not([hidden]){display:block}.sapWCTimeline{background-color:var(--sapUiBaseBG,var(--sapBackgroundColor,#fafafa));padding:1rem 1rem 1rem .5rem;box-sizing:border-box;overflow:hidden}.sapWCTimelineList{list-style:none;margin:0;padding:0}.sapWCTimelineListItem{margin-bottom:1.625rem}.sapWCTimelineListItem:last-child{margin-bottom:0}.sapUiSizeCompact.sapWCTimeline{padding:.5rem}.sapUiSizeCompact .sapWCTimelineListItem{margin-bottom:.5rem}.sapUiSizeCompact .sapWCTimelineListItem :last-child{margin-bottom:0}";
-
-/**
- * @public
- */
-const metadata$I = {
-	tag: "ui5-timeline",
-	defaultSlot: "items",
-	slots: /** @lends sap.ui.webcomponents.main.Timeline.prototype */ {
-		/**
-		 * Determines the content of the <code>ui5-timeline</code>.
-		 *
-		 * @type {TimelineItem[]}
-		 * @slot
-		 * @public
-		 */
-		items: {
-			type: TimelineItem,
-			multiple: true,
-			individualSlots: true,
-		},
-	},
-	properties: /** @lends sap.ui.webcomponents.main.Timeline.prototype */ {
-	},
-	events: /** @lends sap.ui.webcomponents.main.Timeline.prototype */ {
-	},
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The timeline control shows entries (such as objects, events, or posts) in chronological order.
- * A common use case is to provide information about changes to an object, or events related to an object.
- * These entries can be generated by the system (for example, value XY changed from A to B), or added manually.
- * There are two distinct variants of the timeline: basic and social. The basic timeline is read-only,
- * while the social timeline offers a high level of interaction and collaboration, and is integrated within SAP Jam.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Timeline
- * @extends UI5Element
- * @tagname ui5-timeline
- * @appenddocs TimelineItem
- * @public
- * @since 0.8.0
- */
-class Timeline extends UI5Element {
-	static get metadata() {
-		return metadata$I;
-	}
-
-	static get styles() {
-		return styles$h;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$D;
-	}
-
-	constructor() {
-		super();
-
-		this.initItemNavigation();
-	}
-
-	onBeforeRendering() {
-		this._itemNavigation.init();
-	}
-
-	initItemNavigation() {
-		this._itemNavigation = new ItemNavigation(this);
-		this._itemNavigation.getItemsCallback = () => this.items;
-
-		this._delegates.push(this._itemNavigation);
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapWCTimeline: true,
-				sapUiSizeCompact: getCompactSize(),
-			},
-		};
-	}
-
-	static async define(...params) {
-		await TimelineItem.define();
-
-		super.define(...params);
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Timeline.define();
-});
-
-const TitleLevels = {
-	H1: "H1",
-	H2: "H2",
-	H3: "H3",
-	H4: "H4",
-	H5: "H5",
-	H6: "H6",
-};
-
-class TitleLevel extends DataType {
-	static isValid(value) {
-		return !!TitleLevels[value];
-	}
-}
-
-TitleLevel.generataTypeAcessors(TitleLevels);
-
-const block0$E = (context) => { return html`${ context.h1 ? block1$u(context) : undefined }${ context.h2 ? block2$l(context) : undefined }${ context.h3 ? block3$f(context) : undefined }${ context.h4 ? block4$e(context) : undefined }${ context.h5 ? block5$8(context) : undefined }${ context.h6 ? block6$7(context) : undefined }`; };
-const block1$u = (context) => { return html`<h1			class="${ifDefined(classMap(context.classes.main))}"			role="heading">				<span id="${ifDefined(context._id)}-inner"><slot></slot></span></h1>`; };
-const block2$l = (context) => { return html`<h2			class="${ifDefined(classMap(context.classes.main))}"			role="heading">				<span id="${ifDefined(context._id)}-inner"><slot></slot></span></h2>`; };
-const block3$f = (context) => { return html`<h3			class="${ifDefined(classMap(context.classes.main))}"			role="heading">				<span id="${ifDefined(context._id)}-inner"><slot></slot></span></h3>`; };
-const block4$e = (context) => { return html`<h4			class="${ifDefined(classMap(context.classes.main))}"			role="heading">				<span id="${ifDefined(context._id)}-inner"><slot></slot></span></h4>`; };
-const block5$8 = (context) => { return html`<h5			class="${ifDefined(classMap(context.classes.main))}"			role="heading">				<span id="${ifDefined(context._id)}-inner"><slot></slot></span></h5>`; };
-const block6$7 = (context) => { return html`<h6			class="${ifDefined(classMap(context.classes.main))}"			role="heading">				<span id="${ifDefined(context._id)}-inner"><slot></slot></span></h6>`; };
-
-var titleCss = ":host(ui5-title:not([hidden])){display:block;max-width:100%;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}ui5-title:not([hidden]){display:block;overflow:hidden;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));max-width:100%}.sapMTitle{display:inline-block;position:relative;font-weight:var(--sapUiFontHeaderWeight,normal);box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;vertical-align:bottom;-webkit-margin-before:0;-webkit-margin-after:0;-webkit-margin-start:0;-webkit-margin-end:0;margin:0;cursor:text}.sapMTitle.sapMTitleWrap{white-space:pre-line}.sapMTitleStyleH1{font-size:var(--sapMFontHeader1Size,2.25rem)}.sapMTitleStyleH2{font-size:var(--sapMFontHeader2Size,1.5rem)}.sapMTitleStyleH3{font-size:var(--sapMFontHeader3Size,1.25rem)}.sapMTitleStyleH4{font-size:var(--sapMFontHeader4Size,1.125rem)}.sapMTitleStyleH5{font-size:var(--sapMFontHeader5Size,1rem)}.sapMTitleStyleH6{font-size:var(--sapMFontHeader6Size,.875rem)}";
-
-/**
- * @public
- */
-const metadata$J = {
-	tag: "ui5-title",
-	properties: /** @lends sap.ui.webcomponents.main.Title.prototype */ {
-
-		/**
-		 * Defines whether the <code>ui5-title</code> would wrap.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		*/
-		wrap: {
-			type: Boolean,
-		},
-
-		/**
-		 * Defines the <code>ui5-title</code> level.
-		 * Available options are: <code>"H6"</code> to <code>"H1"</code>.
-		 *
-		 * @type {string}
-		 * @defaultvalue "H2"
-		 * @public
-		*/
-		level: {
-			type: TitleLevel,
-			defaultValue: TitleLevel.H2,
-		},
-	},
-	slots: /** @lends sap.ui.webcomponents.main.Title.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-title</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	defaultSlot: "text",
-};
-
-/**
- * @class
- *
- * <h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-title</code> component is used to display titles inside a page.
- * It is a simple, large-sized text with explicit header/title semantics.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/Title";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.Title
- * @extends sap.ui.webcomponents.base.UI5Element
- * @tagname ui5-title
- * @public
- */
-class Title extends UI5Element {
-	static get metadata() {
-		return metadata$J;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$E;
-	}
-
-	static get styles() {
-		return titleCss;
-	}
-
-	get normalizedLevel() {
-		return this.level.toLowerCase();
-	}
-
-	get h1() {
-		return this.normalizedLevel === "h1";
-	}
-
-	get h2() {
-		return this.normalizedLevel === "h2";
-	}
-
-	get h3() {
-		return this.normalizedLevel === "h3";
-	}
-
-	get h4() {
-		return this.normalizedLevel === "h4";
-	}
-
-	get h5() {
-		return this.normalizedLevel === "h5";
-	}
-
-	get h6() {
-		return this.normalizedLevel === "h6";
-	}
-
-	get classes() {
-		return {
-			main: {
-				sapMTitle: true,
-				sapMTitleWrap: this.wrap,
-				sapUiSelectable: true,
-				[`sapMTitleStyle${this.level}`]: true,
-			},
-		};
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	Title.define();
-});
-
-const block0$F = (context) => { return html`<button		type="button"		class="${ifDefined(classMap(context.classes.main))}"		?disabled="${ifDefined(context.disabled)}"		data-sap-focus-ref			aria-pressed="${ifDefined(context.pressed)}"		dir="${ifDefined(context.rtl)}"	>		${ context.icon ? block1$v(context) : undefined }${ context.textContent ? block2$m(context) : undefined }</button>`; };
-const block1$v = (context) => { return html`<ui5-icon				class="${ifDefined(classMap(context.classes.icon))}"				src="${ifDefined(context.icon)}"			></ui5-icon>		`; };
-const block2$m = (context) => { return html`<span id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.text))}"><bdi><slot></slot></bdi></span>		`; };
-
-var toggleBtnCss = ":host(ui5-togglebutton:not([hidden])){display:inline-block}ui5-togglebutton:not([hidden]){display:inline-block}ui5-togglebutton .sapMBtn:before{content:\"\";min-height:inherit;font-size:0}.sapMBtn.sapMToggleBtnPressed{color:var(--sapUiToggleButtonPressedTextColor,#fff);text-shadow:none}.sapMBtn.sapMToggleBtnPressed.sapMBtnNegative{background-color:var(--sapUiButtonRejectActiveBackground,#a20000);border-color:var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000));color:var(--sapUiToggleButtonPressedTextColor,#fff)}.sapMBtn.sapMToggleBtnPressed.sapMBtnNegative:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnNegative:hover{background-color:var(--_ui5_toggle_button_pressed_negative_hover,var(--sapUiButtonRejectActiveBackgroundLighten5,#b00));border-color:var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000))}.sapMBtn.sapMToggleBtnPressed.sapMBtnPositive{background-color:var(--sapUiButtonAcceptActiveBackground,#0d6733);border-color:var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733));color:var(--sapUiToggleButtonPressedTextColor,#fff)}.sapMBtn.sapMToggleBtnPressed.sapMBtnPositive:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnPositive:hover{background-color:var(--_ui5_toggle_button_pressed_positive_hover,var(--sapUiButtonAcceptActiveBackgroundLighten5,#107e3e));border-color:var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733))}.sapMBtn.sapMToggleBtnPressed.sapMBtnDefault:not(:active):not(:hover),.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:not(:active):not(:hover),.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:not(:active):not(:hover){background-color:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));border-color:var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:focus,.sapMBtn.sapMToggleBtnPressed:not(.sapMBtnNegative):not(.sapMBtnPositive):focus{border-color:var(--_ui5_toggle_button_pressed_focussed,var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:focus:after,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:focus:after,.sapMBtn.sapMToggleBtnPressed:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:hover,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:hover,.sapMBtn.sapMToggleBtnPressed:active,.sapMBtn.sapMToggleBtnPressed:hover{background-color:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border-color:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:active:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:hover:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:active:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:hover:focus,.sapMBtn.sapMToggleBtnPressed:active:focus .sapMBtn.sapMToggleBtnPressed:hover:focus{border-color:var(--_ui5_toggle_button_pressed_focussed_hovered,var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}";
-
-/**
- * @public
- */
-const metadata$K = {
-	tag: "ui5-togglebutton",
-	properties: /** @lends  sap.ui.webcomponents.main.ToggleButton.prototype */ {
-		/**
-		 * Determines whether the <code>ui5-togglebutton</code> is displayed as pressed.
-		 *
-		 * @type {boolean}
-		 * @defaultvalue false
-		 * @public
-		 */
-		pressed: {
-			type: Boolean,
-		},
-	},
-	defaultSlot: "text",
-};
-
-/**
- * @class
- *
- *<h3 class="comment-api-title">Overview</h3>
- *
- * The <code>ui5-togglebutton</code> component is an enhanced <code>ui5-button</code>
- * that can be toggled between pressed and normal states.
- * Users can use the <code>ui5-togglebutton</code> as a switch to turn a setting on or off.
- * It can also be used to represent an independent choice similar to a check box.
- * <br><br>
- * Clicking or tapping on a <code>ui5-togglebutton</code> changes its state to <code>pressed</code>. The button returns to
- * its initial state when the user clicks or taps on it again.
- * By applying additional custom CSS-styling classes, apps can give a different style to any <code>ui5-togglebutton</code>.
- *
- * <h3>ES6 Module Import</h3>
- *
- * <code>import "@ui5/webcomponents/dist/ToggleButton";</code>
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.ToggleButton
- * @extends Button
- * @tagname ui5-togglebutton
- * @public
- */
-class ToggleButton extends Button {
-	static get metadata() {
-		return metadata$K;
-	}
-
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$F;
-	}
-
-	static get styles() {
-		return [Button.styles, toggleBtnCss];
-	}
-
-	onclick() {
-		if (!this.disabled) {
-			this.pressed = !this.pressed;
-			this.fireEvent("press", { pressed: this.pressed });
-		}
-	}
-
-	get classes() {
-		const result = super.classes;
-		result.main.sapMToggleBtnPressed = this.pressed;
-		return result;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	ToggleButton.define();
-});
-
-const block0$G = (context) => { return html`<li	tabindex="${ifDefined(context._tabIndex)}"	class="${ifDefined(classMap(context.classes.main))}"><div id="${ifDefined(context._id)}-content" class="${ifDefined(classMap(context.classes.inner))}"><span class="${ifDefined(classMap(context.classes.span))}"><slot></slot></span></div></li>`; };
-
-var groupheaderListItemCss = ".sapMLIB.sapMGHLI{height:3rem;color:var(--sapUiListTableGroupHeaderTextColor,#32363a);background:var(--ui5-group-header-listitem-background-color,var(--sapUiListGroupHeaderBackground,var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))));padding-top:1rem;font-size:var(--sapMFontHeader6Size,.875rem);font-weight:var(--sapUiFontHeaderWeight,normal);line-height:2rem;border-bottom:1px solid var(--sapUiListTableGroupHeaderBorderColor,#d9d9d9)}.sapMGHLI>.sapMLIBContent{display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center}.sapMGHLITitle{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sapUiSizeCompact.sapMGHLI{height:2rem}";
-
-/**
- * @public
- */
-const metadata$L = {
-	tag: "ui5-li-groupheader",
-	properties: /** @lends  sap.ui.webcomponents.main.GroupHeaderListItem.prototype */ {
-	},
-	slots: /** @lends sap.ui.webcomponents.main.GroupHeaderListItem.prototype */ {
-		/**
-		 * Defines the text of the <code>ui5-li-groupheader</code>.
-		 * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-		 *
-		 * @type {Node[]}
-		 * @slot
-		 * @public
-		 */
-		text: {
-			type: Node,
-			multiple: true,
-		},
-	},
-	defaultSlot: "text",
-	events: /** @lends  sap.ui.webcomponents.main.GroupHeaderListItem.prototype */ {
-	},
-};
-
-/**
- * @class
- * The <code>ui5-li-group-header</code> is a special list item, used only to separate other list items into logical groups.
- *
- * @constructor
- * @author SAP SE
- * @alias sap.ui.webcomponents.main.GroupHeaderListItem
- * @extends ListItemBase
- * @tagname ui5-li-groupheader
- * @public
- */
-class GroupHeaderListItem extends ListItemBase {
-	static get render() {
-		return litRender;
-	}
-
-	static get template() {
-		return block0$G;
-	}
-
-	static get metadata() {
-		return metadata$L;
-	}
-
-	static get styles() {
-		return [ListItemBase.styles, groupheaderListItemCss];
-	}
-
-	get classes() {
-		const result = super.classes;
-
-		// Modify main classes
-		result.main.sapMGHLI = true;
-		result.main.sapMLIBTypeInactive = true;
-
-		// Define span classes
-		result.span = {
-			sapMGHLITitle: true,
-		};
-
-		return result;
-	}
-}
-
-Bootstrap.boot().then(_ => {
-	GroupHeaderListItem.define();
 });
 
 class FormSupport {

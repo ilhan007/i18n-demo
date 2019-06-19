@@ -12642,6 +12642,120 @@
     });
   };
 
+  var supportedLocales = ["ar", "ar_EG", "ar_SA", "bg", "ca", "cs", "da", "de", "de_AT", "de_CH", "el", "el_CY", "en", "en_AU", "en_GB", "en_HK", "en_IE", "en_IN", "en_NZ", "en_PG", "en_SG", "en_ZA", "es", "es_AR", "es_BO", "es_CL", "es_CO", "es_MX", "es_PE", "es_UY", "es_VE", "et", "fa", "fi", "fr", "fr_BE", "fr_CA", "fr_CH", "fr_LU", "he", "hi", "hr", "hu", "id", "it", "it_CH", "ja", "kk", "ko", "lt", "lv", "ms", "nb", "nl", "nl_BE", "pl", "pt", "pt_PT", "ro", "ru", "ru_UA", "sk", "sl", "sr", "sv", "th", "tr", "uk", "vi", "zh_CN", "zh_HK", "zh_SG", "zh_TW"];
+  var cldrData = {};
+  var cldrUrls = {}; // externally configurable mapping function for resolving (localeId -> URL)
+  // default implementation - ui5 CDN
+
+  var cldrMappingFn = function cldrMappingFn(locale) {
+    return "https://ui5.sap.com/1.60.2/resources/sap/ui/core/cldr/".concat(locale, ".json");
+  };
+
+  var M_ISO639_OLD_TO_NEW$3 = {
+    "iw": "he",
+    "ji": "yi",
+    "in": "id",
+    "sh": "sr"
+  };
+
+  var calcLocale = function calcLocale(language, region, script) {
+    // normalize language and handle special cases
+    language = language && M_ISO639_OLD_TO_NEW$3[language] || language; // Special case 1: in an SAP context, the inclusive language code "no" always means Norwegian Bokmal ("nb")
+
+    if (language === "no") {
+      language = "nb";
+    } // Special case 2: for Chinese, derive a default region from the script (this behavior is inherited from Java)
+
+
+    if (language === "zh" && !region) {
+      if (script === "Hans") {
+        region = "CN";
+      } else if (script === "Hant") {
+        region = "TW";
+      }
+    } // try language + region
+
+
+    var localeId = "".concat(language, "_").concat(region);
+
+    if (!supportedLocales.includes(localeId)) {
+      // fallback to language only
+      localeId = language;
+    }
+
+    if (!supportedLocales.includes(localeId)) {
+      // fallback to english
+      localeId = "en";
+    }
+
+    return localeId;
+  };
+
+  var resolveMissingMappings = function resolveMissingMappings() {
+    if (!cldrMappingFn) {
+      return;
+    }
+
+    var missingLocales = supportedLocales.filter(function (locale) {
+      return !cldrData[locale] && !cldrUrls[locale];
+    });
+    missingLocales.forEach(function (locale) {
+      cldrUrls[locale] = cldrMappingFn(locale);
+    });
+  };
+
+  var fetchCldrData =
+  /*#__PURE__*/
+  function () {
+    var _ref = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(language, region, script) {
+      var localeId, cldrObj, url, cldrText;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              resolveMissingMappings();
+              localeId = calcLocale(language, region, script);
+              cldrObj = cldrData[localeId];
+              url = cldrUrls[localeId];
+
+              if (!cldrObj) {
+                _context.next = 8;
+                break;
+              }
+
+              // inlined from build or fetched independently
+              registerModuleContent("sap/ui/core/cldr/".concat(localeId, ".json"), JSON.stringify(cldrObj));
+              _context.next = 13;
+              break;
+
+            case 8:
+              if (!url) {
+                _context.next = 13;
+                break;
+              }
+
+              _context.next = 11;
+              return fetchTextOnce(url);
+
+            case 11:
+              cldrText = _context.sent;
+              registerModuleContent("sap/ui/core/cldr/".concat(localeId, ".json"), cldrText);
+
+            case 13:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function fetchCldrData(_x, _x2, _x3) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
   var whenDOMReady = function whenDOMReady() {
     return new Promise(function (resolve) {
       if (document.body) {
@@ -12897,225 +13011,6 @@
       }());
       return bootPromise;
     }
-  };
-
-  var M_ISO639_OLD_TO_NEW$3 = {
-    "iw": "he",
-    "ji": "yi",
-    "in": "id",
-    "sh": "sr"
-  };
-  var A_RTL_LOCALES$1 = getDesigntimePropertyAsArray("$cldr-rtl-locales:ar,fa,he$") || [];
-
-  var impliesRTL = function impliesRTL(language) {
-    language = language && M_ISO639_OLD_TO_NEW$3[language] || language;
-    return A_RTL_LOCALES$1.indexOf(language) >= 0;
-  };
-
-  var getEffectiveRTL = function getEffectiveRTL() {
-    var configurationRTL = getRTL();
-
-    if (configurationRTL !== null) {
-      return !!configurationRTL;
-    }
-
-    return impliesRTL(getLanguage() || detectNavigatorLanguage());
-  };
-
-  var mKeyCodes = {
-    BACKSPACE: 8,
-    TAB: 9,
-    ENTER: 13,
-    SHIFT: 16,
-    CONTROL: 17,
-    ALT: 18,
-    BREAK: 19,
-    CAPS_LOCK: 20,
-    ESCAPE: 27,
-    SPACE: 32,
-    PAGE_UP: 33,
-    PAGE_DOWN: 34,
-    END: 35,
-    HOME: 36,
-    ARROW_LEFT: 37,
-    ARROW_UP: 38,
-    ARROW_RIGHT: 39,
-    ARROW_DOWN: 40,
-    PRINT: 44,
-    INSERT: 45,
-    DELETE: 46,
-    DIGIT_0: 48,
-    DIGIT_1: 49,
-    DIGIT_2: 50,
-    DIGIT_3: 51,
-    DIGIT_4: 52,
-    DIGIT_5: 53,
-    DIGIT_6: 54,
-    DIGIT_7: 55,
-    DIGIT_8: 56,
-    DIGIT_9: 57,
-    A: 65,
-    B: 66,
-    C: 67,
-    D: 68,
-    E: 69,
-    F: 70,
-    G: 71,
-    H: 72,
-    I: 73,
-    J: 74,
-    K: 75,
-    L: 76,
-    M: 77,
-    N: 78,
-    O: 79,
-    P: 80,
-    Q: 81,
-    R: 82,
-    S: 83,
-    T: 84,
-    U: 85,
-    V: 86,
-    W: 87,
-    X: 88,
-    Y: 89,
-    Z: 90,
-    WINDOWS: 91,
-    CONTEXT_MENU: 93,
-    TURN_OFF: 94,
-    SLEEP: 95,
-    NUMPAD_0: 96,
-    NUMPAD_1: 97,
-    NUMPAD_2: 98,
-    NUMPAD_3: 99,
-    NUMPAD_4: 100,
-    NUMPAD_5: 101,
-    NUMPAD_6: 102,
-    NUMPAD_7: 103,
-    NUMPAD_8: 104,
-    NUMPAD_9: 105,
-    NUMPAD_ASTERISK: 106,
-    NUMPAD_PLUS: 107,
-    NUMPAD_MINUS: 109,
-    NUMPAD_COMMA: 110,
-    NUMPAD_SLASH: 111,
-    F1: 112,
-    F2: 113,
-    F3: 114,
-    F4: 115,
-    F5: 116,
-    F6: 117,
-    F7: 118,
-    F8: 119,
-    F9: 120,
-    F10: 121,
-    F11: 122,
-    F12: 123,
-    NUM_LOCK: 144,
-    SCROLL_LOCK: 145,
-    OPEN_BRACKET: 186,
-    PLUS: 187,
-    COMMA: 188,
-    SLASH: 189,
-    DOT: 190,
-    PIPE: 191,
-    SEMICOLON: 192,
-    MINUS: 219,
-    GREAT_ACCENT: 220,
-    EQUALS: 221,
-    SINGLE_QUOTE: 222,
-    BACKSLASH: 226
-  };
-
-  var isEnter = function isEnter(event) {
-    return (event.key ? event.key === "Enter" : event.keyCode === mKeyCodes.ENTER) && !hasModifierKeys(event);
-  };
-
-  var isSpace = function isSpace(event) {
-    return (event.key ? event.key === "Spacebar" || event.key === " " : event.keyCode === mKeyCodes.SPACE) && !hasModifierKeys(event);
-  };
-
-  var isLeft = function isLeft(event) {
-    return (event.key ? event.key === "ArrowLeft" || event.key === "Left" : event.keyCode === mKeyCodes.ARROW_LEFT) && !hasModifierKeys(event);
-  };
-
-  var isRight = function isRight(event) {
-    return (event.key ? event.key === "ArrowRight" || event.key === "Right" : event.keyCode === mKeyCodes.ARROW_RIGHT) && !hasModifierKeys(event);
-  };
-
-  var isUp = function isUp(event) {
-    return (event.key ? event.key === "ArrowUp" || event.key === "Up" : event.keyCode === mKeyCodes.ARROW_UP) && !hasModifierKeys(event);
-  };
-
-  var isDown = function isDown(event) {
-    return (event.key ? event.key === "ArrowDown" || event.key === "Down" : event.keyCode === mKeyCodes.ARROW_DOWN) && !hasModifierKeys(event);
-  };
-
-  var isHome = function isHome(event) {
-    return (event.key ? event.key === "Home" : event.keyCode === mKeyCodes.HOME) && !hasModifierKeys(event);
-  };
-
-  var isEnd = function isEnd(event) {
-    return (event.key ? event.key === "End" : event.keyCode === mKeyCodes.END) && !hasModifierKeys(event);
-  };
-
-  var isEscape = function isEscape(event) {
-    return (event.key ? event.key === "Escape" || event.key === "Esc" : event.keyCode === mKeyCodes.ESCAPE) && !hasModifierKeys(event);
-  };
-
-  var isTabNext = function isTabNext(event) {
-    return (event.key ? event.key === "Tab" : event.keyCode === mKeyCodes.TAB) && !hasModifierKeys(event);
-  };
-
-  var isTabPrevious = function isTabPrevious(event) {
-    return (event.key ? event.key === "Tab" : event.keyCode === mKeyCodes.TAB) && checkModifierKeys(event,
-    /* Ctrl */
-    false,
-    /* Alt */
-    false,
-    /* Shift */
-    true);
-  };
-
-  var isBackSpace = function isBackSpace(event) {
-    return (event.key ? event.key === "Backspace" || event.key === "Backspace" : event.keyCode === mKeyCodes.BACKSPACE) && !hasModifierKeys(event);
-  };
-
-  var isDelete = function isDelete(event) {
-    return (event.key ? event.key === "Delete" || event.key === "Delete" : event.keyCode === mKeyCodes.DELETE) && !hasModifierKeys(event);
-  };
-
-  var isShow = function isShow(event) {
-    if (event.key) {
-      return event.key === "F4" && !hasModifierKeys(event) || (event.key === "ArrowDown" || event.key === "Down" || event.key === "ArrowUp" || event.key === "Up") && checkModifierKeys(event,
-      /* Ctrl */
-      false,
-      /* Alt */
-      true,
-      /* Shift */
-      false);
-    }
-
-    return event.keyCode === mKeyCodes.F4 && !hasModifierKeys(event) || event.keyCode === mKeyCodes.ARROW_DOWN && checkModifierKeys(event,
-    /* Ctrl */
-    false,
-    /* Alt */
-    true,
-    /* Shift */
-    false);
-  };
-
-  var hasModifierKeys = function hasModifierKeys(event) {
-    return event.shiftKey || event.altKey || getCtrlKey(event);
-  };
-
-  var getCtrlKey = function getCtrlKey(event) {
-    return !!(event.metaKey || event.ctrlKey);
-  }; // double negation doesn't have effect on boolean but ensures null and undefined are equivalent to false.
-
-
-  var checkModifierKeys = function checkModifierKeys(oEvent, bCtrlKey, bAltKey, bShiftKey) {
-    return oEvent.shiftKey === bShiftKey && oEvent.altKey === bAltKey && getCtrlKey(oEvent) === bCtrlKey;
   };
 
   var URI = {
@@ -13834,553 +13729,6 @@
     return String.fromCharCode(typeof code === "number" ? code : parseInt(code, 16));
   };
 
-  /*
-  	lit-html directive that removes and attribute if it is undefined
-  */
-
-  var ifDefined = directive(function (value) {
-    return function (part) {
-      if (value === undefined && part instanceof AttributePart) {
-        if (value !== part.value) {
-          var name = part.committer.name;
-          part.committer.element.removeAttribute(name);
-        }
-      } else if (part.committer && part.committer.element && part.committer.element.getAttribute(part.committer.name) === value) {
-        part.setValue(noChange);
-      } else {
-        part.setValue(value);
-      }
-    };
-  });
-
-  function _templateObject$1() {
-    var data = _taggedTemplateLiteral(["<span\tclass=\"", "\"\tstyle=\"", "\"\ttabindex=\"-1\"\tdata-sap-ui-icon-content=\"", "\"\tdir=\"", "\"></span>"]);
-
-    _templateObject$1 = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0 = function block0(context) {
-    return html(_templateObject$1(), ifDefined(classMap(context.classes.main)), ifDefined(context.fontStyle), ifDefined(context.iconContent), ifDefined(context.dir));
-  };
-
-  var iconCss = ":host(ui5-icon:not([hidden])){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}ui5-icon:not([hidden]){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.sapWCIcon{width:100%;height:100%;display:flex;justify-content:center;align-items:center;outline:none;border-style:none;pointer-events:none}.sapWCIcon:before{content:attr(data-sap-ui-icon-content);speak:none;font-weight:400;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;align-items:center;width:100%;height:100%;pointer-events:none}[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):after,[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):before{transform:scaleX(-1)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$1 = {
-    tag: "ui5-icon",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Icon.prototype */
-    {
-      /**
-       * Defines the source URI of the <code>ui5-icon</code>.
-       * <br><br>
-       * SAP-icons font provides numerous options. To find all the available icons, see the
-       * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-       * <br><br>
-       * Example:
-       * <br>
-       * <code>src='sap-icons://add'</code>, <code>src='sap-icons://delete'</code>, <code>src='sap-icons://employee'</code>.
-       *
-       * @type {string}
-       * @public
-      */
-      src: {
-        type: String
-      }
-    },
-    events: {
-      press: {}
-    }
-  };
-  /**
-   * @class
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-icon</code> component is a wrapper around the HTML tag to embed an icon from an icon font.
-   * There are two main scenarios how the <code>ui5-icon</code> component is used:
-   * as a purely decorative element; or as a visually appealing clickable area in the form of an icon button.
-   * In the first case, images are not predefined as tab stops in accessibility mode.
-   * <br><br>
-   * The <code>ui5-icon</code> uses embedded font instead of pixel image.
-   * Comparing to image, <code>ui5-icon</code> is easily scalable,
-   * its color can be altered live, and various effects can be added using CSS.
-   * <br><br>
-   * A large set of built-in icons is available
-   * and they can be used by setting the <code>src</code> property on the <code>ui5-icon</code>.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Icon";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Icon
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-icon
-   * @public
-   */
-
-  var Icon =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Icon, _UI5Element);
-
-    function Icon() {
-      _classCallCheck(this, Icon);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Icon).apply(this, arguments));
-    }
-
-    _createClass(Icon, [{
-      key: "focus",
-      value: function focus() {
-        HTMLElement.prototype.focus.call(this);
-      }
-    }, {
-      key: "onclick",
-      value: function onclick() {
-        this.fireEvent("press");
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isSpace(event)) {
-          event.preventDefault();
-          this.__spaceDown = true;
-        } else if (isEnter(event)) {
-          this.onclick(event);
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (isSpace(event) && this.__spaceDown) {
-          this.fireEvent("press");
-          this.__spaceDown = false;
-        }
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var iconInfo = getIconInfo(this.src) || {};
-        return {
-          main: {
-            sapWCIcon: true,
-            sapWCIconMirrorInRTL: !iconInfo.suppressMirroring
-          }
-        };
-      }
-    }, {
-      key: "iconContent",
-      get: function get() {
-        var iconInfo = getIconInfo(this.src) || {};
-        return iconInfo.content;
-      }
-    }, {
-      key: "dir",
-      get: function get() {
-        return getRTL() ? "rtl" : "ltr";
-      }
-    }, {
-      key: "fontStyle",
-      get: function get() {
-        var iconInfo = getIconInfo(this.src) || {};
-        return "font-family: '".concat(iconInfo.fontFamily, "'");
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$1;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return iconCss;
-      }
-    }]);
-
-    return Icon;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Icon.define();
-  });
-
-  function _templateObject2() {
-    var data = _taggedTemplateLiteral(["<label class=\"ui5-badge-text\"><bdi><slot></slot></bdi></label>\t"]);
-
-    _templateObject2 = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$2() {
-    var data = _taggedTemplateLiteral(["<div class=\"ui5-badge-wrapper\" dir=\"", "\"><slot name=\"icon\"></slot>\t", "</div>"]);
-
-    _templateObject$2 = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$1 = function block0(context) {
-    return html(_templateObject$2(), ifDefined(context.rtl), context.hasText ? block1(context) : undefined);
-  };
-
-  var block1 = function block1(context) {
-    return html(_templateObject2());
-  };
-
-  var badgeCss = ":host(ui5-badge:not([hidden])){display:inline-flex;height:1.125rem;min-width:1.125rem;max-width:100%;padding:0 .625rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border:solid 1px var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)));border-radius:1.125rem;box-sizing:border-box;font-size:var(--sapMFontSmallSize,.75rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));text-align:center}:host(ui5-badge[__has-icon]){padding:0 .3125rem}:host(ui5-badge[__has-icon]) .ui5-badge-text{padding-left:.1875rem}:host(ui5-badge[__has-icon]) .ui5-badge-wrapper[rtl] .ui5-badge-text{padding-right:.1875rem}:host(ui5-badge[color-scheme=\"1\"]){background-color:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border-color:var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)))}:host(ui5-badge[color-scheme=\"2\"]){background-color:var(--ui5-badge-bg-color-scheme-2,var(--sapUiAccent2Lighten40,#f9e6e6));border-color:var(--ui5-badge-border-color-scheme-2,var(--sapUiAccent2,var(--sapAccentColor2,#d04343)))}:host(ui5-badge[color-scheme=\"3\"]){background-color:var(--ui5-badge-bg-color-scheme-3,var(--sapUiAccent3Lighten46,#fce9f2));border-color:var(--ui5-badge-border-color-scheme-3,var(--sapUiAccent3,var(--sapAccentColor3,#db1f77)))}:host(ui5-badge[color-scheme=\"4\"]){background-color:var(--ui5-badge-bg-color-scheme-4,var(--sapUiAccent4Lighten46,#f9ebf5));border-color:var(--ui5-badge-border-color-scheme-4,var(--sapUiAccent4,var(--sapAccentColor4,#c0399f)))}:host(ui5-badge[color-scheme=\"5\"]){background-color:var(--ui5-badge-bg-color-scheme-5,var(--sapUiAccent5Lighten32,#eaeafa));border-color:var(--ui5-badge-border-color-scheme-5,var(--sapUiAccent5,var(--sapAccentColor5,#6367de)))}:host(ui5-badge[color-scheme=\"6\"]){background-color:var(--ui5-badge-bg-color-scheme-6,var(--sapUiAccent6Lighten52,#ebf3fa));border-color:var(--ui5-badge-border-color-scheme-6,var(--sapUiAccent6,var(--sapAccentColor6,#286eb4)))}:host(ui5-badge[color-scheme=\"7\"]){background-color:var(--ui5-badge-bg-color-scheme-7,var(--sapUiAccent7Lighten64,#e8fafd));border-color:var(--ui5-badge-border-color-scheme-7,var(--sapUiAccent7,var(--sapAccentColor7,#0f828f)))}:host(ui5-badge[color-scheme=\"8\"]){background-color:var(--ui5-badge-bg-color-scheme-8,var(--sapUiAccent8Lighten61,#f8fde7));border-color:var(--ui5-badge-border-color-scheme-8,var(--sapUiAccent8,var(--sapAccentColor8,#7ca10c)))}:host(ui5-badge[color-scheme=\"9\"]){background-color:var(--ui5-badge-bg-color-scheme-9,var(--sapUiAccent9Lighten37,#f2ebf9));border-color:var(--ui5-badge-border-color-scheme-9,var(--sapUiAccent9,var(--sapAccentColor9,#925ace)))}:host(ui5-badge[color-scheme=\"10\"]){background-color:var(--ui5-badge-bg-color-scheme-10,var(--sapUiAccent10Lighten49,#f1f3f4));border-color:var(--ui5-badge-border-color-scheme-10,var(--sapUiAccent10,var(--sapAccentColor10,#647987)))}.ui5-badge-wrapper{display:inline-flex;align-items:center;width:100%;box-sizing:border-box}.ui5-badge-text{width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.0125rem}ui5-badge:not([hidden]){display:inline-flex;height:1.125rem;min-width:1.125rem;max-width:100%;padding:0 .625rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border:solid 1px var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)));border-radius:1.125rem;box-sizing:border-box;font-size:var(--sapMFontSmallSize,.75rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));text-align:center}ui5-badge[__has-icon]{padding:0 .3125rem}ui5-badge[__has-icon] .ui5-badge-text{padding-left:.1875rem}ui5-badge[__has-icon] .ui5-badge-wrapper[rtl] .ui5-badge-text{padding-right:.1875rem}ui5-badge[color-scheme=\"1\"]{background-color:var(--ui5-badge-bg-color-scheme-1,var(--sapUiAccent1Lighten50,#fdf3e6));border-color:var(--ui5-badge-border-color-scheme-1,var(--sapUiAccent1,var(--sapAccentColor1,#d08014)))}ui5-badge[color-scheme=\"2\"]{background-color:var(--ui5-badge-bg-color-scheme-2,var(--sapUiAccent2Lighten40,#f9e6e6));border-color:var(--ui5-badge-border-color-scheme-2,var(--sapUiAccent2,var(--sapAccentColor2,#d04343)))}ui5-badge[color-scheme=\"3\"]{background-color:var(--ui5-badge-bg-color-scheme-3,var(--sapUiAccent3Lighten46,#fce9f2));border-color:var(--ui5-badge-border-color-scheme-3,var(--sapUiAccent3,var(--sapAccentColor3,#db1f77)))}ui5-badge[color-scheme=\"4\"]{background-color:var(--ui5-badge-bg-color-scheme-4,var(--sapUiAccent4Lighten46,#f9ebf5));border-color:var(--ui5-badge-border-color-scheme-4,var(--sapUiAccent4,var(--sapAccentColor4,#c0399f)))}ui5-badge[color-scheme=\"5\"]{background-color:var(--ui5-badge-bg-color-scheme-5,var(--sapUiAccent5Lighten32,#eaeafa));border-color:var(--ui5-badge-border-color-scheme-5,var(--sapUiAccent5,var(--sapAccentColor5,#6367de)))}ui5-badge[color-scheme=\"6\"]{background-color:var(--ui5-badge-bg-color-scheme-6,var(--sapUiAccent6Lighten52,#ebf3fa));border-color:var(--ui5-badge-border-color-scheme-6,var(--sapUiAccent6,var(--sapAccentColor6,#286eb4)))}ui5-badge[color-scheme=\"7\"]{background-color:var(--ui5-badge-bg-color-scheme-7,var(--sapUiAccent7Lighten64,#e8fafd));border-color:var(--ui5-badge-border-color-scheme-7,var(--sapUiAccent7,var(--sapAccentColor7,#0f828f)))}ui5-badge[color-scheme=\"8\"]{background-color:var(--ui5-badge-bg-color-scheme-8,var(--sapUiAccent8Lighten61,#f8fde7));border-color:var(--ui5-badge-border-color-scheme-8,var(--sapUiAccent8,var(--sapAccentColor8,#7ca10c)))}ui5-badge[color-scheme=\"9\"]{background-color:var(--ui5-badge-bg-color-scheme-9,var(--sapUiAccent9Lighten37,#f2ebf9));border-color:var(--ui5-badge-border-color-scheme-9,var(--sapUiAccent9,var(--sapAccentColor9,#925ace)))}ui5-badge[color-scheme=\"10\"]{background-color:var(--ui5-badge-bg-color-scheme-10,var(--sapUiAccent10Lighten49,#f1f3f4));border-color:var(--ui5-badge-border-color-scheme-10,var(--sapUiAccent10,var(--sapAccentColor10,#647987)))}";
-
-  /**
-   * @public
-   */
-
-  var metadata$2 = {
-    tag: "ui5-badge",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Badge.prototype */
-    {
-      /**
-       * Defines the color scheme of the <code>ui5-badge</code>.
-       * There are 10 predefined schemes. Each scheme applies different values for the <code>background-color> and <code>border-color</code>.
-       * To use one you can set a number from <code>"1"</code> to <code>"10"</code>. The <code>colorScheme</code> <code>"1"</code> will be set by default.
-       * <br><br>
-       * <b>Note:</b> color schemes have no visual representation in High Contrast Black (sap_belize_hcb) theme.
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      colorScheme: {
-        type: String,
-        defaultValue: "1"
-      }
-    },
-    slots:
-    /** @lends sap.ui.webcomponents.main.Badge.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-badge</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      },
-
-      /**
-       * Defines the <code>ui5-icon</code> to be displayed in the <code>ui5-badge</code>.
-       *
-       * @type {Icon}
-       * @slot
-       * @public
-       */
-      icon: {
-        type: Icon
-      }
-    },
-    defaultSlot: "text"
-  };
-  /**
-   * @class
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-badge</code> is a small non-interactive component which contains text information and color chosen from a list of predefined color schemes.
-   * It serves the purpose to attract the user attention to some piece of information (state, quantity, condition, etc.).
-   *
-   * <h3>Usage Guidelines</h3>
-   * <ul>
-   * <li>If the text is longer than the width of the component, it doesn’t wrap, it shows ellipsis.</li>
-   * <li>When truncated, the full text is not visible, therefore, it’s recommended to make more space for longer texts to be fully displayed.</li>
-   * <li>Colors are not semantic and have no visual representation in High Contrast Black (sap_belize_hcb) theme.</li>
-   * </ul>
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Badge";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Badge
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-badge
-   * @since 0.12.0
-   * @public
-   */
-
-  var Badge =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Badge, _UI5Element);
-
-    function Badge() {
-      _classCallCheck(this, Badge);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Badge).apply(this, arguments));
-    }
-
-    _createClass(Badge, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        if (this.hasIcon) {
-          this.setAttribute("__has-icon", "");
-        } else {
-          this.removeAttribute("__has-icon");
-        }
-      }
-    }, {
-      key: "hasText",
-      get: function get() {
-        return !!this.textContent.trim().length;
-      }
-    }, {
-      key: "hasIcon",
-      get: function get() {
-        return !!this.icon;
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$2;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$1;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return badgeCss;
-      }
-    }]);
-
-    return Badge;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Badge.define();
-  });
-
-  function _templateObject2$1() {
-    var data = _taggedTemplateLiteral(["<div class=\"ui5-busyindicator-dynamic-content\"><div class=\"ui5-busyindicator-circle circle-animation-0\"></div><div class=\"ui5-busyindicator-circle circle-animation-1\"></div><div class=\"ui5-busyindicator-circle circle-animation-2\"></div></div>\t"]);
-
-    _templateObject2$1 = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$3() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\">\t", "<slot></slot></div>"]);
-
-    _templateObject$3 = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$2 = function block0(context) {
-    return html(_templateObject$3(), ifDefined(classMap(context.classes.main)), context.active ? block1$1(context) : undefined);
-  };
-
-  var block1$1 = function block1(context) {
-    return html(_templateObject2$1());
-  };
-
-  var busyIndicatorCss = ":host(ui5-busyindicator:not([hidden])){display:inline-block}:host(ui5-busyindicator:not([hidden])[active]){opacity:1;background-color:var(--sapBackgroundColorFade72,hsla(0,0%,98%,.72));pointer-events:none}ui5-busyindicator:not([hidden]){display:inline-block}ui5-busyindicator:not([hidden])[active]{opacity:1;background-color:var(--sapBackgroundColorFade72,hsla(0,0%,98%,.72));pointer-events:none}.ui5-busyindicator-wrapper{display:flex;justify-content:center;align-items:center;position:relative;background-color:inherit}.ui5-busyindicator-circle{display:inline-block;background-color:var(--ui5-busyindicator-color,var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0))));border-radius:50%}.ui5-busyindicator-circle:before{content:\"\";width:100%;height:100%;border-radius:100%}.ui5-busyindicator-small{min-width:3rem;min-height:1rem}.ui5-busyindicator-medium{min-width:5rem;min-height:2rem}.ui5-busyindicator-large{min-width:8rem;min-height:3rem}.ui5-busyindicator-small .ui5-busyindicator-circle{width:.125rem;height:.125rem;margin:0 .2rem}.ui5-busyindicator-medium .ui5-busyindicator-circle{width:.5rem;height:.5rem;margin:0 .4rem}.ui5-busyindicator-large .ui5-busyindicator-circle{width:1rem;height:1rem;margin:0 .75rem}.ui5-busyindicator-dynamic-content{position:absolute;z-index:999;width:100%;height:100%;display:flex;justify-content:center;align-items:center;background-color:inherit}.circle-animation-0{animation:grow 1.6s cubic-bezier(.32,.06,.85,1.11) infinite}.circle-animation-1{animation:grow 1.6s cubic-bezier(.32,.06,.85,1.11) infinite;animation-delay:.2s}.circle-animation-2{animation:grow 1.6s cubic-bezier(.32,.06,.85,1.11) infinite;animation-delay:.4s}@keyframes grow{0%,50%,to{-webkit-transform:scale(1);-moz-transform:scale(1);-ms-transform:scale(1);transform:scale(1)}25%{-webkit-transform:scale(2.5);-moz-transform:scale(2.5);-ms-transform:scale(2.5);transform:scale(2.5)}}";
-
-  /**
-   * Different types of BusyIndicator.
-   */
-
-  var BusyIndicatorTypes = {
-    /**
-     * small size
-     */
-    Small: "Small",
-
-    /**
-     * medium size
-     */
-    Medium: "Medium",
-
-    /**
-     * large size
-     */
-    Large: "Large"
-  };
-
-  var BusyIndicatorType =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(BusyIndicatorType, _DataType);
-
-    function BusyIndicatorType() {
-      _classCallCheck(this, BusyIndicatorType);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(BusyIndicatorType).apply(this, arguments));
-    }
-
-    _createClass(BusyIndicatorType, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!BusyIndicatorTypes[value];
-      }
-    }]);
-
-    return BusyIndicatorType;
-  }(DataType);
-
-  BusyIndicatorType.generataTypeAcessors(BusyIndicatorTypes);
-
-  /**
-   * @public
-   */
-
-  var metadata$3 = {
-    tag: "ui5-busyindicator",
-    properties:
-    /** @lends sap.ui.webcomponents.main.BusyIndicator.prototype */
-    {
-      /**
-       * Defines the size of the <code>ui5-busyindicator</code>.
-       * </br></br>
-       * <b>Note:</b> Available options are "Small", "Medium", "Large"
-       *
-       * @type {BusyIndicatorType}
-       * @defaultvalue "Large"
-       * @public
-       */
-      size: {
-        type: BusyIndicatorType,
-        defaultValue: BusyIndicatorType.Large
-      },
-
-      /**
-       * Defines if the busy indicator is visible on the screen. By default it is not.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      active: {
-        type: Boolean
-      }
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-busyindicator</code> signals that some operation is going on and that the
-   *  user must wait. It does not block the current UI screen so other operations could be
-   *  triggered in parallel.
-   *
-   * <h3>Usage</h3>
-   * For the <code>ui5-busyindicator</code> you can define the size of the indicator as well
-   * as whether it is shown or hidden. In order to hide it, use the html attribute <code>hidden</code> or <code>display: none;</code>
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/BusyIndicator";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.BusyIndicator
-   * @extends UI5Element
-   * @tagname ui5-busyindicator
-   * @public
-   * @since 0.12.0
-   */
-
-  var BusyIndicator =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(BusyIndicator, _UI5Element);
-
-    function BusyIndicator() {
-      _classCallCheck(this, BusyIndicator);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(BusyIndicator).apply(this, arguments));
-    }
-
-    _createClass(BusyIndicator, [{
-      key: "classes",
-      get: function get() {
-        return {
-          main: _defineProperty({
-            "ui5-busyindicator-wrapper": true
-          }, "ui5-busyindicator-".concat(this.size.toLowerCase()), true)
-        };
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$3;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return busyIndicatorCss;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$2;
-      }
-    }]);
-
-    return BusyIndicator;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    BusyIndicator.define();
-  });
-
   var features = new Map();
 
   var registerFeature = function registerFeature(name, feature) {
@@ -14390,1877 +13738,6 @@
   var getFeature = function getFeature(name) {
     return features.get(name);
   };
-
-  /**
-   * Different types of Button.
-   */
-
-  var ButtonTypes = {
-    /**
-     * default type (no special styling)
-     */
-    Default: "Default",
-
-    /**
-     * accept type (green button)
-     */
-    Positive: "Positive",
-
-    /**
-     * reject style (red button)
-     */
-    Negative: "Negative",
-
-    /**
-     * transparent type
-     */
-    Transparent: "Transparent",
-
-    /**
-     * emphasized type
-     */
-    Emphasized: "Emphasized"
-  };
-
-  var ButtonDesign =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(ButtonDesign, _DataType);
-
-    function ButtonDesign() {
-      _classCallCheck(this, ButtonDesign);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ButtonDesign).apply(this, arguments));
-    }
-
-    _createClass(ButtonDesign, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!ButtonTypes[value];
-      }
-    }]);
-
-    return ButtonDesign;
-  }(DataType);
-
-  ButtonDesign.generataTypeAcessors(ButtonTypes);
-
-  function _templateObject3() {
-    var data = _taggedTemplateLiteral(["<span id=\"", "-content\" class=\"", "\"><bdi><slot></slot></bdi></span>\t\t"]);
-
-    _templateObject3 = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$2() {
-    var data = _taggedTemplateLiteral(["<ui5-icon\t\t\t\tclass=\"", "\"\t\t\t\tsrc=\"", "\"\t\t\t></ui5-icon>\t\t"]);
-
-    _templateObject2$2 = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$4() {
-    var data = _taggedTemplateLiteral(["<button\t\ttype=\"button\"\t\tclass=\"", "\"\t\t?disabled=\"", "\"\t\tdata-sap-focus-ref\t\t\t\tdir=\"", "\"\t>\t\t", "", "</button>"]);
-
-    _templateObject$4 = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$3 = function block0(context) {
-    return html(_templateObject$4(), ifDefined(classMap(context.classes.main)), ifDefined(context.disabled), ifDefined(context.rtl), context.icon ? block1$2(context) : undefined, context.textContent ? block2(context) : undefined);
-  };
-
-  var block1$2 = function block1(context) {
-    return html(_templateObject2$2(), ifDefined(classMap(context.classes.icon)), ifDefined(context.icon));
-  };
-
-  var block2 = function block2(context) {
-    return html(_templateObject3(), ifDefined(context._id), ifDefined(classMap(context.classes.text)));
-  };
-
-  var buttonCss = ":host(ui5-button:not([hidden])){display:inline-block}ui5-button:not([hidden]){display:inline-block}button[dir=rtl].sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button[dir=rtl].sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button.sapUiSizeCompact .sapWCIconInButton{font-size:1rem}button.sapUiSizeCompact.sapMBtn{padding:var(--_ui5_button_compact_padding,0 .4375rem);min-height:var(--_ui5_button_compact_height,1.625rem);min-width:var(--_ui5_button_base_min_compact_width,2rem)}ui5-button .sapMBtn:before{content:\"\";min-height:inherit;font-size:0}.sapMBtn{width:100%;height:100%;min-width:var(--_ui5_button_base_min_width,2.25rem);min-height:var(--_ui5_button_base_height,2.25rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;box-sizing:border-box;padding:var(--_ui5_button_base_padding,0 .5625rem);border-radius:var(--_ui5_button_border_radius,.25rem);border-width:.0625rem;cursor:pointer;display:flex;justify-content:center;align-items:center;background-color:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,#0854a0));color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));outline:none;position:relative}.sapMBtn:not(.sapMBtnActive):hover{background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe))}.sapMBtn .sapWCIconInButton{font-size:var(--_ui5_button_base_icon_only_font_size,1rem);position:relative;color:inherit}.sapMBtn.sapMBtnIconEnd{flex-direction:row-reverse}.sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtn.sapMBtnNoText{padding:var(--_ui5_button_base_icon_only_padding,0 .5625rem)}.sapMBtnText{outline:none;position:relative}.sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtnDisabled{opacity:.5;pointer-events:none}.sapMBtn:focus:after{content:\"\";position:absolute;border:var(--_ui5_button_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_button_focus_after_top,1px);bottom:var(--_ui5_button_focus_after_bottom,1px);left:var(--_ui5_button_focus_after_left,1px);right:var(--_ui5_button_focus_after_right,1px)}.sapMBtn::-moz-focus-inner{border:0}.sapMBtnActive{background-image:none;background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));border-color:var(--_ui5_button_active_border_color,var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive{background-color:var(--sapUiButtonAcceptBackground,var(--sapButton_Accept_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--_ui5_button_positive_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))));color:var(--sapUiButtonAcceptTextColor,#107e3e);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnPositive:hover{background-color:var(--sapUiButtonAcceptHoverBackground,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_button_positive_border_hover_color,var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e))))))}.sapMBtn.sapMBtnPositive.sapMBtnActive{background-color:var(--sapUiButtonAcceptActiveBackground,#0d6733);border-color:var(--_ui5_button_positive_border_active_color,var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnPositive:focus{border-color:var(--_ui5_button_positive_focus_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))))}.sapMBtn.sapMBtnPositive.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnNegative{background-color:var(--sapUiButtonRejectBackground,var(--sapButton_Reject_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));color:var(--sapUiButtonRejectTextColor,#b00);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnNegative:hover{background-color:var(--sapUiButtonRejectHoverBackground,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--sapUiButtonRejectHoverBorderColor,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative:focus{border-color:var(--_ui5_button_negative_focus_border_color,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative.sapMBtnActive{background-color:var(--sapUiButtonRejectActiveBackground,#a20000);border-color:var(--_ui5_button_negative_active_border_color,var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnNegative.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnNegative:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnEmphasized{background-color:var(--sapUiButtonEmphasizedBackground,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))));border-color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1)))));color:var(--sapUiButtonEmphasizedTextColor,var(--sapButton_Emphasized_TextColor,#fff));text-shadow:0 0 .125rem var(--sapUiButtonEmphasizedTextShadow,transparent);font-weight:var(--_ui5_button_emphasized_font_weight,bold)}.sapMBtn.sapMBtnEmphasized:hover{background-color:var(--sapUiButtonEmphasizedHoverBackground,#085caf);border-color:var(--sapUiButtonEmphasizedHoverBorderColor,var(--sapUiButtonEmphasizedHoverBackground,#085caf))}.sapMBtn.sapMBtnEmphasized.sapMBtnActive{background-color:var(--sapUiButtonEmphasizedActiveBackground,#0854a0);border-color:var(--sapUiButtonEmphasizedActiveBorderColor,var(--sapUiButtonEmphasizedActiveBackground,#0854a0));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnEmphasized.sapMBtnActive:focus:after,.sapMBtn.sapMBtnEmphasized:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnEmphasized:focus{border-color:var(--_ui5_button_emphasized_focused_border_color,var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))))))}.sapMBtn.sapMBtnTransparent{background-color:var(--sapUiButtonLiteBackground,transparent);border-color:var(--sapUiButtonLiteBorderColor,transparent);color:var(--sapUiButtonLiteTextColor,var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));border-color:transparent}.sapMBtn.sapMBtnTransparent:hover{background-color:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.sapMBtn.sapMBtnTransparent.sapMBtnActive{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnTransparent:hover:not(.sapMBtnActive){border-color:transparent}";
-
-  /**
-   * @public
-   */
-
-  var metadata$4 = {
-    tag: "ui5-button",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Button.prototype */
-    {
-      /**
-       * Defines the <code>ui5-button</code> design.
-       * </br></br>
-       * <b>Note:</b> Available options are "Default", "Emphasized", "Positive",
-       * "Negative", and "Transparent".
-       *
-       * @type {ButtonDesign}
-       * @defaultvalue "Default"
-       * @public
-       */
-      design: {
-        type: ButtonDesign,
-        defaultValue: ButtonDesign.Default
-      },
-
-      /**
-       * Defines whether the <code>ui5-button</code> is disabled
-       * (default is set to <code>false</code>).
-       * A disabled <code>ui5-button</code> can't be pressed or
-       * focused, and it is not in the tab chain.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the icon to be displayed as graphical element within the <code>ui5-button</code>.
-       * The SAP-icons font provides numerous options.
-       * <br><br>
-       * Example:
-       * <br>
-       * <pre>ui5-button icon="sap-icon://palette"</pre>
-       *
-       * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      icon: {
-        type: String
-      },
-
-      /**
-       * Defines whether the icon should be displayed after the <code>ui5-button</code> text.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      iconEnd: {
-        type: Boolean
-      },
-
-      /**
-       * When set to <code>true</code>, the <code>ui5-button</code> will
-       * automatically submit the nearest form element upon <code>press</code>.
-       *
-       * <b>Important:</b> For the <code>submits</code> property to have effect, you must add the following import to your project:
-       * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      submits: {
-        type: Boolean
-      },
-
-      /**
-       * Used to switch the active state (pressed or not) of the <code>ui5-button</code>.
-       */
-      _active: {
-        type: Boolean
-      },
-      _iconSettings: {
-        type: Object
-      }
-    },
-    slots:
-    /** @lends sap.ui.webcomponents.main.Button.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-button</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    defaultSlot: "text",
-    events:
-    /** @lends sap.ui.webcomponents.main.Button.prototype */
-    {
-      /**
-       * Fired when the <code>ui5-button</code> is pressed either with a
-       * click/tap or by using the Enter or Space key.
-       * <br><br>
-       * <b>Note:</b> The event will not be fired if the <code>disabled</code>
-       * property is set to <code>true</code>.
-       *
-       * @event
-       * @public
-       */
-      press: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-button</code> component represents a simple push button.
-   * It enables users to trigger actions by clicking or tapping the <code>ui5-button</code>, or by pressing
-   * certain keyboard keys, such as Enter.
-   *
-   *
-   * <h3>Usage</h3>
-   *
-   * For the <code>ui5-button</code> UI, you can define text, icon, or both. You can also specify
-   * whether the text or the icon is displayed first.
-   * <br><br>
-   * You can choose from a set of predefined types that offer different
-   * styling to correspond to the triggered action.
-   * <br><br>
-   * You can set the <code>ui5-button</code> as enabled or disabled. An enabled
-   * <code>ui5-button</code> can be pressed by clicking or tapping it. The button changes
-   * its style to provide visual feedback to the user that it is pressed or hovered over with
-   * the mouse cursor. A disabled <code>ui5-button</code> appears inactive and cannot be pressed.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Button";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Button
-   * @extends UI5Element
-   * @tagname ui5-button
-   * @public
-   */
-
-  var Button =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Button, _UI5Element);
-
-    _createClass(Button, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$4;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return buttonCss;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$3;
-      }
-    }]);
-
-    function Button() {
-      var _this;
-
-      _classCallCheck(this, Button);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Button).call(this));
-
-      _this._deactivate = function () {
-        if (_this._active) {
-          _this._active = false;
-        }
-      };
-
-      return _this;
-    }
-
-    _createClass(Button, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        var FormSupport = getFeature("FormSupport");
-
-        if (this.submits && !FormSupport) {
-          console.warn("In order for the \"submits\" property to have effect, you should also: import InputElementsFormSupport from \"@ui5/webcomponents/dist/InputElementsFormSupport\";"); // eslint-disable-line
-        }
-      }
-    }, {
-      key: "onEnterDOM",
-      value: function onEnterDOM() {
-        document.addEventListener("mouseup", this._deactivate);
-      }
-    }, {
-      key: "onExitDOM",
-      value: function onExitDOM() {
-        document.removeEventListener("mouseup", this._deactivate);
-      }
-    }, {
-      key: "onclick",
-      value: function onclick(event) {
-        event.isMarked = "button";
-
-        if (!this.disabled) {
-          this.fireEvent("press", {});
-          var FormSupport = getFeature("FormSupport");
-
-          if (FormSupport) {
-            FormSupport.triggerFormSubmit(this);
-          }
-        }
-      }
-    }, {
-      key: "onmousedown",
-      value: function onmousedown(event) {
-        event.isMarked = "button";
-
-        if (!this.disabled) {
-          this._active = true;
-        }
-      }
-    }, {
-      key: "onmouseup",
-      value: function onmouseup(event) {
-        event.isMarked = "button";
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isSpace(event) || isEnter(event)) {
-          this._active = true;
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (isSpace(event) || isEnter(event)) {
-          this._active = false;
-        }
-      }
-    }, {
-      key: "onfocusout",
-      value: function onfocusout(_event) {
-        this._active = false;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var _main;
-
-        return {
-          main: (_main = {
-            sapMBtn: true,
-            sapMBtnActive: this._active,
-            sapMBtnWithIcon: this.icon,
-            sapMBtnNoText: !this.text.length,
-            sapMBtnDisabled: this.disabled,
-            sapMBtnIconEnd: this.iconEnd
-          }, _defineProperty(_main, "sapMBtn".concat(this.design), true), _defineProperty(_main, "sapUiSizeCompact", getCompactSize()), _main),
-          icon: {
-            sapWCIconInButton: true
-          },
-          text: {
-            sapMBtnText: true
-          }
-        };
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Icon.define();
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(Button), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return Button;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Button.define();
-  });
-
-  var Device = {};
-  var OS = {
-    "WINDOWS": "win",
-    "MACINTOSH": "mac",
-    "IOS": "iOS",
-    "ANDROID": "Android"
-  };
-
-  var _getMobileOS = function _getMobileOS() {
-    var userAgent = navigator.userAgent;
-    var rPlatform, aMatches;
-    rPlatform = /\(([a-zA-Z ]+);\s(?:[U]?[;]?)([\D]+)((?:[\d._]*))(?:.*[\)][^\d]*)([\d.]*)\s/;
-    aMatches = userAgent.match(rPlatform);
-
-    if (aMatches) {
-      var rAppleDevices = /iPhone|iPad|iPod/;
-
-      if (aMatches[0].match(rAppleDevices)) {
-        aMatches[3] = aMatches[3].replace(/_/g, ".");
-        return {
-          "name": OS.IOS,
-          "versionStr": aMatches[3]
-        };
-      }
-
-      if (aMatches[2].match(/Android/)) {
-        aMatches[2] = aMatches[2].replace(/\s/g, "");
-        return {
-          "name": OS.ANDROID,
-          "versionStr": aMatches[3]
-        };
-      }
-    }
-
-    rPlatform = /\((Android)[\s]?([\d][.\d]*)?;.*Firefox\/[\d][.\d]*/;
-    aMatches = userAgent.match(rPlatform);
-
-    if (aMatches) {
-      return {
-        "name": OS.ANDROID,
-        "versionStr": aMatches.length === 3 ? aMatches[2] : ""
-      };
-    }
-  };
-
-  var _getDesktopOS = function _getDesktopOS() {
-    var sPlatform = navigator.platform;
-
-    if (sPlatform.indexOf("Win") !== -1) {
-      var rVersion = /Windows NT (\d+).(\d)/i;
-      var uaResult = navigator.userAgent.match(rVersion);
-      return {
-        "name": OS.WINDOWS,
-        "versionStr": uaResult[1]
-      };
-    }
-
-    if (sPlatform.indexOf("Mac") !== -1) {
-      return {
-        "name": OS.MACINTOSH,
-        "versionStr": ""
-      };
-    }
-
-    return null;
-  };
-
-  var _getOS = function _getOS() {
-    return _getMobileOS() || _getDesktopOS();
-  };
-
-  var _setOS = function _setOS() {
-    if (Device.os) {
-      return;
-    }
-
-    Device.os = _getOS() || {};
-    Device.os.OS = OS;
-    Device.os.version = Device.os.versionStr ? parseFloat(Device.os.versionStr) : -1;
-
-    if (Device.os.name) {
-      for (var name in OS) {
-        if (OS[name] === Device.os.name) {
-          Device.os[name.toLowerCase()] = true;
-        }
-      }
-    }
-  };
-
-  var BROWSER = {
-    "INTERNET_EXPLORER": "ie",
-    "EDGE": "ed",
-    "FIREFOX": "ff",
-    "CHROME": "cr",
-    "SAFARI": "sf",
-    "ANDROID": "an"
-  };
-
-  var _calcBrowser = function _calcBrowser() {
-    var sUserAgent = navigator.userAgent.toLowerCase();
-    var rwebkit = /(webkit)[ \/]([\w.]+)/;
-    var rmsie = /(msie) ([\w.]+)/;
-    var rmsie11 = /(trident)\/[\w.]+;.*rv:([\w.]+)/;
-    var redge = /(edge)[ \/]([\w.]+)/;
-    var rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
-    var browserMatch = redge.exec(sUserAgent) || rmsie11.exec(sUserAgent) || rwebkit.exec(sUserAgent) || rmsie.exec(sUserAgent) || sUserAgent.indexOf("compatible") < 0 && rmozilla.exec(sUserAgent) || [];
-    var oRes = {
-      browser: browserMatch[1] || "",
-      version: browserMatch[2] || "0"
-    };
-    oRes[oRes.browser] = true;
-    return oRes;
-  };
-
-  var _getBrowser = function _getBrowser() {
-    var oBrowser = _calcBrowser();
-
-    var sUserAgent = navigator.userAgent;
-    var oNavigator = window.navigator;
-    var oExpMobile;
-    var oResult;
-
-    if (oBrowser.mozilla) {
-      oExpMobile = /Mobile/;
-
-      if (sUserAgent.match(/Firefox\/(\d+\.\d+)/)) {
-        var fVersion = parseFloat(RegExp.$1);
-        oResult = {
-          name: BROWSER.FIREFOX,
-          versionStr: "" + fVersion,
-          version: fVersion,
-          mozilla: true,
-          mobile: oExpMobile.test(sUserAgent)
-        };
-      } else {
-        oResult = {
-          mobile: oExpMobile.test(sUserAgent),
-          mozilla: true,
-          version: -1
-        };
-      }
-    } else if (oBrowser.webkit) {
-      var regExpWebkitVersion = sUserAgent.toLowerCase().match(/webkit[\/]([\d.]+)/);
-      var webkitVersion;
-
-      if (regExpWebkitVersion) {
-        webkitVersion = regExpWebkitVersion[1];
-      }
-
-      oExpMobile = /Mobile/;
-      var aChromeMatch = sUserAgent.match(/(Chrome|CriOS)\/(\d+\.\d+).\d+/);
-      var aFirefoxMatch = sUserAgent.match(/FxiOS\/(\d+\.\d+)/);
-      var aAndroidMatch = sUserAgent.match(/Android .+ Version\/(\d+\.\d+)/);
-
-      if (aChromeMatch || aFirefoxMatch || aAndroidMatch) {
-        var sName, sVersion, bMobile;
-
-        if (aChromeMatch) {
-          sName = BROWSER.CHROME;
-          bMobile = oExpMobile.test(sUserAgent);
-          sVersion = parseFloat(aChromeMatch[2]);
-        } else if (aFirefoxMatch) {
-          sName = BROWSER.FIREFOX;
-          bMobile = true;
-          sVersion = parseFloat(aFirefoxMatch[1]);
-        } else if (aAndroidMatch) {
-          sName = BROWSER.ANDROID;
-          bMobile = oExpMobile.test(sUserAgent);
-          sVersion = parseFloat(aAndroidMatch[1]);
-        }
-
-        oResult = {
-          name: sName,
-          mobile: bMobile,
-          versionStr: "" + sVersion,
-          version: sVersion,
-          webkit: true,
-          webkitVersion: webkitVersion
-        };
-      } else {
-        var oExp = /(Version|PhantomJS)\/(\d+\.\d+).*Safari/;
-        var bStandalone = oNavigator.standalone;
-
-        if (oExp.test(sUserAgent)) {
-          var aParts = oExp.exec(sUserAgent);
-          var fVersion = parseFloat(aParts[2]);
-          oResult = {
-            name: BROWSER.SAFARI,
-            versionStr: "" + fVersion,
-            fullscreen: false,
-            webview: false,
-            version: fVersion,
-            mobile: oExpMobile.test(sUserAgent),
-            webkit: true,
-            webkitVersion: webkitVersion,
-            phantomJS: aParts[1] === "PhantomJS"
-          };
-        } else if (/iPhone|iPad|iPod/.test(sUserAgent) && !/CriOS/.test(sUserAgent) && !/FxiOS/.test(sUserAgent) && (bStandalone === true || bStandalone === false)) {
-          oResult = {
-            name: BROWSER.SAFARI,
-            version: -1,
-            fullscreen: bStandalone,
-            webview: !bStandalone,
-            mobile: oExpMobile.test(sUserAgent),
-            webkit: true,
-            webkitVersion: webkitVersion
-          };
-        } else {
-          oResult = {
-            mobile: oExpMobile.test(sUserAgent),
-            webkit: true,
-            webkitVersion: webkitVersion,
-            version: -1
-          };
-        }
-      }
-    } else if (oBrowser.msie || oBrowser.trident) {
-      var fVersion = parseFloat(oBrowser.version);
-      oResult = {
-        name: BROWSER.INTERNET_EXPLORER,
-        versionStr: "" + fVersion,
-        version: fVersion,
-        msie: true,
-        mobile: false
-      };
-    } else if (oBrowser.edge) {
-      var fVersion = fVersion = parseFloat(oBrowser.version);
-      oResult = {
-        name: BROWSER.EDGE,
-        versionStr: "" + fVersion,
-        version: fVersion,
-        edge: true
-      };
-    } else {
-      oResult = {
-        name: "",
-        versionStr: "",
-        version: -1,
-        mobile: false
-      };
-    }
-
-    return oResult;
-  };
-
-  var _setBrowser = function _setBrowser() {
-    Device.browser = _getBrowser();
-    Device.browser.BROWSER = BROWSER;
-
-    if (Device.browser.name) {
-      for (var b in BROWSER) {
-        if (BROWSER[b] === Device.browser.name) {
-          Device.browser[b.toLowerCase()] = true;
-        }
-      }
-    }
-  };
-
-  var isIE = function isIE() {
-    if (!Device.browser) {
-      _setBrowser();
-    }
-
-    return !!Device.browser.msie;
-  };
-
-  var _setSupport = function _setSupport() {
-    if (Device.support) {
-      return;
-    }
-
-    if (!Device.browser) {
-      _setBrowser();
-    }
-
-    Device.support = {};
-    Device.support.touch = !!("ontouchstart" in window || navigator.maxTouchPoints > 0 || window.DocumentTouch && document instanceof window.DocumentTouch);
-  };
-
-  var supportTouch = function supportTouch() {
-    if (!Device.support) {
-      _setSupport();
-    }
-
-    return !!Device.support.touch;
-  };
-
-  var SYSTEMTYPE = {
-    "TABLET": "tablet",
-    "PHONE": "phone",
-    "DESKTOP": "desktop",
-    "COMBI": "combi"
-  };
-
-  var _isTablet = function _isTablet() {
-    var sUserAgent = navigator.userAgent;
-
-    if (Device.os.name === Device.os.OS.IOS) {
-      return /ipad/i.test(sUserAgent);
-    } else {
-      if (supportTouch()) {
-        if (Device.os.windows && Device.os.version >= 8) {
-          return true;
-        }
-
-        if (Device.browser.chrome && Device.os.android && Device.os.version >= 4.4) {
-          return !/Mobile Safari\/[.0-9]+/.test(sUserAgent);
-        } else {
-          var densityFactor = window.devicePixelRatio ? window.devicePixelRatio : 1;
-
-          if (Device.os.android && Device.browser.webkit && parseFloat(Device.browser.webkitVersion) > 537.1) {
-            densityFactor = 1;
-          }
-
-          var bTablet = Math.min(window.screen.width / densityFactor, window.screen.height / densityFactor) >= 600;
-          return bTablet;
-        }
-      } else {
-        var bAndroidPhone = /(?=android)(?=.*mobile)/i.test(sUserAgent);
-        return Device.browser.msie && sUserAgent.indexOf("Touch") !== -1 || Device.os.android && !bAndroidPhone;
-      }
-    }
-  };
-
-  var _getSystem = function _getSystem() {
-    var bTabletDetected = _isTablet();
-
-    var isWin8Upwards = Device.os.windows && Device.os.version >= 8;
-    var oSystem = {};
-    oSystem.tablet = !!((Device.support.touch || isWin8Upwards) && bTabletDetected);
-    oSystem.phone = !!(Device.os.windows_phone || Device.support.touch && !bTabletDetected);
-    oSystem.desktop = !!(!oSystem.tablet && !oSystem.phone || isWin8Upwards);
-    oSystem.combi = oSystem.desktop && oSystem.tablet;
-    oSystem.SYSTEMTYPE = SYSTEMTYPE;
-    return oSystem;
-  };
-
-  var _setSystem = function _setSystem() {
-    _setSupport();
-
-    _setOS();
-
-    Device.system = {};
-    Device.system = _getSystem();
-
-    if (Device.system.tablet || Device.system.phone) {
-      Device.browser.mobile = true;
-    }
-  };
-
-  var isDesktop = function isDesktop() {
-    if (!Device.system) {
-      _setSystem();
-    }
-
-    return Device.system.desktop;
-  };
-
-  var isPhone = function isPhone() {
-    if (!Device.system) {
-      _setSystem();
-    }
-
-    return Device.system.phone;
-  };
-
-  /**
-   * Different states.
-   */
-
-  var ValueStates = {
-    None: "None",
-    Success: "Success",
-    Warning: "Warning",
-    Error: "Error"
-  };
-
-  var ValueState =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(ValueState, _DataType);
-
-    function ValueState() {
-      _classCallCheck(this, ValueState);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ValueState).apply(this, arguments));
-    }
-
-    _createClass(ValueState, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!ValueStates[value];
-      }
-    }]);
-
-    return ValueState;
-  }(DataType);
-
-  ValueState.generataTypeAcessors(ValueStates);
-
-  function _templateObject2$3() {
-    var data = _taggedTemplateLiteral(["<ui5-label class=\"ui5-checkbox-label\" ?wrap=\"", "\">", "</ui5-label>\t\t"]);
-
-    _templateObject2$3 = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$5() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\trole=\"checkbox\"\taria-checked=\"", "\"\taria-readonly=\"", "\"\taria-disabled=\"", "\"\ttabindex=\"", "\"\tdir=\"", "\"><div id=\"", "-CbBg\" class=\"", "\"><input id=\"", "-CB\" type='checkbox' ?checked=\"", "\" ?readonly=\"", "\" ?disabled=\"", "\" data-sap-no-tab-ref/></div>\t\t", "<slot name=\"formSupport\"></slot></div>"]);
-
-    _templateObject$5 = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$4 = function block0(context) {
-    return html(_templateObject$5(), ifDefined(classMap(context.classes.main)), ifDefined(context.checked), ifDefined(context.ariaReadonly), ifDefined(context.ariaDisabled), ifDefined(context.tabIndex), ifDefined(context.rtl), ifDefined(context._id), ifDefined(classMap(context.classes.inner)), ifDefined(context._id), ifDefined(context.checked), ifDefined(context.readonly), ifDefined(context.disabled), context._label.text ? block1$3(context) : undefined);
-  };
-
-  var block1$3 = function block1(context) {
-    return html(_templateObject2$3(), ifDefined(context._label.wrap), ifDefined(context._label.text));
-  };
-
-  function _templateObject$6() {
-    var data = _taggedTemplateLiteral(["<label class=\"", "\" for=\"", "\"><bdi id=\"", "-bdi\"><slot></slot></bdi></label>"]);
-
-    _templateObject$6 = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$5 = function block0(context) {
-    return html(_templateObject$6(), ifDefined(classMap(context.classes.main)), ifDefined(context.for), ifDefined(context._id));
-  };
-
-  var labelCss = ":host(ui5-label:not([hidden])){display:inline-flex;max-width:100%;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;cursor:text}ui5-label:not([hidden]){display:inline-block;max-width:100%;overflow:hidden;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;cursor:text}.sapMLabel{display:inline-block;width:100%;font-weight:inherit;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;cursor:inherit}.sapMLabel.sapMLabelWrapped{white-space:normal;line-height:1.4rem}.sapMLabel.sapMLabelRequired:before{position:relative;height:100%;display:inline-flex;align-items:flex-start;content:\"*\";color:var(--sapUiFieldRequiredColor,var(--sapField_RequiredColor,#a5175a));font-size:1.25rem;font-weight:700}";
-
-  /**
-   * @public
-   */
-
-  var metadata$5 = {
-    tag: "ui5-label",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Label.prototype */
-    {
-      /**
-       * Defines whether an asterisk character is added to the <code>ui5-label</code> text.
-       * <br><br>
-       * <b>Note:</b> Usually indicates that user input is required.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      required: {
-        type: Boolean
-      },
-
-      /**
-       * Determines whether the <code>ui5-label</code> should wrap, when there is not enough space.
-       * <br><br>
-       * <b>Note:</b> By default the text would truncate.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      wrap: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the labeled input by providing its ID.
-       * <br><br>
-       * <b>Note:</b> Can be used with both <code>ui5-input</code> and native input.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      "for": {
-        type: String
-      }
-    },
-    slots:
-    /** @lends sap.ui.webcomponents.main.Label.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-label</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    defaultSlot: "text"
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-label</code> is a component used to represent a label,
-   * providing valuable information to the user.
-   * Usually it is placed next to a value holder, such as a text field.
-   * It informs the user about what data is displayed or expected in the value holder.
-   * The <code>ui5-label</code> is associated with its value holder by setting the
-   * <code>labelFor</code> association.
-   * <br><br>
-   * The <code>ui5-label</code> appearance can be influenced by properties,
-   * such as <code>required</code> and <code>wrap</code>.
-   * The appearance of the Label can be configured in a limited way by using the design property.
-   * For a broader choice of designs, you can use custom styles.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Label";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Label
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-label
-   * @public
-   */
-
-  var Label =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Label, _UI5Element);
-
-    function Label() {
-      _classCallCheck(this, Label);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Label).apply(this, arguments));
-    }
-
-    _createClass(Label, [{
-      key: "onclick",
-      value: function onclick() {
-        var elementToFocus = document.getElementById(this.for);
-
-        if (elementToFocus) {
-          elementToFocus.focus();
-        }
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapMLabel: true,
-            sapMLabelNoText: !this.text.length,
-            sapMLabelWrapped: this.wrap,
-            sapMLabelRequired: this.required
-          }
-        };
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$5;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$5;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return labelCss;
-      }
-    }]);
-
-    return Label;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Label.define();
-  });
-
-  var checkboxCss = ":host(ui5-checkbox:not([hidden])){display:inline-block;overflow:hidden;max-width:100%}ui5-checkbox:not([hidden]){display:inline-block;overflow:hidden;max-width:100%}.ui5-checkbox-wrapper{position:relative;display:inline-flex;align-items:center;width:100%;min-height:var(--_ui5_checkbox_width_height,2.75rem);min-width:var(--_ui5_checkbox_width_height,2.75rem);padding:0 var(--_ui5_checkbox_wrapper_padding,.6875rem);box-sizing:border-box;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0)}.ui5-checkbox-wrapper:not(.ui5-checkbox-with-label){justify-content:center}.ui5-checkbox-wrapper:after{content:\"\";min-height:inherit;font-size:0}.ui5-checkbox-wrapper.ui5-checkbox-with-label{padding-right:0}.ui5-checkbox-wrapper.ui5-checkbox-with-label:focus:before{right:0}.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap{min-height:auto;padding-top:.6875rem;box-sizing:border-box;padding-bottom:.6875rem;align-items:flex-start}.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap .ui5-checkbox-inner,.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap .ui5-checkbox-label{margin-top:var(--_ui5_checkbox_wrapped_content_margin_top,0)}.ui5-checkbox--disabled{opacity:.5}.ui5-checkbox--error .ui5-checkbox-inner{background:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:var(--_ui5_checkbox_inner_error_border,.125rem solid var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))));color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-checkbox--error.ui5-checkbox--hoverable:hover .ui5-checkbox-inner{background:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))));border-color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-checkbox--error .ui5-checkbox-inner--checked:before{color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-checkbox--warning .ui5-checkbox-inner{background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:var(--_ui5_checkbox_inner_warning_border,.125rem solid var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c)))));color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.ui5-checkbox--warning.ui5-checkbox--hoverable:hover .ui5-checkbox-inner{background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.ui5-checkbox--warning .ui5-checkbox-inner--checked:before{color:var(--_ui5_checkbox_checkmark_warning_color,var(--sapUiFieldWarningColorDarken100,#000))}.ui5-checkbox--hoverable:hover .ui5-checkbox-inner{background:var(--_ui5_checkbox_hover_background,var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))));border-color:var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.ui5-checkbox--readonly:not(.ui5-checkbox--warning):not(.ui5-checkbox--error) .ui5-checkbox-inner{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)));border:var(--_ui5_checkbox_inner_readonly_border,1px solid var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)))));color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.ui5-checkbox-wrapper:focus:before{content:\"\";position:absolute;top:var(--_ui5_checkbox_focus_position,.5625rem);left:var(--_ui5_checkbox_focus_position,.5625rem);right:var(--_ui5_checkbox_focus_position,.5625rem);bottom:var(--_ui5_checkbox_focus_position,.5625rem);border:var(--_ui5_checkbox_focus_outline,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.ui5-checkbox-wrapper.ui5-checkbox--wrap:focus:before{bottom:var(--_ui5_checkbox_wrapped_focus_left_top_bottom_position,.5625rem)}.ui5-checkbox-inner{display:flex;justify-content:center;align-items:center;min-width:var(--_ui5_checkbox_inner_width_height,1.375rem);max-width:var(--_ui5_checkbox_inner_width_height,1.375rem);height:var(--_ui5_checkbox_inner_width_height,1.375rem);max-height:var(--_ui5_checkbox_inner_width_height,1.375rem);border:var(--_ui5_checkbox_inner_border,.0625rem solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));border-radius:var(--_ui5_checkbox_inner_border_radius,.125rem);background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-sizing:border-box;position:relative;cursor:default;pointer-events:none}.ui5-checkbox-inner--checked:before{content:\"\\e05b\";display:flex;position:absolute;justify-content:center;align-items:center;font-family:SAP-icons;color:var(--_ui5_checkbox_checkmark_color,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));width:100%;height:100%;left:0;top:0;user-select:none;-ms-user-select:none;-webkit-user-select:none;cursor:default}.ui5-checkbox-inner input{-webkit-appearance:none;visibility:hidden;width:0;left:0;position:absolute;font-size:inherit}.ui5-checkbox-wrapper .ui5-checkbox-label{margin-left:var(--_ui5_checkbox_wrapper_padding,.6875rem);cursor:default;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;pointer-events:none;user-select:none;-ms-user-select:none;-webkit-user-select:none}.sapUiSizeCompact.ui5-checkbox-wrapper{min-height:var(--_ui5_checkbox_compact_width_height,2rem);min-width:var(--_ui5_checkbox_compact_width_height,2rem);padding:0 var(--_ui5_checkbox_compact_wrapper_padding,.5rem)}.sapUiSizeCompact .ui5-checkbox-inner{max-height:var(--_ui5_checkbox_compact_inner_size,1rem);height:var(--_ui5_checkbox_compact_inner_size,1rem);max-width:var(--_ui5_checkbox_compact_inner_size,1rem);min-width:var(--_ui5_checkbox_compact_inner_size,1rem);font-size:.625rem}.sapUiSizeCompact.ui5-checkbox-wrapper:focus:before{top:var(--_ui5_checkbox_compact_focus_position,.375rem);left:var(--_ui5_checkbox_compact_focus_position,.375rem);right:var(--_ui5_checkbox_compact_focus_position,.375rem);bottom:var(--_ui5_checkbox_compact_focus_position,.375rem);border:var(--_ui5_checkbox_focus_outline,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap{min-height:auto;padding-top:var(--_ui5_checkbox_wrapped_focus_padding,.5rem);padding-bottom:var(--_ui5_checkbox_wrapped_focus_padding,.5rem)}.sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label.ui5-checkbox--wrap .ui5-checkbox-label{margin-top:var(--_ui5_checkbox_compact_wrapped_label_margin_top,-.125rem)}.sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox--wrap:focus:before{bottom:var(--_ui5_checkbox_compact_focus_position,.375rem)}.sapUiSizeCompact.ui5-checkbox-wrapper .ui5-checkbox-label{margin-left:var(--_ui5_checkbox_compact_wrapper_padding,.5rem);width:calc(100% - .8125rem - var(--_ui5_checkbox_compact_inner_size, 1rem))}[dir=rtl].ui5-checkbox-wrapper.ui5-checkbox-with-label{padding-left:0;padding-right:var(--_ui5_checkbox_wrapper_padding,.6875rem)}[dir=rtl].ui5-checkbox-wrapper.ui5-checkbox-with-label:focus:before{left:0;right:var(--_ui5_checkbox_focus_position,.5625rem)}[dir=rtl].ui5-checkbox-wrapper .ui5-checkbox-label{margin-left:0;margin-right:var(--_ui5_checkbox_compact_wrapper_padding,.5rem)}[dir=rtl].sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label{padding-right:var(--_ui5_checkbox_compact_wrapper_padding,.5rem)}[dir=rtl].sapUiSizeCompact.ui5-checkbox-wrapper.ui5-checkbox-with-label:focus:before{right:var(--_ui5_checkbox_compact_focus_position,.375rem)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$6 = {
-    tag: "ui5-checkbox",
-    properties:
-    /** @lends sap.ui.webcomponents.main.CheckBox.prototype */
-    {
-      /**
-       * Defines whether the <code>ui5-checkbox</code> is disabled.
-       * <br><br>
-       * <b>Note:</b> A disabled <code>ui5-checkbox</code> is completely uninteractive.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Defines whether the <code>ui5-checkbox</code> is read-only.
-       * <br><br>
-       * <b>Note:</b> A red-only <code>ui5-checkbox</code> is not editable,
-       * but still provides visual feedback upon user interaction.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      readonly: {
-        type: Boolean
-      },
-
-      /**
-       * Defines if the <code>ui5-checkbox</code> is checked.
-       * <br><br>
-       * <b>Note:</b> The property can be changed with user interaction,
-       * either by cliking/tapping on the <code>ui5-checkbox</code>, or by
-       * pressing the Enter or Space key.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      checked: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the text of the <code>ui5-checkbox</code>.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      text: {
-        type: String
-      },
-
-      /**
-       * Defines the value state of the <code>ui5-checkbox</code>.
-       * <br><br>
-       * <b>Note:</b> Available options are <code>Warning</code>, <code>Error</code>, and <code>None</code> (default).
-       *
-       * @type {string}
-       * @defaultvalue "None"
-       * @public
-       */
-      valueState: {
-        type: ValueState,
-        defaultValue: ValueState.None
-      },
-
-      /**
-       * Defines whether the <code>ui5-checkbox</code> text wraps when there is not enough space.
-       * <br><br>
-       * <b>Note:</b> By default, the text truncates when there is not enough space.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      wrap: {
-        type: Boolean
-      },
-
-      /**
-       * Determines the name with which the <code>ui5-checkbox</code> will be submitted in an HTML form.
-       *
-       * <b>Important:</b> For the <code>name</code> property to have effect, you must add the following import to your project:
-       * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-       *
-       * <b>Note:</b> When set, a native <code>input</code> HTML element
-       * will be created inside the <code>ui5-checkbox</code> so that it can be submitted as
-       * part of an HTML form. Do not use this property unless you need to submit a form.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      name: {
-        type: String
-      },
-      _label: {
-        type: Object
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.CheckBox.prototype */
-    {
-      /**
-       * Fired when the <code>ui5-checkbox</code> checked state changes.
-       *
-       * @public
-       * @event
-       */
-      change: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * Allows the user to set a binary value, such as true/false or yes/no for an item.
-   * <br/><br/>
-   * The <code>ui5-checkbox</code> component consists of a box and a label that describes its purpose.
-   * If it's checked, an indicator is displayed inside the box.
-   * To check/uncheck the <code>ui5-checkbox</code>, the user has to click or tap the square
-   * box or its label.
-   * <br/><br/>
-   * Clicking or tapping toggles the <code>ui5-checkbox</code> between checked and unchecked state.
-   * The <code>ui5-checkbox</code> component only has 2 states - checked and unchecked.
-   *
-   * <h3>Usage</h3>
-   *
-   * You can manually set the width of the element containing the box and the label using the <code>width</code> property.
-   * If the text exceeds the available width, it is truncated.
-   * The touchable area for toggling the <code>ui5-checkbox</code> ends where the text ends.
-   * <br><br>
-   * You can disable the <code>ui5-checkbox</code> by setting the <code>disabled</code> property to
-   * <code>true</code>,
-   * or use the <code>ui5-checkbox</code> in read-only mode by setting the <code>readonly</code>
-   * property to <code>true</code>.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/CheckBox";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.CheckBox
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-checkbox
-   * @public
-   */
-
-  var CheckBox =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(CheckBox, _UI5Element);
-
-    _createClass(CheckBox, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$6;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$4;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return checkboxCss;
-      }
-    }]);
-
-    function CheckBox() {
-      var _this;
-
-      _classCallCheck(this, CheckBox);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(CheckBox).call(this));
-      _this._label = {};
-      return _this;
-    }
-
-    _createClass(CheckBox, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        this.syncLabel();
-
-        this._enableFormSupport();
-      }
-    }, {
-      key: "syncLabel",
-      value: function syncLabel() {
-        this._label = Object.assign({}, this._label);
-        this._label.text = this.text;
-        this._label.wrap = this.wrap;
-        this._label.textDirection = this.textDirection;
-      }
-    }, {
-      key: "_enableFormSupport",
-      value: function _enableFormSupport() {
-        var FormSupport = getFeature("FormSupport");
-
-        if (FormSupport) {
-          FormSupport.syncNativeHiddenInput(this, function (element, nativeInput) {
-            nativeInput.disabled = element.disabled || !element.checked;
-            nativeInput.value = element.checked ? "on" : "";
-          });
-        } else if (this.name) {
-          console.warn("In order for the \"name\" property to have effect, you should also: import InputElementsFormSupport from \"@ui5/webcomponents/dist/InputElementsFormSupport\";"); // eslint-disable-line
-        }
-      }
-    }, {
-      key: "onclick",
-      value: function onclick() {
-        this.toggle();
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isSpace(event)) {
-          event.preventDefault();
-        }
-
-        if (isEnter(event)) {
-          this.toggle();
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (isSpace(event)) {
-          this.toggle();
-        }
-      }
-    }, {
-      key: "toggle",
-      value: function toggle() {
-        if (this.canToggle()) {
-          this.checked = !this.checked;
-          this.fireEvent("change");
-        }
-
-        return this;
-      }
-    }, {
-      key: "canToggle",
-      value: function canToggle() {
-        return !(this.disabled || this.readonly);
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            "ui5-checkbox-wrapper": true,
-            "ui5-checkbox-with-label": !!this.text,
-            "ui5-checkbox--disabled": this.disabled,
-            "ui5-checkbox--readonly": this.readonly,
-            "ui5-checkbox--error": this.valueState === "Error",
-            "ui5-checkbox--warning": this.valueState === "Warning",
-            "ui5-checkbox--wrap": this.wrap,
-            "ui5-checkbox--hoverable": !this.disabled && !this.readonly && isDesktop(),
-            "sapUiSizeCompact": getCompactSize()
-          },
-          inner: {
-            "ui5-checkbox-inner": true,
-            "ui5-checkbox-inner-mark": true,
-            "ui5-checkbox-inner--checked": !!this.checked
-          }
-        };
-      }
-    }, {
-      key: "ariaReadonly",
-      get: function get() {
-        return this.readonly ? "true" : undefined;
-      }
-    }, {
-      key: "ariaDisabled",
-      get: function get() {
-        return this.disabled ? "true" : undefined;
-      }
-    }, {
-      key: "tabIndex",
-      get: function get() {
-        return this.disabled ? undefined : "0";
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Label.define();
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(CheckBox), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return CheckBox;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    CheckBox.define();
-  });
-
-  function _templateObject5() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapFCardSubtitle \">", "</div>\t\t\t"]);
-
-    _templateObject5 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapFCardTitle\">", "</div>\t\t\t"]);
-
-    _templateObject4 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$1() {
-    var data = _taggedTemplateLiteral(["<span role=\"img\" aria-label=\"Avatar\" class=\"sapFCardAvatar\"><ui5-icon class=\"sapFCardHeaderIcon\" src=\"", "\"></ui5-icon></span>\t\t"]);
-
-    _templateObject3$1 = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$4() {
-    var data = _taggedTemplateLiteral(["<img src=\"", "\" aria-label=\"Avatar\" class=\"sapFCardAvatar sapFCardHeaderImg\">\t\t"]);
-
-    _templateObject2$4 = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$7() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><header class=\"", "\"\t\t@click=\"", "\"\t\t@keydown=\"", "\"\t\t@keyup=\"", "\"\t\ttabindex=\"", "\"\t\trole=\"", "\">\t\t", "", "<div class=\"sapFCardHeaderText\">\t\t\t", "", "</div><span part=\"status\" class=\"sapFCardStatus\">", "</span></header><section class=\"sapFCardContent\"><slot></slot></section></div>"]);
-
-    _templateObject$7 = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$6 = function block0(context) {
-    return html(_templateObject$7(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(classMap(context.classes.header)), ifDefined(context._headerClick), ifDefined(context._headerKeydown), ifDefined(context._headerKeyup), ifDefined(context.tabindex), ifDefined(context.role), context.image ? block1$4(context) : undefined, context.icon ? block2$1(context) : undefined, context.heading ? block3(context) : undefined, context.subtitle ? block4(context) : undefined, ifDefined(context.status));
-  };
-
-  var block1$4 = function block1(context) {
-    return html(_templateObject2$4(), ifDefined(context.avatar));
-  };
-
-  var block2$1 = function block2(context) {
-    return html(_templateObject3$1(), ifDefined(context.avatar));
-  };
-
-  var block3 = function block3(context) {
-    return html(_templateObject4(), ifDefined(context.heading));
-  };
-
-  var block4 = function block4(context) {
-    return html(_templateObject5(), ifDefined(context.subtitle));
-  };
-
-  var cardCss = ":host(ui5-card:not([hidden])){display:inline-block;width:100%}ui5-card:not([hidden]){display:inline-block;width:100%}.sapFCard{width:100%;height:100%;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-shadow:var(--sapUiShadowLevel0,0 0 0 1px rgba(0,0,0,.15));border-radius:.25rem;border:1px solid var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc));overflow:hidden;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapUiFontSize,16px)}.sapFCardHeader{position:relative;display:flex;align-items:flex-start;background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:1px solid var(--_ui5_card_header_border_color,var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc)));padding:var(--_ui5_card_content_padding,1rem)}.sapFCard.sapFCardNoContent{height:auto}.sapFCard.sapFCardNoContent .sapFCardHeader{border-bottom:none}.sapFCardHeader:focus{outline:none}.sapFCardHeader.sapFCardHeaderInteractive:focus:before{content:\"\";position:absolute;border:var(--_ui5_card_header_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapFCardHeader.sapFCardHeaderInteractive:hover{cursor:pointer;background:var(--_ui5_card_header_hover_bg,#fafafa)}.sapFCardHeader.sapFCardHeaderActive,.sapFCardHeader.sapFCardHeaderInteractive:active{background:var(--_ui5_card_header_active_bg,#f0f0f0)}.sapFCardHeader .sapFCardHeaderText{flex:1}.sapFCardHeader .sapFCardAvatar{height:3rem;width:3rem;display:flex;align-items:center;justify-content:center;margin-right:.75rem}.sapFCardHeader .sapFCardAvatar.sapFCardHeaderImg{border-radius:50%}.sapFCardHeader .sapFCardAvatar .sapFCardHeaderIcon{font-size:1.5rem;color:var(--sapUiTileIconColor,var(--sapTile_IconColor,#6a6d70))}.sapFCardHeader .sapFCardStatus{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem);color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));text-align:left;line-height:1.125rem;padding-left:1rem;margin-left:auto;text-wrap:avoid;display:inline-block}.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));font-size:var(--sapMFontHeader5Size,1rem);font-weight:var(--sapUiFontHeaderWeight,normal);color:var(--sapUiTileTitleTextColor,var(--sapTile_TitleTextColor,#32363a));max-height:3.5rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));margin-top:.5rem;max-height:2.1rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle,.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:left;text-overflow:ellipsis;white-space:normal;word-wrap:break-word;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;max-width:100%}[dir=rtl] .sapFCardHeader .sapFCardAvatar{margin-left:.75rem;margin-right:0}[dir=rtl] .sapFCardHeader .sapFCardStatus{padding-right:1rem;padding-left:0;margin-right:auto}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:right}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{text-align:right}";
-
-  /**
-   * @public
-   */
-
-  var metadata$7 = {
-    tag: "ui5-card",
-    defaultSlot: "content",
-    slots:
-    /** @lends sap.ui.webcomponents.main.Card.prototype */
-    {
-      /**
-       * Defines the content of the <code>ui5-card</code>.
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      content: {
-        type: HTMLElement,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.Card.prototype */
-    {
-      /**
-       * Defines the title displayed in the <code>ui5-card</code> header.
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      heading: {
-        type: String
-      },
-
-      /**
-       * Defines the subtitle displayed in the <code>ui5-card</code> header.
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      subtitle: {
-        type: String
-      },
-
-      /**
-       * Defines the status displayed in the <code>ui5-card</code> header.
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      status: {
-        type: String
-      },
-
-      /**
-       * Defines if the <code>ui5-card</code> header would be interactive,
-       * e.g gets hover effect, gets focused and <code>headerPress</code> event is fired, when it is pressed.
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      headerInteractive: {
-        type: Boolean
-      },
-
-      /**
-       * Defines image source URI or built-in icon font URI.
-       * </br></br>
-       * <b>Note:</b>
-       * SAP-icons font provides numerous options. To find all the available icons, see the
-       * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-       * @type {string}
-       * @public
-       */
-      avatar: {
-        type: String
-      },
-      _headerActive: {
-        type: Boolean
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.Card.prototype */
-    {
-      /**
-       * Fired when the <code>ui5-card</code> header is pressed
-       * by click/tap or by using the Enter or Space key.
-       * <br><br>
-       * <b>Note:</b> The event would be fired only if the <code>headerInteractive</code> property is set to true.
-       * @event
-       * @public
-       * @since 0.10.0
-       */
-      headerPress: {}
-    }
-  };
-  /**
-   * @class
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-card</code> is a component that represents information in the form of a
-   * tile with separate header and content areas.
-   * The content area of a <code>ui5-card</code> can be arbitrary HTML content.
-   * The header can be used through several properties, such as:
-   * <code>heading</code>, <code>subtitle</code>, <code>status</code> and <code>avatar</code>.
-   *
-   * <h3>Keyboard handling</h3>
-   * In case you enable <code>headerInteractive</cdoe> property, you can press the <code>ui5-card</code> header by Space and Enter keys.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Card";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Card
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-card
-   * @public
-   */
-
-  var Card =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Card, _UI5Element);
-
-    function Card() {
-      _classCallCheck(this, Card);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Card).apply(this, arguments));
-    }
-
-    _createClass(Card, [{
-      key: "_headerClick",
-      value: function _headerClick() {
-        if (this.headerInteractive) {
-          this.fireEvent("headerPress");
-        }
-      }
-    }, {
-      key: "_headerKeydown",
-      value: function _headerKeydown(event) {
-        if (!this.headerInteractive) {
-          return;
-        }
-
-        var enter = isEnter(event);
-        var space = isSpace(event);
-        this._headerActive = enter || space;
-
-        if (enter) {
-          this.fireEvent("headerPress");
-          return;
-        }
-
-        if (space) {
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "_headerKeyup",
-      value: function _headerKeyup(event) {
-        if (!this.headerInteractive) {
-          return;
-        }
-
-        var space = isSpace(event);
-        this._headerActive = false;
-
-        if (space) {
-          this.fireEvent("headerPress");
-        }
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            "sapFCard": true,
-            "sapFCardNoContent": !this.content.length
-          },
-          header: {
-            "sapFCardHeader": true,
-            "sapFCardHeaderInteractive": this.headerInteractive,
-            "sapFCardHeaderActive": this.headerInteractive && this._headerActive
-          }
-        };
-      }
-    }, {
-      key: "icon",
-      get: function get() {
-        return !!this.avatar && isIconURI(this.avatar);
-      }
-    }, {
-      key: "image",
-      get: function get() {
-        return !!this.avatar && !this.icon;
-      }
-    }, {
-      key: "role",
-      get: function get() {
-        return this.headerInteractive ? "button" : undefined;
-      }
-    }, {
-      key: "tabindex",
-      get: function get() {
-        return this.headerInteractive ? "0" : undefined;
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Icon.define();
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(Card), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }, {
-      key: "metadata",
-      get: function get() {
-        return metadata$7;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$6;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return cardCss;
-      }
-    }]);
-
-    return Card;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Card.define();
-  });
-
-  var supportedLocales = ["ar", "ar_EG", "ar_SA", "bg", "ca", "cs", "da", "de", "de_AT", "de_CH", "el", "el_CY", "en", "en_AU", "en_GB", "en_HK", "en_IE", "en_IN", "en_NZ", "en_PG", "en_SG", "en_ZA", "es", "es_AR", "es_BO", "es_CL", "es_CO", "es_MX", "es_PE", "es_UY", "es_VE", "et", "fa", "fi", "fr", "fr_BE", "fr_CA", "fr_CH", "fr_LU", "he", "hi", "hr", "hu", "id", "it", "it_CH", "ja", "kk", "ko", "lt", "lv", "ms", "nb", "nl", "nl_BE", "pl", "pt", "pt_PT", "ro", "ru", "ru_UA", "sk", "sl", "sr", "sv", "th", "tr", "uk", "vi", "zh_CN", "zh_HK", "zh_SG", "zh_TW"];
-  var cldrData = {};
-  var cldrUrls = {}; // externally configurable mapping function for resolving (localeId -> URL)
-  // default implementation - ui5 CDN
-
-  var cldrMappingFn = function cldrMappingFn(locale) {
-    return "https://ui5.sap.com/1.60.2/resources/sap/ui/core/cldr/".concat(locale, ".json");
-  };
-
-  var M_ISO639_OLD_TO_NEW$4 = {
-    "iw": "he",
-    "ji": "yi",
-    "in": "id",
-    "sh": "sr"
-  };
-
-  var calcLocale = function calcLocale(language, region, script) {
-    // normalize language and handle special cases
-    language = language && M_ISO639_OLD_TO_NEW$4[language] || language; // Special case 1: in an SAP context, the inclusive language code "no" always means Norwegian Bokmal ("nb")
-
-    if (language === "no") {
-      language = "nb";
-    } // Special case 2: for Chinese, derive a default region from the script (this behavior is inherited from Java)
-
-
-    if (language === "zh" && !region) {
-      if (script === "Hans") {
-        region = "CN";
-      } else if (script === "Hant") {
-        region = "TW";
-      }
-    } // try language + region
-
-
-    var localeId = "".concat(language, "_").concat(region);
-
-    if (!supportedLocales.includes(localeId)) {
-      // fallback to language only
-      localeId = language;
-    }
-
-    if (!supportedLocales.includes(localeId)) {
-      // fallback to english
-      localeId = "en";
-    }
-
-    return localeId;
-  };
-
-  var resolveMissingMappings = function resolveMissingMappings() {
-    if (!cldrMappingFn) {
-      return;
-    }
-
-    var missingLocales = supportedLocales.filter(function (locale) {
-      return !cldrData[locale] && !cldrUrls[locale];
-    });
-    missingLocales.forEach(function (locale) {
-      cldrUrls[locale] = cldrMappingFn(locale);
-    });
-  };
-
-  var fetchCldrData =
-  /*#__PURE__*/
-  function () {
-    var _ref = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee(language, region, script) {
-      var localeId, cldrObj, url, cldrText;
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              resolveMissingMappings();
-              localeId = calcLocale(language, region, script);
-              cldrObj = cldrData[localeId];
-              url = cldrUrls[localeId];
-
-              if (!cldrObj) {
-                _context.next = 8;
-                break;
-              }
-
-              // inlined from build or fetched independently
-              registerModuleContent("sap/ui/core/cldr/".concat(localeId, ".json"), JSON.stringify(cldrObj));
-              _context.next = 13;
-              break;
-
-            case 8:
-              if (!url) {
-                _context.next = 13;
-                break;
-              }
-
-              _context.next = 11;
-              return fetchTextOnce(url);
-
-            case 11:
-              cldrText = _context.sent;
-              registerModuleContent("sap/ui/core/cldr/".concat(localeId, ".json"), cldrText);
-
-            case 13:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-
-    return function fetchCldrData(_x, _x2, _x3) {
-      return _ref.apply(this, arguments);
-    };
-  }();
 
   var fnEqual = function fnEqual(a, b, maxDepth, contains, depth) {
     if (typeof maxDepth == 'boolean') {
@@ -18651,6 +16128,403 @@
     }
   }
 
+  /**
+   * Different states.
+   */
+
+  var ValueStates = {
+    None: "None",
+    Success: "Success",
+    Warning: "Warning",
+    Error: "Error"
+  };
+
+  var ValueState =
+  /*#__PURE__*/
+  function (_DataType) {
+    _inherits(ValueState, _DataType);
+
+    function ValueState() {
+      _classCallCheck(this, ValueState);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(ValueState).apply(this, arguments));
+    }
+
+    _createClass(ValueState, null, [{
+      key: "isValid",
+      value: function isValid(value) {
+        return !!ValueStates[value];
+      }
+    }]);
+
+    return ValueState;
+  }(DataType);
+
+  ValueState.generataTypeAcessors(ValueStates);
+
+  var mKeyCodes = {
+    BACKSPACE: 8,
+    TAB: 9,
+    ENTER: 13,
+    SHIFT: 16,
+    CONTROL: 17,
+    ALT: 18,
+    BREAK: 19,
+    CAPS_LOCK: 20,
+    ESCAPE: 27,
+    SPACE: 32,
+    PAGE_UP: 33,
+    PAGE_DOWN: 34,
+    END: 35,
+    HOME: 36,
+    ARROW_LEFT: 37,
+    ARROW_UP: 38,
+    ARROW_RIGHT: 39,
+    ARROW_DOWN: 40,
+    PRINT: 44,
+    INSERT: 45,
+    DELETE: 46,
+    DIGIT_0: 48,
+    DIGIT_1: 49,
+    DIGIT_2: 50,
+    DIGIT_3: 51,
+    DIGIT_4: 52,
+    DIGIT_5: 53,
+    DIGIT_6: 54,
+    DIGIT_7: 55,
+    DIGIT_8: 56,
+    DIGIT_9: 57,
+    A: 65,
+    B: 66,
+    C: 67,
+    D: 68,
+    E: 69,
+    F: 70,
+    G: 71,
+    H: 72,
+    I: 73,
+    J: 74,
+    K: 75,
+    L: 76,
+    M: 77,
+    N: 78,
+    O: 79,
+    P: 80,
+    Q: 81,
+    R: 82,
+    S: 83,
+    T: 84,
+    U: 85,
+    V: 86,
+    W: 87,
+    X: 88,
+    Y: 89,
+    Z: 90,
+    WINDOWS: 91,
+    CONTEXT_MENU: 93,
+    TURN_OFF: 94,
+    SLEEP: 95,
+    NUMPAD_0: 96,
+    NUMPAD_1: 97,
+    NUMPAD_2: 98,
+    NUMPAD_3: 99,
+    NUMPAD_4: 100,
+    NUMPAD_5: 101,
+    NUMPAD_6: 102,
+    NUMPAD_7: 103,
+    NUMPAD_8: 104,
+    NUMPAD_9: 105,
+    NUMPAD_ASTERISK: 106,
+    NUMPAD_PLUS: 107,
+    NUMPAD_MINUS: 109,
+    NUMPAD_COMMA: 110,
+    NUMPAD_SLASH: 111,
+    F1: 112,
+    F2: 113,
+    F3: 114,
+    F4: 115,
+    F5: 116,
+    F6: 117,
+    F7: 118,
+    F8: 119,
+    F9: 120,
+    F10: 121,
+    F11: 122,
+    F12: 123,
+    NUM_LOCK: 144,
+    SCROLL_LOCK: 145,
+    OPEN_BRACKET: 186,
+    PLUS: 187,
+    COMMA: 188,
+    SLASH: 189,
+    DOT: 190,
+    PIPE: 191,
+    SEMICOLON: 192,
+    MINUS: 219,
+    GREAT_ACCENT: 220,
+    EQUALS: 221,
+    SINGLE_QUOTE: 222,
+    BACKSLASH: 226
+  };
+
+  var isEnter = function isEnter(event) {
+    return (event.key ? event.key === "Enter" : event.keyCode === mKeyCodes.ENTER) && !hasModifierKeys(event);
+  };
+
+  var isSpace = function isSpace(event) {
+    return (event.key ? event.key === "Spacebar" || event.key === " " : event.keyCode === mKeyCodes.SPACE) && !hasModifierKeys(event);
+  };
+
+  var isLeft = function isLeft(event) {
+    return (event.key ? event.key === "ArrowLeft" || event.key === "Left" : event.keyCode === mKeyCodes.ARROW_LEFT) && !hasModifierKeys(event);
+  };
+
+  var isRight = function isRight(event) {
+    return (event.key ? event.key === "ArrowRight" || event.key === "Right" : event.keyCode === mKeyCodes.ARROW_RIGHT) && !hasModifierKeys(event);
+  };
+
+  var isUp = function isUp(event) {
+    return (event.key ? event.key === "ArrowUp" || event.key === "Up" : event.keyCode === mKeyCodes.ARROW_UP) && !hasModifierKeys(event);
+  };
+
+  var isDown = function isDown(event) {
+    return (event.key ? event.key === "ArrowDown" || event.key === "Down" : event.keyCode === mKeyCodes.ARROW_DOWN) && !hasModifierKeys(event);
+  };
+
+  var isHome = function isHome(event) {
+    return (event.key ? event.key === "Home" : event.keyCode === mKeyCodes.HOME) && !hasModifierKeys(event);
+  };
+
+  var isEnd = function isEnd(event) {
+    return (event.key ? event.key === "End" : event.keyCode === mKeyCodes.END) && !hasModifierKeys(event);
+  };
+
+  var isEscape = function isEscape(event) {
+    return (event.key ? event.key === "Escape" || event.key === "Esc" : event.keyCode === mKeyCodes.ESCAPE) && !hasModifierKeys(event);
+  };
+
+  var isShow = function isShow(event) {
+    if (event.key) {
+      return event.key === "F4" && !hasModifierKeys(event) || (event.key === "ArrowDown" || event.key === "Down" || event.key === "ArrowUp" || event.key === "Up") && checkModifierKeys(event,
+      /* Ctrl */
+      false,
+      /* Alt */
+      true,
+      /* Shift */
+      false);
+    }
+
+    return event.keyCode === mKeyCodes.F4 && !hasModifierKeys(event) || event.keyCode === mKeyCodes.ARROW_DOWN && checkModifierKeys(event,
+    /* Ctrl */
+    false,
+    /* Alt */
+    true,
+    /* Shift */
+    false);
+  };
+
+  var hasModifierKeys = function hasModifierKeys(event) {
+    return event.shiftKey || event.altKey || getCtrlKey(event);
+  };
+
+  var getCtrlKey = function getCtrlKey(event) {
+    return !!(event.metaKey || event.ctrlKey);
+  }; // double negation doesn't have effect on boolean but ensures null and undefined are equivalent to false.
+
+
+  var checkModifierKeys = function checkModifierKeys(oEvent, bCtrlKey, bAltKey, bShiftKey) {
+    return oEvent.shiftKey === bShiftKey && oEvent.altKey === bAltKey && getCtrlKey(oEvent) === bCtrlKey;
+  };
+
+  /*
+  	lit-html directive that removes and attribute if it is undefined
+  */
+
+  var ifDefined = directive(function (value) {
+    return function (part) {
+      if (value === undefined && part instanceof AttributePart) {
+        if (value !== part.value) {
+          var name = part.committer.name;
+          part.committer.element.removeAttribute(name);
+        }
+      } else if (part.committer && part.committer.element && part.committer.element.getAttribute(part.committer.name) === value) {
+        part.setValue(noChange);
+      } else {
+        part.setValue(value);
+      }
+    };
+  });
+
+  function _templateObject$1() {
+    var data = _taggedTemplateLiteral(["<span\tclass=\"", "\"\tstyle=\"", "\"\ttabindex=\"-1\"\tdata-sap-ui-icon-content=\"", "\"\tdir=\"", "\"></span>"]);
+
+    _templateObject$1 = function _templateObject() {
+      return data;
+    };
+
+    return data;
+  }
+
+  var block0 = function block0(context) {
+    return html(_templateObject$1(), ifDefined(classMap(context.classes.main)), ifDefined(context.fontStyle), ifDefined(context.iconContent), ifDefined(context.dir));
+  };
+
+  var iconCss = ":host(ui5-icon:not([hidden])){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}ui5-icon:not([hidden]){display:inline-block;outline:none;color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.sapWCIcon{width:100%;height:100%;display:flex;justify-content:center;align-items:center;outline:none;border-style:none;pointer-events:none}.sapWCIcon:before{content:attr(data-sap-ui-icon-content);speak:none;font-weight:400;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;align-items:center;width:100%;height:100%;pointer-events:none}[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):after,[dir=rtl].sapWCIconMirrorInRTL:not(.sapWCIconSuppressMirrorInRTL):before{transform:scaleX(-1)}";
+
+  /**
+   * @public
+   */
+
+  var metadata$1 = {
+    tag: "ui5-icon",
+    properties:
+    /** @lends sap.ui.webcomponents.main.Icon.prototype */
+    {
+      /**
+       * Defines the source URI of the <code>ui5-icon</code>.
+       * <br><br>
+       * SAP-icons font provides numerous options. To find all the available icons, see the
+       * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
+       * <br><br>
+       * Example:
+       * <br>
+       * <code>src='sap-icons://add'</code>, <code>src='sap-icons://delete'</code>, <code>src='sap-icons://employee'</code>.
+       *
+       * @type {string}
+       * @public
+      */
+      src: {
+        type: String
+      }
+    },
+    events: {
+      press: {}
+    }
+  };
+  /**
+   * @class
+   * <h3 class="comment-api-title">Overview</h3>
+   *
+   * The <code>ui5-icon</code> component is a wrapper around the HTML tag to embed an icon from an icon font.
+   * There are two main scenarios how the <code>ui5-icon</code> component is used:
+   * as a purely decorative element; or as a visually appealing clickable area in the form of an icon button.
+   * In the first case, images are not predefined as tab stops in accessibility mode.
+   * <br><br>
+   * The <code>ui5-icon</code> uses embedded font instead of pixel image.
+   * Comparing to image, <code>ui5-icon</code> is easily scalable,
+   * its color can be altered live, and various effects can be added using CSS.
+   * <br><br>
+   * A large set of built-in icons is available
+   * and they can be used by setting the <code>src</code> property on the <code>ui5-icon</code>.
+   *
+   * <h3>ES6 Module Import</h3>
+   *
+   * <code>import "@ui5/webcomponents/dist/Icon";</code>
+   *
+   * @constructor
+   * @author SAP SE
+   * @alias sap.ui.webcomponents.main.Icon
+   * @extends sap.ui.webcomponents.base.UI5Element
+   * @tagname ui5-icon
+   * @public
+   */
+
+  var Icon =
+  /*#__PURE__*/
+  function (_UI5Element) {
+    _inherits(Icon, _UI5Element);
+
+    function Icon() {
+      _classCallCheck(this, Icon);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(Icon).apply(this, arguments));
+    }
+
+    _createClass(Icon, [{
+      key: "focus",
+      value: function focus() {
+        HTMLElement.prototype.focus.call(this);
+      }
+    }, {
+      key: "onclick",
+      value: function onclick() {
+        this.fireEvent("press");
+      }
+    }, {
+      key: "onkeydown",
+      value: function onkeydown(event) {
+        if (isSpace(event)) {
+          event.preventDefault();
+          this.__spaceDown = true;
+        } else if (isEnter(event)) {
+          this.onclick(event);
+        }
+      }
+    }, {
+      key: "onkeyup",
+      value: function onkeyup(event) {
+        if (isSpace(event) && this.__spaceDown) {
+          this.fireEvent("press");
+          this.__spaceDown = false;
+        }
+      }
+    }, {
+      key: "classes",
+      get: function get() {
+        var iconInfo = getIconInfo(this.src) || {};
+        return {
+          main: {
+            sapWCIcon: true,
+            sapWCIconMirrorInRTL: !iconInfo.suppressMirroring
+          }
+        };
+      }
+    }, {
+      key: "iconContent",
+      get: function get() {
+        var iconInfo = getIconInfo(this.src) || {};
+        return iconInfo.content;
+      }
+    }, {
+      key: "dir",
+      get: function get() {
+        return getRTL() ? "rtl" : "ltr";
+      }
+    }, {
+      key: "fontStyle",
+      get: function get() {
+        var iconInfo = getIconInfo(this.src) || {};
+        return "font-family: '".concat(iconInfo.fontFamily, "'");
+      }
+    }], [{
+      key: "metadata",
+      get: function get() {
+        return metadata$1;
+      }
+    }, {
+      key: "render",
+      get: function get() {
+        return litRender;
+      }
+    }, {
+      key: "template",
+      get: function get() {
+        return block0;
+      }
+    }, {
+      key: "styles",
+      get: function get() {
+        return iconCss;
+      }
+    }]);
+
+    return Icon;
+  }(UI5Element);
+
+  Bootstrap.boot().then(function (_) {
+    Icon.define();
+  });
+
   var rFocusable = /^(?:input|select|textarea|button)$/i,
       rClickable = /^(?:a|area)$/i;
 
@@ -19012,7 +16886,7 @@
    * @public
    */
 
-  var metadata$8 = {
+  var metadata$2 = {
     "abstract": true,
     slots:
     /** @lends  sap.ui.webcomponents.main.Popup.prototype */
@@ -19254,7 +17128,7 @@
     }, {
       key: "metadata",
       get: function get() {
-        return metadata$8;
+        return metadata$2;
       }
     }, {
       key: "styles",
@@ -19466,74 +17340,74 @@
     return Popup;
   }(UI5Element);
 
-  function _templateObject5$1() {
+  function _templateObject5() {
     var data = _taggedTemplateLiteral(["<footer><div class=\"sapMPopupFooter\"><slot name=\"footer\"></slot></div></footer>\t"]);
 
-    _templateObject5$1 = function _templateObject5() {
+    _templateObject5 = function _templateObject5() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject4$1() {
+  function _templateObject4() {
     var data = _taggedTemplateLiteral(["<h2 role=\"toolbar\" class=\"sapMPopupHeader sapMPopupHeaderText\">", "</h2>\t\t\t"]);
 
-    _templateObject4$1 = function _templateObject4() {
+    _templateObject4 = function _templateObject4() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject3$2() {
+  function _templateObject3() {
     var data = _taggedTemplateLiteral(["<div role=\"toolbar\" class=\"sapMPopupHeader\"><slot name=\"header\"></slot></div>\t\t\t"]);
 
-    _templateObject3$2 = function _templateObject3() {
+    _templateObject3 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$5() {
+  function _templateObject2() {
     var data = _taggedTemplateLiteral(["<header>\t\t\t", "</header>\t"]);
 
-    _templateObject2$5 = function _templateObject2() {
+    _templateObject2 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$8() {
+  function _templateObject$2() {
     var data = _taggedTemplateLiteral(["<span class=\"", "\"><span id=\"", "-firstfe\" tabindex=\"0\" @focusin=", "></span><div style=\"", "\" role=\"dialog\" aria-labelledby=\"", "\" tabindex=\"-1\" class=\"", "\">\t\t\t", "<div id=\"", "-content\" role=\"application\" style=\"", "\" class=\"sapMPopupContent\"><div class=\"sapMPopupScroll\"><slot></slot></div></div>\t\t\t", "<span id=\"", "-arrow\" style=\"", "\" class=\"", "\"></span></div><span id=\"", "-lastfe\" tabindex=\"0\" @focusin=", "></span><div tabindex=\"0\" id=\"", "-blocklayer\" style=\"", "\" class=\"", "\"></div></span>"]);
 
-    _templateObject$8 = function _templateObject() {
+    _templateObject$2 = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$7 = function block0(context) {
-    return html(_templateObject$8(), ifDefined(classMap(context.classes.frame)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToLast), ifDefined(styleMap$1(context.styles.main)), ifDefined(context.headerId), ifDefined(classMap(context.classes.main)), !context.noHeader ? block1$5(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.content)), context.footer ? block4$1(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.arrow)), ifDefined(classMap(context.classes.arrow)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToFirst), ifDefined(context._id), ifDefined(styleMap$1(context.styles.blockLayer)), ifDefined(classMap(context.classes.blockLayer)));
+  var block0$1 = function block0(context) {
+    return html(_templateObject$2(), ifDefined(classMap(context.classes.frame)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToLast), ifDefined(styleMap$1(context.styles.main)), ifDefined(context.headerId), ifDefined(classMap(context.classes.main)), !context.noHeader ? block1(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.content)), context.footer ? block4(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.arrow)), ifDefined(classMap(context.classes.arrow)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToFirst), ifDefined(context._id), ifDefined(styleMap$1(context.styles.blockLayer)), ifDefined(classMap(context.classes.blockLayer)));
   };
 
-  var block1$5 = function block1(context) {
-    return html(_templateObject2$5(), context.header ? block2$2(context) : block3$1(context));
+  var block1 = function block1(context) {
+    return html(_templateObject2(), context.header ? block2(context) : block3(context));
   };
 
-  var block2$2 = function block2(context) {
-    return html(_templateObject3$2());
+  var block2 = function block2(context) {
+    return html(_templateObject3());
   };
 
-  var block3$1 = function block3(context) {
-    return html(_templateObject4$1(), ifDefined(context.headerText));
+  var block3 = function block3(context) {
+    return html(_templateObject4(), ifDefined(context.headerText));
   };
 
-  var block4$1 = function block4(context) {
-    return html(_templateObject5$1());
+  var block4 = function block4(context) {
+    return html(_templateObject5());
   };
 
   var popoverCss = ".sapMPopover{position:fixed;z-index:10}.sapMPopoverArr{pointer-events:none;display:block;width:1rem;height:1rem;position:absolute;overflow:hidden}.sapMPopoverArr:after{content:\" \";display:block;width:.7rem;height:.7rem;background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));transform:rotate(-45deg)}.sapMPopoverArrUp{left:calc(50% - .5625rem);top:-.5rem;height:.5625rem}.sapMPopoverArrUp:after{margin:.1875rem 0 0 .1875rem;box-shadow:-.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrRight{top:calc(50% - .5625rem);right:-.5625rem;width:.5625rem}.sapMPopoverArrRight:after{margin:.1875rem 0 0 -.375rem;box-shadow:-.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrDown{left:calc(50% - .5625rem);height:.5625rem}.sapMPopoverArrDown:after{margin:-.375rem 0 0 .125rem;box-shadow:.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrLeft{left:-.5625rem;top:calc(50% - .5625rem);width:.5625rem;height:1rem}.sapMPopoverArrLeft:after{margin:.125rem 0 0 .25rem;box-shadow:.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArr.sapMPopoverArrHidden{display:none}.sapMPopover{transform:translateZ(0)}";
@@ -19542,7 +17416,7 @@
    * @public
    */
 
-  var metadata$9 = {
+  var metadata$3 = {
     tag: "ui5-popover",
     properties:
     /** @lends sap.ui.webcomponents.main.Popover.prototype */
@@ -19708,7 +17582,7 @@
     _createClass(Popover, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$9;
+        return metadata$3;
       }
     }, {
       key: "render",
@@ -19718,7 +17592,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$7;
+        return block0$1;
       }
     }, {
       key: "styles",
@@ -20202,23 +18076,490 @@
     Popover.define();
   });
 
-  function _templateObject$9() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><ui5-icon id=\"", "-btnPrev\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Prev\"></ui5-icon><div class=\"sapWCCalHeadMidButtonContainer\"><div\t\t\tid=\"", "-btn1\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Month\"\t\t>\t\t\t", "</div><div\t\t\tid=\"", "-btn2\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Year\"\t\t>\t\t\t", "</div></div><ui5-icon\t\tid=\"", "-btnNext\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Next\"></ui5-icon></div>"]);
+  var M_ISO639_OLD_TO_NEW$4 = {
+    "iw": "he",
+    "ji": "yi",
+    "in": "id",
+    "sh": "sr"
+  };
+  var A_RTL_LOCALES$1 = getDesigntimePropertyAsArray("$cldr-rtl-locales:ar,fa,he$") || [];
 
-    _templateObject$9 = function _templateObject() {
+  var impliesRTL = function impliesRTL(language) {
+    language = language && M_ISO639_OLD_TO_NEW$4[language] || language;
+    return A_RTL_LOCALES$1.indexOf(language) >= 0;
+  };
+
+  var getEffectiveRTL = function getEffectiveRTL() {
+    var configurationRTL = getRTL();
+
+    if (configurationRTL !== null) {
+      return !!configurationRTL;
+    }
+
+    return impliesRTL(getLanguage() || detectNavigatorLanguage());
+  };
+
+  /**
+   * Different types of Button.
+   */
+
+  var ButtonTypes = {
+    /**
+     * default type (no special styling)
+     */
+    Default: "Default",
+
+    /**
+     * accept type (green button)
+     */
+    Positive: "Positive",
+
+    /**
+     * reject style (red button)
+     */
+    Negative: "Negative",
+
+    /**
+     * transparent type
+     */
+    Transparent: "Transparent",
+
+    /**
+     * emphasized type
+     */
+    Emphasized: "Emphasized"
+  };
+
+  var ButtonDesign =
+  /*#__PURE__*/
+  function (_DataType) {
+    _inherits(ButtonDesign, _DataType);
+
+    function ButtonDesign() {
+      _classCallCheck(this, ButtonDesign);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(ButtonDesign).apply(this, arguments));
+    }
+
+    _createClass(ButtonDesign, null, [{
+      key: "isValid",
+      value: function isValid(value) {
+        return !!ButtonTypes[value];
+      }
+    }]);
+
+    return ButtonDesign;
+  }(DataType);
+
+  ButtonDesign.generataTypeAcessors(ButtonTypes);
+
+  function _templateObject3$1() {
+    var data = _taggedTemplateLiteral(["<span id=\"", "-content\" class=\"", "\"><bdi><slot></slot></bdi></span>\t\t"]);
+
+    _templateObject3$1 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  var block0$8 = function block0(context) {
-    return html(_templateObject$9(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnPrev.icon), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn1.type), ifDefined(context._btn1.text), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn2.type), ifDefined(context._btn2.text), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnNext.icon));
+  function _templateObject2$1() {
+    var data = _taggedTemplateLiteral(["<ui5-icon\t\t\t\tclass=\"", "\"\t\t\t\tsrc=\"", "\"\t\t\t></ui5-icon>\t\t"]);
+
+    _templateObject2$1 = function _templateObject2() {
+      return data;
+    };
+
+    return data;
+  }
+
+  function _templateObject$3() {
+    var data = _taggedTemplateLiteral(["<button\t\ttype=\"button\"\t\tclass=\"", "\"\t\t?disabled=\"", "\"\t\tdata-sap-focus-ref\t\t\t\tdir=\"", "\"\t>\t\t", "", "</button>"]);
+
+    _templateObject$3 = function _templateObject() {
+      return data;
+    };
+
+    return data;
+  }
+
+  var block0$2 = function block0(context) {
+    return html(_templateObject$3(), ifDefined(classMap(context.classes.main)), ifDefined(context.disabled), ifDefined(context.rtl), context.icon ? block1$1(context) : undefined, context.textContent ? block2$1(context) : undefined);
+  };
+
+  var block1$1 = function block1(context) {
+    return html(_templateObject2$1(), ifDefined(classMap(context.classes.icon)), ifDefined(context.icon));
+  };
+
+  var block2$1 = function block2(context) {
+    return html(_templateObject3$1(), ifDefined(context._id), ifDefined(classMap(context.classes.text)));
+  };
+
+  var buttonCss = ":host(ui5-button:not([hidden])){display:inline-block}ui5-button:not([hidden]){display:inline-block}button[dir=rtl].sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button[dir=rtl].sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-right:var(--_ui5_button_base_icon_margin,.375rem);margin-left:0}button.sapUiSizeCompact .sapWCIconInButton{font-size:1rem}button.sapUiSizeCompact.sapMBtn{padding:var(--_ui5_button_compact_padding,0 .4375rem);min-height:var(--_ui5_button_compact_height,1.625rem);min-width:var(--_ui5_button_base_min_compact_width,2rem)}ui5-button .sapMBtn:before{content:\"\";min-height:inherit;font-size:0}.sapMBtn{width:100%;height:100%;min-width:var(--_ui5_button_base_min_width,2.25rem);min-height:var(--_ui5_button_base_height,2.25rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;box-sizing:border-box;padding:var(--_ui5_button_base_padding,0 .5625rem);border-radius:var(--_ui5_button_border_radius,.25rem);border-width:.0625rem;cursor:pointer;display:flex;justify-content:center;align-items:center;background-color:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,#0854a0));color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));outline:none;position:relative}.sapMBtn:not(.sapMBtnActive):hover{background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe))}.sapMBtn .sapWCIconInButton{font-size:var(--_ui5_button_base_icon_only_font_size,1rem);position:relative;color:inherit}.sapMBtn.sapMBtnIconEnd{flex-direction:row-reverse}.sapMBtn.sapMBtnIconEnd .sapWCIconInButton{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtn.sapMBtnNoText{padding:var(--_ui5_button_base_icon_only_padding,0 .5625rem)}.sapMBtnText{outline:none;position:relative}.sapMBtn.sapMBtnWithIcon .sapMBtnText{margin-left:var(--_ui5_button_base_icon_margin,.375rem)}.sapMBtnDisabled{opacity:.5;pointer-events:none}.sapMBtn:focus:after{content:\"\";position:absolute;border:var(--_ui5_button_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_button_focus_after_top,1px);bottom:var(--_ui5_button_focus_after_bottom,1px);left:var(--_ui5_button_focus_after_left,1px);right:var(--_ui5_button_focus_after_right,1px)}.sapMBtn::-moz-focus-inner{border:0}.sapMBtnActive{background-image:none;background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));border-color:var(--_ui5_button_active_border_color,var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive{background-color:var(--sapUiButtonAcceptBackground,var(--sapButton_Accept_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--_ui5_button_positive_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))));color:var(--sapUiButtonAcceptTextColor,#107e3e);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnPositive:hover{background-color:var(--sapUiButtonAcceptHoverBackground,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_button_positive_border_hover_color,var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e))))))}.sapMBtn.sapMBtnPositive.sapMBtnActive{background-color:var(--sapUiButtonAcceptActiveBackground,#0d6733);border-color:var(--_ui5_button_positive_border_active_color,var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnPositive:focus{border-color:var(--_ui5_button_positive_focus_border_color,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))))}.sapMBtn.sapMBtnPositive.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnPositive:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnNegative{background-color:var(--sapUiButtonRejectBackground,var(--sapButton_Reject_Background,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));color:var(--sapUiButtonRejectTextColor,#b00);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}.sapMBtn.sapMBtnNegative:hover{background-color:var(--sapUiButtonRejectHoverBackground,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--sapUiButtonRejectHoverBorderColor,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative:focus{border-color:var(--_ui5_button_negative_focus_border_color,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))))}.sapMBtn.sapMBtnNegative.sapMBtnActive{background-color:var(--sapUiButtonRejectActiveBackground,#a20000);border-color:var(--_ui5_button_negative_active_border_color,var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000)));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnNegative.sapMBtnActive:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnNegative:focus:after{border-color:var(--_ui5_button_positive_border_focus_hover_color,var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.sapMBtn.sapMBtnEmphasized{background-color:var(--sapUiButtonEmphasizedBackground,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))));border-color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1)))));color:var(--sapUiButtonEmphasizedTextColor,var(--sapButton_Emphasized_TextColor,#fff));text-shadow:0 0 .125rem var(--sapUiButtonEmphasizedTextShadow,transparent);font-weight:var(--_ui5_button_emphasized_font_weight,bold)}.sapMBtn.sapMBtnEmphasized:hover{background-color:var(--sapUiButtonEmphasizedHoverBackground,#085caf);border-color:var(--sapUiButtonEmphasizedHoverBorderColor,var(--sapUiButtonEmphasizedHoverBackground,#085caf))}.sapMBtn.sapMBtnEmphasized.sapMBtnActive{background-color:var(--sapUiButtonEmphasizedActiveBackground,#0854a0);border-color:var(--sapUiButtonEmphasizedActiveBorderColor,var(--sapUiButtonEmphasizedActiveBackground,#0854a0));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnEmphasized.sapMBtnActive:focus:after,.sapMBtn.sapMBtnEmphasized:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMBtnEmphasized:focus{border-color:var(--_ui5_button_emphasized_focused_border_color,var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_Emphasized_Background,var(--sapBrandColor,var(--sapPrimary2,#0a6ed1))))))}.sapMBtn.sapMBtnTransparent{background-color:var(--sapUiButtonLiteBackground,transparent);border-color:var(--sapUiButtonLiteBorderColor,transparent);color:var(--sapUiButtonLiteTextColor,var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));border-color:transparent}.sapMBtn.sapMBtnTransparent:hover{background-color:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.sapMBtn.sapMBtnTransparent.sapMBtnActive{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff);text-shadow:none}.sapMBtn.sapMBtnTransparent:hover:not(.sapMBtnActive){border-color:transparent}";
+
+  /**
+   * @public
+   */
+
+  var metadata$4 = {
+    tag: "ui5-button",
+    properties:
+    /** @lends sap.ui.webcomponents.main.Button.prototype */
+    {
+      /**
+       * Defines the <code>ui5-button</code> design.
+       * </br></br>
+       * <b>Note:</b> Available options are "Default", "Emphasized", "Positive",
+       * "Negative", and "Transparent".
+       *
+       * @type {ButtonDesign}
+       * @defaultvalue "Default"
+       * @public
+       */
+      design: {
+        type: ButtonDesign,
+        defaultValue: ButtonDesign.Default
+      },
+
+      /**
+       * Defines whether the <code>ui5-button</code> is disabled
+       * (default is set to <code>false</code>).
+       * A disabled <code>ui5-button</code> can't be pressed or
+       * focused, and it is not in the tab chain.
+       *
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      disabled: {
+        type: Boolean
+      },
+
+      /**
+       * Defines the icon to be displayed as graphical element within the <code>ui5-button</code>.
+       * The SAP-icons font provides numerous options.
+       * <br><br>
+       * Example:
+       * <br>
+       * <pre>ui5-button icon="sap-icon://palette"</pre>
+       *
+       * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
+       *
+       * @type {string}
+       * @defaultvalue ""
+       * @public
+       */
+      icon: {
+        type: String
+      },
+
+      /**
+       * Defines whether the icon should be displayed after the <code>ui5-button</code> text.
+       *
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      iconEnd: {
+        type: Boolean
+      },
+
+      /**
+       * When set to <code>true</code>, the <code>ui5-button</code> will
+       * automatically submit the nearest form element upon <code>press</code>.
+       *
+       * <b>Important:</b> For the <code>submits</code> property to have effect, you must add the following import to your project:
+       * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
+       *
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      submits: {
+        type: Boolean
+      },
+
+      /**
+       * Used to switch the active state (pressed or not) of the <code>ui5-button</code>.
+       */
+      _active: {
+        type: Boolean
+      },
+      _iconSettings: {
+        type: Object
+      }
+    },
+    slots:
+    /** @lends sap.ui.webcomponents.main.Button.prototype */
+    {
+      /**
+       * Defines the text of the <code>ui5-button</code>.
+       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
+       *
+       * @type {Node[]}
+       * @slot
+       * @public
+       */
+      text: {
+        type: Node,
+        multiple: true
+      }
+    },
+    defaultSlot: "text",
+    events:
+    /** @lends sap.ui.webcomponents.main.Button.prototype */
+    {
+      /**
+       * Fired when the <code>ui5-button</code> is pressed either with a
+       * click/tap or by using the Enter or Space key.
+       * <br><br>
+       * <b>Note:</b> The event will not be fired if the <code>disabled</code>
+       * property is set to <code>true</code>.
+       *
+       * @event
+       * @public
+       */
+      press: {}
+    }
+  };
+  /**
+   * @class
+   *
+   * <h3 class="comment-api-title">Overview</h3>
+   *
+   * The <code>ui5-button</code> component represents a simple push button.
+   * It enables users to trigger actions by clicking or tapping the <code>ui5-button</code>, or by pressing
+   * certain keyboard keys, such as Enter.
+   *
+   *
+   * <h3>Usage</h3>
+   *
+   * For the <code>ui5-button</code> UI, you can define text, icon, or both. You can also specify
+   * whether the text or the icon is displayed first.
+   * <br><br>
+   * You can choose from a set of predefined types that offer different
+   * styling to correspond to the triggered action.
+   * <br><br>
+   * You can set the <code>ui5-button</code> as enabled or disabled. An enabled
+   * <code>ui5-button</code> can be pressed by clicking or tapping it. The button changes
+   * its style to provide visual feedback to the user that it is pressed or hovered over with
+   * the mouse cursor. A disabled <code>ui5-button</code> appears inactive and cannot be pressed.
+   *
+   * <h3>ES6 Module Import</h3>
+   *
+   * <code>import "@ui5/webcomponents/dist/Button";</code>
+   *
+   * @constructor
+   * @author SAP SE
+   * @alias sap.ui.webcomponents.main.Button
+   * @extends UI5Element
+   * @tagname ui5-button
+   * @public
+   */
+
+  var Button =
+  /*#__PURE__*/
+  function (_UI5Element) {
+    _inherits(Button, _UI5Element);
+
+    _createClass(Button, null, [{
+      key: "metadata",
+      get: function get() {
+        return metadata$4;
+      }
+    }, {
+      key: "styles",
+      get: function get() {
+        return buttonCss;
+      }
+    }, {
+      key: "render",
+      get: function get() {
+        return litRender;
+      }
+    }, {
+      key: "template",
+      get: function get() {
+        return block0$2;
+      }
+    }]);
+
+    function Button() {
+      var _this;
+
+      _classCallCheck(this, Button);
+
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(Button).call(this));
+
+      _this._deactivate = function () {
+        if (_this._active) {
+          _this._active = false;
+        }
+      };
+
+      return _this;
+    }
+
+    _createClass(Button, [{
+      key: "onBeforeRendering",
+      value: function onBeforeRendering() {
+        var FormSupport = getFeature("FormSupport");
+
+        if (this.submits && !FormSupport) {
+          console.warn("In order for the \"submits\" property to have effect, you should also: import InputElementsFormSupport from \"@ui5/webcomponents/dist/InputElementsFormSupport\";"); // eslint-disable-line
+        }
+      }
+    }, {
+      key: "onEnterDOM",
+      value: function onEnterDOM() {
+        document.addEventListener("mouseup", this._deactivate);
+      }
+    }, {
+      key: "onExitDOM",
+      value: function onExitDOM() {
+        document.removeEventListener("mouseup", this._deactivate);
+      }
+    }, {
+      key: "onclick",
+      value: function onclick(event) {
+        event.isMarked = "button";
+
+        if (!this.disabled) {
+          this.fireEvent("press", {});
+          var FormSupport = getFeature("FormSupport");
+
+          if (FormSupport) {
+            FormSupport.triggerFormSubmit(this);
+          }
+        }
+      }
+    }, {
+      key: "onmousedown",
+      value: function onmousedown(event) {
+        event.isMarked = "button";
+
+        if (!this.disabled) {
+          this._active = true;
+        }
+      }
+    }, {
+      key: "onmouseup",
+      value: function onmouseup(event) {
+        event.isMarked = "button";
+      }
+    }, {
+      key: "onkeydown",
+      value: function onkeydown(event) {
+        if (isSpace(event) || isEnter(event)) {
+          this._active = true;
+        }
+      }
+    }, {
+      key: "onkeyup",
+      value: function onkeyup(event) {
+        if (isSpace(event) || isEnter(event)) {
+          this._active = false;
+        }
+      }
+    }, {
+      key: "onfocusout",
+      value: function onfocusout(_event) {
+        this._active = false;
+      }
+    }, {
+      key: "classes",
+      get: function get() {
+        var _main;
+
+        return {
+          main: (_main = {
+            sapMBtn: true,
+            sapMBtnActive: this._active,
+            sapMBtnWithIcon: this.icon,
+            sapMBtnNoText: !this.text.length,
+            sapMBtnDisabled: this.disabled,
+            sapMBtnIconEnd: this.iconEnd
+          }, _defineProperty(_main, "sapMBtn".concat(this.design), true), _defineProperty(_main, "sapUiSizeCompact", getCompactSize()), _main),
+          icon: {
+            sapWCIconInButton: true
+          },
+          text: {
+            sapMBtnText: true
+          }
+        };
+      }
+    }, {
+      key: "rtl",
+      get: function get() {
+        return getEffectiveRTL() ? "rtl" : undefined;
+      }
+    }], [{
+      key: "define",
+      value: function () {
+        var _define = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee() {
+          var _get2;
+
+          var _len,
+              params,
+              _key,
+              _args = arguments;
+
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return Icon.define();
+
+                case 2:
+                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
+                    params[_key] = _args[_key];
+                  }
+
+                  (_get2 = _get(_getPrototypeOf(Button), "define", this)).call.apply(_get2, [this].concat(params));
+
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        }));
+
+        function define() {
+          return _define.apply(this, arguments);
+        }
+
+        return define;
+      }()
+    }]);
+
+    return Button;
+  }(UI5Element);
+
+  Bootstrap.boot().then(function (_) {
+    Button.define();
+  });
+
+  function _templateObject$4() {
+    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><ui5-icon id=\"", "-btnPrev\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Prev\"></ui5-icon><div class=\"sapWCCalHeadMidButtonContainer\"><div\t\t\tid=\"", "-btn1\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Month\"\t\t>\t\t\t", "</div><div\t\t\tid=\"", "-btn2\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Year\"\t\t>\t\t\t", "</div></div><ui5-icon\t\tid=\"", "-btnNext\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Next\"></ui5-icon></div>"]);
+
+    _templateObject$4 = function _templateObject() {
+      return data;
+    };
+
+    return data;
+  }
+
+  var block0$3 = function block0(context) {
+    return html(_templateObject$4(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnPrev.icon), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn1.type), ifDefined(context._btn1.text), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn2.type), ifDefined(context._btn2.text), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnNext.icon));
   };
 
   var styles$1 = ":host(ui5-calendar-header){display:inline-block;width:100%}ui5-calendar-header{display:inline-block;width:100%}.sapWCCalHead{display:flex;height:3rem;padding:.25rem 0;box-sizing:border-box}.sapWCCalHead ui5-button{height:100%}.sapWCCalHeadArrowButton{display:flex;justify-content:center;align-items:center;width:2.5rem;background-color:var(--sapUiButtonLiteBackground,transparent);color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));cursor:pointer;overflow:hidden;white-space:nowrap;padding:0;font-size:var(--sapMFontMediumSize,.875rem)}.sapWCCalHeadArrowButton:focus{outline:none}.sapWCCalHeadArrowButton:hover{background-color:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));color:var(--sapUiButtonHoverTextColor,var(--sapButton_Hover_TextColor,#0854a0))}.sapWCCalHeadArrowButton:active{background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCCalHeadArrowButton,.sapWCCalHeadMiddleButton{border:var(--_ui5_calendar_header_arrow_button_border,none);border-radius:var(--_ui5_calendar_header_arrow_button_border_radius,.25rem)}.sapWCCalHeadMidButtonContainer{display:flex;justify-content:space-around;flex:1;padding:0 .5rem}.sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-right:.5rem}.sapWCCalHeadMiddleButton{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));width:var(--_ui5_calendar_header_middle_button_width,2.5rem);flex:var(--_ui5_calendar_header_middle_button_flex,1);position:relative;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.sapWCCalHeadMiddleButton:focus{border:var(--_ui5_calendar_header_middle_button_focus_border,none);border-radius:var(--_ui5_calendar_header_middle_button_focus_border_radius,.25rem)}.sapWCCalHeadMiddleButton:focus:after{content:\"\";display:var(--_ui5_calendar_header_middle_button_focus_after_display,block);width:var(--_ui5_calendar_header_middle_button_focus_after_width,calc(100% - .375rem));height:var(--_ui5_calendar_header_middle_button_focus_after_height,calc(100% - .375rem));border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:var(--_ui5_calendar_header_middle_button_focus_after_top_offset,.125rem);left:var(--_ui5_calendar_header_middle_button_focus_after_left_offset,.125rem)}.sapWCCalHeadMiddleButton:focus:active:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapUiSizeCompact.sapWCCalHead{height:2rem;padding:0}.sapUiSizeCompact.sapWCCalHeadArrowButton{width:2rem}[dir=rtl] .sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-left:.5rem;margin-right:0}";
 
-  var metadata$a = {
+  var metadata$5 = {
     tag: "ui5-calendar-header",
     properties: {
       monthText: {
@@ -20256,7 +18597,7 @@
     _createClass(CalendarHeader, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$a;
+        return metadata$5;
       }
     }, {
       key: "render",
@@ -20266,7 +18607,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$8;
+        return block0$3;
       }
     }, {
       key: "styles",
@@ -20823,80 +19164,80 @@
     return data;
   }
 
-  function _templateObject5$2() {
+  function _templateObject5$1() {
     var data = _taggedTemplateLiteral(["<div style=\"display: flex;\">\t\t\t\t\t\t", "</div>\t\t\t\t"]);
 
-    _templateObject5$2 = function _templateObject5() {
+    _templateObject5$1 = function _templateObject5() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject4$2() {
+  function _templateObject4$1() {
     var data = _taggedTemplateLiteral(["", ""]);
 
-    _templateObject4$2 = function _templateObject4() {
+    _templateObject4$1 = function _templateObject4() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject3$3() {
+  function _templateObject3$2() {
     var data = _taggedTemplateLiteral(["<div\t\t\t\t\tid=", "\t\t\t\t\trole=\"columnheader\"\t\t\t\t\taria-label=\"", "\"\t\t\t\t\tclass=\"", "\">\t\t\t\t\t", "</div>\t\t\t"]);
 
-    _templateObject3$3 = function _templateObject3() {
+    _templateObject3$2 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$6() {
+  function _templateObject2$2() {
     var data = _taggedTemplateLiteral(["<div class=\"sapWCDayPickerWeekNameContainer\"><span class=\"sapWCDayPickerWeekName\">", "</span></div>\t\t"]);
 
-    _templateObject2$6 = function _templateObject2() {
+    _templateObject2$2 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$a() {
+  function _templateObject$5() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\" style=\"", "\"><div class=\"", "\">\t\t", "</div><div id=\"", "-content\" class=\"", "\"><div role=\"row\" class=\"", "\">\t\t\t", "</div><div id=\"", "-days\" class=\"sapWCDayPickerItemsContainer\" tabindex=\"-1\">\t\t\t", "</div></div></div>"]);
 
-    _templateObject$a = function _templateObject() {
+    _templateObject$5 = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$9 = function block0(context) {
-    return html(_templateObject$a(), ifDefined(classMap(context.classes.wrapper)), ifDefined(styleMap$1(context.styles.wrapper)), ifDefined(classMap(context.classes.weekNumberContainer)), repeat(context._weekNumbers, undefined, function (item, index) {
-      return block1$6(item, index, context);
+  var block0$4 = function block0(context) {
+    return html(_templateObject$5(), ifDefined(classMap(context.classes.wrapper)), ifDefined(styleMap$1(context.styles.wrapper)), ifDefined(classMap(context.classes.weekNumberContainer)), repeat(context._weekNumbers, undefined, function (item, index) {
+      return block1$2(item, index, context);
     }), ifDefined(context._id), ifDefined(classMap(context.classes.content)), ifDefined(classMap(context.classes.weekDaysContainer)), repeat(context._dayNames, undefined, function (item, index) {
-      return block2$3(item, index, context);
+      return block2$2(item, index, context);
     }), ifDefined(context._id), repeat(context._weeks, undefined, function (item, index) {
-      return block3$2(item, index, context);
+      return block3$1(item, index, context);
     }));
   };
 
-  var block1$6 = function block1(item, index, context) {
-    return html(_templateObject2$6(), ifDefined(item));
+  var block1$2 = function block1(item, index, context) {
+    return html(_templateObject2$2(), ifDefined(item));
   };
 
-  var block2$3 = function block2(item, index, context) {
-    return html(_templateObject3$3(), ifDefined(item._id), ifDefined(item.name), ifDefined(item.classes), ifDefined(item.ultraShortName));
+  var block2$2 = function block2(item, index, context) {
+    return html(_templateObject3$2(), ifDefined(item._id), ifDefined(item.name), ifDefined(item.classes), ifDefined(item.ultraShortName));
   };
 
-  var block3$2 = function block3(item, index, context) {
-    return html(_templateObject4$2(), item.length ? block4$2(item, index, context) : block6(item, index, context));
+  var block3$1 = function block3(item, index, context) {
+    return html(_templateObject4$1(), item.length ? block4$1(item, index, context) : block6(item, index, context));
   };
 
-  var block4$2 = function block4(item, index, context) {
-    return html(_templateObject5$2(), repeat(item, undefined, function (item, index) {
+  var block4$1 = function block4(item, index, context) {
+    return html(_templateObject5$1(), repeat(item, undefined, function (item, index) {
       return block5(item, index, context);
     }));
   };
@@ -20915,7 +19256,7 @@
    * @public
    */
 
-  var metadata$b = {
+  var metadata$6 = {
     tag: "ui5-daypicker",
     properties:
     /** @lends  sap.ui.webcomponents.main.DayPicker.prototype */
@@ -21007,7 +19348,7 @@
     _createClass(DayPicker, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$b;
+        return metadata$6;
       }
     }, {
       key: "render",
@@ -21017,7 +19358,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$9;
+        return block0$4;
       }
     }, {
       key: "styles",
@@ -21420,50 +19761,50 @@
     DayPicker.define();
   });
 
-  function _templateObject3$4() {
+  function _templateObject3$3() {
     var data = _taggedTemplateLiteral(["<div\t\t\t\t\tid=\"", "\"\t\t\t\t\tdata-sap-timestamp=", "\t\t\t\t\ttabindex=", "\t\t\t\t\tclass=\"", "\"\t\t\t\t\trole=\"gridcell\"\t\t\t\t\taria-selected=\"false\"\t\t\t\t>\t\t\t\t\t", "</div>\t\t\t"]);
 
-    _templateObject3$4 = function _templateObject3() {
+    _templateObject3$3 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$7() {
+  function _templateObject2$3() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\">\t\t\t", "</div>\t"]);
 
-    _templateObject2$7 = function _templateObject2() {
+    _templateObject2$3 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$b() {
+  function _templateObject$6() {
     var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\trole=\"grid\"\taria-readonly=\"false\"\taria-multiselectable=\"false\"\tstyle=\"", "\">\t", "</div>"]);
 
-    _templateObject$b = function _templateObject() {
+    _templateObject$6 = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$a = function block0(context) {
-    return html(_templateObject$b(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._quarters, undefined, function (item, index) {
-      return block1$7(item, index, context);
+  var block0$5 = function block0(context) {
+    return html(_templateObject$6(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._quarters, undefined, function (item, index) {
+      return block1$3(item, index, context);
     }));
   };
 
-  var block1$7 = function block1(item, index, context) {
-    return html(_templateObject2$7(), ifDefined(classMap(context.classes.quarter)), repeat(item, undefined, function (item, index) {
-      return block2$4(item, index, context);
+  var block1$3 = function block1(item, index, context) {
+    return html(_templateObject2$3(), ifDefined(classMap(context.classes.quarter)), repeat(item, undefined, function (item, index) {
+      return block2$3(item, index, context);
     }));
   };
 
-  var block2$4 = function block2(item, index, context) {
-    return html(_templateObject3$4(), ifDefined(item.id), ifDefined(item.timestamp), ifDefined(item._tabIndex), ifDefined(item.classes), ifDefined(item.name));
+  var block2$3 = function block2(item, index, context) {
+    return html(_templateObject3$3(), ifDefined(item.id), ifDefined(item.timestamp), ifDefined(item._tabIndex), ifDefined(item.classes), ifDefined(item.name));
   };
 
   var styles$2 = ":host(ui5-month-picker){display:inline-block;width:100%;height:100%}ui5-month-picker{display:inline-block;width:100%;height:100%}.sapWCMonthPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCMonthPickerItem{display:flex;width:calc(33.333% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_monthpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;margin:var(--_ui5_monthpicker_item_margin,1px);box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_monthpicker_item_border,none);border-radius:var(--_ui5_monthpicker_item_border_radius,.25rem)}.sapWCMonthPickerItem:hover{background-color:var(--_ui5_monthpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:hover{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem:focus{background-color:var(--_ui5_monthpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_monthpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_monthpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_monthpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_monthpicker_item_focus_after_offset,2px);left:var(--_ui5_monthpicker_item_focus_after_offset,2px)}.sapWCMonthPickerQuarter{display:flex;justify-content:center;align-items:center;width:100%}.sapUiSizeCompact .sapWCMonthPickerItem{height:2rem}";
@@ -21472,7 +19813,7 @@
    * @public
    */
 
-  var metadata$c = {
+  var metadata$7 = {
     tag: "ui5-month-picker",
     properties:
     /** @lends  sap.ui.webcomponents.main.MonthPicker.prototype */
@@ -21537,7 +19878,7 @@
     _createClass(MonthPicker, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$c;
+        return metadata$7;
       }
     }, {
       key: "render",
@@ -21547,7 +19888,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$a;
+        return block0$5;
       }
     }, {
       key: "styles",
@@ -21717,50 +20058,50 @@
     MonthPicker.define();
   });
 
-  function _templateObject3$5() {
+  function _templateObject3$4() {
     var data = _taggedTemplateLiteral(["<div id=\"", "\"\t\t\t\t\ttabindex=\"", "\"\t\t\t\t\tdata-sap-timestamp=\"", "\"\t\t\t\t\tclass=\"", "\"\t\t\t\t\trole=\"gridcell\"\t\t\t\t\taria-selected=\"false\">\t\t\t\t\t\t", "</div>\t\t\t"]);
 
-    _templateObject3$5 = function _templateObject3() {
+    _templateObject3$4 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$8() {
+  function _templateObject2$4() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\">\t\t\t", "</div>\t"]);
 
-    _templateObject2$8 = function _templateObject2() {
+    _templateObject2$4 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$c() {
+  function _templateObject$7() {
     var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\trole=\"grid\"\taria-readonly=\"false\"\taria-multiselectable=\"false\"\tstyle=\"", "\">\t", "</div>"]);
 
-    _templateObject$c = function _templateObject() {
+    _templateObject$7 = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$b = function block0(context) {
-    return html(_templateObject$c(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._yearIntervals, undefined, function (item, index) {
-      return block1$8(item, index, context);
+  var block0$6 = function block0(context) {
+    return html(_templateObject$7(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._yearIntervals, undefined, function (item, index) {
+      return block1$4(item, index, context);
     }));
   };
 
-  var block1$8 = function block1(item, index, context) {
-    return html(_templateObject2$8(), ifDefined(classMap(context.classes.yearInterval)), repeat(item, undefined, function (item, index) {
-      return block2$5(item, index, context);
+  var block1$4 = function block1(item, index, context) {
+    return html(_templateObject2$4(), ifDefined(classMap(context.classes.yearInterval)), repeat(item, undefined, function (item, index) {
+      return block2$4(item, index, context);
     }));
   };
 
-  var block2$5 = function block2(item, index, context) {
-    return html(_templateObject3$5(), ifDefined(item.id), ifDefined(item._tabIndex), ifDefined(item.timestamp), ifDefined(item.classes), ifDefined(item.year));
+  var block2$4 = function block2(item, index, context) {
+    return html(_templateObject3$4(), ifDefined(item.id), ifDefined(item._tabIndex), ifDefined(item.timestamp), ifDefined(item.classes), ifDefined(item.year));
   };
 
   var styles$3 = ":host(ui5-yearpicker){display:inline-block;width:100%;height:100%}ui5-yearpicker{display:inline-block;width:100%;height:100%}.sapWCYearPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCYearPickerIntervalContainer{display:flex;justify-content:center;align-items:center;width:100%}.sapWCYearPickerItem{display:flex;margin:var(--_ui5_yearpicker_item_margin,1px);width:calc(25% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_yearpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_yearpicker_item_border,none);border-radius:var(--_ui5_yearpicker_item_border_radius,.25rem)}.sapWCYearPickerItem:hover{background-color:var(--_ui5_yearpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem:focus{background-color:var(--_ui5_yearpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem.sapWCYearPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:hover{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_yearpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_yearpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_yearpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_yearpicker_item_focus_after_offset,2px);left:var(--_ui5_yearpicker_item_focus_after_offset,2px)}.sapUiSizeCompact .sapWCYearPickerItem{height:2rem}";
@@ -21769,7 +20110,7 @@
    * @public
    */
 
-  var metadata$d = {
+  var metadata$8 = {
     tag: "ui5-yearpicker",
     properties:
     /** @lends  sap.ui.webcomponents.main.YearPicker.prototype */
@@ -21835,7 +20176,7 @@
     _createClass(YearPicker, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$d;
+        return metadata$8;
       }
     }, {
       key: "styles",
@@ -21850,7 +20191,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$b;
+        return block0$6;
       }
     }]);
 
@@ -22082,18 +20423,18 @@
     YearPicker.define();
   });
 
-  function _templateObject$d() {
+  function _templateObject$8() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\" style=\"", "\"><ui5-calendar-header\t\tid=\"", "-head\"\t\tmonth-text=\"", "\"\t\tyear-text=\"", "\"\t\t.primaryCalendarType=\"", "\"\t\t@ui5-pressPrevious=\"", "\"\t\t@ui5-pressNext=\"", "\"\t\t@ui5-btn1Press=\"", "\"\t\t@ui5-btn2Press=\"", "\"\t></ui5-calendar-header><div id=\"", "-content\" class=\"sapUiCalContent\"><ui5-daypicker\t\t\tid=\"", "-daypicker\"\t\t\tclass=\"", "\"\t\t\tformat-pattern=\"", "\"\t\t\t.selectedDates=\"", "\"\t\t\t._hidden=\"", "\"\t\t\t.primaryCalendarType=\"", "\"\t\t\ttimestamp=\"", "\"\t\t\t@ui5-selectionChange=\"", "\"\t\t\t@ui5-navigate=\"", "\"\t\t></ui5-daypicker><ui5-month-picker\t\t\tid=\"", "-MP\"\t\t\tclass=\"", "\"\t\t\t._hidden=\"", "\"\t\t\t.primaryCalendarType=\"", "\"\t\t\ttimestamp=\"", "\"\t\t\t@ui5-selectedMonthChange=\"", "\"\t\t></ui5-month-picker><ui5-yearpicker\t\t\t\tid=\"", "-YP\"\t\t\t\tclass=\"", "\"\t\t\t\t._hidden=\"", "\"\t\t\t\t.primaryCalendarType=\"", "\"\t\t\t\ttimestamp=\"", "\"\t\t\t\t._selectedYear=\"", "\"\t\t\t\t@ui5-selectedYearChange=\"", "\"\t\t></ui5-yearpicker></div></div>"]);
 
-    _templateObject$d = function _templateObject() {
+    _templateObject$8 = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$c = function block0(context) {
-    return html(_templateObject$d(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._header.monthText), ifDefined(context._header.yearText), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._header.onPressPrevious), ifDefined(context._header.onPressNext), ifDefined(context._header.onBtn1Press), ifDefined(context._header.onBtn2Press), ifDefined(context._id), ifDefined(context._id), ifDefined(classMap(context.classes.dayPicker)), ifDefined(context._oMonth.formatPattern), ifDefined(context._oMonth.selectedDates), ifDefined(context._oMonth._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._oMonth.timestamp), ifDefined(context._oMonth.onSelectedDatesChange), ifDefined(context._oMonth.onNavigate), ifDefined(context._id), ifDefined(classMap(context.classes.monthPicker)), ifDefined(context._monthPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._monthPicker.timestamp), ifDefined(context._monthPicker.onSelectedMonthChange), ifDefined(context._id), ifDefined(classMap(context.classes.yearPicker)), ifDefined(context._yearPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._yearPicker.timestamp), ifDefined(context._yearPicker._selectedYear), ifDefined(context._yearPicker.onSelectedYearChange));
+  var block0$7 = function block0(context) {
+    return html(_templateObject$8(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._header.monthText), ifDefined(context._header.yearText), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._header.onPressPrevious), ifDefined(context._header.onPressNext), ifDefined(context._header.onBtn1Press), ifDefined(context._header.onBtn2Press), ifDefined(context._id), ifDefined(context._id), ifDefined(classMap(context.classes.dayPicker)), ifDefined(context._oMonth.formatPattern), ifDefined(context._oMonth.selectedDates), ifDefined(context._oMonth._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._oMonth.timestamp), ifDefined(context._oMonth.onSelectedDatesChange), ifDefined(context._oMonth.onNavigate), ifDefined(context._id), ifDefined(classMap(context.classes.monthPicker)), ifDefined(context._monthPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._monthPicker.timestamp), ifDefined(context._monthPicker.onSelectedMonthChange), ifDefined(context._id), ifDefined(classMap(context.classes.yearPicker)), ifDefined(context._yearPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._yearPicker.timestamp), ifDefined(context._yearPicker._selectedYear), ifDefined(context._yearPicker.onSelectedYearChange));
   };
 
   var Gregorian = UniversalDate.extend('sap.ui.core.date.Gregorian', {
@@ -22119,7 +20460,7 @@
    * @public
    */
 
-  var metadata$e = {
+  var metadata$9 = {
     tag: "ui5-calendar",
     properties:
     /** @lends  sap.ui.webcomponents.main.Calendar.prototype */
@@ -22211,7 +20552,7 @@
     _createClass(Calendar, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$e;
+        return metadata$9;
       }
     }, {
       key: "render",
@@ -22221,7 +20562,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$c;
+        return block0$7;
       }
     }, {
       key: "styles",
@@ -22669,6 +21010,185 @@
     Calendar.define();
   });
 
+  var Device = {};
+
+  var BROWSER = {
+    "INTERNET_EXPLORER": "ie",
+    "EDGE": "ed",
+    "FIREFOX": "ff",
+    "CHROME": "cr",
+    "SAFARI": "sf",
+    "ANDROID": "an"
+  };
+
+  var _calcBrowser = function _calcBrowser() {
+    var sUserAgent = navigator.userAgent.toLowerCase();
+    var rwebkit = /(webkit)[ \/]([\w.]+)/;
+    var rmsie = /(msie) ([\w.]+)/;
+    var rmsie11 = /(trident)\/[\w.]+;.*rv:([\w.]+)/;
+    var redge = /(edge)[ \/]([\w.]+)/;
+    var rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
+    var browserMatch = redge.exec(sUserAgent) || rmsie11.exec(sUserAgent) || rwebkit.exec(sUserAgent) || rmsie.exec(sUserAgent) || sUserAgent.indexOf("compatible") < 0 && rmozilla.exec(sUserAgent) || [];
+    var oRes = {
+      browser: browserMatch[1] || "",
+      version: browserMatch[2] || "0"
+    };
+    oRes[oRes.browser] = true;
+    return oRes;
+  };
+
+  var _getBrowser = function _getBrowser() {
+    var oBrowser = _calcBrowser();
+
+    var sUserAgent = navigator.userAgent;
+    var oNavigator = window.navigator;
+    var oExpMobile;
+    var oResult;
+
+    if (oBrowser.mozilla) {
+      oExpMobile = /Mobile/;
+
+      if (sUserAgent.match(/Firefox\/(\d+\.\d+)/)) {
+        var fVersion = parseFloat(RegExp.$1);
+        oResult = {
+          name: BROWSER.FIREFOX,
+          versionStr: "" + fVersion,
+          version: fVersion,
+          mozilla: true,
+          mobile: oExpMobile.test(sUserAgent)
+        };
+      } else {
+        oResult = {
+          mobile: oExpMobile.test(sUserAgent),
+          mozilla: true,
+          version: -1
+        };
+      }
+    } else if (oBrowser.webkit) {
+      var regExpWebkitVersion = sUserAgent.toLowerCase().match(/webkit[\/]([\d.]+)/);
+      var webkitVersion;
+
+      if (regExpWebkitVersion) {
+        webkitVersion = regExpWebkitVersion[1];
+      }
+
+      oExpMobile = /Mobile/;
+      var aChromeMatch = sUserAgent.match(/(Chrome|CriOS)\/(\d+\.\d+).\d+/);
+      var aFirefoxMatch = sUserAgent.match(/FxiOS\/(\d+\.\d+)/);
+      var aAndroidMatch = sUserAgent.match(/Android .+ Version\/(\d+\.\d+)/);
+
+      if (aChromeMatch || aFirefoxMatch || aAndroidMatch) {
+        var sName, sVersion, bMobile;
+
+        if (aChromeMatch) {
+          sName = BROWSER.CHROME;
+          bMobile = oExpMobile.test(sUserAgent);
+          sVersion = parseFloat(aChromeMatch[2]);
+        } else if (aFirefoxMatch) {
+          sName = BROWSER.FIREFOX;
+          bMobile = true;
+          sVersion = parseFloat(aFirefoxMatch[1]);
+        } else if (aAndroidMatch) {
+          sName = BROWSER.ANDROID;
+          bMobile = oExpMobile.test(sUserAgent);
+          sVersion = parseFloat(aAndroidMatch[1]);
+        }
+
+        oResult = {
+          name: sName,
+          mobile: bMobile,
+          versionStr: "" + sVersion,
+          version: sVersion,
+          webkit: true,
+          webkitVersion: webkitVersion
+        };
+      } else {
+        var oExp = /(Version|PhantomJS)\/(\d+\.\d+).*Safari/;
+        var bStandalone = oNavigator.standalone;
+
+        if (oExp.test(sUserAgent)) {
+          var aParts = oExp.exec(sUserAgent);
+          var fVersion = parseFloat(aParts[2]);
+          oResult = {
+            name: BROWSER.SAFARI,
+            versionStr: "" + fVersion,
+            fullscreen: false,
+            webview: false,
+            version: fVersion,
+            mobile: oExpMobile.test(sUserAgent),
+            webkit: true,
+            webkitVersion: webkitVersion,
+            phantomJS: aParts[1] === "PhantomJS"
+          };
+        } else if (/iPhone|iPad|iPod/.test(sUserAgent) && !/CriOS/.test(sUserAgent) && !/FxiOS/.test(sUserAgent) && (bStandalone === true || bStandalone === false)) {
+          oResult = {
+            name: BROWSER.SAFARI,
+            version: -1,
+            fullscreen: bStandalone,
+            webview: !bStandalone,
+            mobile: oExpMobile.test(sUserAgent),
+            webkit: true,
+            webkitVersion: webkitVersion
+          };
+        } else {
+          oResult = {
+            mobile: oExpMobile.test(sUserAgent),
+            webkit: true,
+            webkitVersion: webkitVersion,
+            version: -1
+          };
+        }
+      }
+    } else if (oBrowser.msie || oBrowser.trident) {
+      var fVersion = parseFloat(oBrowser.version);
+      oResult = {
+        name: BROWSER.INTERNET_EXPLORER,
+        versionStr: "" + fVersion,
+        version: fVersion,
+        msie: true,
+        mobile: false
+      };
+    } else if (oBrowser.edge) {
+      var fVersion = fVersion = parseFloat(oBrowser.version);
+      oResult = {
+        name: BROWSER.EDGE,
+        versionStr: "" + fVersion,
+        version: fVersion,
+        edge: true
+      };
+    } else {
+      oResult = {
+        name: "",
+        versionStr: "",
+        version: -1,
+        mobile: false
+      };
+    }
+
+    return oResult;
+  };
+
+  var _setBrowser = function _setBrowser() {
+    Device.browser = _getBrowser();
+    Device.browser.BROWSER = BROWSER;
+
+    if (Device.browser.name) {
+      for (var b in BROWSER) {
+        if (BROWSER[b] === Device.browser.name) {
+          Device.browser[b.toLowerCase()] = true;
+        }
+      }
+    }
+  };
+
+  var isIE = function isIE() {
+    if (!Device.browser) {
+      _setBrowser();
+    }
+
+    return !!Device.browser.msie;
+  };
+
   var InputTypes = {
     Text: "Text",
     Email: "Email",
@@ -22701,60 +21221,60 @@
 
   InputType.generataTypeAcessors(InputTypes);
 
-  function _templateObject4$3() {
+  function _templateObject4$2() {
     var data = _taggedTemplateLiteral(["<ui5-popover\t\t\t\tplacement-type=\"Bottom\"\t\t\t\tno-header\t\t\t\tno-arrow\t\t\t\thorizontal-align=\"Stretch\"\t\t\t\tinitial-focus=\"", "-inner\"><ui5-list separators=\"Inner\"><slot></slot></ui5-list></ui5-popover>\t"]);
 
-    _templateObject4$3 = function _templateObject4() {
+    _templateObject4$2 = function _templateObject4() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject3$6() {
+  function _templateObject3$5() {
     var data = _taggedTemplateLiteral(["<slot name=\"icon\"></slot>\t\t"]);
 
-    _templateObject3$6 = function _templateObject3() {
+    _templateObject3$5 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$9() {
+  function _templateObject2$5() {
     var data = _taggedTemplateLiteral(["<slot name=\"_beginContent\"></slot>\t"]);
 
-    _templateObject2$9 = function _templateObject2() {
+    _templateObject2$5 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$e() {
+  function _templateObject$9() {
     var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tstyle=\"width: 100%;\"\t?aria-invalid=\"", "\"><div id=\"", "-wrapper\"\tclass=\"", "\">\t", "<input id=\"", "-inner\"\t\t\tclass=\"sapWCInputBaseInner\"\t\t\ttype=\"", "\"\t\t\t?disabled=\"", "\"\t\t\t?readonly=\"", "\"\t\t\t.value=\"", "\"\t\t\tplaceholder=\"", "\"\t\t\t@input=\"", "\"\t\t\t@change=\"", "\"\t\t\tdata-sap-no-tab-ref\t\t\tdata-sap-focus-ref\t/>\t\t", "</div>\t", "<slot name=\"formSupport\"></slot></div>"]);
 
-    _templateObject$e = function _templateObject() {
+    _templateObject$9 = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$d = function block0(context) {
-    return html(_templateObject$e(), ifDefined(classMap(context.classes.main)), ifDefined(context.ariaInvalid), ifDefined(context._id), ifDefined(classMap(context.classes.wrapper)), context._beginContent ? block1$9(context) : undefined, ifDefined(context._id), ifDefined(context.inputType), ifDefined(context.disabled), ifDefined(context._readonly), ifDefined(context.value), ifDefined(context.inputPlaceholder), ifDefined(context._input.onInput), ifDefined(context._input.change), context.icon ? block2$6(context) : undefined, context.showSuggestions ? block3$3(context) : undefined);
+  var block0$8 = function block0(context) {
+    return html(_templateObject$9(), ifDefined(classMap(context.classes.main)), ifDefined(context.ariaInvalid), ifDefined(context._id), ifDefined(classMap(context.classes.wrapper)), context._beginContent ? block1$5(context) : undefined, ifDefined(context._id), ifDefined(context.inputType), ifDefined(context.disabled), ifDefined(context._readonly), ifDefined(context.value), ifDefined(context.inputPlaceholder), ifDefined(context._input.onInput), ifDefined(context._input.change), context.icon ? block2$5(context) : undefined, context.showSuggestions ? block3$2(context) : undefined);
   };
 
-  var block1$9 = function block1(context) {
-    return html(_templateObject2$9());
+  var block1$5 = function block1(context) {
+    return html(_templateObject2$5());
   };
 
-  var block2$6 = function block2(context) {
-    return html(_templateObject3$6());
+  var block2$5 = function block2(context) {
+    return html(_templateObject3$5());
   };
 
-  var block3$3 = function block3(context) {
-    return html(_templateObject4$3(), ifDefined(context._id));
+  var block3$2 = function block3(context) {
+    return html(_templateObject4$2(), ifDefined(context._id));
   };
 
   var styles$4 = ":host(ui5-input:not([hidden])){display:inline-block;width:100%}ui5-input:not([hidden]){display:inline-block;width:100%}.sapWCInputBase{height:var(--_ui5_input_height,2.25rem);background:transparent;position:relative;display:inline-block;vertical-align:top;outline:none;box-sizing:border-box;line-height:0}.sapWCInputBase.sapWCFocus .sapWCInputBaseContentWrapper:after{content:\"\";position:absolute;border:var(--_ui5_input_focus_border_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapWCInputBase.sapWCInputBaseDisabled{opacity:var(--sap_wc_input_disabled_opacity,.4);cursor:default}.sapWCInputBaseInner{background:transparent;border:none;font-style:normal;-webkit-appearance:none;-moz-appearance:textfield;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));color:var(--sapUiFieldTextColor,var(--sapField_TextColor,var(--sapTextColor,var(--sapPrimary6,#32363a))));line-height:normal;padding:0 .75rem;box-sizing:border-box;min-width:3rem;text-overflow:ellipsis;flex:1;outline:none}.sapWCInputBaseInner::-webkit-input-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseInner::-moz-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseInner:-ms-input-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseInner:-moz-placeholder{color:var(--sapUiFieldPlaceholderTextColor,#74777a)}.sapWCInputBaseContentWrapper{height:100%;box-sizing:border-box;display:flex;flex-direction:row;justify-content:flex-end;position:relative;overflow:hidden;outline:none;background-color:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_input_wrapper_border_radius,.125rem)}.sapWCInputBaseContentWrapper.sapWCInputBaseDisabledWrapper{pointer-events:none}.sapWCInputBaseContentWrapper.sapWCInputBaseReadonlyWrapper{border-color:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)))}.sapWCInputBaseContentWrapper:hover:not(.sapWCInputBaseContentWrapperError):not(.sapWCInputBaseContentWrapperWarning):not(.sapWCInputBaseContentWrapperSuccess):not(.sapWCInputBaseDisabledWrapper):not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCInputBaseDisabledWrapper{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)));border-color:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));-webkit-text-fill-color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,#32363a))}.sapWCInputBaseDisabledWrapper .sapWCInputBaseInner{color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,#32363a))}.sapWCInputBaseContentWrapperState{border-width:var(--_ui5_input_state_border_width,.125rem)}.sapWCInputBaseContentWrapperError .sapWCInputBaseInner,.sapWCInputBaseContentWrapperWarning .sapWCInputBaseInner{font-style:var(--_ui5_input_error_warning_font_style,normal)}.sapWCInputBaseContentWrapperError .sapWCInputBaseInner{font-weight:var(--_ui5_input_error_font_weight,normal)}.sapWCInputBaseContentWrapperError:not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.sapWCInputBaseContentWrapperError:not(.sapWCInputBaseReadonlyWrapper):not(.sapWCInputBaseDisabledWrapper),.sapWCInputBaseContentWrapperWarning:not(.sapWCInputBaseReadonlyWrapper):not(.sapWCInputBaseDisabledWrapper){border-style:var(--_ui5_input_error_warning_border_style,solid)}.sapWCInputBaseContentWrapperWarning:not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.sapWCInputBaseContentWrapperSuccess:not(.sapWCInputBaseReadonlyWrapper){background-color:var(--sapUiFieldSuccessBackground,var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldSuccessColor,var(--sapField_SuccessColor,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.sapWCInputBaseInner::-ms-clear{height:0;width:0}.sapUiSizeCompact.sapWCInputBase{height:var(--_ui5_input_compact_height,1.625rem)}.sapUiSizeCompact .sapWCInputBaseInner{padding:0 .5rem}:host(ui5-input) ::slotted(ui5-icon){min-width:var(--sap_wc_input_icon_min_width,2.375rem)}ui5-input ui5-icon{min-width:var(--sap_wc_input_icon_min_width,2.375rem)}:host(ui5-input[data-ui5-compact-size]) ::slotted(ui5-icon){min-width:var(--sap_wc_input_compact_min_width,2rem)}ui5-input[data-ui5-compact-size] ui5-icon{min-width:var(--sap_wc_input_compact_min_width,2rem)}";
@@ -22765,7 +21285,7 @@
    * @public
    */
 
-  var metadata$f = {
+  var metadata$a = {
     tag: "ui5-input",
     defaultSlot: "suggestionItems",
     slots:
@@ -23026,7 +21546,7 @@
     _createClass(Input, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$f;
+        return metadata$a;
       }
     }, {
       key: "render",
@@ -23036,7 +21556,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$d;
+        return block0$8;
       }
     }, {
       key: "styles",
@@ -23368,32 +21888,32 @@
     Input.define();
   });
 
-  function _templateObject2$a() {
+  function _templateObject2$6() {
     var data = _taggedTemplateLiteral(["<ui5-icon\t\t\t\tslot=\"icon\"\t\t\t\tsrc=\"", "\"\t\t\t\tclass=\"", "\"\t\t\t\ttabindex=\"-1\"\t\t\t></ui5-icon>\t\t"]);
 
-    _templateObject2$a = function _templateObject2() {
+    _templateObject2$6 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$f() {
+  function _templateObject$a() {
     var data = _taggedTemplateLiteral(["<div\t\tclass=\"", "\"\t\tstyle=\"", "\"><!-- INPUT --><ui5-input\t\t\tid=\"", "-inner\"\t\t\tplaceholder=\"", "\"\t\t\ttype=\"", "\"\t\t\tvalue=\"", "\"\t\t\t?disabled=\"", "\"\t\t\t?readonly=\"", "\"\t\t\tvalue-state=\"", "\"\t\t\t@ui5-change=\"", "\"\t\t\t@ui5-input=\"", "\"\t\t\tdata-sap-focus-ref\t>\t\t", "</ui5-input><!-- POPOVER --><ui5-popover\t\t\tid=\"", "-popover\"\t\t\tallow-target-overlap=\"", "\"\t\t\tplacement-type=\"", "\"\t\t\tno-header\t\t\tno-arrow\t\t\thorizontal-align=\"", "\"\t\t\tstay-open-on-scroll=\"", "\"\t\t\t@ui5-afterClose=\"", "\"\t\t\t@ui5-afterOpen=\"", "\"\t><ui5-calendar\t\t\t\tid=\"", "-calendar\"\t\t\t\tprimary-calendar-type=\"", "\"\t\t\t\tformat-pattern=\"", "\"\t\t\t\ttimestamp=\"", "\"\t\t\t\t.selectedDates=\"", "\"\t\t\t\t@ui5-selectedDatesChange=\"", "\"\t\t></ui5-calendar></ui5-popover><slot name=\"formSupport\"></slot></div>"]);
 
-    _templateObject$f = function _templateObject() {
+    _templateObject$a = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$e = function block0(context) {
-    return html(_templateObject$f(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._input.placeholder), ifDefined(context._input.type), ifDefined(context.value), ifDefined(context.disabled), ifDefined(context.readonly), ifDefined(context.valueState), ifDefined(context._input.onChange), ifDefined(context._input.onLiveChange), !context.readonly ? block1$a(context) : undefined, ifDefined(context._id), ifDefined(context._popover.allowTargetOverlap), ifDefined(context._popover.placementType), ifDefined(context._popover.horizontalAlign), ifDefined(context._popover.stayOpenOnScroll), ifDefined(context._popover.afterClose), ifDefined(context._popover.afterOpen), ifDefined(context._id), ifDefined(context._calendar.primaryCalendarType), ifDefined(context._calendar.formatPattern), ifDefined(context._calendar.timestamp), ifDefined(context._calendar.selectedDates), ifDefined(context._calendar.onSelectedDatesChange));
+  var block0$9 = function block0(context) {
+    return html(_templateObject$a(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._input.placeholder), ifDefined(context._input.type), ifDefined(context.value), ifDefined(context.disabled), ifDefined(context.readonly), ifDefined(context.valueState), ifDefined(context._input.onChange), ifDefined(context._input.onLiveChange), !context.readonly ? block1$6(context) : undefined, ifDefined(context._id), ifDefined(context._popover.allowTargetOverlap), ifDefined(context._popover.placementType), ifDefined(context._popover.horizontalAlign), ifDefined(context._popover.stayOpenOnScroll), ifDefined(context._popover.afterClose), ifDefined(context._popover.afterOpen), ifDefined(context._id), ifDefined(context._calendar.primaryCalendarType), ifDefined(context._calendar.formatPattern), ifDefined(context._calendar.timestamp), ifDefined(context._calendar.selectedDates), ifDefined(context._calendar.onSelectedDatesChange));
   };
 
-  var block1$a = function block1(context) {
-    return html(_templateObject2$a(), ifDefined(context._input.icon.src), ifDefined(classMap(context.classes.icon)));
+  var block1$6 = function block1(context) {
+    return html(_templateObject2$6(), ifDefined(context._input.icon.src), ifDefined(classMap(context.classes.icon)));
   };
 
   var datePickerCss = ":host(ui5-datepicker:not([hidden])){display:inline-block;width:100%}ui5-datepicker:not([hidden]){display:inline-block;width:100%}.sapWCDPIcon{color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));cursor:pointer;outline:none;border:var(--_ui5_datepicker_icon_border,none);box-sizing:border-box}.sapWCDPIcon.sapWCDPIconPressed,.sapWCDPIcon:hover{border-left-color:#fff}.sapWCDPIcon:active{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCDPIcon.sapWCDPIconPressed{background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCDPIcon:not(.sapWCDPIconPressed):not(:active):hover{background:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}";
@@ -23402,7 +21922,7 @@
    * @public
    */
 
-  var metadata$g = {
+  var metadata$b = {
     tag: "ui5-datepicker",
     properties:
     /** @lends  sap.ui.webcomponents.main.DatePicker.prototype */
@@ -23600,7 +22120,7 @@
     _createClass(DatePicker, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$g;
+        return metadata$b;
       }
     }, {
       key: "render",
@@ -23610,7 +22130,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$e;
+        return block0$9;
       }
     }, {
       key: "styles",
@@ -24034,9500 +22554,6 @@
     DatePicker.define();
   });
 
-  function _templateObject5$3() {
-    var data = _taggedTemplateLiteral(["<footer><div class=\"sapMPopupFooter\"><slot name=\"footer\"></slot></div></footer>\t"]);
-
-    _templateObject5$3 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$4() {
-    var data = _taggedTemplateLiteral(["<h2 role=\"heading\" class=\"sapMPopupHeader sapMPopupHeaderText\">", "</h2>\t\t\t"]);
-
-    _templateObject4$4 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$7() {
-    var data = _taggedTemplateLiteral(["<div role=\"heading\" class=\"sapMPopupHeader\"><slot name=\"header\"></slot></div>\t\t\t"]);
-
-    _templateObject3$7 = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$b() {
-    var data = _taggedTemplateLiteral(["<header>\t\t\t", "</header>\t"]);
-
-    _templateObject2$b = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$g() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\"><span id=\"", "-firstfe\" tabindex=\"0\"></span><div style=\"", "\" class=\"", "\"><div tabindex=\"-1\" aria-labelledby=\"", "\" role=\"dialog\" class=\"", "\">\t\t\t", "<section class=\"sapMDialogSection\"><div class=\"sapMPopupContent\"><div class=\"sapMPopupScroll\"><slot></slot></div></div></section>\t\t\t", "</div></div><span id=\"", "-lastfe\" tabindex=\"0\"></span><div tabindex=\"0\" id=\"", "-blocklayer\" style=\"", "\" class=\"", "\"></div></span>"]);
-
-    _templateObject$g = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$f = function block0(context) {
-    return html(_templateObject$g(), ifDefined(classMap(context.classes.frame)), ifDefined(context._id), ifDefined(context.zindex), ifDefined(classMap(context.classes.dialogParent)), ifDefined(context.headerId), ifDefined(classMap(context.classes.main)), !context.noHeader ? block1$b(context) : undefined, context.footer ? block4$3(context) : undefined, ifDefined(context._id), ifDefined(context._id), ifDefined(context.blockLayer), ifDefined(classMap(context.classes.blockLayer)));
-  };
-
-  var block1$b = function block1(context) {
-    return html(_templateObject2$b(), context.header ? block2$7(context) : block3$4(context));
-  };
-
-  var block2$7 = function block2(context) {
-    return html(_templateObject3$7());
-  };
-
-  var block3$4 = function block3(context) {
-    return html(_templateObject4$4(), ifDefined(context.headerText));
-  };
-
-  var block4$3 = function block4(context) {
-    return html(_templateObject5$3());
-  };
-
-  var dialogCss = ".sapMDialogParent{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;justify-content:center;align-items:center;overflow:hidden}.sapMDialogStretched .sapMDialog{width:90%;height:93%;min-width:0;min-height:0}.ui5-phone.sapMDialogParent.sapMDialogStretched .sapMDialog{width:100%;height:100%;box-shadow:none;border-radius:0}.sapMDialog{display:flex;flex-direction:column;overflow:hidden}.sapMDialog footer,.sapMDialog header{flex-shrink:0}.sapMDialogSection{overflow:hidden;flex:1 1 auto;display:flex}";
-
-  /**
-   * @public
-   */
-
-  var metadata$h = {
-    tag: "ui5-dialog",
-    properties:
-    /** @lends  sap.ui.webcomponents.main.Dialog.prototype */
-    {
-      /**
-       * Determines whether the <code>ui5-dialog</code> should be stretched to fullscreen.
-       * <br><br>
-       * <b>Note:</b> The <code>ui5-dialog</code> will be stretched to aproximetly
-       * 90% of the viewport.
-       *
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      stretch: {
-        type: Boolean
-      }
-    }
-  };
-  /**
-   * @class
-   * <h3 class="comment-api-title">Overview</h3>
-   * The <code>ui5-dialog</code> component is used to temporarily display some information in a
-   * size-limited window in front of the regular app screen.
-   * It is used to prompt the user for an action or a confirmation.
-   * The code>ui5-dialog</code> interrupts the current app processing as it is the only focused UI element and
-   * the main screen is dimmed/blocked.
-   * The dialog combines concepts known from other technologies where the windows have
-   * names such as dialog box, dialog window, pop-up, pop-up window, alert box, or message box.
-   * <br><br>
-   * The <code>ui5-dialog</code> is modal, which means that user action is required before returning to the parent window is possible.
-   * The content of the <code>ui5-dialog</code> is fully customizable.
-   *
-   * <h3>Structure</h3>
-   * A <code>ui5-dialog</code> consists of a header, content, and a footer for action buttons.
-   * The <code>ui5-dialog</code> is usually displayed at the center of the screen.
-   *
-   * <h3>Responsive Behavior</h3>
-   * The <code>stretch</code> property can be used to stretch the
-   * <code>ui5-dialog</code> on full screen.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Dialog";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Dialog
-   * @extends Popup
-   * @tagname ui5-dialog
-   * @public
-   */
-
-  var Dialog =
-  /*#__PURE__*/
-  function (_Popup) {
-    _inherits(Dialog, _Popup);
-
-    function Dialog() {
-      _classCallCheck(this, Dialog);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Dialog).apply(this, arguments));
-    }
-
-    _createClass(Dialog, [{
-      key: "open",
-
-      /**
-      * Opens the <code>ui5-dialog</code>.
-      * @public
-      */
-      value: function open() {
-        if (this._isOpen) {
-          return;
-        }
-
-        var cancelled = _get(_getPrototypeOf(Dialog.prototype), "open", this).call(this);
-
-        if (cancelled) {
-          return true;
-        }
-
-        this.storeCurrentFocus();
-        this._isOpen = true;
-      }
-      /**
-      * Closes the <code>ui5-dialog</code>.
-      * @public
-      */
-
-    }, {
-      key: "close",
-      value: function close() {
-        if (!this._isOpen) {
-          return;
-        }
-
-        var cancelled = _get(_getPrototypeOf(Dialog.prototype), "close", this).call(this);
-
-        if (cancelled) {
-          return;
-        }
-
-        this._isOpen = false;
-        this.resetFocus();
-        this.fireEvent("afterClose", {});
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          frame: {
-            sapMPopupFrame: true,
-            sapMPopupFrameOpen: this._isOpen
-          },
-          dialogParent: {
-            sapMDialogParent: true,
-            sapMDialogStretched: this.stretch,
-            "ui5-phone": isPhone()
-          },
-          main: {
-            sapMPopup: true,
-            sapMDialog: true
-          },
-          blockLayer: {
-            sapUiBLy: true,
-            sapMPopupBlockLayer: true,
-            sapMPopupBlockLayerHidden: this._hideBlockLayer
-          }
-        };
-      }
-    }, {
-      key: "zindex",
-      get: function get() {
-        return "z-index: ".concat(this._zIndex + 1, ";");
-      }
-    }, {
-      key: "blockLayer",
-      get: function get() {
-        return "z-index: ".concat(this._zIndex, ";");
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$h;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$f;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return [Popup.styles, dialogCss];
-      }
-    }]);
-
-    return Dialog;
-  }(Popup);
-
-  Bootstrap.boot().then(function (_) {
-    Dialog.define();
-  });
-
-  var styles$5 = ":host(ui5-li:not([hidden])){display:block}:host(ui5-li) .sap-phone.sapMLIB{outline:none}ui5-li:not([hidden]){display:block}ui5-li .sap-phone.sapMLIB{outline:none}.sapMLIB{position:relative;display:flex;height:3rem;width:100%;padding:0 1rem 0 1rem;background:var(--ui5-listitem-background-color,var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));box-sizing:border-box}.sapMLIBHoverable:hover{background:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,#fafafa))}.sapMLIB.sapMLIBSelected{background:var(--sapUiListSelectionBackgroundColor,var(--sapList_SelectionBackgroundColor,#e5f0fa))}.sapMLIB.sapMLIBActive{color:var(--sapUiListActiveTextColor,#fff);background:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,#0854a0))))}.sapMLIB.sapMLIBHoverable.sapMLIBSelected:hover{background:var(--sapUiListSelectionHoverBackground,#d8e9f8)}.sapMLIB.sapMLIBHoverable.sapMLIBSelected.sapMLIBActive:hover{background:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,#0854a0))))}.sapMLIB.sapMLIBFocusable:focus{outline:none}.sapMLIB.sapMLIBFocusable .sapMLIBContent:focus:after,.sapMLIB.sapMLIBFocusable:focus:after{content:\"\";border:var(--_ui5_listitembase_focus_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none}.sapMLIB.sapMLIBActive.sapMLIBFocusable .sapMLIBContent:focus,.sapMLIB.sapMLIBActive.sapMLIBFocusable:focus{outline-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMLIB.sapMLIBBorder{border-bottom:var(--ui5-listitem-border-bottom,1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed)))}.sapMLIB.sapMLIBActive .sapMLIBIcon{color:var(--sapUiListActiveTextColor,#fff)}.sapMLIBIcon{color:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)));padding-right:1rem}.sapMLIBContent{max-width:100%;min-height:100%;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.sapMLIBActionable,.sapMLIBActionable>.sapMLIBIcon{cursor:pointer}.sapMLIBFocusable.sapMLIBLegacyOutline:focus{outline:none}:host(ui5-li) [dir=rtl] .sapMLIBIcon{padding-left:1rem;padding-right:0}:host(ui5-li) [dir=rtl] .sapMSLIImg{margin:.5rem 0 .5rem .75rem}ui5-li [dir=rtl] .sapMLIBIcon{padding-left:1rem;padding-right:0}ui5-li [dir=rtl] .sapMSLIImg{margin:.5rem 0 .5rem .75rem}";
-
-  /**
-   * @public
-   */
-
-  var metadata$i = {
-    "abstract": true,
-    properties:
-    /** @lends  sap.ui.webcomponents.main.ListItemBase.prototype */
-    {
-      _hideBorder: {
-        type: Boolean
-      },
-      _tabIndex: {
-        type: String,
-        defaultValue: "-1"
-      }
-    },
-    events: {
-      _focused: {},
-      _focusForward: {}
-    }
-  };
-  /**
-   * A class to serve as a foundation
-   * for the <code>ListItem</code> and <code>GroupHeaderListItem</code> classes.
-   *
-   * @abstract
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.ListItemBase
-   * @extends UI5Element
-   * @public
-   */
-
-  var ListItemBase =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(ListItemBase, _UI5Element);
-
-    function ListItemBase() {
-      _classCallCheck(this, ListItemBase);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ListItemBase).apply(this, arguments));
-    }
-
-    _createClass(ListItemBase, [{
-      key: "onfocusin",
-      value: function onfocusin(event) {
-        this.fireEvent("_focused", event);
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isTabNext(event)) {
-          return this._handleTabNext(event);
-        }
-
-        if (isTabPrevious(event)) {
-          return this._handleTabPrevious(event);
-        }
-      }
-    }, {
-      key: "_handleTabNext",
-      value: function _handleTabNext(event) {
-        var target = event.target.shadowRoot.activeElement;
-
-        if (this.shouldForwardTabAfter(target)) {
-          this.fireEvent("_forwardAfter", {
-            item: target
-          });
-        }
-      }
-    }, {
-      key: "_handleTabPrevious",
-      value: function _handleTabPrevious(event) {
-        var target = event.target.shadowRoot.activeElement;
-
-        if (this.shouldForwardTabBefore(target)) {
-          var eventData = event;
-          eventData.item = target;
-          this.fireEvent("_forwardBefore", eventData);
-        }
-      }
-      /*
-      * Determines if th current list item either has no tabbable content or
-      * [TAB] is performed onto the last tabbale content item.
-      */
-
-    }, {
-      key: "shouldForwardTabAfter",
-      value: function shouldForwardTabAfter(target) {
-        var aContent = FocusHelper.getTabbableContent(this.getDomRef());
-
-        if (target.getFocusDomRef) {
-          target = target.getFocusDomRef();
-        }
-
-        return !aContent.length || aContent[aContent.length - 1] === target;
-      }
-      /*
-      * Determines if the current list item is target of [SHIFT+TAB].
-      */
-
-    }, {
-      key: "shouldForwardTabBefore",
-      value: function shouldForwardTabBefore(target) {
-        return this.getDomRef() === target;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapMLIBBorder: !this._hideBorder,
-            sapMLIB: true,
-            "sapMLIB-CTX": true,
-            sapMLIBShowSeparator: true,
-            sapMLIBFocusable: isDesktop(),
-            "sap-phone": isPhone(),
-            "sapUiSizeCompact": getCompactSize()
-          },
-          inner: {
-            sapMLIBContent: true
-          }
-        };
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$i;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$5;
-      }
-    }]);
-
-    return ListItemBase;
-  }(UI5Element);
-
-  var ListModes = {
-    /**
-     * Default mode (no selection).
-     * @public
-     */
-    None: "None",
-
-    /**
-     * Right-positioned single selection mode (only one list item can be selected).
-     * @public
-     */
-    SingleSelect: "SingleSelect",
-
-    /**
-     * Left-positioned single selection mode (only one list item can be selected).
-     * @public
-     */
-    SingleSelectBegin: "SingleSelectBegin",
-
-    /**
-     * Selected item is highlighted but no selection element is visible
-     * (only one list item can be selected).
-     * @public
-     */
-    SingleSelectEnd: "SingleSelectEnd",
-
-    /**
-     * Multi selection mode (more than one list item can be selected).
-     * @public
-     */
-    MultiSelect: "MultiSelect",
-
-    /**
-     * Delete mode (only one list item can be deleted via provided delete button)
-     * @public
-     */
-    Delete: "Delete"
-  };
-
-  var ListMode =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(ListMode, _DataType);
-
-    function ListMode() {
-      _classCallCheck(this, ListMode);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ListMode).apply(this, arguments));
-    }
-
-    _createClass(ListMode, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!ListModes[value];
-      }
-    }]);
-
-    return ListMode;
-  }(DataType);
-
-  ListMode.generataTypeAcessors(ListModes);
-
-  var ListSeparatorsTypes = {
-    /**
-     * Separators between the items including the last and the first one.
-     * @public
-     */
-    All: "All",
-
-    /**
-     * Separators between the items.
-     * <b>Note:</b> This enumeration depends on the theme.
-     * @public
-     */
-    Inner: "Inner",
-
-    /**
-     * No item separators.
-     * @public
-     */
-    None: "None"
-  };
-
-  var ListSeparators =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(ListSeparators, _DataType);
-
-    function ListSeparators() {
-      _classCallCheck(this, ListSeparators);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ListSeparators).apply(this, arguments));
-    }
-
-    _createClass(ListSeparators, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!ListSeparatorsTypes[value];
-      }
-    }]);
-
-    return ListSeparators;
-  }(DataType);
-
-  ListSeparators.generataTypeAcessors(ListSeparatorsTypes);
-
-  /**
-   * Different types of ListItem.
-   */
-
-  var ListItemTypes = {
-    /**
-     * Indicates the list item does not have any active feedback when item is pressed.
-     * @public
-     */
-    Inactive: "Inactive",
-
-    /**
-     * Indicates that the item is clickable via active feedback when item is pressed.
-     * @public
-     */
-    Active: "Active"
-  };
-
-  var ListItemType =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(ListItemType, _DataType);
-
-    function ListItemType() {
-      _classCallCheck(this, ListItemType);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ListItemType).apply(this, arguments));
-    }
-
-    _createClass(ListItemType, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!ListItemTypes[value];
-      }
-    }]);
-
-    return ListItemType;
-  }(DataType);
-
-  ListItemType.generataTypeAcessors(ListItemTypes);
-
-  function _templateObject5$4() {
-    var data = _taggedTemplateLiteral(["<footer id=\"", "-footer\" class=\"sapMListFtr\">\t\t\t", "</footer>\t"]);
-
-    _templateObject5$4 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$5() {
-    var data = _taggedTemplateLiteral(["<li id=\"", "-nodata\" class=\"", "\" tabindex=\"", "\"><div id=\"", "-nodata-text\" class=\"sapMListNoDataText\">\t\t\t\t\t", "</div></li>\t\t"]);
-
-    _templateObject4$5 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$8() {
-    var data = _taggedTemplateLiteral(["<header id=\"", "-header\" class=\"sapMListHdr sapMListHdrText\">\t\t\t", "</header>\t"]);
-
-    _templateObject3$8 = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$c() {
-    var data = _taggedTemplateLiteral(["<slot name=\"header\" />\t"]);
-
-    _templateObject2$c = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$h() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"><!-- header -->\t", "", "<div id=\"", "-before\" tabindex=\"0\" class=\"sapMListDummyArea\"></div><ul id=\"", "-listUl\" class=\"", "\"><slot></slot>\t\t", "</ul>\t", "<div id=\"", "-after\" tabindex=\"0\" class=\"sapMListDummyArea\"></div></div>"]);
-
-    _templateObject$h = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$g = function block0(context) {
-    return html(_templateObject$h(), ifDefined(classMap(context.classes.main)), context.header ? block1$c(context) : undefined, context.shouldRenderH1 ? block2$8(context) : undefined, ifDefined(context._id), ifDefined(context._id), ifDefined(classMap(context.classes.ul)), context.showNoDataText ? block3$5(context) : undefined, context.footerText ? block4$4(context) : undefined, ifDefined(context._id));
-  };
-
-  var block1$c = function block1(context) {
-    return html(_templateObject2$c());
-  };
-
-  var block2$8 = function block2(context) {
-    return html(_templateObject3$8(), ifDefined(context._id), ifDefined(context.headerText));
-  };
-
-  var block3$5 = function block3(context) {
-    return html(_templateObject4$5(), ifDefined(context._id), ifDefined(classMap(context.classes.noData)), ifDefined(context.noDataTabIndex), ifDefined(context._id), ifDefined(context.noDataText));
-  };
-
-  var block4$4 = function block4(context) {
-    return html(_templateObject5$4(), ifDefined(context._id), ifDefined(context.footerText));
-  };
-
-  var listCss = ":host(ui5-list:not([hidden])){display:block;max-width:100%}ui5-list:not([hidden]){display:block;max-width:100%}.sapMList{width:100%;height:100%;position:relative;box-sizing:border-box}.sapMList.sapMListInsetBG{padding:2rem}.sapMList .sapMListUl{list-style-type:none;padding:0;margin:0}.sapMList .sapMListUl:focus{outline:none}.sapMList .sapMListDummyArea{position:fixed}.sapMList .sapMListNoData{list-style-type:none;display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));padding:0 1rem!important;height:3rem}.sapMList .sapMListHdrText{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;box-sizing:border-box;font-size:var(--sapMFontHeader4Size,1.125rem);font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));height:3rem;line-height:3rem;padding:0 1rem;background-color:var(--sapUiGroupTitleBackground,var(--sapGroup_TitleBackground,transparent));border-bottom:1px solid var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#d9d9d9))}.sapMList .sapMListFtr{height:2rem;box-sizing:border-box;-webkit-text-size-adjust:none;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));line-height:2rem;background-color:var(--sapUiListFooterBackground,#fafafa);color:var(--sapUiListFooterTextColor,var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)))));padding:0 1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sapMList .sapMListShowSeparatorsNone .sapMListNoData{border-bottom:0}.sapMList .sapMListNoDataText{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sapUiSizeCompact.sapMList .sapMListNoData{height:2rem;font-size:var(--sapMFontMediumSize,.875rem)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$j = {
-    tag: "ui5-list",
-    defaultSlot: "items",
-    slots:
-    /** @lends sap.ui.webcomponents.main.List.prototype */
-    {
-      /**
-       * Defines the <code>ui5-li</code> header.
-       * <b>Note:</b> When <code>header</code> is set, the
-       * <code>headerText</code> property is ignored.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @public
-       */
-      header: {
-        type: HTMLElement
-      },
-
-      /**
-       * Defines the items of the <code>ui5-list</code>.
-       * <br><b>Note:</b> Only <code>ui5-li</code>, <code>ui5-li-custom</code> and <code>ui5-li-groupheader</code> are allowed.
-       *
-       * @type {ListItemBase[]}
-       * @slot
-       * @public
-       */
-      items: {
-        type: ListItemBase,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends  sap.ui.webcomponents.main.List.prototype */
-    {
-      /**
-       * Defines the <code>ui5-list</code> header text.
-       * <br><br>
-       * <b>Note:</b> If <code>header</code> is set this property is ignored.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      headerText: {
-        type: String
-      },
-
-      /**
-       * Defines the footer text.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      footerText: {
-        type: String
-      },
-
-      /**
-       * Determines whether the list items are indented.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      inset: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the mode of the <code>ui5-list</code>.
-       * <br><br>
-       * <b>Note:</b> Avalaible options are <code>None</code>, <code>SingleSelect</code>,
-       * <code>MultiSelect</code>, and <code>Delete</code>.
-       *
-       * @type {string}
-       * @defaultvalue "None"
-       * @public
-       */
-      mode: {
-        type: ListMode,
-        defaultValue: ListMode.None
-      },
-
-      /**
-       * Defines the text that is displayed when the <code>ui5-list</code> contains no items.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      noDataText: {
-        type: String
-      },
-
-      /**
-       * Defines the item separator style that is used.
-       * <br><br>
-       * <b>Notes:</b>
-       * <ul>
-       * <li>Avalaible options are <code>All</code>, <code>Inner</code>, and <code>None</code>.</li>
-       * <li>When set to <code>None</code>, none of the items is separated by horizontal lines.</li>
-       * <li>When set to <code>Inner</code>, the first item doesn't have a top separator and the last
-       * item doesn't have a bottom separator.</li>
-       * </ul>
-       *
-       * @type {string}
-       * @defaultvalue "All"
-       * @public
-       */
-      separators: {
-        type: ListSeparators,
-        defaultValue: ListSeparators.All
-      }
-    },
-    events:
-    /** @lends  sap.ui.webcomponents.main.List.prototype */
-    {
-      /**
-       * Fired when an item is pressed, unless the item's <code>type</code> property
-       * is set to <code>Inactive</code>.
-       *
-       * @event
-       * @param {HTMLElement} item the pressed item.
-       * @public
-       */
-      itemPress: {
-        detail: {
-          item: {
-            type: HTMLElement
-          }
-        }
-      },
-
-      /**
-       * Fired when the Delete button of any item is pressed.
-       * <br><br>
-       * <b>Note:</b> A Delete button is displayed on each item,
-       * when the <code>ui5-list</code> <code>mode</code> property is set to <code>Delete</code>.
-       * @event
-       * @param {HTMLElement} item the deleted item.
-       * @public
-       */
-      itemDelete: {
-        detail: {
-          item: {
-            type: HTMLElement
-          }
-        }
-      },
-
-      /**
-       * Fired when selection is changed by user interaction
-       * in <code>SingleSelect</code> and <code>MultiSelect</code> modes.
-       *
-       * @event
-       * @param {Array} selectedItems an array of the selected items.
-       * @param {Array} previouslySelectedItems an array of the previously selected items.
-       * @public
-       */
-      selectionChange: {
-        detail: {
-          selectedItems: {
-            type: Array
-          },
-          previouslySelectedItems: {
-            type: Array
-          }
-        }
-      }
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title"> Overview </h3>
-   *
-   * The <code>ui5-list</code> component allows displaying a list of items, advanced keyboard
-   * handling support for navigating between items, and predefined modes to improve the development efficiency.
-   * <br><br>
-   * The <code>ui5-list</code> is а container for the available list items:
-   * <ul>
-   * <li><code>ui5-li</code></li>
-   * <li><code>ui5-li-custom</code></li>
-   * <li><code>ui5-li-group-header</code></li>
-   * </ul>
-   * <br><br>
-   * To benefit from the built-in selection mechanism, you can use the available
-   * selection modes, such as
-   * <code>SingleSelect</code>, <code>MultiSelect</code> and <code>Delete</code>.
-   * <br><br>
-   * Additionally, the <code>ui5-list</code> provides header, footer, and customization for the list item separators.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/List";</code>
-   * <br>
-   * <code>import "@ui5/webcomponents/dist/StandardListItem";</code> (for <code>ui5-li</code>)
-   * <br>
-   * <code>import "@ui5/webcomponents/dist/CustomListItem";</code> (for <code>ui5-li-custom</code>)
-   * <br>
-   * <code>import "@ui5/webcomponents/dist/GroupHeaderListItem";</code> (for <code>ui5-li-group-header</code>)
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.List
-   * @extends UI5Element
-   * @tagname ui5-list
-   * @appenddocs StandardListItem CustomListItem GroupHeaderListItem
-   * @public
-   */
-
-  var List =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(List, _UI5Element);
-
-    _createClass(List, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$j;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$g;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return listCss;
-      }
-    }]);
-
-    function List() {
-      var _this;
-
-      _classCallCheck(this, List);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(List).call(this));
-
-      _this.initItemNavigation(); // Stores the last focused item within the internal ul element.
-
-
-      _this._previouslyFocusedItem = null; // Indicates that the List is forwarding the focus before or after the internal ul.
-
-      _this._forwardingFocus = false;
-      _this._previouslySelectedItem = null;
-
-      _this.addEventListener("ui5-_press", _this.onItemPress.bind(_assertThisInitialized(_this)));
-
-      _this.addEventListener("ui5-_focused", _this.onItemFocused.bind(_assertThisInitialized(_this)));
-
-      _this.addEventListener("ui5-_forwardAfter", _this.onForwardAfter.bind(_assertThisInitialized(_this)));
-
-      _this.addEventListener("ui5-_forwardBefore", _this.onForwardBefore.bind(_assertThisInitialized(_this)));
-
-      _this.addEventListener("ui5-_selectionRequested", _this.onSelectionRequested.bind(_assertThisInitialized(_this)));
-
-      return _this;
-    }
-
-    _createClass(List, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        this.prepareListItems();
-
-        this._itemNavigation.init();
-      }
-    }, {
-      key: "initItemNavigation",
-      value: function initItemNavigation() {
-        var _this2 = this;
-
-        this._itemNavigation = new ItemNavigation(this);
-
-        this._itemNavigation.getItemsCallback = function () {
-          return _this2.getSlottedNodes("items");
-        };
-
-        this._delegates.push(this._itemNavigation);
-      }
-    }, {
-      key: "prepareListItems",
-      value: function prepareListItems() {
-        var _this3 = this;
-
-        var slottedItems = this.getSlottedNodes("items");
-        slottedItems.forEach(function (item, key) {
-          var isLastChild = key === slottedItems.length - 1;
-          var showBottomBorder = _this3.separators === ListSeparators.All || _this3.separators === ListSeparators.Inner && !isLastChild;
-          item._mode = _this3.mode;
-          item._hideBorder = !showBottomBorder;
-        });
-        this._previouslySelectedItem = null;
-      }
-      /*
-      * ITEM SELECTION BASED ON THE CURRENT MODE
-      */
-
-    }, {
-      key: "onSelectionRequested",
-      value: function onSelectionRequested(event) {
-        var previouslySelectedItems = this.getSelectedItems();
-        var selectionChange = false;
-        this._selectionRequested = true;
-
-        if (this["handle".concat(this.mode)]) {
-          selectionChange = this["handle".concat(this.mode)](event.detail.item, event.selected);
-        }
-
-        if (selectionChange) {
-          this.fireEvent("selectionChange", {
-            selectedItems: this.getSelectedItems(),
-            previouslySelectedItems: previouslySelectedItems
-          });
-        }
-      }
-    }, {
-      key: "handleSingleSelect",
-      value: function handleSingleSelect(item) {
-        if (item.selected) {
-          return false;
-        }
-
-        this.deselectSelectedItems();
-        item.selected = true;
-        return true;
-      }
-    }, {
-      key: "handleSingleSelectBegin",
-      value: function handleSingleSelectBegin(item) {
-        return this.handleSingleSelect(item);
-      }
-    }, {
-      key: "handleSingleSelectEnd",
-      value: function handleSingleSelectEnd(item) {
-        return this.handleSingleSelect(item);
-      }
-    }, {
-      key: "handleMultiSelect",
-      value: function handleMultiSelect(item, selected) {
-        item.selected = selected;
-        return true;
-      }
-    }, {
-      key: "handleDelete",
-      value: function handleDelete(item) {
-        this.fireEvent("itemDelete", {
-          item: item
-        });
-      }
-    }, {
-      key: "deselectSelectedItems",
-      value: function deselectSelectedItems() {
-        this.getSelectedItems().forEach(function (item) {
-          item.selected = false;
-        });
-      }
-    }, {
-      key: "getSelectedItems",
-      value: function getSelectedItems() {
-        return this.getSlottedNodes("items").filter(function (item) {
-          return item.selected;
-        });
-      }
-    }, {
-      key: "getFirstSelectedItem",
-      value: function getFirstSelectedItem() {
-        var slottedItems = this.getSlottedNodes("items");
-        var firstSelectedItem = null;
-
-        for (var i = 0; i < slottedItems.length; i++) {
-          if (slottedItems[i].selected) {
-            firstSelectedItem = slottedItems[i];
-            break;
-          }
-        }
-
-        return firstSelectedItem;
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isTabNext(event)) {
-          this._handleTabNext(event);
-        }
-      }
-      /*
-      * KEYBOARD SUPPORT
-      */
-
-    }, {
-      key: "_handleTabNext",
-      value: function _handleTabNext(event) {
-        // If forward navigation is performed, we check if the List has headerToolbar.
-        // If yes - we check if the target is at the last tabbable element of the headerToolbar
-        // to forward correctly the focus to the selected, previously focused or to the first list item.
-        var lastTabbableEl;
-        var target = this.getNormalizedTarget(event.target);
-
-        if (this.headerToolbar) {
-          lastTabbableEl = this.getHeaderToolbarLastTabbableElement();
-        }
-
-        if (!lastTabbableEl) {
-          return;
-        }
-
-        if (lastTabbableEl === target) {
-          if (this.getFirstSelectedItem()) {
-            this.focusFirstSelectedItem();
-          } else if (this.getPreviouslyFocusedItem()) {
-            this.focusPreviouslyFocusedItem();
-          } else {
-            this.focusFirstItem();
-          }
-
-          event.stopImmediatePropagation();
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "onfocusin",
-      value: function onfocusin(event) {
-        // If the focusin event does not origin from one of the 'triggers' - ignore it.
-        if (!this.isForwardElement(this.getNormalizedTarget(event.target))) {
-          event.stopImmediatePropagation();
-          return;
-        } // The focus arrives in the List for the first time.
-        // If there is selected item - focus it or focus the first item.
-
-
-        if (!this.getPreviouslyFocusedItem()) {
-          if (this.getFirstSelectedItem()) {
-            this.focusFirstSelectedItem();
-          } else {
-            this.focusFirstItem();
-          }
-
-          event.stopImmediatePropagation();
-          return;
-        } // The focus returns to the List,
-        // focus the first selected item or the previously focused element.
-
-
-        if (!this.getForwardingFocus()) {
-          if (this.getFirstSelectedItem()) {
-            this.focusFirstSelectedItem();
-          } else {
-            this.focusPreviouslyFocusedItem();
-          }
-        }
-
-        this.setForwardingFocus(false);
-      }
-    }, {
-      key: "isForwardElement",
-      value: function isForwardElement(node) {
-        var nodeId = node.id;
-
-        if (this._id === nodeId || this.getBeforeElement().id === nodeId) {
-          return true;
-        }
-
-        return this.getAfterElement().id === nodeId;
-      }
-    }, {
-      key: "onItemFocused",
-      value: function onItemFocused(event) {
-        var target = event.target;
-
-        this._itemNavigation.update(target);
-
-        this.fireEvent("itemFocused", {
-          item: target
-        });
-      }
-    }, {
-      key: "onItemPress",
-      value: function onItemPress(event) {
-        var pressedItem = event.detail.item;
-
-        if (pressedItem.type === ListItemType.Active) {
-          this.fireEvent("itemPress", {
-            item: pressedItem
-          });
-        }
-
-        if (!this._selectionRequested && this.mode !== ListMode.Delete) {
-          this._selectionRequested = true;
-          this.onSelectionRequested({
-            detail: {
-              item: pressedItem
-            },
-            selected: !pressedItem.selected
-          });
-        }
-
-        this._selectionRequested = false;
-      }
-    }, {
-      key: "onForwardBefore",
-      value: function onForwardBefore(event) {
-        this.setPreviouslyFocusedItem(event.target);
-        this.focusBeforeElement();
-      }
-    }, {
-      key: "onForwardAfter",
-      value: function onForwardAfter(event) {
-        this.setPreviouslyFocusedItem(event.target);
-        this.focusAfterElement();
-      }
-    }, {
-      key: "focusBeforeElement",
-      value: function focusBeforeElement() {
-        this.setForwardingFocus(true);
-        this.getBeforeElement().focus();
-      }
-    }, {
-      key: "focusAfterElement",
-      value: function focusAfterElement() {
-        this.setForwardingFocus(true);
-        this.getAfterElement().focus();
-      }
-    }, {
-      key: "focusFirstItem",
-      value: function focusFirstItem() {
-        var firstItem = this.getFirstItem();
-
-        if (firstItem) {
-          firstItem.focus();
-        }
-      }
-    }, {
-      key: "focusPreviouslyFocusedItem",
-      value: function focusPreviouslyFocusedItem() {
-        var previouslyFocusedItem = this.getPreviouslyFocusedItem();
-
-        if (previouslyFocusedItem) {
-          previouslyFocusedItem.focus();
-        }
-      }
-    }, {
-      key: "focusFirstSelectedItem",
-      value: function focusFirstSelectedItem() {
-        var firstSelectedItem = this.getFirstSelectedItem();
-
-        if (firstSelectedItem) {
-          firstSelectedItem.focus();
-        }
-      }
-    }, {
-      key: "setForwardingFocus",
-      value: function setForwardingFocus(forwardingFocus) {
-        this._forwardingFocus = forwardingFocus;
-      }
-    }, {
-      key: "getForwardingFocus",
-      value: function getForwardingFocus() {
-        return this._forwardingFocus;
-      }
-    }, {
-      key: "setPreviouslyFocusedItem",
-      value: function setPreviouslyFocusedItem(item) {
-        this._previouslyFocusedItem = item;
-      }
-    }, {
-      key: "getPreviouslyFocusedItem",
-      value: function getPreviouslyFocusedItem() {
-        return this._previouslyFocusedItem;
-      }
-    }, {
-      key: "getFirstItem",
-      value: function getFirstItem() {
-        var slottedItems = this.getSlottedNodes("items");
-        return !!slottedItems.length && slottedItems[0];
-      }
-    }, {
-      key: "getAfterElement",
-      value: function getAfterElement() {
-        if (!this._afterElement) {
-          this._afterElement = this.shadowRoot.querySelector("#".concat(this._id, "-after"));
-        }
-
-        return this._afterElement;
-      }
-    }, {
-      key: "getBeforeElement",
-      value: function getBeforeElement() {
-        if (!this._beforeElement) {
-          this._beforeElement = this.shadowRoot.querySelector("#".concat(this._id, "-before"));
-        }
-
-        return this._beforeElement;
-      }
-    }, {
-      key: "getHeaderToolbarLastTabbableElement",
-      value: function getHeaderToolbarLastTabbableElement() {
-        return this.getLastTabbableELement(this.headerToolbar.getDomRef()) || this.headerToolbar.getDomRef();
-      }
-    }, {
-      key: "getLastTabbableELement",
-      value: function getLastTabbableELement(node) {
-        return FocusHelper.getLastTabbableElement(node);
-      }
-    }, {
-      key: "getNormalizedTarget",
-      value: function getNormalizedTarget(target) {
-        var focused = target;
-
-        if (target.shadowRoot && target.shadowRoot.activeElement) {
-          focused = target.shadowRoot.activeElement;
-        }
-
-        return focused;
-      }
-    }, {
-      key: "shouldRenderH1",
-      get: function get() {
-        return !this.header && this.headerText;
-      }
-    }, {
-      key: "showNoDataText",
-      get: function get() {
-        return this.items.length === 0 && this.noDataText;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var _ul;
-
-        return {
-          main: {
-            sapMList: true,
-            sapMListInsetBG: this.inset,
-            sapUiSizeCompact: getCompactSize()
-          },
-          ul: (_ul = {
-            sapMListItems: true,
-            sapMListUl: true
-          }, _defineProperty(_ul, "sapMListShowSeparators".concat(this.separators), true), _defineProperty(_ul, "sapMListMode".concat(this.mode), true), _defineProperty(_ul, "sapMListInset", this.inset), _ul),
-          noData: {
-            sapMLIB: true,
-            sapMListNoData: true,
-            sapMLIBTypeInactive: true,
-            sapMLIBFocusable: isDesktop()
-          }
-        };
-      }
-    }]);
-
-    return List;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    List.define();
-  });
-
-  var RadioButtonGroup =
-  /*#__PURE__*/
-  function () {
-    function RadioButtonGroup() {
-      _classCallCheck(this, RadioButtonGroup);
-    }
-
-    _createClass(RadioButtonGroup, null, [{
-      key: "hasGroup",
-      value: function hasGroup(groupName) {
-        return this.groups.has(groupName);
-      }
-    }, {
-      key: "getGroup",
-      value: function getGroup(groupName) {
-        return this.groups.get(groupName);
-      }
-    }, {
-      key: "getSelectedRadioFromGroup",
-      value: function getSelectedRadioFromGroup(groupName) {
-        return this.selectedRadios.get(groupName);
-      }
-    }, {
-      key: "removeGroup",
-      value: function removeGroup(groupName) {
-        this.selectedRadios.delete(groupName);
-        return this.groups.delete(groupName);
-      }
-    }, {
-      key: "addToGroup",
-      value: function addToGroup(radioBtn, groupName) {
-        if (this.hasGroup(groupName)) {
-          this.enforceSingleSelection(radioBtn, groupName);
-          this.getGroup(groupName).push(radioBtn);
-        } else {
-          this.createGroup(radioBtn, groupName);
-        }
-      }
-    }, {
-      key: "removeFromGroup",
-      value: function removeFromGroup(radioBtn, groupName) {
-        if (!this.hasGroup(groupName)) {
-          return;
-        }
-
-        var group = this.getGroup(groupName);
-        var selectedRadio = this.getSelectedRadioFromGroup(groupName); // Remove the radio button from the given group
-
-        group.forEach(function (_radioBtn, idx, arr) {
-          if (radioBtn._id === _radioBtn._id) {
-            return arr.splice(idx, 1);
-          }
-        });
-
-        if (selectedRadio === radioBtn) {
-          this.selectedRadios.set(groupName, null);
-        } // Remove the group if it is empty
-
-
-        if (!group.length) {
-          this.removeGroup(groupName);
-        }
-      }
-    }, {
-      key: "createGroup",
-      value: function createGroup(radioBtn, groupName) {
-        if (radioBtn.selected) {
-          this.selectedRadios.set(groupName, radioBtn);
-        }
-
-        this.groups.set(groupName, [radioBtn]);
-      }
-    }, {
-      key: "selectNextItem",
-      value: function selectNextItem(item, groupName) {
-        var group = this.getGroup(groupName),
-            groupLength = group.length,
-            currentItemPosition = group.indexOf(item);
-
-        if (groupLength <= 1) {
-          return;
-        }
-
-        var nextItemToSelect = this._nextSelectable(currentItemPosition, group);
-
-        this.updateSelectionInGroup(nextItemToSelect, groupName);
-      }
-    }, {
-      key: "selectPreviousItem",
-      value: function selectPreviousItem(item, groupName) {
-        var group = this.getGroup(groupName),
-            groupLength = group.length,
-            currentItemPosition = group.indexOf(item);
-
-        if (groupLength <= 1) {
-          return;
-        }
-
-        var previousItemToSelect = this._previousSelectable(currentItemPosition, group);
-
-        this.updateSelectionInGroup(previousItemToSelect, groupName);
-      }
-    }, {
-      key: "selectItem",
-      value: function selectItem(item, groupName) {
-        this.updateSelectionInGroup(item, groupName);
-      }
-    }, {
-      key: "updateSelectionInGroup",
-      value: function updateSelectionInGroup(radioBtnToSelect, groupName) {
-        var selectedRadio = this.getSelectedRadioFromGroup(groupName);
-
-        this._deselectRadio(selectedRadio);
-
-        this._selectRadio(radioBtnToSelect);
-
-        this.selectedRadios.set(groupName, radioBtnToSelect);
-      }
-    }, {
-      key: "_deselectRadio",
-      value: function _deselectRadio(radioBtn) {
-        if (radioBtn) {
-          radioBtn.selected = false;
-        }
-      }
-    }, {
-      key: "_selectRadio",
-      value: function _selectRadio(radioBtn) {
-        if (radioBtn) {
-          radioBtn.focus();
-          radioBtn.selected = true;
-          radioBtn._selected = true;
-          radioBtn.fireEvent("select");
-        }
-      }
-    }, {
-      key: "_nextSelectable",
-      value: function _nextSelectable(pos, group) {
-        var groupLength = group.length;
-        var nextRadioToSelect = null;
-
-        if (pos === groupLength - 1) {
-          if (group[0].disabled || group[0].readonly) {
-            return this._nextSelectable(1, group);
-          }
-
-          nextRadioToSelect = group[0];
-        } else if (group[pos + 1].disabled || group[pos + 1].readonly) {
-          return this._nextSelectable(pos + 1, group);
-        } else {
-          nextRadioToSelect = group[pos + 1];
-        }
-
-        return nextRadioToSelect;
-      }
-    }, {
-      key: "_previousSelectable",
-      value: function _previousSelectable(pos, group) {
-        var groupLength = group.length;
-        var previousRadioToSelect = null;
-
-        if (pos === 0) {
-          if (group[groupLength - 1].disabled || group[groupLength - 1].readonly) {
-            return this._previousSelectable(groupLength - 1, group);
-          }
-
-          previousRadioToSelect = group[groupLength - 1];
-        } else if (group[pos - 1].disabled || group[pos - 1].readonly) {
-          return this._previousSelectable(pos - 1, group);
-        } else {
-          previousRadioToSelect = group[pos - 1];
-        }
-
-        return previousRadioToSelect;
-      }
-    }, {
-      key: "enforceSingleSelection",
-      value: function enforceSingleSelection(radioBtn, groupName) {
-        var selectedRadio = this.getSelectedRadioFromGroup(groupName);
-
-        if (radioBtn.selected) {
-          if (!selectedRadio) {
-            this.selectedRadios.set(groupName, radioBtn);
-          } else if (radioBtn !== selectedRadio) {
-            this._deselectRadio(selectedRadio);
-
-            this.selectedRadios.set(groupName, radioBtn);
-          }
-        } else if (radioBtn === selectedRadio) {
-          this.selectedRadios.set(groupName, null);
-        }
-      }
-    }, {
-      key: "groups",
-      get: function get() {
-        if (!this._groups) {
-          this._groups = new Map();
-        }
-
-        return this._groups;
-      }
-    }, {
-      key: "selectedRadios",
-      get: function get() {
-        if (!this._selectedRadios) {
-          this._selectedRadios = new Map();
-        }
-
-        return this._selectedRadios;
-      }
-    }]);
-
-    return RadioButtonGroup;
-  }();
-
-  function _templateObject2$d() {
-    var data = _taggedTemplateLiteral(["<ui5-label class=\"labelInRadioButton\">", "</ui5-label>\t"]);
-
-    _templateObject2$d = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$i() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"\trole=\"radio\"\taria-checked=\"", "\"\taria-readonly=\"", "\"\taria-disabled=\"", "\"\ttabindex=\"", "\"\tdir=\"", "\"><div class='", "'><svg class=\"sapMRbSvg\" focusable=\"false\"><circle class=\"sapMRbSvgOuter\" cx=\"", "\" cy=\"", "\" r=\"", "\" stroke-width=\"", "\" fill=\"none\" /><circle class=\"sapMRbSvgInner\" cx=\"", "\" cy=\"", "\" r=\"", "\" stroke-width=\"10\" /></svg><input type='radio' ?checked=\"", "\" ?readonly=\"", "\" ?disabled=\"", "\" name=\"", "\" data-sap-no-tab-ref/></div>\t", "</div>"]);
-
-    _templateObject$i = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$h = function block0(context) {
-    return html(_templateObject$i(), ifDefined(classMap(context.classes.main)), ifDefined(context.selected), ifDefined(context.ariaReadonly), ifDefined(context.ariaDisabled), ifDefined(context.tabIndex), ifDefined(context.rtl), ifDefined(classMap(context.classes.inner)), ifDefined(context.circle.x), ifDefined(context.circle.y), ifDefined(context.circle.rOuter), ifDefined(context.strokeWidth), ifDefined(context.circle.x), ifDefined(context.circle.y), ifDefined(context.circle.rInner), ifDefined(context.selected), ifDefined(context.readonly), ifDefined(context.disabled), ifDefined(context.name), context._label.text ? block1$d(context) : undefined);
-  };
-
-  var block1$d = function block1(context) {
-    return html(_templateObject2$d(), ifDefined(context._label.text));
-  };
-
-  var radioButtonCss = ":host(ui5-radiobutton:not([hidden])){max-width:100%;text-overflow:ellipsis;overflow:hidden;display:inline-block}ui5-radiobutton:not([hidden]){max-width:100%;text-overflow:ellipsis;overflow:hidden;display:inline-block}.sapMRb{position:relative;display:flex;flex-wrap:nowrap;outline:none;max-width:100%}.sapMRb.sapMRbSel .sapMRbSvgInner{fill:var(--_ui5_radiobutton_selected_fill,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))}.sapMRb.sapMRbDis{opacity:var(--sapUiContentDisabledOpacity,var(--sapContent_DisabledOpacity,.4))}.sapMRb:not(.sapMRbDis):focus:before{content:\"\";display:block;position:absolute;top:.5rem;bottom:.5rem;left:.5rem;right:.5rem;pointer-events:none;border:var(--_ui5_radiobutton_border_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000))}.sapMRb.sapMRbHasLabel:focus:before{right:0}.sapMRb.sapMRbRo.sapMRbSel .sapMRbSvgInner{fill:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70)))}.sapMRb.sapMRbRo .sapMRbSvgOuter{fill:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)));stroke:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))))}.sapMRb.sapMRbErr.sapMRbSel .sapMRbSvgInner{fill:var(--_ui5_radiobutton_selected_error_fill,var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))))}.sapMRb.sapMRbErr .sapMRbSvgOuter,.sapMRb.sapMRbErr:hover .sapMRbInner.sapMRbHoverable:hover .sapMRbSvgOuter{stroke:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))));fill:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMRb.sapMRbWarn.sapMRbSel .sapMRbSvgInner{fill:var(--_ui5_radiobutton_selected_warning_fill,var(--sapUiFieldWarningColorDarken100,#000))}.sapMRb.sapMRbWarn .sapMRbSvgOuter,.sapMRb.sapMRbWarn:hover .sapMRbInner.sapMRbHoverable:hover .sapMRbSvgOuter{stroke:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))));fill:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMRb.sapMRbErr,.sapMRb.sapMRbWarn{stroke-dasharray:var(--_ui5_radiobutton_warning_error_border_dash,0)}.sapMRb .sapMRbInner{width:2.75rem;height:2.75rem;font-size:1rem;pointer-events:none;vertical-align:top;display:inline-block}.sapMRb .sapMRbInner:focus{outline:none}.sapMRb:not(.sapMRbWarn):not(.sapMRbErr):hover .sapMRbHoverable .sapMRbSvgOuter{fill:var(--_ui5_radiobutton_hover_fill,var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))));stroke:var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapMRb .sapMRbInner input{margin:0;visibility:hidden;width:0}.sapMRb ui5-label.labelInRadioButton{width:calc(100% - 2.75rem);padding-right:1px;vertical-align:top;height:2.75rem;line-height:2.75rem;cursor:default;max-width:100%;text-overflow:ellipsis;overflow:hidden;pointer-events:none}.sapMRbSvg{height:2.75rem;width:2.75rem;pointer-events:none}.sapMRbSvg .sapMRbSvgOuter{stroke:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)))}.sapMRbSvg .sapMRbSvgInner{fill:none}.sapUiSizeCompact.sapMRb{height:2rem}.sapUiSizeCompact.sapMRb:focus:before{top:.375rem;bottom:.375rem;left:.375rem;right:.325rem}.sapUiSizeCompact.sapMRb.sapMRbHasLabel:focus:before{right:0}.sapUiSizeCompact.sapMRb .sapMRbInner{width:2rem;height:2rem;display:flex;align-items:center;justify-content:center}.sapUiSizeCompact.sapMRb .sapMRbInner .sapMRbSvg{height:2rem;width:2rem;line-height:2rem}.sapUiSizeCompact.sapMRb ui5-label.labelInRadioButton{line-height:2rem;height:2rem;width:calc(100% - 2rem + 1px)}[dir=rtl].sapMRb.sapMRbHasLabel:focus:before{left:0;right:.5rem}span[dir=rtl].sapUiSizeCompact.sapMRb.sapMRbHasLabel:focus:before{left:0;right:.375rem}:host(ui5-radiobutton.singleSelectionRadioButton) .sapMRb .sapMRbInner .sapMRbSvgOuter{fill:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))}ui5-radiobutton.singleSelectionRadioButton .sapMRb .sapMRbInner .sapMRbSvgOuter{fill:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))}";
-
-  /**
-   * @public
-   */
-
-  var metadata$k = {
-    tag: "ui5-radiobutton",
-    properties:
-    /** @lends sap.ui.webcomponents.main.RadioButton.prototype */
-    {
-      /**
-       * Determines whether the <code>ui5-radiobutton</code> is disabled.
-       * <br><br>
-       * <b>Note:</b> A disabled <code>ui5-radiobutton</code> is completely uninteractive.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Determines whether the <code>ui5-radiobutton</code> is read-only.
-       * <br><br>
-       * <b>Note:</b> A read-only <code>ui5-radiobutton</code> is not editable,
-       * but still provides visual feedback upon user interaction.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      readonly: {
-        type: Boolean
-      },
-
-      /**
-       * Determines whether the <code>ui5-radiobutton</code> is selected or not.
-       * <br><br>
-       * <b>Note:</b> The property value can be changed with user interaction,
-       * either by cliking/tapping on the <code>ui5-radiobutton</code>,
-       * or by using the Space or Enter key.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      selected: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the text of the <code>ui5-radiobutton</code>.
-       *
-       * @type  {string}
-       * @public
-       */
-      text: {
-        type: String
-      },
-
-      /**
-       * Defines the value state of the <code>ui5-radiobutton</code>.
-       * Available options are <code>Warning</code>, <code>Error</code>, and
-       * <code>None</code> (by default).
-       * <br><br>
-       * <b>Note:</b> Using the value states affects the visual appearance of
-       * the <code>ui5-radiobutton</code>.
-       *
-       * @type {string}
-       * @defaultvalue "None"
-       * @public
-       */
-      valueState: {
-        defaultValue: ValueState.None,
-        type: ValueState
-      },
-
-      /**
-       * Defines the name of the <code>ui5-radiobutton</code>.
-       * Radio buttons with the same <code>name</code> will form a radio button group.
-       * <br/><b>Note:</b>
-       * The selection can be changed with <code>ARROW_UP/DOWN</code> and <code>ARROW_LEFT/RIGHT</code> keys between radios in same group.
-       * <br/><b>Note:</b>
-       * Only one radio button can be selected per group.
-       * <br/>
-       * <b>Important:</b> For the <code>name</code> property to have effect when submitting forms, you must add the following import to your project:
-       * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-       *
-       * <b>Note:</b> When set, a native <code>input</code> HTML element
-       * will be created inside the <code>ui5-radiobutton</code> so that it can be submitted as
-       * part of an HTML form.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      name: {
-        type: String
-      },
-
-      /**
-       * Defines the form value of the <code>ui5-radiobutton</code>.
-       * When a form with a radio button group is submitted, the group's value
-       * will be the value of the currently selected radio button.
-       * <br/>
-       * <b>Important:</b> For the <code>value</code> property to have effect, you must add the following import to your project:
-       * <code>import InputElementsFormSupport from "@ui5/webcomponents/dist/InputElementsFormSupport";</code>
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      value: {
-        type: String
-      },
-      _label: {
-        type: Object
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.RadioButton.prototype */
-    {
-      /**
-       * Fired when the <code>ui5-radiobutton</code> selected state changes.
-       *
-       * @event
-       * @public
-       */
-      select: {}
-    }
-  };
-  var SVGConfig = {
-    "compact": {
-      x: 16,
-      y: 16,
-      rInner: 3,
-      rOuter: 8
-    },
-    "default": {
-      x: 22,
-      y: 22,
-      rInner: 5,
-      rOuter: 11
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-radibutton</code> component enables users to select a single option from a set of options.
-   * When a <code>ui5-radiobutton</code> is selected by the user, the
-   * <code>select</code> event is fired.
-   * When a <code>ui5-radiobutton</code> that is within a group is selected, the one
-   * that was previously selected gets automatically deselected. You can group radio buttons by using the <code>name</code> property.
-   * <br/>
-   * Note: if <code>ui5-radiobutton</code> is not part of a group, it can be selected once, but can not be deselected back.
-   *
-   * <h3>Keyboard Handling</h3>
-   *
-   * Once the <code>ui5-radiobutton</code> is on focus, it might be selected by pressing the Space and Enter keys.
-   * <br/>
-   * The Arrow Down/Arrow Up and Arrow Left/Arrow Right keys can be used to change selection between next/previous radio buttons in one group,
-   * while TAB and SHIFT + TAB can be used to enter or leave the radio button group.
-   * <br/>
-   * Note: On entering radio button group, the focus goes to the currently selected radio button.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/RadioButton";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.RadioButton
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-radiobutton
-   * @public
-   */
-
-  var RadioButton =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(RadioButton, _UI5Element);
-
-    _createClass(RadioButton, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$k;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$h;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return radioButtonCss;
-      }
-    }]);
-
-    function RadioButton() {
-      var _this;
-
-      _classCallCheck(this, RadioButton);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(RadioButton).call(this));
-      _this._label = {};
-      return _this;
-    }
-
-    _createClass(RadioButton, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        this.syncLabel();
-        this.syncGroup();
-
-        this._enableFormSupport();
-      }
-    }, {
-      key: "syncLabel",
-      value: function syncLabel() {
-        this._label = Object.assign({}, this._label);
-        this._label.text = this.text;
-      }
-    }, {
-      key: "syncGroup",
-      value: function syncGroup() {
-        var oldGroup = this._name;
-        var currentGroup = this.name;
-
-        if (currentGroup !== oldGroup) {
-          if (oldGroup) {
-            // remove the control from the previous group
-            RadioButtonGroup.removeFromGroup(this, oldGroup);
-          }
-
-          if (currentGroup) {
-            // add the control to the existing group
-            RadioButtonGroup.addToGroup(this, currentGroup);
-          }
-        } else if (currentGroup) {
-          RadioButtonGroup.enforceSingleSelection(this, currentGroup);
-        }
-
-        this._name = this.name;
-      }
-    }, {
-      key: "_enableFormSupport",
-      value: function _enableFormSupport() {
-        var FormSupport = getFeature("FormSupport");
-
-        if (FormSupport) {
-          FormSupport.syncNativeHiddenInput(this, function (element, nativeInput) {
-            nativeInput.disabled = element.disabled || !element.selected;
-            nativeInput.value = element.selected ? element.value : "";
-          });
-        } else if (this.value) {
-          console.warn("In order for the \"value\" property to have effect, you should also: import InputElementsFormSupport from \"@ui5/webcomponents/dist/InputElementsFormSupport\";"); // eslint-disable-line
-        }
-      }
-    }, {
-      key: "onclick",
-      value: function onclick() {
-        return this.toggle();
-      }
-    }, {
-      key: "_handleDown",
-      value: function _handleDown(event) {
-        var currentGroup = this.name;
-
-        if (!currentGroup) {
-          return;
-        }
-
-        event.preventDefault();
-        RadioButtonGroup.selectNextItem(this, currentGroup);
-      }
-    }, {
-      key: "_handleUp",
-      value: function _handleUp(event) {
-        var currentGroup = this.name;
-
-        if (!currentGroup) {
-          return;
-        }
-
-        event.preventDefault();
-        RadioButtonGroup.selectPreviousItem(this, currentGroup);
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isSpace(event)) {
-          return event.preventDefault();
-        }
-
-        if (isEnter(event)) {
-          return this.toggle();
-        }
-
-        if (isDown(event) || isRight(event)) {
-          this._handleDown(event);
-        }
-
-        if (isUp(event) || isLeft(event)) {
-          this._handleUp(event);
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (isSpace(event)) {
-          this.toggle();
-        }
-      }
-    }, {
-      key: "toggle",
-      value: function toggle() {
-        if (!this.canToggle()) {
-          return this;
-        }
-
-        if (!this.name) {
-          this.selected = !this.selected;
-          this.fireEvent("select");
-          return this;
-        }
-
-        RadioButtonGroup.selectItem(this, this.name);
-        return this;
-      }
-    }, {
-      key: "canToggle",
-      value: function canToggle() {
-        return !(this.disabled || this.readonly || this.selected);
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapMRb: true,
-            sapMRbHasLabel: this.text && this.text.length > 0,
-            sapMRbSel: this.selected,
-            sapMRbDis: this.disabled,
-            sapMRbRo: this.readonly,
-            sapMRbErr: this.valueState === "Error",
-            sapMRbWarn: this.valueState === "Warning",
-            sapUiSizeCompact: getCompactSize()
-          },
-          inner: {
-            sapMRbInner: true,
-            sapMRbHoverable: !this.disabled && !this.readonly && isDesktop()
-          }
-        };
-      }
-    }, {
-      key: "ariaReadonly",
-      get: function get() {
-        return this.readonly ? "true" : undefined;
-      }
-    }, {
-      key: "ariaDisabled",
-      get: function get() {
-        return this.disabled ? "true" : undefined;
-      }
-    }, {
-      key: "tabIndex",
-      get: function get() {
-        return this.disabled || !this.selected && this.name ? "-1" : "0";
-      }
-    }, {
-      key: "strokeWidth",
-      get: function get() {
-        return this.valueState === "None" ? "1" : "2";
-      }
-    }, {
-      key: "circle",
-      get: function get() {
-        return getCompactSize() ? SVGConfig.compact : SVGConfig.default;
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }]);
-
-    return RadioButton;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    RadioButton.define();
-  });
-
-  var styles$6 = ".sapMSLI.sapMLIBActive .sapMSLI-info,.sapMSLI.sapMLIBActive .sapMSLIDescription,.sapMSLI.sapMLIBActive .sapMSLITitle{color:var(--sapUiListActiveTextColor,#fff)}.sapMSLI .sapMSLITextWrapper{display:flex;flex-direction:column;min-width:1px;line-height:normal;flex:auto}.sapMSLI .sapMSLITitle{font-size:var(--sapMFontLargeSize,1rem);color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.sapMSLI .sapMSLIDescription,.sapMSLI .sapMSLITitle{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sapMSLI .sapMSLIDescription{font-size:var(--sapMFontMediumSize,.875rem);color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)))}.sapMSLI-info{margin:0 .25rem;color:var(--sapUiNeutralText,var(--sapNeutralTextColor,var(--sapNeutralColor,#6a6d70)));font-size:.875rem;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sapMSLI-info--warning{color:var(--sapUiCriticalText,var(--sapCriticalTextColor,var(--sapCriticalColor,#e9730c)))}.sapMSLI-info--success{color:var(--sapUiPositiveText,var(--sapPositiveTextColor,var(--sapPositiveColor,#107e3e)))}.sapMSLI-info--error{color:var(--sapUiNegativeText,var(--sapNegativeTextColor,var(--sapNegativeColor,#b00)))}.sapMSLI .sapMSLIImg{margin:.5rem .75rem .5rem 0;height:2rem;width:2rem}.sapMSLI .sapMLIBContent{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-box-flex:1;flex:auto;display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center}.sapMSLI .sapMDeleteListItemButton{display:flex;align-items:center}.sapMSLI.sapMSLIWithTitleAndDescription,.sapUiSizeCompact.sapMSLI.sapMSLIWithTitleAndDescription{height:5rem;padding:1rem}.sapMSLI.sapMSLIWithTitleAndDescription .sapMSLITitle,.sapUiSizeCompact.sapMSLI.sapMSLIWithTitleAndDescription .sapMSLITitle{padding-bottom:.375rem}.sapMSLI.sapMSLIWithTitleAndDescription .sapMSLI-info{align-self:flex-end}.sapUiSizeCompact.sapMSLI:not(.sapMSLIWithTitleAndDescription){height:2rem}.sapUiSizeCompact.sapMSLI:not(.sapMSLIWithTitleAndDescription) .sapMSLITitle{height:2rem;line-height:2rem;font-size:var(--sapMFontMediumSize,.875rem)}.sapUiSizeCompact.sapMSLI:not(.sapMSLIWithTitleAndDescription) .sapMSLIImg{margin-top:.55rem;height:1.75rem;width:1.75rem}.sapUiSizeCompact ui5-checkbox.multiSelectionCheckBox{margin-right:.5rem}";
-
-  /**
-   * @public
-   */
-
-  var metadata$l = {
-    "abstract": true,
-    properties:
-    /** @lends  sap.ui.webcomponents.main.ListItem.prototype */
-    {
-      /**
-       * Defines the selected state of the <code>ListItem</code>.
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      selected: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the visual indication and behavior of the list items.
-       * Available options are <code>Active</code> (by default) and <code>Inactive</code>.
-       * </br></br>
-       * <b>Note:</b> When set to <code>Active</code>, the item will provide visual response upon press and hover,
-       * while with type <code>Inactive</code> - will not.
-       *
-       * @type {string}
-       * @defaultvalue "Active"
-       * @public
-      */
-      type: {
-        type: ListItemType,
-        defaultValue: ListItemType.Active
-      },
-      _active: {
-        type: Boolean
-      },
-      _mode: {
-        type: ListMode,
-        defaultValue: ListMode.None
-      }
-    },
-    events: {
-      _press: {},
-      _detailPress: {},
-      _focused: {},
-      _focusForward: {}
-    }
-  };
-  /**
-   * @class
-   * A class to serve as a base
-   * for the <code>StandardListItem</code> and <code>CustomListItem</code> classes.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.ListItem
-   * @extends ListItemBase
-   * @public
-   */
-
-  var ListItem =
-  /*#__PURE__*/
-  function (_ListItemBase) {
-    _inherits(ListItem, _ListItemBase);
-
-    _createClass(ListItem, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$l;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return [styles$6, ListItemBase.styles];
-      }
-    }]);
-
-    function ListItem() {
-      var _this;
-
-      _classCallCheck(this, ListItem);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(ListItem).call(this));
-
-      _this.deactivate = function () {
-        if (_this._active) {
-          _this._active = false;
-        }
-      };
-
-      return _this;
-    }
-
-    _createClass(ListItem, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {}
-    }, {
-      key: "onEnterDOM",
-      value: function onEnterDOM() {
-        document.addEventListener("mouseup", this.deactivate);
-      }
-    }, {
-      key: "onExitDOM",
-      value: function onExitDOM() {
-        document.removeEventListener("mouseup", this.deactivate);
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        _get(_getPrototypeOf(ListItem.prototype), "onkeydown", this).call(this, event);
-
-        var itemActive = this.type === ListItemType.Active;
-
-        if (isSpace(event)) {
-          event.preventDefault();
-        }
-
-        if ((isSpace(event) || isEnter(event)) && itemActive) {
-          this.activate();
-        }
-
-        if (isEnter(event)) {
-          this.fireItemPress();
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (isSpace(event) || isEnter(event)) {
-          this.deactivate();
-        }
-
-        if (isSpace(event)) {
-          this.fireItemPress();
-        }
-      }
-    }, {
-      key: "onmousedown",
-      value: function onmousedown(event) {
-        if (event.isMarked === "button") {
-          return;
-        }
-
-        this.activate();
-      }
-    }, {
-      key: "onmouseup",
-      value: function onmouseup(event) {
-        if (event.isMarked === "button") {
-          return;
-        }
-
-        this.deactivate();
-      }
-    }, {
-      key: "onfocusout",
-      value: function onfocusout(event) {
-        this.deactivate();
-      }
-    }, {
-      key: "onclick",
-      value: function onclick(event) {
-        if (event.isMarked === "button") {
-          return;
-        }
-
-        this.fireItemPress();
-      }
-    }, {
-      key: "activate",
-      value: function activate() {
-        if (this.type === ListItemType.Active) {
-          this._active = true;
-        }
-      }
-    }, {
-      key: "_onDelete",
-      value: function _onDelete(event) {
-        this.fireEvent("_selectionRequested", {
-          item: this,
-          selected: event.selected
-        });
-      }
-    }, {
-      key: "fireItemPress",
-      value: function fireItemPress() {
-        this.fireEvent("_press", {
-          item: this,
-          selected: this.selected
-        });
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var result = _get(_getPrototypeOf(ListItem.prototype), "classes", this);
-
-        var desktop = isDesktop();
-        var isActionable = this.type === ListItemType.Active && this._mode !== ListMode.Delete; // Modify main classes
-
-        result.main["sapMLIBType".concat(this.type)] = true;
-        result.main.sapMSLI = true;
-        result.main.sapMLIBActionable = desktop && isActionable;
-        result.main.sapMLIBHoverable = desktop && isActionable;
-        result.main.sapMLIBSelected = this.selected;
-        result.main.sapMLIBActive = this._active;
-        return result;
-      }
-    }, {
-      key: "placeSelectionElementBefore",
-      get: function get() {
-        return this._mode === ListMode.MultiSelect || this._mode === ListMode.SingleSelectBegin;
-      }
-    }, {
-      key: "placeSelectionElementAfter",
-      get: function get() {
-        return !this.placeSelectionElementBefore && (this._mode === ListMode.SingleSelectEnd || this._mode === ListMode.Delete);
-      }
-    }, {
-      key: "modeSingleSelect",
-      get: function get() {
-        return [ListMode.SingleSelectBegin, ListMode.SingleSelectEnd, ListMode.SingleSelect].includes(this._mode);
-      }
-    }, {
-      key: "modeMultiSelect",
-      get: function get() {
-        return this._mode === ListMode.MultiSelect;
-      }
-    }, {
-      key: "modeDelete",
-      get: function get() {
-        return this._mode === ListMode.Delete;
-      }
-    }]);
-
-    return ListItem;
-  }(ListItemBase);
-
-  function _templateObject15() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
-
-    _templateObject15 = function _templateObject15() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject14() {
-    var data = _taggedTemplateLiteral(["<ui5-checkbox\t\t\t\tid=\"", "-multiSelectionElement\"\t\t\t\tclass=\"multiSelectionCheckBox\"\t\t\t\t?checked=\"", "\"></ui5-checkbox>\t"]);
-
-    _templateObject14 = function _templateObject14() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject13() {
-    var data = _taggedTemplateLiteral(["<ui5-radiobutton\t\t\t\tid=\"", "-singleSelectionElement\"\t\t\t\tclass=\"singleSelectionRadioButton\"\t\t\t\t?selected=\"", "\"></ui5-radiobutton>\t"]);
-
-    _templateObject13 = function _templateObject13() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject12() {
-    var data = _taggedTemplateLiteral(["", "", "", ""]);
-
-    _templateObject12 = function _templateObject12() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject11() {
-    var data = _taggedTemplateLiteral(["<ui5-icon src=\"", "\" class=\"sapMLIBIcon\"></ui5-icon>\t"]);
-
-    _templateObject11 = function _templateObject11() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject10() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\">", "</span>\t"]);
-
-    _templateObject10 = function _templateObject10() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject9() {
-    var data = _taggedTemplateLiteral(["<span class=\"sapMSLIDescription\">", "</span>\t\t"]);
-
-    _templateObject9 = function _templateObject9() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject8() {
-    var data = _taggedTemplateLiteral(["<span class=\"sapMSLITitle\"><slot></slot></span>\t\t"]);
-
-    _templateObject8 = function _templateObject8() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject7$1() {
-    var data = _taggedTemplateLiteral(["<ui5-icon src=\"", "\" class=\"sapMLIBIcon\"></ui5-icon>\t"]);
-
-    _templateObject7$1 = function _templateObject7() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject6$1() {
-    var data = _taggedTemplateLiteral(["<img src=\"", "\" class=\"sapMSLIImg\">\t"]);
-
-    _templateObject6$1 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$5() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
-
-    _templateObject5$5 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$6() {
-    var data = _taggedTemplateLiteral(["<ui5-checkbox\t\t\t\tid=\"", "-multiSelectionElement\"\t\t\t\tclass=\"multiSelectionCheckBox\"\t\t\t\t?checked=\"", "\"></ui5-checkbox>\t"]);
-
-    _templateObject4$6 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$9() {
-    var data = _taggedTemplateLiteral(["<ui5-radiobutton\t\t\t\tid=\"", "-singleSelectionElement\"\t\t\t\tclass=\"singleSelectionRadioButton\"\t\t\t\t?selected=\"", "\"></ui5-radiobutton>\t"]);
-
-    _templateObject3$9 = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$e() {
-    var data = _taggedTemplateLiteral(["", "", "", ""]);
-
-    _templateObject2$e = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$j() {
-    var data = _taggedTemplateLiteral(["<li\ttabindex=\"", "\"\tclass=\"", "\"\tdir=\"", "\">\t\t", "<div id=\"", "-content\" class=\"", "\">\t\t\t", "", "<div class=\"sapMSLITextWrapper\">\t\t", "", "</div>\t", "</div>\t\t", "", "</li>"]);
-
-    _templateObject$j = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$i = function block0(context) {
-    return html(_templateObject$j(), ifDefined(context._tabIndex), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), context.placeSelectionElementBefore ? block1$e(context) : undefined, ifDefined(context._id), ifDefined(classMap(context.classes.inner)), context.displayImage ? block5$1(context) : undefined, context.displayIconBegin ? block6$1(context) : undefined, context.text.length ? block7(context) : undefined, context.description ? block8(context) : undefined, context.info ? block9(context) : undefined, context.displayIconEnd ? block10(context) : undefined, context.placeSelectionElementAfter ? block11(context) : undefined);
-  };
-
-  var block1$e = function block1(context) {
-    return html(_templateObject2$e(), context.modeSingleSelect ? block2$9(context) : undefined, context.modeMultiSelect ? block3$6(context) : undefined, context.modeDelete ? block4$5(context) : undefined);
-  };
-
-  var block2$9 = function block2(context) {
-    return html(_templateObject3$9(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block3$6 = function block3(context) {
-    return html(_templateObject4$6(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block4$5 = function block4(context) {
-    return html(_templateObject5$5(), ifDefined(context._id), ifDefined(context._onDelete));
-  };
-
-  var block5$1 = function block5(context) {
-    return html(_templateObject6$1(), ifDefined(context.image));
-  };
-
-  var block6$1 = function block6(context) {
-    return html(_templateObject7$1(), ifDefined(context.icon));
-  };
-
-  var block7 = function block7(context) {
-    return html(_templateObject8());
-  };
-
-  var block8 = function block8(context) {
-    return html(_templateObject9(), ifDefined(context.description));
-  };
-
-  var block9 = function block9(context) {
-    return html(_templateObject10(), ifDefined(classMap(context.classes.info)), ifDefined(context.info));
-  };
-
-  var block10 = function block10(context) {
-    return html(_templateObject11(), ifDefined(context.icon));
-  };
-
-  var block11 = function block11(context) {
-    return html(_templateObject12(), context.modeSingleSelect ? block12(context) : undefined, context.modeMultiSelect ? block13(context) : undefined, context.modeDelete ? block14(context) : undefined);
-  };
-
-  var block12 = function block12(context) {
-    return html(_templateObject13(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block13 = function block13(context) {
-    return html(_templateObject14(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block14 = function block14(context) {
-    return html(_templateObject15(), ifDefined(context._id), ifDefined(context._onDelete));
-  };
-
-  /**
-   * @public
-   */
-
-  var metadata$m = {
-    tag: "ui5-li",
-    properties:
-    /** @lends sap.ui.webcomponents.main.StandardListItem.prototype */
-    {
-      /**
-       * Defines the description displayed right under the item text, if such is present.
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       * @since 0.8.0
-       */
-      description: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>icon</code> source URI.
-       * </br></br>
-       * <b>Note:</b>
-       * SAP-icons font provides numerous buil-in icons. To find all the available icons, see the
-       * <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-       *
-       * @type {string}
-       * @public
-       */
-      icon: {
-        type: String
-      },
-
-      /**
-       * Defines whether the <code>icon</code> should be displayed in the beginning of the list item or in the end.
-       * </br></br>
-       * <b>Note:</b> If <code>image</code> is set, the <code>icon</code> would be displayed after the <code>image</code>.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      iconEnd: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the <code>image</code> source URI.
-       * </br></br>
-       * <b>Note:</b> The <code>image</code> would be displayed in the beginning of the list item.
-       *
-       * @type {string}
-       * @public
-       */
-      image: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>info</code>, displayed in the end of the list item.
-       * @type {string}
-       * @public
-       * @since 0.13.0
-       */
-      info: {
-        type: String
-      },
-
-      /**
-       * Defines the state of the <code>info</code>.
-       * <br>
-       * Available options are: <code>"None"</code< (by default), <code>"Success"</code>, <code>"Warning"</code> and <code>"Erorr"</code>.
-       * @type {string}
-       * @public
-       * @since 0.13.0
-       */
-      infoState: {
-        type: ValueState,
-        defaultValue: ValueState.None
-      }
-    },
-    slots:
-    /** @lends sap.ui.webcomponents.main.StandardListItem.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-li</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    defaultSlot: "text"
-  };
-  /**
-   * @class
-   * The <code>ui5-li</code> represents the simplest type of item for a <code>ui5-list</code>.
-   *
-   * This is a list item,
-   * providing the most common use cases such as <code>text</code>,
-   * <code>image</code> and <code>icon</code>.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.StandardListItem
-   * @extends ListItem
-   * @tagname ui5-li
-   * @public
-   */
-
-  var StandardListItem =
-  /*#__PURE__*/
-  function (_ListItem) {
-    _inherits(StandardListItem, _ListItem);
-
-    function StandardListItem() {
-      _classCallCheck(this, StandardListItem);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(StandardListItem).apply(this, arguments));
-    }
-
-    _createClass(StandardListItem, [{
-      key: "displayImage",
-      get: function get() {
-        return !!this.image;
-      }
-    }, {
-      key: "displayIconBegin",
-      get: function get() {
-        return this.icon && !this.iconEnd;
-      }
-    }, {
-      key: "displayIconEnd",
-      get: function get() {
-        return this.icon && this.iconEnd;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var result = _get(_getPrototypeOf(StandardListItem.prototype), "classes", this);
-
-        var hasDesc = this.description && !!this.description.length;
-        var hasTitle = this.textContent;
-        var infoState = this.infoState.toLowerCase(); // Modify main classes
-
-        result.main.sapMSLIWithTitleAndDescription = hasDesc && hasTitle; // Add "info" classes
-
-        result.info = _defineProperty({
-          "sapMSLI-info": true
-        }, "sapMSLI-info--".concat(infoState), true);
-        return result;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Icon.define();
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(StandardListItem), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$i;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return ListItem.styles;
-      }
-    }, {
-      key: "metadata",
-      get: function get() {
-        return metadata$m;
-      }
-    }]);
-
-    return StandardListItem;
-  }(ListItem);
-
-  Bootstrap.boot().then(function (_) {
-    StandardListItem.define();
-  });
-
-  function _templateObject9$1() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
-
-    _templateObject9$1 = function _templateObject9() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject8$1() {
-    var data = _taggedTemplateLiteral(["<ui5-checkbox\t\t\t\tid=\"", "-multiSelectionElement\"\t\t\t\tclass=\"multiSelectionCheckBox\"\t\t\t\t?checked=\"", "\"></ui5-checkbox>\t"]);
-
-    _templateObject8$1 = function _templateObject8() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject7$2() {
-    var data = _taggedTemplateLiteral(["<ui5-radiobutton\t\t\t\tid=\"", "-singleSelectionElement\"\t\t\t\tclass=\"singleSelectionRadioButton\"\t\t\t\t?selected=\"", "\"></ui5-radiobutton>\t"]);
-
-    _templateObject7$2 = function _templateObject7() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject6$2() {
-    var data = _taggedTemplateLiteral(["", "", "", ""]);
-
-    _templateObject6$2 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$6() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
-
-    _templateObject5$6 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$7() {
-    var data = _taggedTemplateLiteral(["<ui5-checkbox\t\t\t\tid=\"", "-multiSelectionElement\"\t\t\t\tclass=\"multiSelectionCheckBox\"\t\t\t\t?checked=\"", "\"></ui5-checkbox>\t"]);
-
-    _templateObject4$7 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$a() {
-    var data = _taggedTemplateLiteral(["<ui5-radiobutton\t\t\t\tid=\"", "-singleSelectionElement\"\t\t\t\tclass=\"singleSelectionRadioButton\"\t\t\t\t?selected=\"", "\"></ui5-radiobutton>\t"]);
-
-    _templateObject3$a = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$f() {
-    var data = _taggedTemplateLiteral(["", "", "", ""]);
-
-    _templateObject2$f = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$k() {
-    var data = _taggedTemplateLiteral(["<li\ttabindex=\"", "\"\tclass=\"", "\"\tdir=\"", "\">\t\t", "<div id=\"", "-content\" class=\"", "\">\t\t\t<slot></slot></div>\t\t", "</li>"]);
-
-    _templateObject$k = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$j = function block0(context) {
-    return html(_templateObject$k(), ifDefined(context._tabIndex), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), context.placeSelectionElementBefore ? block1$f(context) : undefined, ifDefined(context._id), ifDefined(classMap(context.classes.inner)), context.placeSelectionElementAfter ? block5$2(context) : undefined);
-  };
-
-  var block1$f = function block1(context) {
-    return html(_templateObject2$f(), context.modeSingleSelect ? block2$a(context) : undefined, context.modeMultiSelect ? block3$7(context) : undefined, context.modeDelete ? block4$6(context) : undefined);
-  };
-
-  var block2$a = function block2(context) {
-    return html(_templateObject3$a(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block3$7 = function block3(context) {
-    return html(_templateObject4$7(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block4$6 = function block4(context) {
-    return html(_templateObject5$6(), ifDefined(context._id), ifDefined(context._onDelete));
-  };
-
-  var block5$2 = function block5(context) {
-    return html(_templateObject6$2(), context.modeSingleSelect ? block6$2(context) : undefined, context.modeMultiSelect ? block7$1(context) : undefined, context.modeDelete ? block8$1(context) : undefined);
-  };
-
-  var block6$2 = function block6(context) {
-    return html(_templateObject7$2(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block7$1 = function block7(context) {
-    return html(_templateObject8$1(), ifDefined(context._id), ifDefined(context.selected));
-  };
-
-  var block8$1 = function block8(context) {
-    return html(_templateObject9$1(), ifDefined(context._id), ifDefined(context._onDelete));
-  };
-
-  var columnListItemCss = ":host(ui5-li-custom) .sap-phone.sapMLIB{outline:none}:host(ui5-li-custom:not([hidden])){display:block}ui5-li-custom:not([hidden]){display:block}ui5-li-custom .sap-phone.sapMLIB{outline:none}.sapMLIB.sapMCustomLI{height:100%;padding:0}ui5-checkbox.multiSelectionCheckBox,ui5-radiobutton.singleSelectionRadioButton{display:flex;align-items:center}.sapMLIB.sapMCustomLI,ui5-checkbox.multiSelectionCheckBox,ui5-radiobutton.singleSelectionRadioButton{min-width:3rem}.sapUiSizeCompact.sapMLIB.sapMCustomLI,.sapUiSizeCompact ui5-checkbox.multiSelectionCheckBox,.sapUiSizeCompact ui5-radiobutton.singleSelectionRadioButton{min-width:2rem}";
-
-  /**
-   * @public
-   */
-
-  var metadata$n = {
-    tag: "ui5-li-custom",
-    defaultSlot: "content",
-    slots:
-    /** @lends sap.ui.webcomponents.main.CustomListItem.prototype */
-    {
-      /**
-       * Defines the content of the <code>ui5-li-custom</code>.
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      content: {
-        type: HTMLElement,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.CustomListItem.prototype */
-    {}
-  };
-  /**
-   * @class
-   *
-   * A component to be used as custom list item within the <code>ui5-list</code>
-   * the same way as the standard <code>ui5-li</code>.
-   *
-   * The <code>ui5-li-custom</code> accepts arbitrary HTML content to allow full customization.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.CustomListItem
-   * @extends ListItem
-   * @tagname ui5-li-custom
-   * @public
-   */
-
-  var CustomListItem =
-  /*#__PURE__*/
-  function (_ListItem) {
-    _inherits(CustomListItem, _ListItem);
-
-    function CustomListItem() {
-      _classCallCheck(this, CustomListItem);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(CustomListItem).apply(this, arguments));
-    }
-
-    _createClass(CustomListItem, [{
-      key: "classes",
-      get: function get() {
-        var result = _get(_getPrototypeOf(CustomListItem.prototype), "classes", this); // Modify main classes
-
-
-        result.main.sapMCustomLI = true;
-        return result;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$n;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$j;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return [ListItem.styles, columnListItemCss];
-      }
-    }]);
-
-    return CustomListItem;
-  }(ListItem);
-
-  Bootstrap.boot().then(function (_) {
-    CustomListItem.define();
-  });
-
-  /**
-   * A class to manage the <code>Input</code suggestion items.
-   *
-   * @class
-   * @private
-   * @author SAP SE
-   */
-
-
-  var Suggestions =
-  /*#__PURE__*/
-  function () {
-    function Suggestions(component, slotName, handleFocus) {
-      _classCallCheck(this, Suggestions);
-
-      // The component, that the suggestion would plug into.
-      this.component = component; // Defines the items` slot name.
-
-      this.slotName = slotName; // Defines, if the focus will be moved via the arrow keys.
-
-      this.handleFocus = handleFocus; // Press and Focus handlers
-
-      this.fnOnSuggestionItemPress = this.onItemPress.bind(this);
-      this.fnOnSuggestionItemFocus = this.onItemFocused.bind(this); // An integer value to store the currently selected item position,
-      // that changes due to user interaction.
-
-      this.selectedItemIndex = null;
-    }
-    /* Public methods */
-
-
-    _createClass(Suggestions, [{
-      key: "onUp",
-      value: function onUp(event) {
-        event.preventDefault();
-
-        this._handleItemNavigation(false
-        /* forward */
-        );
-
-        return true;
-      }
-    }, {
-      key: "onDown",
-      value: function onDown(event) {
-        event.preventDefault();
-
-        this._handleItemNavigation(true
-        /* forward */
-        );
-
-        return true;
-      }
-    }, {
-      key: "onSpace",
-      value: function onSpace(event) {
-        if (this._isItemOnTarget()) {
-          event.preventDefault();
-          this.onItemSelected(null, true
-          /* keyboardUsed */
-          );
-          return true;
-        }
-
-        return false;
-      }
-    }, {
-      key: "onEnter",
-      value: function onEnter(event) {
-        if (this._isItemOnTarget()) {
-          this.onItemSelected(null, true
-          /* keyboardUsed */
-          );
-          return true;
-        }
-
-        return false;
-      }
-    }, {
-      key: "toggle",
-      value: function toggle(bToggle) {
-        var toggle = bToggle !== undefined ? bToggle : !this.isOpened();
-
-        if (toggle) {
-          this.open();
-        } else {
-          this.close();
-        }
-      }
-    }, {
-      key: "open",
-      value: function open() {
-        this._beforeOpen();
-
-        this._getPopover().openBy(this._getComponent());
-      }
-    }, {
-      key: "close",
-      value: function close() {
-        this._getPopover().close();
-      }
-    }, {
-      key: "updateSelectedItemPosition",
-      value: function updateSelectedItemPosition(pos) {
-        this.selectedItemIndex = pos;
-      }
-      /* Interface methods */
-
-    }, {
-      key: "onItemFocused",
-      value: function onItemFocused() {
-        this._getComponent().onItemFocused();
-      }
-    }, {
-      key: "onItemSelected",
-      value: function onItemSelected(selectedItem, keyboardUsed) {
-        var item = selectedItem || this._getItems()[this.selectedItemIndex];
-
-        this.selectedItemIndex = this._getItems().indexOf(item);
-
-        this._getComponent().onItemSelected(item, keyboardUsed);
-
-        this.close();
-      }
-    }, {
-      key: "onItemPreviewed",
-      value: function onItemPreviewed(item) {
-        this._getComponent().onItemPreviewed(item);
-      }
-      /* Private methods */
-
-    }, {
-      key: "onItemPress",
-      value: function onItemPress(oEvent) {
-        this.onItemSelected(oEvent.detail.item, false
-        /* keyboardUsed */
-        );
-      }
-    }, {
-      key: "_beforeOpen",
-      value: function _beforeOpen() {
-        this._attachItemsListeners();
-
-        this._attachPopupListeners();
-      }
-    }, {
-      key: "_attachItemsListeners",
-      value: function _attachItemsListeners() {
-        var list = this._getList();
-
-        list.removeEventListener("ui5-itemPress", this.fnOnSuggestionItemPress);
-        list.addEventListener("ui5-itemPress", this.fnOnSuggestionItemPress);
-        list.removeEventListener("ui5-itemFocused", this.fnOnSuggestionItemFocus);
-        list.addEventListener("ui5-itemFocused", this.fnOnSuggestionItemFocus);
-      }
-    }, {
-      key: "_attachPopupListeners",
-      value: function _attachPopupListeners() {
-        if (!this.handleFocus) {
-          return;
-        }
-
-        if (!this.attachedAfterOpened) {
-          this._getPopover().addEventListener("ui5-afterOpen", this._onOpen.bind(this));
-
-          this.attachedAfterOpened = true;
-        }
-
-        if (!this.attachedAfterClose) {
-          this._getPopover().addEventListener("ui5-afterClose", this._onClose.bind(this));
-
-          this.attachedAfterClose = true;
-        }
-      }
-    }, {
-      key: "_onOpen",
-      value: function _onOpen() {
-        this._applyFocus();
-
-        this._getComponent().onOpen();
-      }
-    }, {
-      key: "_onClose",
-      value: function _onClose() {
-        this._getComponent().onClose();
-      }
-    }, {
-      key: "_applyFocus",
-      value: function _applyFocus() {
-        if (this.selectedItemIndex) {
-          this._getItems()[this.selectedItemIndex].focus();
-        }
-      }
-    }, {
-      key: "_isItemOnTarget",
-      value: function _isItemOnTarget() {
-        return this.isOpened() && this.selectedItemIndex !== null;
-      }
-    }, {
-      key: "isOpened",
-      value: function isOpened() {
-        var popover = this._getPopover();
-
-        return !!(popover && popover._isOpen);
-      }
-    }, {
-      key: "_handleItemNavigation",
-      value: function _handleItemNavigation(forward) {
-        if (!this._getItems().length) {
-          return;
-        }
-
-        if (forward) {
-          this._selectNextItem();
-        } else {
-          this._selectPreviousItem();
-        }
-      }
-    }, {
-      key: "_selectNextItem",
-      value: function _selectNextItem() {
-        var itemsCount = this._getItems().length;
-
-        var previousSelectedIdx = this.selectedItemIndex;
-
-        if (this.selectedItemIndex === null || ++this.selectedItemIndex > itemsCount - 1) {
-          this.selectedItemIndex = 0;
-        }
-
-        this._moveItemSelection(previousSelectedIdx, this.selectedItemIndex);
-      }
-    }, {
-      key: "_selectPreviousItem",
-      value: function _selectPreviousItem() {
-        var itemsCount = this._getItems().length;
-
-        var previousSelectedIdx = this.selectedItemIndex;
-
-        if (this.selectedItemIndex === null || --this.selectedItemIndex < 0) {
-          this.selectedItemIndex = itemsCount - 1;
-        }
-
-        this._moveItemSelection(previousSelectedIdx, this.selectedItemIndex);
-      }
-    }, {
-      key: "_moveItemSelection",
-      value: function _moveItemSelection(previousIdx, nextIdx) {
-        var items = this._getItems();
-
-        var currentItem = items[nextIdx];
-        var previousItem = items[previousIdx];
-
-        if (previousItem) {
-          previousItem.selected = false;
-        }
-
-        if (currentItem) {
-          currentItem.selected = true;
-
-          if (this.handleFocus) {
-            currentItem.focus();
-          }
-        }
-
-        this.onItemPreviewed(currentItem);
-
-        if (!this._isItemIntoView(currentItem)) {
-          this._scrollItemIntoView(currentItem);
-        }
-      }
-    }, {
-      key: "_isItemIntoView",
-      value: function _isItemIntoView(item) {
-        var rectItem = item.getDomRef().getBoundingClientRect();
-
-        var rectInput = this._getComponent().getDomRef().getBoundingClientRect();
-
-        var windowHeight = window.innerHeight || document.documentElement.clientHeight;
-        return rectItem.top <= windowHeight && rectItem.top >= rectInput.top;
-      }
-    }, {
-      key: "_scrollItemIntoView",
-      value: function _scrollItemIntoView(item) {
-        var pos = item.getDomRef().offsetTop - Suggestions.SCROLL_STEP;
-        this._getScrollContainer().scrollTop = pos;
-      }
-    }, {
-      key: "_getScrollContainer",
-      value: function _getScrollContainer() {
-        if (!this._scrollContainer) {
-          var popover = this._getPopover();
-
-          this._scrollContainer = popover.getDomRef().querySelector(".sapMPopupContent");
-        }
-
-        return this._scrollContainer;
-      }
-    }, {
-      key: "_getItems",
-      value: function _getItems() {
-        return this._getComponent().getSlottedNodes(this.slotName);
-      }
-    }, {
-      key: "_getComponent",
-      value: function _getComponent() {
-        return this.component;
-      }
-    }, {
-      key: "_getList",
-      value: function _getList() {
-        return this._getComponent().shadowRoot.querySelector("ui5-list");
-      }
-    }, {
-      key: "_getPopover",
-      value: function _getPopover() {
-        return this._getComponent().shadowRoot.querySelector("ui5-popover");
-      }
-    }]);
-
-    return Suggestions;
-  }();
-
-  Suggestions.SCROLL_STEP = 48; // The List and Popover components would be rendered
-  // by the issuer component`s template.
-
-  Bootstrap.boot().then(function () {
-    List.define();
-    Popover.define();
-  });
-
-  registerFeature("InputSuggestions", Suggestions);
-
-  /**
-   * Different types of Button.
-   */
-
-  var LinkTypes = {
-    /**
-     * default type (no special styling)
-     */
-    Default: "Default",
-
-    /**
-     * subtle type (appears as regular text, rather than a link)
-     */
-    Subtle: "Subtle",
-
-    /**
-     * emphasized type
-     */
-    Emphasized: "Emphasized"
-  };
-
-  var LinkType =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(LinkType, _DataType);
-
-    function LinkType() {
-      _classCallCheck(this, LinkType);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(LinkType).apply(this, arguments));
-    }
-
-    _createClass(LinkType, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!LinkTypes[value];
-      }
-    }]);
-
-    return LinkType;
-  }(DataType);
-
-  LinkType.generataTypeAcessors(LinkTypes);
-
-  function _templateObject$l() {
-    var data = _taggedTemplateLiteral(["<a\tclass=\"", "\"\trole=\"link\"\thref=\"", "\"\ttarget=\"", "\"\trel=\"", "\"\ttabindex=\"", "\"\t?disabled=\"", "\"\taria-disabled=\"", "\"><slot></slot></a>"]);
-
-    _templateObject$l = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$k = function block0(context) {
-    return html(_templateObject$l(), ifDefined(classMap(context.classes.main)), ifDefined(context.parsedRef), ifDefined(context.target), ifDefined(context._rel), ifDefined(context.tabIndex), ifDefined(context.disabled), ifDefined(context.ariaDisabled));
-  };
-
-  var linkCss = ":host(ui5-link:not([hidden])){display:inline-flex;max-width:100%}ui5-link{display:inline-block;max-width:100%}.sapMLnk{color:var(--sapUiLink,var(--sapLinkColor,var(--sapPrimary2,#0a6ed1)));text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-wrap:normal;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);cursor:pointer;display:inline-block;justify-content:center;align-items:center;position:relative;outline:none}.sapMLnk.sapMLnkSubtle:not(.sapMLnkDsbl):hover,.sapMLnk:not(.sapMLnkDsbl):hover{text-decoration:underline;color:var(--sapUiLinkHover,#0854a0)}.sapMLnk:visited{color:var(--sapUiLinkVisited,var(--sapUiLink,var(--sapLinkColor,var(--sapPrimary2,#0a6ed1))))}.sapMLnk.sapMLnkDsbl{text-shadow:none;outline:none;cursor:default;pointer-events:none;opacity:var(--_ui5_link_opacity,.4)}.sapMLnk.sapMLnkEmphasized{font-weight:700}.sapMLnk.sapMLnkSubtle,.sapMLnk.sapMLnkSubtle:visited{color:var(--_ui5_link_subtle_color,var(--sapUiLinkDarken15,#074888))}.sapMLnk.sapMLnkSubtle:focus{color:var(--sapUiLink,var(--sapLinkColor,var(--sapPrimary2,#0a6ed1)))}.sapMLnk.sapMLnkWrapping{white-space:normal;word-wrap:break-word}.sapMLnk:focus{text-decoration:underline}.sapMLnk:focus:after{content:\"\";width:var(--_ui5_link_outline_element_size,calc(100% - .125rem));height:var(--_ui5_link_outline_element_size,calc(100% - .125rem));position:absolute;left:0;border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));top:0;outline:none}";
-
-  /**
-   * @public
-   */
-
-  var metadata$o = {
-    tag: "ui5-link",
-    properties:
-    /** @lends  sap.ui.webcomponents.main.Link.prototype */
-    {
-      /**
-       * Defines whether the <code>ui5-link</code> is disabled.
-       * <br><br>
-       * <b>Note:</b> When disabled, the <code>ui5-link</code cannot be triggered by the user.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the <code>ui5-link</code> href.
-       * <br><br>
-       * <b>Note:</b> Standard hyperlink behavior is supported.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      href: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>ui5-link</code> target.
-       * <br><br>
-       * <b>Notes:</b>
-       * <ul><li>Available options are the standard values: <code>_self</code>, <code>_top</code>,
-       * <code>_blank</code>, <code>_parent</code>, and <code>_search</code>.</li>
-       * <li>This property must only be used when the <code>href</code> property is set.</li></ul>
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      target: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>ui5-link</code> type.
-       * <br><br>
-       * <b>Note:</b> Avaialble options are <code>Default</code>, <code>Subtle</code>, and <code>Emphasized</code>.
-       *
-       * @type {string}
-       * @defaultvalue "Default"
-       * @public
-       */
-      type: {
-        type: LinkType,
-        defaultValue: LinkType.Default
-      },
-
-      /**
-       * Defines whether the <code>ui5-link</code> text should wrap
-       * when there is no sufficient space.
-       * <br><br>
-       * <b>Note:</b> the text is truncated by default.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      wrap: {
-        type: Boolean
-      },
-      _rel: {
-        type: String
-      }
-    },
-    slots:
-    /** @lends sap.ui.webcomponents.main.Link.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-link</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    defaultSlot: "text",
-    events:
-    /** @lends sap.ui.webcomponents.main.Link.prototype */
-    {
-      /**
-       * Fired when the <code>ui5-link</code> is triggered either with a click/tap
-       * or by using the Space or Enter key.
-       *
-       * @event
-       * @public
-       */
-      press: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   * The <code>ui5-link</code> is a hyperlink component is used to navigate to other
-   * apps and web pages or to trigger actions.
-   * It is a clickable text element, visualized in such a way that it stands out
-   * from the standard text.
-   * On hover, it changes its style to an underlined text to provide additional feedback to the user.
-   *
-
-   *
-   * <h3>Usage</h3>
-   *
-   * You can set the <code>ui5-link</code> to be enabled or disabled.
-   * <br><br>
-   * To create a visual hierarchy in large lists of links, you can set the less important links as
-   * <code>Subtle</code> or the more important ones as <code>Emphasized</code>
-   * by using the <code>type</code> property.
-   * <br><br>
-   * If the <code>href</code> property is set, the link behaves as the basic HTML
-   * anchor tag (<code><a></code>) and opens the specified URL in the given target frame (<code>target</code> property).
-   * To specify where the linked content is opened, you can use the <code>target</code> property.
-   *
-   * <h3>Responsive behavior</h3>
-   *
-   * If there is not enough space, the text of the <code>ui5-link</code> becomes truncated.
-   * If the <code>wrap</code> property is set to <code>true</code>, the text is displayed
-   * on several lines instead of being truncated.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Link";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Link
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-link
-   * @public
-   */
-
-  var Link =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Link, _UI5Element);
-
-    function Link() {
-      var _this;
-
-      _classCallCheck(this, Link);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Link).call(this));
-      _this._dummyAnchor = document.createElement("a");
-      return _this;
-    }
-
-    _createClass(Link, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        var needsNoReferrer = this.target === "_blank" && this.href && this._isCrossOrigin();
-
-        this._rel = needsNoReferrer ? "noreferrer" : undefined;
-      }
-    }, {
-      key: "onclick",
-      value: function onclick(event) {
-        if (this.disabled) {
-          return;
-        }
-
-        var defaultPrevented = !this.fireEvent("press", {}, true);
-
-        if (defaultPrevented) {
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (this.disabled) {
-          return;
-        }
-
-        if (isSpace(event)) {
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (this.disabled) {
-          return;
-        }
-
-        if (isSpace(event)) {
-          var defaultPrevented = !this.fireEvent("press", {}, true);
-
-          if (defaultPrevented) {
-            return;
-          } // Simulate click event
-
-
-          var oClickEvent = document.createEvent("MouseEvents");
-          oClickEvent.initEvent("click"
-          /* event type */
-          , false
-          /* no-bubbling */
-          , true
-          /* cancelable */
-          );
-          this.getDomRef().dispatchEvent(oClickEvent);
-        }
-      }
-    }, {
-      key: "_isCrossOrigin",
-      value: function _isCrossOrigin() {
-        var loc = window.location;
-        this._dummyAnchor.href = this.href;
-        return !(this._dummyAnchor.hostname === loc.hostname && this._dummyAnchor.port === loc.port && this._dummyAnchor.protocol === loc.protocol);
-      }
-    }, {
-      key: "tabIndex",
-      get: function get() {
-        return this.disabled || !this.text.length ? "-1" : "0";
-      }
-    }, {
-      key: "ariaDisabled",
-      get: function get() {
-        return this.disabled ? "true" : undefined;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapMLnk: true,
-            sapMLnkSubtle: this.type === LinkType.Subtle,
-            sapMLnkEmphasized: this.type === LinkType.Emphasized,
-            sapMLnkWrapping: this.wrap,
-            sapMLnkDsbl: this.disabled,
-            sapMLnkMaxWidth: true
-          }
-        };
-      }
-    }, {
-      key: "parsedRef",
-      get: function get() {
-        return this.href.length > 0 ? this.href : undefined;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$o;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$k;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return linkCss;
-      }
-    }]);
-
-    return Link;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Link.define();
-  });
-
-  var animationConfig = {
-    defaultDuration: 400,
-    element: document.createElement("DIV"),
-    identity: function identity() {}
-  };
-
-  var tasks = new WeakMap();
-
-  var AnimationQueue =
-  /*#__PURE__*/
-  function () {
-    function AnimationQueue() {
-      _classCallCheck(this, AnimationQueue);
-    }
-
-    _createClass(AnimationQueue, null, [{
-      key: "enqueue",
-      value: function enqueue(element, task) {
-        if (!tasks.has(element)) {
-          tasks.set(element, []);
-        }
-
-        tasks.get(element).push(task);
-      }
-    }, {
-      key: "run",
-      value: function run(element, task) {
-        if (!tasks.has(element)) {
-          tasks.set(element, []);
-        }
-
-        return task().then(function () {
-          var elementTasks = tasks.get(element);
-
-          if (elementTasks.length > 0) {
-            return AnimationQueue.run(element, elementTasks.shift());
-          }
-
-          tasks.delete(element);
-        });
-      }
-    }, {
-      key: "push",
-      value: function push(element, task) {
-        var elementTasks = tasks.get(element);
-
-        if (elementTasks) {
-          AnimationQueue.enqueue(element, task);
-        } else {
-          AnimationQueue.run(element, task);
-        }
-      }
-    }, {
-      key: "tasks",
-      get: function get() {
-        return tasks;
-      }
-    }]);
-
-    return AnimationQueue;
-  }();
-
-  var animate = (function (_ref) {
-    var _ref$beforeStart = _ref.beforeStart,
-        beforeStart = _ref$beforeStart === void 0 ? animationConfig.identity : _ref$beforeStart,
-        _ref$duration = _ref.duration,
-        duration = _ref$duration === void 0 ? animationConfig.defaultDuration : _ref$duration,
-        _ref$element = _ref.element,
-        element = _ref$element === void 0 ? animationConfig.element : _ref$element,
-        _ref$progress = _ref.progress,
-        progressCallback = _ref$progress === void 0 ? animationConfig.identity : _ref$progress;
-    var start = null;
-    var stopped = false;
-    var animationFrame;
-
-    var _stop;
-
-    var _animate;
-
-    var _promise = new Promise(function (resolve, reject) {
-      _animate = function animate(timestamp) {
-        start = start || timestamp;
-        var timeElapsed = timestamp - start;
-        var remaining = duration - timeElapsed;
-
-        if (timeElapsed <= duration) {
-          var progress = 1 - remaining / duration; // easing formula (currently linear)
-
-          progressCallback(progress);
-          animationFrame = !stopped && requestAnimationFrame(_animate);
-        } else {
-          progressCallback(1);
-          resolve();
-        }
-      };
-
-      _stop = function stop() {
-        stopped = true;
-        cancelAnimationFrame(animationFrame);
-        reject(new Error("animation stopped"));
-      };
-    }).catch(function (oReason) {
-      return oReason;
-    });
-
-    AnimationQueue.push(element, function () {
-      beforeStart();
-      requestAnimationFrame(_animate);
-      return new Promise(function (resolve) {
-        _promise.then(function () {
-          return resolve();
-        });
-      });
-    });
-    return {
-      promise: function promise() {
-        return _promise;
-      },
-      stop: function stop() {
-        return _stop;
-      }
-    };
-  });
-
-  var slideDown = (function (_ref) {
-    var _ref$element = _ref.element,
-        element = _ref$element === void 0 ? animationConfig.element : _ref$element,
-        _ref$duration = _ref.duration,
-        duration = _ref$duration === void 0 ? animationConfig.defaultDuration : _ref$duration,
-        _ref$progress = _ref.progress,
-        progressCallback = _ref$progress === void 0 ? animationConfig.identity : _ref$progress;
-    var computedStyles, paddingTop, paddingBottom, marginTop, marginBottom, height;
-    var storedOverflow, storedPaddingTop, storedPaddingBottom, storedMarginTop, storedMarginBottom, storedHeight;
-    var animation = animate({
-      beforeStart: function beforeStart() {
-        // Show the element to measure its properties
-        element.style.display = "block"; // Get Computed styles
-
-        computedStyles = getComputedStyle(element);
-        paddingTop = parseFloat(computedStyles.paddingTop);
-        paddingBottom = parseFloat(computedStyles.paddingBottom);
-        marginTop = parseFloat(computedStyles.marginTop);
-        marginBottom = parseFloat(computedStyles.marginBottom);
-        height = parseFloat(computedStyles.height); // Store inline styles
-
-        storedOverflow = element.style.overflow;
-        storedPaddingTop = element.style.paddingTop;
-        storedPaddingBottom = element.style.paddingBottom;
-        storedMarginTop = element.style.marginTop;
-        storedMarginBottom = element.style.marginBottom;
-        storedHeight = element.style.height;
-        element.style.overflow = "hidden";
-        element.style.paddingTop = 0;
-        element.style.paddingBottom = 0;
-        element.style.marginTop = 0;
-        element.style.marginBottom = 0;
-        element.style.height = 0;
-      },
-      duration: duration,
-      element: element,
-      progress: function progress(_progress) {
-        progressCallback(_progress); // WORKAROUND
-
-        element.style.display = "block"; // END OF WORKAROUND
-
-        /* eslint-disable */
-
-        element.style.paddingTop = 0 + paddingTop * _progress + "px";
-        element.style.paddingBottom = 0 + paddingBottom * _progress + "px";
-        element.style.marginTop = 0 + marginTop * _progress + "px";
-        element.style.marginBottom = 0 + marginBottom * _progress + "px";
-        element.style.height = 0 + height * _progress + "px";
-        /* eslint-enable */
-      }
-    });
-    animation.promise().then(function () {
-      element.style.overflow = storedOverflow;
-      element.style.paddingTop = storedPaddingTop;
-      element.style.paddingBottom = storedPaddingBottom;
-      element.style.marginTop = storedMarginTop;
-      element.style.marginBottom = storedMarginBottom;
-      element.style.height = storedHeight;
-    });
-    return animation;
-  });
-
-  var slideUp = (function (_ref) {
-    var _ref$element = _ref.element,
-        element = _ref$element === void 0 ? animationConfig.element : _ref$element,
-        _ref$duration = _ref.duration,
-        duration = _ref$duration === void 0 ? animationConfig.defaultDuration : _ref$duration,
-        _ref$progress = _ref.progress,
-        progressCallback = _ref$progress === void 0 ? animationConfig.identity : _ref$progress;
-    // Get Computed styles
-    var computedStyles, paddingTop, paddingBottom, marginTop, marginBottom, height; // Store inline styles
-
-    var storedOverflow, storedPaddingTop, storedPaddingBottom, storedMarginTop, storedMarginBottom, storedHeight;
-    var animation = animate({
-      beforeStart: function beforeStart() {
-        // Get Computed styles
-        computedStyles = getComputedStyle(element);
-        paddingTop = parseFloat(computedStyles.paddingTop);
-        paddingBottom = parseFloat(computedStyles.paddingBottom);
-        marginTop = parseFloat(computedStyles.marginTop);
-        marginBottom = parseFloat(computedStyles.marginBottom);
-        height = parseFloat(computedStyles.height); // Store inline styles
-
-        storedOverflow = element.style.overflow;
-        storedPaddingTop = element.style.paddingTop;
-        storedPaddingBottom = element.style.paddingBottom;
-        storedMarginTop = element.style.marginTop;
-        storedMarginBottom = element.style.marginBottom;
-        storedHeight = element.style.height;
-        element.style.overflow = "hidden";
-      },
-      duration: duration,
-      element: element,
-      progress: function progress(_progress) {
-        progressCallback(_progress);
-        element.style.paddingTop = "".concat(paddingTop - paddingTop * _progress, "px");
-        element.style.paddingBottom = "".concat(paddingBottom - paddingBottom * _progress, "px");
-        element.style.marginTop = "".concat(marginTop - marginTop * _progress, "px");
-        element.style.marginBottom = "".concat(marginBottom - marginBottom * _progress, "px");
-        element.style.height = "".concat(height - height * _progress, "px");
-      }
-    });
-    animation.promise().then(function (oReason) {
-      if (!(oReason instanceof Error)) {
-        element.style.overflow = storedOverflow;
-        element.style.paddingTop = storedPaddingTop;
-        element.style.paddingBottom = storedPaddingBottom;
-        element.style.marginTop = storedMarginTop;
-        element.style.marginBottom = storedMarginBottom;
-        element.style.height = storedHeight;
-        element.style.display = "none";
-      }
-    });
-    return animation;
-  });
-
-  var PanelAccessibleRoles = {
-    Complementary: "Complementary",
-    Form: "Form",
-    Region: "Region"
-  };
-
-  var PanelAccessibleRole =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(PanelAccessibleRole, _DataType);
-
-    function PanelAccessibleRole() {
-      _classCallCheck(this, PanelAccessibleRole);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(PanelAccessibleRole).apply(this, arguments));
-    }
-
-    _createClass(PanelAccessibleRole, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!PanelAccessibleRoles[value];
-      }
-    }]);
-
-    return PanelAccessibleRole;
-  }(DataType);
-
-  PanelAccessibleRole.generataTypeAcessors(PanelAccessibleRoles);
-
-  function _templateObject7$3() {
-    var data = _taggedTemplateLiteral(["<h1 id=\"", "-header\" class=\"sapMPanelHdr\">\t\t\t", "</h1>\t"]);
-
-    _templateObject7$3 = function _templateObject7() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject6$3() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMPanelHdrToolbar\"><slot name=\"header\"></slot></div>\t"]);
-
-    _templateObject6$3 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$7() {
-    var data = _taggedTemplateLiteral(["<header @click=\"", "\" class=\"", "\" tabindex=\"", "\"><ui5-icon\t\t\t\tclass=\"", "\"\t\t\t\tsrc=\"", "\"\t\t\t\ttitle=\"", "\"\t\t\t\ttabindex=\"", "\"\t\t\t\taria-expanded=\"", "\"\t\t\t\taria-labelledby=\"", "\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-icon>\t\t\t", "", "</header>\t"]);
-
-    _templateObject5$7 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$8() {
-    var data = _taggedTemplateLiteral(["<h1 id=\"", "-header\" class=\"sapMPanelHdr\">\t\t\t", "</h1>\t"]);
-
-    _templateObject4$8 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$b() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMPanelHdrToolbar\"><slot name=\"header\"></slot></div>\t"]);
-
-    _templateObject3$b = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$g() {
-    var data = _taggedTemplateLiteral(["", "", ""]);
-
-    _templateObject2$g = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$m() {
-    var data = _taggedTemplateLiteral(["<div\t\tdata-sap-ui-fastnavgroup=\"true\"\t\tclass=\"", "\"\t\trole=\"", "\"><!-- header: either header or h1 with header text -->\t", "<!-- content area --><div class=\"", "\" tabindex=\"-1\" style=\"", "\"><slot></slot></div></div>"]);
-
-    _templateObject$m = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$l = function block0(context) {
-    return html(_templateObject$m(), ifDefined(classMap(context.classes.main)), ifDefined(context.accRole), context.fixed ? block1$g(context) : block4$7(context), ifDefined(classMap(context.classes.content)), ifDefined(styleMap$1(context.styles.content)));
-  };
-
-  var block1$g = function block1(context) {
-    return html(_templateObject2$g(), context.header ? block2$b(context) : undefined, context.shouldRenderH1 ? block3$8(context) : undefined);
-  };
-
-  var block2$b = function block2(context) {
-    return html(_templateObject3$b());
-  };
-
-  var block3$8 = function block3(context) {
-    return html(_templateObject4$8(), ifDefined(context._id), ifDefined(context.headerText));
-  };
-
-  var block4$7 = function block4(context) {
-    return html(_templateObject5$7(), ifDefined(context._header.press), ifDefined(classMap(context.classes.header)), ifDefined(context.headerTabIndex), ifDefined(classMap(context.classes.icon)), ifDefined(context._icon.src), ifDefined(context._icon.title), ifDefined(context.iconTabIndex), ifDefined(context.expanded), ifDefined(context.ariaLabelledBy), ifDefined(context._icon.press), context.header ? block5$3(context) : undefined, context.shouldRenderH1 ? block6$3(context) : undefined);
-  };
-
-  var block5$3 = function block5(context) {
-    return html(_templateObject6$3());
-  };
-
-  var block6$3 = function block6(context) {
-    return html(_templateObject7$3(), ifDefined(context._id), ifDefined(context.headerText));
-  };
-
-  var MULTIINPUT_SHOW_MORE_TOKENS = {
-    key: "MULTIINPUT_SHOW_MORE_TOKENS",
-    defaultText: "{0} More"
-  };
-  var TEXTAREA_CHARACTERS_LEFT = {
-    key: "TEXTAREA_CHARACTERS_LEFT",
-    defaultText: "{0} characters remaining"
-  };
-  var TEXTAREA_CHARACTERS_EXCEEDED = {
-    key: "TEXTAREA_CHARACTERS_EXCEEDED",
-    defaultText: "{0} characters over limit"
-  };
-  var PANEL_ICON = {
-    key: "PANEL_ICON",
-    defaultText: "Expand/Collapse"
-  };
-  var MESSAGE_STRIP_CLOSE_BUTTON = {
-    key: "MESSAGE_STRIP_CLOSE_BUTTON",
-    defaultText: "Message Strip Close"
-  };
-
-  var panelCss = ":host(ui5-panel:not([hidden])){display:block}ui5-panel:not([hidden]){display:block}.sapMPanel{width:100%;height:100%;overflow:hidden;box-sizing:border-box;position:relative;background-color:var(--ui5-panel-background-color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMPanel>header{display:flex;align-items:center;height:2.75rem}.sapMPanel>header ui5-icon.sapMPanelIcon{width:1.5rem;height:1.5rem;min-width:1.5rem;min-height:1.5rem;margin-left:.75rem;margin-right:.75rem;align-self:center;color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));transition:transform .4s ease-out;cursor:pointer;position:relative}.sapMPanel>header ui5-icon.sapMPanelIcon.sapMPanelIconExpanded{transform:rotate(90deg)}.sapMPanel>header ui5-icon.sapMPanelIcon:focus:after{content:\"\";position:absolute;border:1px dashed var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));width:100%;height:100%;left:-1px;top:-1px;pointer-events:none}.sapMPanelHdr{box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:none;padding:0 1rem;margin:0;-webkit-text-size-adjust:none;font-weight:var(--sapUiFontHeaderWeight,normal);font-size:var(--sapMFontHeader4Size,1.125rem);font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));background-color:var(--sapUiGroupTitleBackground,var(--sapGroup_TitleBackground,transparent))}.sapMPanelContent{padding:.625rem 1rem 1.375rem 1rem;box-sizing:border-box;overflow:auto;white-space:normal;border-bottom:1px solid var(--ui5-panel-bottom-border-color,var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#d9d9d9)))}.sapMPanelContent:focus{outline:none}.sapMPanelWrappingDiv,.sapMPanelWrappingDivTb{position:relative;background-color:var(--ui5-panel-background-color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapMPanelWrappingDiv{box-sizing:border-box}.sapMPanelWrappingDiv.sapMPanelWrappingDivClickable{cursor:pointer}.sapMPanelWrappingDiv.sapMPanelWrappingDivClickable:focus{outline:none}.sapMPanelWrappingDiv.sapMPanelWrappingDivClickable:focus:after{content:\"\";position:absolute;border:var(--_ui5_panel_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapMPanelWrappingDivTb .sapMPanelHdrToolbar{width:100%}.sapMPanelWrappingDiv.sapMPanelWrappingDivExpanded{border-bottom-width:0}.sapMPanel .sapMPanelWrappingDiv .sapMPanelHdr{padding-left:0}.sapMPanel .sapMPanelWrappingDiv .sapMPanelHdr>:first-child{margin-left:0}.sapMPanel>.sapMPanelHdr,.sapMPanelWrappingDiv,.sapMPanelWrappingDivTb{border-bottom:1px solid var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#d9d9d9))}.sapUiSizeCompact.sapMPanel>header{height:2rem}";
-
-  /**
-   * @public
-   */
-
-  var metadata$p = {
-    tag: "ui5-panel",
-    defaultSlot: "content",
-    slots:
-    /** @lends sap.ui.webcomponents.main.Panel.prototype */
-    {
-      /**
-       * Defines the <code>ui5-panel</code> header area.
-       * <br><br>
-       * <b>Note:</b> When a header is provided, the <code>headerText</code> property is ignored.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @public
-       */
-      header: {
-        type: HTMLElement
-      },
-
-      /**
-       * Determines the content of the <code>ui5-panel</code>.
-       * The content is visible only when the <code>ui5-panel</code> is expanded.
-       *
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      content: {
-        type: Node,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.Panel.prototype */
-    {
-      /**
-       * This property is used to set the header text of the <code>ui5-panel</code>.
-       * The text is visible in both expanded and collapsed states.
-       * <br><br>
-       * <b>Note:</b> This property is overridden by the <code>header</code> slot.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      headerText: {
-        type: String
-      },
-
-      /**
-       * Determines whether the <code>ui5-panel</code> is in a fixed state that is not
-       * expandable/collapsible by user interaction.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      fixed: {
-        type: Boolean
-      },
-
-      /**
-       * Indicates whether the <code>ui5-panel</code> is collapsed and only the header is displayed.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      collapsed: {
-        type: Boolean
-      },
-
-      /**
-       * Sets the accessible aria role of the <code>ui5-panel</code>.
-       * Depending on the usage, you can change the role from the default <code>Form</code>
-       * to <code>Region</code> or <code>Complementary</code>.
-       *
-       * @type {PanelAccessibleRole}
-       * @public
-       */
-      accessibleRole: {
-        type: PanelAccessibleRole,
-        defaultValue: PanelAccessibleRole.Form
-      },
-      _icon: {
-        type: Object
-      },
-      _header: {
-        type: Object
-      },
-      _contentExpanded: {
-        type: Boolean
-      },
-      _animationRunning: {
-        type: Boolean
-      }
-    },
-    events: {
-      /**
-       * Fired when the ui5-panel is expanded/collapsed by user interaction.
-       *
-       * @event
-       * @public
-       */
-      toggle: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-panel</code> component is a container which has a header and a
-   * content area and is used
-   * for grouping and displaying information. It can be collapsed to save space on the screen.
-   *
-   * <h3>Guidelines:</h3>
-   * <ul>
-   * <li>Nesting two or more panels is not recommended.</li>
-   * <li>Do not stack too many panels on one page.</li>
-   * </ul>
-   *
-   * <h3>Structure</h3>
-   * A panel consists of a title bar with a header text or custom header.
-   * <br>
-   * The content area can contain an arbitrary set of controls.
-   * The header is clickable and can be used to toggle between the expanded and collapsed state.
-   * It includes an icon which rotates depending on the state.
-   * <br>
-   * The custom header can be set through the <code>header</code> slot and it may contain arbitraray content, such as: title, buttons or any other HTML elements.
-   * <br><b>Note:</b> the custom header is not clickable out of the box, but in this case the icon is interactive and allows to show/hide the content area.
-   *
-   * <h3>Responsive Behavior</h3>
-   * <ul>
-   * <li>If the width of the panel is set to 100% (default), the panel and its children are
-   * resized responsively,
-   * depending on its parent container.</li>
-   * <li>If the panel has a fixed height, it will take up the space even if the panel is
-   * collapsed.</li>
-   * <li>When the panel is expandable (the <code>fixed</code> property is set to <code>false</code>),
-   * an arrow icon (pointing to the right) appears in front of the header.</li>
-   * <li>When the animation is activated, expand/collapse uses a smooth animation to open or
-   * close the content area.</li>
-   * <li>When the panel expands/collapses, the arrow icon rotates 90 degrees
-   * clockwise/counter-clockwise.</li>
-   * </ul>
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Panel";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Panel
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-panel
-   * @public
-   */
-
-  var Panel =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Panel, _UI5Element);
-
-    _createClass(Panel, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$p;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$l;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return panelCss;
-      }
-    }]);
-
-    function Panel() {
-      var _this;
-
-      _classCallCheck(this, Panel);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Panel).call(this));
-      _this._header = {};
-      _this._icon = {};
-      _this._icon.id = "".concat(_this.id, "-CollapsedImg");
-      _this._icon.src = getIconURI("navigation-right-arrow");
-      _this._icon.functional = true;
-      _this.resourceBundle = getResourceBundle("@ui5/webcomponents");
-
-      _this._toggle = function (event) {
-        event.preventDefault();
-
-        _this._toggleOpen();
-      };
-
-      _this._noOp = function () {};
-
-      return _this;
-    }
-
-    _createClass(Panel, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        // If the animation is running, it will set the content expanded state at the end
-        if (!this._animationRunning) {
-          this._contentExpanded = !this.collapsed;
-        }
-
-        var toggleWithInternalHeader = !this.header;
-        this._icon.title = this.resourceBundle.getText(PANEL_ICON);
-        this._header.press = toggleWithInternalHeader ? this._toggle : this._noOp;
-        this._icon.press = !toggleWithInternalHeader ? this._toggle : this._noOp;
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        var headerUsed = this._headerOnTarget(event.ui5target);
-
-        if (isEnter(event) && headerUsed) {
-          this._toggleOpen();
-        }
-
-        if (isSpace(event) && headerUsed) {
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        var headerUsed = this._headerOnTarget(event.ui5target);
-
-        if (isSpace(event) && headerUsed) {
-          this._toggleOpen();
-        }
-      }
-    }, {
-      key: "_toggleOpen",
-      value: function _toggleOpen() {
-        var _this2 = this;
-
-        if (this.fixed) {
-          return;
-        }
-
-        this.collapsed = !this.collapsed;
-        this._animationRunning = true;
-        var elements = this.getDomRef().querySelectorAll(".sapMPanelExpandablePart");
-        var animations = [];
-        [].forEach.call(elements, function (oElement) {
-          if (_this2.collapsed) {
-            animations.push(slideUp({
-              element: oElement
-            }).promise());
-          } else {
-            animations.push(slideDown({
-              element: oElement
-            }).promise());
-          }
-        });
-        Promise.all(animations).then(function (_) {
-          _this2._animationRunning = false;
-          _this2._contentExpanded = !_this2.collapsed;
-
-          _this2.fireEvent("toggle");
-        });
-      }
-    }, {
-      key: "_headerOnTarget",
-      value: function _headerOnTarget(target) {
-        return target.classList.contains("sapMPanelWrappingDiv");
-      }
-    }, {
-      key: "expanded",
-      get: function get() {
-        return !this.collapsed;
-      }
-    }, {
-      key: "ariaLabelledBy",
-      get: function get() {
-        return this.header ? "" : "".concat(this._id, "-header");
-      }
-    }, {
-      key: "accRole",
-      get: function get() {
-        return this.accessibleRole.toLowerCase();
-      }
-    }, {
-      key: "headerTabIndex",
-      get: function get() {
-        return !this.header ? "0" : "";
-      }
-    }, {
-      key: "iconTabIndex",
-      get: function get() {
-        return this.header ? "0" : "";
-      }
-    }, {
-      key: "shouldRenderH1",
-      get: function get() {
-        return !this.header && (this.headerText || !this.fixed);
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapMPanel: true,
-            sapUiSizeCompact: getCompactSize()
-          },
-          header: {
-            sapMPanelWrappingDivTb: this.header,
-            sapMPanelWrappingDivTbExpanded: this.header && this.collapsed,
-            sapMPanelWrappingDiv: !this.header,
-            sapMPanelWrappingDivClickable: !this.header,
-            sapMPanelWrappingDivExpanded: !this.header && !this.collapsed
-          },
-          icon: {
-            sapMPanelIconExpanded: !this.collapsed,
-            sapMPanelIcon: true
-          },
-          content: _defineProperty({
-            sapMPanelContent: true,
-            sapMPanelExpandablePart: !this.fixed
-          }, "sapMPanelBG".concat(this.backgroundDesign), true)
-        };
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return {
-          content: {
-            display: this._contentExpanded ? "block" : "none"
-          }
-        };
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Promise.all([fetchResourceBundle("@ui5/webcomponents"), Icon.define()]);
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(Panel), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return Panel;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Panel.define();
-  });
-
-  function _templateObject2$h() {
-    var data = _taggedTemplateLiteral(["<ui5-popover\t\t\tplacement-type=\"Bottom\"\t\t\tno-header\t\t\tno-arrow\t\t\thorizontal-align=\"Stretch\"><ui5-list separators=\"None\"><slot></slot></ui5-list></ui5-popover>\t"]);
-
-    _templateObject2$h = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$n() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\ttabindex=\"", "\"\tdir=\"", "\"><div\t\tclass=\"sapWCSelectLabel\"\t\t@click=\"", "\"><ui5-label>", "</ui5-label></div>\t", "<ui5-icon\t\tsrc=\"sap-icon://slim-arrow-down\"\t\tclass=\"sapWCSelectDropDownIcon\"\t\t@ui5-press=\"", "\"\t></ui5-icon></div>"]);
-
-    _templateObject$n = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$m = function block0(context) {
-    return html(_templateObject$n(), ifDefined(classMap(context.classes.main)), ifDefined(context.tabIndex), ifDefined(context.rtl), ifDefined(context.toggleList), ifDefined(context._text), context.items ? block1$h(context) : undefined, ifDefined(context.toggleList));
-  };
-
-  var block1$h = function block1(context) {
-    return html(_templateObject2$h());
-  };
-
-  var selectCss = ":host(ui5-select:not([hidden])){display:inline-block;width:100%}ui5-select:not([hidden]){display:inline-block;width:100%}.sapWCSelect{height:2.25rem;max-width:100%;min-width:5rem;position:relative;display:flex;justify-content:space-between;align-items:center;background-color:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));box-sizing:border-box;cursor:pointer;outline:none}.sapWCSelect:hover:not(.sapWCSelectDisabled):not(.sapWCSelectState):not(.sapWCSelectOpened){background-color:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCSelect:hover:not(.sapWCSelectDisabled):not(.sapWCSelectOpened) .sapWCSelectDropDownIcon{background:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.sapWCSelect.sapWCSelectOpened .sapWCSelectDropDownIcon{background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiToggleButtonPressedTextColor,#fff)}.sapWCSelect.sapWCSelectDisabled{background:var(--_ui5_select_disabled_background,var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--_ui5_select_disabled_border_color,var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a))));cursor:default;opacity:.5}.sapWCSelect:not(.sapWCSelectOpened):not(.sapWCSelectDisabled):focus{outline:none}.sapWCSelect:not(.sapWCSelectOpened):not(.sapWCSelectDisabled):focus:before{content:\"\";position:absolute;border:var(--_ui5_select_focus_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));top:1px;right:1px;bottom:1px;left:1px;pointer-events:none}.sapWCSelect .sapWCSelectLabel{display:inline-flex;align-items:center;width:100%;height:100%;min-width:1rem;padding-left:.5rem}.sapWCSelect .sapWCSelectLabel ui5-label{cursor:pointer}.sapWCSelect .sapWCSelectDropDownIcon{width:2.5rem;height:100%;flex-shrink:0;color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)))}.sapWCSelect:hover:not(.sapWCSelectDisabled) .sapWCSelectDropDownIcon{border-left:var(--_ui5_select_hover_icon_left_border,none)}.sapWCSelectState{border-style:solid;border-width:.125rem}.sapWCSelectError{border:var(--_ui5_select_state_error_warning_border_width,.125rem) var(--_ui5_select_state_error_warning_border_style,solid) var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))));background-color:var(--sapUiFieldInvalidBackground,var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapWCSelectWarning{border:var(--_ui5_select_state_error_warning_border_width,.125rem) var(--_ui5_select_state_error_warning_border_style,solid) var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))));background-color:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.sapWCSelectSuccess{background-color:var(--sapUiFieldSuccessBackground,var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldSuccessColor,var(--sapField_SuccessColor,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.sapUiSizeCompact.sapWCSelect{height:1.625rem}.sapUiSizeCompact.sapWCSelect .sapWCSelectDropDownIcon{width:2rem}:host(ui5-select) [dir=rtl].sapWCSelect .sapWCSelectLabel{padding-left:0;padding-right:.5rem}:host(ui5-select) [dir=rtl].sapWCSelect:hover:not(.sapWCSelectDisabled) .sapWCSelectDropDownIcon{border-left:var(--_ui5_select_rtl_hover_icon_left_border,none);border-right:var(--_ui5_select_rtl_hover_icon_right_border,none)}ui5-select [dir=rtl].sapWCSelect .sapWCSelectLabel{padding-left:0;padding-right:.5rem}ui5-select [dir=rtl].sapWCSelect:hover:not(.sapWCSelectDisabled) .sapWCSelectDropDownIcon{border-left:var(--_ui5_select_rtl_hover_icon_left_border,none);border-right:var(--_ui5_select_rtl_hover_icon_right_border,none)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$q = {
-    tag: "ui5-select",
-    defaultSlot: "items",
-    slots:
-    /** @lends sap.ui.webcomponents.main.Select.prototype */
-    {
-      /**
-       * Defines the <code>ui5-select</code> items.
-       * <br/><br/>
-       * <b>Note:</b> Only one selected item is allowed.
-       * If more than one item is defined as selected, the last one would be considered as the selected one.
-       * <br/><br/>
-       * <b>Note:</b> Use the <code>ui5-li</code> component to define the desired options.
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      items: {
-        type: HTMLElement,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends  sap.ui.webcomponents.main.Select.prototype */
-    {
-      /**
-       * Defines whether <code>ui5-select</code> is in disabled state.
-       * </br></br>
-       * <b>Note:</b> A disabled <code>ui5-select</code> is noninteractive.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the value state of <code>ui5-select</code>.
-       * Available options are: <code>None</code>, <code>Success</code>, <code>Warning</code> and <code>Error</code>.
-       *
-       * @type {string}
-       * @defaultvalue "None"
-       * @public
-       */
-      valueState: {
-        type: ValueState,
-        defaultValue: ValueState.None
-      },
-      _text: {
-        type: String
-      },
-      _opened: {
-        type: Boolean
-      },
-      _focused: {
-        type: Boolean
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.Select.prototype */
-    {
-      /**
-       * Fired when the selected item changes.
-       *
-       * @event
-       * @param {HTMLElement} item the selected item.
-       * @public
-       */
-      change: {
-        detail: {
-          selectedItem: {}
-        }
-      }
-    }
-  };
-  /**
-   * @class
-   * <h3 class="comment-api-title"> Overview </h3>
-   *
-   * The <code>ui5-select</code> component is used to create a drop-down list.
-   * The items inside the <code>ui5-select</code> define the available options by using the <code>ui5-li</code> component.
-   *
-   * <h3>Keyboard Handling</h3>
-   * The <code>ui5-select</code> provides advanced keyboard handling.
-   * If the <code>ui5-select</code> is focused,
-   * you can open or close the drop-down by pressing <code>F4</code>, <code>ALT+UP</code> or <code>ALT+DOWN</code> keys.
-   * Once the drop-down is opened, you can use the <code>UP</code> and <code>DOWN</code> arrow keys
-   * to navigate through the available options and select one by pressing the <code>Space</code> or <code>Enter</code> keys.
-   * <br>
-   * <h3>ES6 Module Import</h3>
-   * <code>import "@ui5/webcomponents/dist/Select";</code>
-   * <br>
-   * <code>import "@ui5/webcomponents/dist/StandardListItem";</code> (<code>ui5-li</code>)
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Select
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-input
-   * @public
-   * @since 0.8.0
-   */
-
-  var Select =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Select, _UI5Element);
-
-    _createClass(Select, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$q;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$m;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return selectCss;
-      }
-    }]);
-
-    function Select() {
-      var _this;
-
-      _classCallCheck(this, Select);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Select).call(this));
-      _this._closing = false; // Flag for handling open/close on space
-
-      _this._selectedItemBeforeOpen = null; // Stores the selected item before opening the picker
-
-      _this._escapePressed = false; // Identifies if the escape is pressed when picker is open
-
-      _this._setSelectedItem(null);
-
-      _this._setPreviewedItem(null);
-
-      _this.Suggestions = new Suggestions(_assertThisInitialized(_this), "items", true
-      /* move focus with arrow keys */
-      );
-      return _this;
-    }
-
-    _createClass(Select, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        this._validateSelection();
-      }
-      /* Event handling */
-
-    }, {
-      key: "toggleList",
-      value: function toggleList() {
-        if (this.disabled) {
-          return;
-        }
-
-        this.Suggestions.toggle();
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (this.disabled) {
-          return;
-        }
-
-        if (isUp(event)) {
-          this.Suggestions.onUp(event);
-
-          this._changeSelectionWhileClosed();
-        }
-
-        if (isDown(event)) {
-          this.Suggestions.onDown(event);
-
-          this._changeSelectionWhileClosed();
-        }
-
-        if (isSpace(event)) {
-          if (!this._isOpened()) {
-            this._closing = true;
-            return event.preventDefault();
-          }
-
-          this._closing = false;
-          return this.Suggestions.onSpace(event);
-        }
-
-        if (isEnter(event)) {
-          this.Suggestions.onEnter(event);
-        }
-
-        if (isEscape(event) && this._opened && this._selectedItemBeforeOpen) {
-          this.items.forEach(function (item) {
-            item.selected = false;
-          });
-
-          this._select(this._selectedItemBeforeOpen, this.items.indexOf(this._selectedItemBeforeOpen));
-
-          this._escapePressed = true;
-        }
-
-        if (isShow(event)) {
-          event.preventDefault();
-          this.Suggestions.toggle();
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (isSpace(event)) {
-          return this.Suggestions.toggle(this._closing); // Open Suggestions
-        }
-      }
-    }, {
-      key: "onfocusin",
-      value: function onfocusin(event) {
-        this._focused = true; // invalidating property
-      }
-    }, {
-      key: "onfocusout",
-      value: function onfocusout(event) {
-        this._focused = false; // invalidating property
-      }
-      /* Suggestions Interface methods */
-
-    }, {
-      key: "onItemFocused",
-      value: function onItemFocused() {}
-    }, {
-      key: "onItemSelected",
-      value: function onItemSelected(item) {
-        if (this._getSelectedItem() === item) {
-          return;
-        }
-
-        this._select(item);
-      }
-    }, {
-      key: "onItemPreviewed",
-      value: function onItemPreviewed(item) {
-        this._setPreviewedItem(item);
-
-        this._setText(item.textContent);
-      }
-    }, {
-      key: "onOpen",
-      value: function onOpen() {
-        this._opened = true; // invalidating property
-
-        var selectedItem = this._getSelectedItem();
-
-        if (selectedItem) {
-          this._selectedItemBeforeOpen = selectedItem;
-          selectedItem.focus();
-        }
-      }
-    }, {
-      key: "onClose",
-      value: function onClose() {
-        this._opened = false; // invalidating property
-
-        if (this._getSelectedItem() !== this._selectedItemBeforeOpen && !this._escapePressed) {
-          var previewedItem = this._getSelectedItem();
-
-          this._fireChange(previewedItem);
-        }
-
-        this._escapePressed = false;
-      }
-      /* Private methods */
-
-    }, {
-      key: "_validateSelection",
-      value: function _validateSelection() {
-        if (this._isOpened() || !this.items.length) {
-          return;
-        }
-
-        var selectedItem = null;
-        var selectedItemPos = null;
-        this.items.forEach(function (item, idx) {
-          if (item.selected) {
-            if (selectedItem) {
-              selectedItem.selected = false;
-            }
-
-            selectedItem = item;
-            selectedItemPos = idx;
-          }
-        });
-
-        if (!selectedItem) {
-          selectedItem = this.items[0];
-          selectedItemPos = 0;
-        }
-
-        if (this._getSelectedItem() !== selectedItem) {
-          this._select(selectedItem, selectedItemPos);
-        }
-      }
-    }, {
-      key: "_isSelectionChanged",
-      value: function _isSelectionChanged() {
-        var previewedItem = this._getPreviewedItem();
-
-        var selectedItem = this._getSelectedItem();
-
-        return previewedItem && selectedItem !== previewedItem;
-      }
-    }, {
-      key: "_select",
-      value: function _select(item, position) {
-        var selectedItem = this._getSelectedItem();
-
-        if (selectedItem) {
-          selectedItem.selected = false;
-        }
-
-        this._setSelectedItem(item);
-
-        this._setPreviewedItem(null);
-
-        this._setText(item.textContent);
-
-        if (position !== undefined) {
-          this._updateSelectedItemPos(position);
-        }
-      }
-    }, {
-      key: "_changeSelectionWhileClosed",
-      value: function _changeSelectionWhileClosed() {
-        if (this.items.length > 1 && !this._opened) {
-          this._select(this._getPreviewedItem());
-
-          this._fireChange(this._getSelectedItem());
-        }
-      }
-    }, {
-      key: "_setSelectedItem",
-      value: function _setSelectedItem(item) {
-        if (item) {
-          item.selected = true;
-        }
-
-        this._selectedItem = item;
-      }
-    }, {
-      key: "_getSelectedItem",
-      value: function _getSelectedItem() {
-        return this._selectedItem;
-      }
-    }, {
-      key: "_setPreviewedItem",
-      value: function _setPreviewedItem(item) {
-        this._previewedItem = item;
-      }
-    }, {
-      key: "_getPreviewedItem",
-      value: function _getPreviewedItem() {
-        return this._previewedItem;
-      }
-    }, {
-      key: "_setText",
-      value: function _setText(text) {
-        if (this.text !== text) {
-          this._text = text; // invaldiating property
-        }
-      }
-    }, {
-      key: "_updateSelectedItemPos",
-      value: function _updateSelectedItemPos(position) {
-        this.Suggestions.updateSelectedItemPosition(position);
-      }
-    }, {
-      key: "_isOpened",
-      value: function _isOpened() {
-        return this.Suggestions.isOpened();
-      }
-    }, {
-      key: "_fireChange",
-      value: function _fireChange(item) {
-        this.fireEvent("change", {
-          selectedItem: item
-        });
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var _main;
-
-        return {
-          main: (_main = {
-            "sapWCSelect": true,
-            "sapWCSelectFocused": this._focused,
-            "sapWCSelectDisabled": this.disabled,
-            "sapWCSelectOpened": this._opened,
-            "sapWCSelectState": this.valueState !== "None"
-          }, _defineProperty(_main, "sapWCSelect".concat(this.valueState), true), _defineProperty(_main, "sapUiSizeCompact", getCompactSize()), _main)
-        };
-      }
-    }, {
-      key: "tabIndex",
-      get: function get() {
-        return this.disabled ? "-1" : "0";
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }]);
-
-    return Select;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Select.define();
-  });
-
-  var NativeResize =
-  /*#__PURE__*/
-  function () {
-    function NativeResize() {
-      _classCallCheck(this, NativeResize);
-    }
-
-    _createClass(NativeResize, null, [{
-      key: "initialize",
-      value: function initialize() {
-        NativeResize.resizeObserver = new window.ResizeObserver(function (entries) {
-          // call attached callbacks
-          entries.forEach(function (entry) {
-            var callbacks = NativeResize.observedObjects.get(entry.target);
-            callbacks.forEach(function (el) {
-              return el();
-            });
-          });
-        });
-        NativeResize.observedObjects = new Map();
-      }
-    }, {
-      key: "attachListener",
-      value: function attachListener(ref, callback) {
-        var observedDOMs = NativeResize.observedObjects;
-        var callbacks = observedDOMs.get(ref) || []; // if no callbacks has been added for this ref - start observing it
-
-        if (!callbacks.length) {
-          NativeResize.resizeObserver.observe(ref);
-        } // save the callbacks in an array
-
-
-        observedDOMs.set(ref, [].concat(_toConsumableArray(callbacks), [callback]));
-      }
-    }, {
-      key: "detachListener",
-      value: function detachListener(ref, callback) {
-        var callbacks = NativeResize.observedObjects.get(ref) || [];
-        var filteredCallbacks = callbacks.filter(function (fn) {
-          return fn !== callback;
-        }); // TODO: think for a validation mechanism
-
-        if (!callbacks.length || callbacks.length === filteredCallbacks.length && callbacks.length !== 0) {
-          return;
-        }
-
-        NativeResize.observedObjects.set(ref, filteredCallbacks);
-
-        if (!filteredCallbacks.length) {
-          NativeResize.resizeObserver.unobserve(ref);
-        }
-      }
-    }]);
-
-    return NativeResize;
-  }();
-
-  var INTERVAL = 300;
-
-  var CustomResize =
-  /*#__PURE__*/
-  function () {
-    function CustomResize() {
-      _classCallCheck(this, CustomResize);
-    }
-
-    _createClass(CustomResize, null, [{
-      key: "initialize",
-      value: function initialize() {
-        CustomResize.initialized = false;
-        CustomResize.resizeInterval = undefined;
-        CustomResize.resizeListeners = new Map();
-      }
-    }, {
-      key: "attachListener",
-      value: function attachListener(ref, callback) {
-        var observedObject = CustomResize.resizeListeners.get(ref);
-        var existingCallbacks = observedObject ? observedObject.callbacks : [];
-        CustomResize.resizeListeners.set(ref, {
-          width: ref ? ref.offsetWidth : 0,
-          height: ref ? ref.offsetHeight : 0,
-          callbacks: existingCallbacks.concat(callback)
-        });
-        CustomResize.initListener();
-      }
-    }, {
-      key: "initListener",
-      value: function initListener() {
-        if (CustomResize.resizeListeners.size > 0 && !CustomResize.initialized) {
-          CustomResize.resizeInterval = setInterval(CustomResize.checkListeners.bind(CustomResize), INTERVAL);
-        }
-      }
-    }, {
-      key: "checkListeners",
-      value: function checkListeners() {
-        CustomResize.resizeListeners.forEach(function (entry, ref) {
-          var changed = CustomResize.checkSizes(entry, ref);
-
-          if (changed) {
-            CustomResize.updateSizes(entry, ref.offsetWidth, ref.offsetHeight);
-            entry.callbacks.forEach(function (el) {
-              return el();
-            });
-          }
-        });
-      }
-    }, {
-      key: "updateSizes",
-      value: function updateSizes(sizes, newWidth, newHeight) {
-        sizes.width = newWidth;
-        sizes.height = newHeight;
-      }
-    }, {
-      key: "checkSizes",
-      value: function checkSizes(entry, ref) {
-        var oldHeight = entry.height;
-        var oldWidth = entry.width;
-        var newHeight = ref.offsetHeight;
-        var newWidth = ref.offsetWidth;
-        return oldHeight !== newHeight || oldWidth !== newWidth;
-      }
-    }, {
-      key: "detachListener",
-      value: function detachListener(ref, callback) {
-        var listenerObject = CustomResize.resizeListeners.get(ref);
-        var callbacks = listenerObject ? listenerObject.callbacks : [];
-        var filteredCallbacks = callbacks.filter(function (fn) {
-          return fn !== callback;
-        });
-
-        if (!listenerObject || callbacks.length === filteredCallbacks.length && callbacks.length !== 0) {
-          return;
-        }
-
-        CustomResize.resizeListeners.set(ref, Object.assign(listenerObject, {
-          callbacks: filteredCallbacks
-        }));
-
-        if (!filteredCallbacks.length) {
-          listenerObject.callbacks = null;
-          CustomResize.resizeListeners.delete(ref);
-        }
-
-        if (CustomResize.resizeListeners.size === 0) {
-          CustomResize.initialized = false;
-          clearInterval(CustomResize.resizeInterval);
-        }
-      }
-    }]);
-
-    return CustomResize;
-  }();
-
-  var ResizeHandler =
-  /*#__PURE__*/
-  function () {
-    function ResizeHandler() {
-      _classCallCheck(this, ResizeHandler);
-    }
-
-    _createClass(ResizeHandler, null, [{
-      key: "initialize",
-      value: function initialize() {
-        ResizeHandler.Implementation = window.ResizeObserver ? NativeResize : CustomResize;
-        ResizeHandler.Implementation.initialize();
-      }
-      /**
-       * @static
-       * @private
-       * @param {*} ref Reference to be observed
-       * @param {*} callback Callback to be executed
-       * @memberof ResizeHandler
-       */
-
-    }, {
-      key: "attachListener",
-      value: function attachListener(ref, callback) {
-        ResizeHandler.Implementation.attachListener.call(ResizeHandler.Implementation, ref, callback);
-      }
-      /**
-       * @static
-       * @private
-       * @param {*} ref Reference to be unobserved
-       * @memberof ResizeHandler
-       */
-
-    }, {
-      key: "detachListener",
-      value: function detachListener(ref, callback) {
-        ResizeHandler.Implementation.detachListener.call(ResizeHandler.Implementation, ref, callback);
-      }
-      /**
-       * @static
-       * @public
-       * @param {*} ref Reference to a UI5 Web Component or DOM Element to be observed
-       * @param {*} callback Callback to be executed
-       * @memberof ResizeHandler
-       */
-
-    }, {
-      key: "register",
-      value: function register(ref, callback) {
-        if (ref instanceof UI5Element) {
-          ref = ref.getDomRef();
-        }
-
-        ResizeHandler.attachListener(ref, callback);
-      }
-      /**
-       * @static
-       * @public
-       * @param {*} ref Reference to UI5 Web Component or DOM Element to be unobserved
-       * @memberof ResizeHandler
-       */
-
-    }, {
-      key: "deregister",
-      value: function deregister(ref, callback) {
-        if (ref instanceof UI5Element) {
-          ref = ref.getDomRef();
-        }
-
-        ResizeHandler.detachListener(ref, callback);
-      }
-    }]);
-
-    return ResizeHandler;
-  }();
-
-  ResizeHandler.initialize();
-
-  function _templateObject13$1() {
-    var data = _taggedTemplateLiteral(["<slot name=\"searchField\"></slot>\t\t"]);
-
-    _templateObject13$1 = function _templateObject13() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject12$1() {
-    var data = _taggedTemplateLiteral(["<ui5-li\t\t\t\t\tdata-ui5-external-action-item-id=\"", "\" \t\t\t\t\ticon=\"", "\"\t\t\t\t\ttype=\"Active\"\t\t\t\t\t@ui5-_press=\"", "\"\t\t\t\t>", "</ui5-li>\t\t\t"]);
-
-    _templateObject12$1 = function _templateObject12() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject11$1() {
-    var data = _taggedTemplateLiteral(["<div\t\t\t\t\t\ttabindex=\"", "\"\t\t\t\t\t\tid=\"", "\"\t\t\t\t\t\tstyle=\"", "\"\t\t\t\t\t\tclass=\"", "\"\t\t\t\t\t\t@click=\"", "\"\t\t\t\t\t><span style=\"", "\" class=\"", "\"></span></div>\t\t\t\t"]);
-
-    _templateObject11$1 = function _templateObject11() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject10$1() {
-    var data = _taggedTemplateLiteral(["<ui5-icon\t\t\t\t\t\ttabindex=\"", "\"\t\t\t\t\t\tdata-ui5-notification-count=\"", "\"\t\t\t\t\t\tdata-ui5-external-action-item-id=\"", "\"\t\t\t\t\t\tclass=\"", "\"\t\t\t\t\t\tsrc=\"", "\"\t\t\t\t\t\tid=\"", "\"\t\t\t\t\t\tstyle=\"", "\"\t\t\t\t\t\t@ui5-press=", "></ui5-icon>\t\t\t\t"]);
-
-    _templateObject10$1 = function _templateObject10() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject9$2() {
-    var data = _taggedTemplateLiteral(["", ""]);
-
-    _templateObject9$2 = function _templateObject9() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject8$2() {
-    var data = _taggedTemplateLiteral(["<span class=\"sapWCShellBarCoPilotPlaceholder\"></span>\t\t"]);
-
-    _templateObject8$2 = function _templateObject8() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject7$4() {
-    var data = _taggedTemplateLiteral(["<svg @click=\"", "\" version=\"1.1\" width=\"44\" height=\"44\" viewBox=\"-150 -150 300 300\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"\t\tstyle=\"background-color: transparent; cursor: pointer;\" class=\"ui5-shellbar-coPilot\"><defs><linearGradient id=\"grad1\" x1=\"0%\" x2=\"100%\" y1=\"100%\" y2=\"0%\"><stop offset=\"0%\" style=\"stop-color:#C0D9F2;stop-opacity:0.87\"></stop><stop offset=\"80%\" style=\"stop-color:#FFFFFF;stop-opacity:0.87\"></stop></linearGradient><linearGradient id=\"grad2\" x1=\"0%\" x2=\"100%\" y1=\"100%\" y2=\"0%\"><stop offset=\"0%\" style=\"stop-color:rgb(180,210,255);stop-opacity:0.16\"></stop><stop offset=\"80%\" style=\"stop-color:#FFFFFF;stop-opacity:0.16\"></stop></linearGradient><linearGradient id=\"grad3\" x1=\"0%\" x2=\"100%\" y1=\"100%\" y2=\"0%\"><stop offset=\"0%\" style=\"stop-color:rgb(180,210,255);stop-opacity:0.1\"></stop><stop offset=\"80%\" style=\"stop-color:#FFFFFF;stop-opacity:0.1\"></stop></linearGradient></defs><g fill=\"url(#grad3)\" transform=\"rotate(54)\"><path id=\"c3\" d=\"M 98.1584 0 C 98.3156 17.3952 89.0511 31.3348 79.5494 45.9279 C 70.339 60.0814 60.6163 71.2177 46.1724 79.9729 C 31.4266 88.9178 17.2493 94.3909 5.77261e-15 94.2739 C -17.1547 94.1581 -30.8225 87.6907 -45.7979 79.3244 C -61.0143 70.8266 -73.5583 62.554 -83.0507 47.9493 C -92.6677 33.1579 -98.4872 17.5705 -97.1793 1.19010e-14 C -95.9465 -16.9777 -84.488 -29.0862 -76.1351 -43.9566 C -67.6795 -59.0155 -63.8629 -76.1085 -49.262 -85.3243 C -34.502 -94.6464 -17.4328 -93.0037 -1.69174e-14 -92.0939 C 16.8967 -91.214 31.8608 -89.0341 46.4198 -80.4014 C 60.872 -71.8326 69.6003 -59.5351 78.6792 -45.4254 C 88.0511 -30.9104 98.015 -17.2766 98.1584 0 Z\"\t\t\t\ttransform=\"rotate(244.811)\"><animate id=\"wave3\" attributeName=\"d\" values=\"M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;M 104 0 C 103.6860370504768 18.670459122547623, 99.74513350853894 36.21879096669579, 88.33459118601274 50.99999999999999 C 77.42609021132327 65.13086500091876, 59.95986915829964 68.15050131663435, 44.50000000000001 77.07626093681503 C 29.040130841700375 86.00202055699572, 17.851519240361377 102, 6.245698675651501e-15 102 C -17.851519240361355 102, -28.89224164002164 85.74082198544978, -44.49999999999998 77.07626093681505 C -60.41578578366853 68.24070016127133, -78.942855942454 66.40974514759691, -90.0666419935816 52.000000000000036 C -101.58041073743591 37.08507152827802, -106.51375198961607 18.673591324066255, -104 1.2736326711132473e-14 C -101.57139126725896 -18.041098385442222, -86.17817517682458 -28.73502209016882, -77.07626093681506 -44.49999999999998 C -67.97434669680554 -60.264977909831146, -66.77256915682678 -79.42941623510848, -52.00000000000004 -90.0666419935816 C -36.96347614018194 -100.89393257665785, -18.33904556278876 -102.64701322308922, -1.8369701987210297e-14 -100 C 17.32727177622791 -97.49902374391826, 28.55026288749344 -84.4439984999364, 43.99999999999994 -76.21023553303064 C 60.07413421086994 -67.64370718198207, 78.79942390068253 -66.31128907769772, 90.06664199358158 -52.00000000000004 C 101.7221231317663 -37.19555062013585, 104.31680324149117 -18.83936298577321, 104 0 z ;M 102 0 C 101.82727211782054 17.85068357984393, 86.53189445508919 29.35841045474146, 77.07626093681505 44.49999999999999 C 67.96000753916402 59.09812997944896, 63.13859410212405 75.0566405949403, 49.000000000000014 84.87048957087498 C 34.41435518048109 94.99464438014832, 17.754300288879765 97.84390177587221, 6.000769315822031e-15 98 C -17.848085350949756 98.1569227951557, -34.936562555189376 96.05567507853976, -49.49999999999998 85.73651497465943 C -63.65084226105117 75.70970588855481, -67.15343120157955 58.79045409878119, -76.21023553303058 44.00000000000003 C -85.53194873850353 28.77692945084744, -101.82533168325062 17.849529545864502, -102 1.2491397351303002e-14 C -102.17467942383016 -17.85066458952948, -86.26579096020939 -29.195449136347488, -77.07626093681506 -44.49999999999998 C -68.05733453379239 -59.52042188438431, -65.25784853671414 -77.99137523784161, -50.00000000000004 -86.60254037844385 C -34.75370973790514 -95.20718230502631, -17.506833792572294 -87.99999999999999, -1.6165337748745062e-14 -88 C 17.50683379257223 -88.00000000000001, 34.671187347637854 -95.05929697358921, 49.999999999999936 -86.6025403784439 C 65.35816177516672 -78.12959215818911, 68.91293714727685 -60.037780348188306, 77.94228634059945 -45.00000000000004 C 87.13593221909689 -29.68859445350606, 102.172805244453 -17.858678638015444, 102 0 z ;M 88 0 C 87.0071643812453 16.750584310000846, 89.16591640357322 32.23066622251636, 82.48891971046778 47.62499999999999 C 75.39770857425334 63.9743373046321, 66.1406553264614 78.9687582413302, 50.250000000000014 87.03555308033607 C 34.54865539228622 95.00624548067042, 17.590620651271553 90.29638240436964, 5.480294426184406e-15 89.5 C -16.847968824431476 88.7372397661719, -32.382980242828936 89.6818280646011, -47.689999999999976 82.60150301295975 C -63.74959324223292 75.1730719952966, -77.27142977762603 65.04430269303984, -86.06560462809749 49.69000000000003 C -94.84784120247872 34.35654109365306, -96.67880542645688 17.590459164590612, -95 1.1634144591899855e-14 C -93.40474991806319 -16.714969454704665, -85.83878040009859 -30.176827189787602, -77.07626093681506 -44.49999999999998 C -68.48875537139932 -58.53709592172691, -59.78684881708811 -70.71810123462024, -46.12500000000004 -79.89084349911445 C -31.90399782177102 -89.43900857326942, -17.117492172090376 -95.6208569519316, -1.7680838162689912e-14 -96.25 C 17.42616675853088 -96.89048819537281, 32.604872069000194 -91.30523706046031, 48.124999999999936 -83.35494511425226 C 64.20208148728074 -75.11934989009448, 80.53937872975759 -67.29516003624032, 88.33459118601272 -51.00000000000004 C 96.03774549832913 -34.897278873736724, 89.0561690198359 -17.81911111787299, 88 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 87.83 0 C 87.5551104106254 17.484718516847604, 95.16127715466017 34.74963105642935, 86.50727758402758 49.94499999999999 C 77.84990328247498 65.14629455992826, 59.80875022938145 68.6539166070951, 44.21500000000001 76.5826264566579 C 29.396758375489803 84.11702559690347, 16.533901742833184 92.20444258129785, 5.7515536921955445e-15 93.93 C -17.56198148944071 95.76285276019921, -35.17832492952776 96.1755728839107, -49.88499999999998 86.40335453557344 C -64.42964616977311 76.73880034577543, -67.07555683863683 58.889186090717956, -75.63865876653286 43.67000000000003 C -84.09849199523896 28.63435318786967, -98.51711635059414 17.25222189595266, -98.5 1.206277097160143e-14 C -98.48288504887265 -17.250811320073485, -84.34877504334715 -28.780575409619935, -75.55205622615443 -43.619999999999976 C -66.86093647073717 -58.281286656612146, -63.230342222349634 -75.4345590754149, -48.600000000000044 -84.17766924784742 C -33.93357389700559 -92.94234319091034, -17.025973616417954 -90.19821090033776, -1.630678445404658e-14 -88.77 C 15.977895940302826 -87.42970630164737, 29.38189187799461 -82.73892939223205, 44.10999999999994 -76.40076112186321 C 60.461233804495656 -69.36408876567695, 79.25079249329674 -66.31020434586661, 88.09210407295308 -50.86000000000004 C 96.93350510099964 -35.40963934294652, 88.10983120877545 -17.799036801646473, 87.83 0 z ;M 102.87 0 C 100.60412172987674 17.8655933362356, 85.53754352796288 28.604858280384207, 75.95908816593312 43.855 C 66.77647829932806 58.47490441348097, 64.20185353081875 76.67202079060546, 49.27000000000002 85.33814328891859 C 34.33463676216738 94.00630274472348, 17.255471196681203 88.61139941746183, 5.384771975850912e-15 87.94 C -16.62338090404565 87.29319481409648, -32.13105073147386 88.83642498642243, -47.104999999999976 81.58825329053197 C -62.593549158874595 74.0909884333756, -75.11183789801551 63.203277636192524, -82.85265038005723 47.83500000000003 C -90.43100426068291 32.78926071449635, -88.33481436911549 16.845994873358578, -88.2 1.0801384768479656e-14 C -88.0661541958799 -16.72496592774988, -90.31714156576788 -32.8325291006581, -82.09054802472696 -47.394999999999975 C -73.84119732253154 -61.99775494831187, -58.70114242558277 -68.16576009477593, -44.58000000000004 -77.21482500142054 C -29.826455382596357 -86.66914383925732, -17.522369834392396 -100.13333736150332, -1.8369701987210297e-14 -100 C 17.510547309053553 -99.86675260260256, 28.908254552710822 -85.0894876419882, 44.18999999999994 -76.53932518646872 C 59.70239533946346 -67.86011372570036, 77.14713304516553 -64.89164530763992, 87.9622002623854 -50.78500000000004 C 99.23322575875696 -36.08362498889298, 105.20080735972847 -18.37753465535834, 102.87 0 z ;M 96.65 0 C 97.5682370155223 17.290645042626103, 91.44243921640975 32.85986013368205, 81.65753532283473 47.144999999999996 C 72.23761953500264 60.89728781209352, 58.31868393027413 67.69602416070182, 44.205000000000005 76.5653059485822 C 29.586348647997518 85.75191795153148, 17.265486227503665 98.5023411385901, 6.0289361922024196e-15 98.46 C -17.260135494401737 98.41767198331847, -28.927850358240754 84.61477988915865, -44.07999999999998 76.34879959763612 C -59.63539109726837 67.86283824713713, -77.60369551546168 65.19715075831209, -87.6850721331744 50.625000000000036 C -97.93164740539275 35.81406243807856, -99.13895928925051 17.870177323503324, -96.9 1.1866827483737853e-14 C -94.78582581853146 -16.874209235069404, -84.03526438034655 -28.885451186299278, -75.855165117479 -43.79499999999998 C -67.48656343152348 -59.04812484966506, -64.58702634493868 -77.07802892327148, -49.685000000000045 -86.05694437405965 C -34.754341245902474 -95.05311170556791, -17.423866102474058 -90.01428351214383, -1.6440883278553216e-14 -89.5 C 16.944874403202444 -88.99985442555268, 33.406945286813375 -91.76595741651028, 48.01999999999994 -83.17307977945752 C 62.60280079933599 -74.59799227491723, 68.26035047536544 -58.944088507890214, 76.799132807604 -44.340000000000046 C 85.38138197865302 -29.66156909334073, 95.74829471964232 -16.979348111836277, 96.65 0 z ;M 100.43 0 C 99.44111609671702 17.552560474217483, 85.45003481640393 29.038106989746822, 76.37478035974965 44.09499999999999 C 67.47982214730594 58.85276076308644, 64.07619623688856 76.5210513546238, 49.13500000000001 85.10431642989678 C 34.197839864932604 93.68526288681738, 17.224945520414785 88.19944893969671, 5.386608946049633e-15 87.97 C -16.995859874251966 87.74360264955502, -33.675744430814035 92.32280785019591, -48.38499999999998 83.80527832422013 C -63.09093119233604 75.28967380919008, -67.46629494853046 58.573580703738266, -76.07167146842508 43.92000000000003 C -84.74078159210374 29.157891156391287, -97.50578376593529 17.119125303246612, -97.6 1.1952552759678167e-14 C -97.6942955026296 -17.13352843141885, -85.16966290503643 -29.388429432236997, -76.5566456945444 -44.19999999999998 C -67.96991930904315 -58.966358953746784, -62.77231119032221 -74.64857202786988, -48.62500000000004 -84.22097051803664 C -34.121978463364755 -94.03405086895964, -17.446142869940783 -97.50541642989344, -1.7634913907721887e-14 -96 C 16.824136546866306 -94.54825609504428, 29.53246273910814 -84.92008419882137, 44.00999999999994 -76.22755604110633 C 58.26564148077935 -67.66825740177873, 71.6180443525204 -60.425177429348025, 81.51031100419134 -47.060000000000045 C 92.07153193494764 -32.79101629986303, 101.4285520767086 -17.724169293174832, 100.43 0 z ;M 97.27 0 C 98.58345261039341 17.558366186082086, 94.2994917286897 34.203939932148074, 84.091066707469 48.54999999999999 C 74.21975411889315 62.42231066985079, 58.473444022898576 67.23312887448718, 43.57000000000001 75.46545368577598 C 28.941333692804605 83.54599751254223, 16.64874697133146 93.54662780123404, 5.8170722959499274e-15 95 C -17.27803955307615 96.50830704429953, -33.78857056294901 93.13333275238398, -48.19499999999998 83.47618867078205 C -62.265894952404224 74.04396533562448, -68.01933932212052 58.825944468473296, -76.14095350072783 43.96000000000003 C -84.0905443486636 29.408930041052358, -92.00739521206805 16.483816295811398, -93.8 1.1487186976002173e-14 C -95.70727280919573 -17.538240901971744, -94.76889052685837 -34.35072747684755, -86.34273275730855 -49.84999999999997 C -77.83404631199598 -65.50107770786477, -64.5344993843803 -76.3187721614444, -48.310000000000045 -83.67537451365246 C -32.817324666057125 -90.70014915251777, -17.009590728815464 -88.78959332709252, -1.6349034768617164e-14 -89 C 17.210968156731738 -89.21289768843408, 34.09370369400777 -93.47659088564015, 49.00499999999994 -84.87914982491287 C 63.91783177263862 -76.28082345658234, 68.61922431545376 -59.49398069945713, 77.12822246104209 -44.530000000000044 C 85.58365918742902 -29.660212768381562, 95.99397423560407 -17.058040356269963, 97.27 0 z ;M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;\"\t\t\t\t\tdur=\"30s\" repeatCount=\"indefinite\"></animate><animateTransform id=\"ratate3\" attributeName=\"transform\" type=\"rotate\" from=\"54\" to=\"416\" dur=\"15s\"\t\t\t\t\trepeatCount=\"indefinite\"></animateTransform><animateTransform id=\"cat1\" attributeName=\"transform\" type=\"scale\" values=\"1;1.05;1.05;1.02;1\" dur=\"0.15s\"\t\t\t\t\tbegin=\"shell_avatar.mousedown\" repeatCount=\"1\" additive=\"sum\"></animateTransform></path></g><g fill=\"url(#grad2)\" transform=\"rotate(74)\"><path id=\"c2\" d=\"M 98.1584 0 C 98.3156 17.3952 89.0511 31.3348 79.5494 45.9279 C 70.339 60.0814 60.6163 71.2177 46.1724 79.9729 C 31.4266 88.9178 17.2493 94.3909 5.77261e-15 94.2739 C -17.1547 94.1581 -30.8225 87.6907 -45.7979 79.3244 C -61.0143 70.8266 -73.5583 62.554 -83.0507 47.9493 C -92.6677 33.1579 -98.4872 17.5705 -97.1793 1.19010e-14 C -95.9465 -16.9777 -84.488 -29.0862 -76.1351 -43.9566 C -67.6795 -59.0155 -63.8629 -76.1085 -49.262 -85.3243 C -34.502 -94.6464 -17.4328 -93.0037 -1.69174e-14 -92.0939 C 16.8967 -91.214 31.8608 -89.0341 46.4198 -80.4014 C 60.872 -71.8326 69.6003 -59.5351 78.6792 -45.4254 C 88.0511 -30.9104 98.015 -17.2766 98.1584 0 Z\"><animate id=\"wave2\" attributeName=\"d\" values=\"M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;M 104 0 C 103.6860370504768 18.670459122547623, 99.74513350853894 36.21879096669579, 88.33459118601274 50.99999999999999 C 77.42609021132327 65.13086500091876, 59.95986915829964 68.15050131663435, 44.50000000000001 77.07626093681503 C 29.040130841700375 86.00202055699572, 17.851519240361377 102, 6.245698675651501e-15 102 C -17.851519240361355 102, -28.89224164002164 85.74082198544978, -44.49999999999998 77.07626093681505 C -60.41578578366853 68.24070016127133, -78.942855942454 66.40974514759691, -90.0666419935816 52.000000000000036 C -101.58041073743591 37.08507152827802, -106.51375198961607 18.673591324066255, -104 1.2736326711132473e-14 C -101.57139126725896 -18.041098385442222, -86.17817517682458 -28.73502209016882, -77.07626093681506 -44.49999999999998 C -67.97434669680554 -60.264977909831146, -66.77256915682678 -79.42941623510848, -52.00000000000004 -90.0666419935816 C -36.96347614018194 -100.89393257665785, -18.33904556278876 -102.64701322308922, -1.8369701987210297e-14 -100 C 17.32727177622791 -97.49902374391826, 28.55026288749344 -84.4439984999364, 43.99999999999994 -76.21023553303064 C 60.07413421086994 -67.64370718198207, 78.79942390068253 -66.31128907769772, 90.06664199358158 -52.00000000000004 C 101.7221231317663 -37.19555062013585, 104.31680324149117 -18.83936298577321, 104 0 z ;M 102 0 C 101.82727211782054 17.85068357984393, 86.53189445508919 29.35841045474146, 77.07626093681505 44.49999999999999 C 67.96000753916402 59.09812997944896, 63.13859410212405 75.0566405949403, 49.000000000000014 84.87048957087498 C 34.41435518048109 94.99464438014832, 17.754300288879765 97.84390177587221, 6.000769315822031e-15 98 C -17.848085350949756 98.1569227951557, -34.936562555189376 96.05567507853976, -49.49999999999998 85.73651497465943 C -63.65084226105117 75.70970588855481, -67.15343120157955 58.79045409878119, -76.21023553303058 44.00000000000003 C -85.53194873850353 28.77692945084744, -101.82533168325062 17.849529545864502, -102 1.2491397351303002e-14 C -102.17467942383016 -17.85066458952948, -86.26579096020939 -29.195449136347488, -77.07626093681506 -44.49999999999998 C -68.05733453379239 -59.52042188438431, -65.25784853671414 -77.99137523784161, -50.00000000000004 -86.60254037844385 C -34.75370973790514 -95.20718230502631, -17.506833792572294 -87.99999999999999, -1.6165337748745062e-14 -88 C 17.50683379257223 -88.00000000000001, 34.671187347637854 -95.05929697358921, 49.999999999999936 -86.6025403784439 C 65.35816177516672 -78.12959215818911, 68.91293714727685 -60.037780348188306, 77.94228634059945 -45.00000000000004 C 87.13593221909689 -29.68859445350606, 102.172805244453 -17.858678638015444, 102 0 z ;M 88 0 C 87.0071643812453 16.750584310000846, 89.16591640357322 32.23066622251636, 82.48891971046778 47.62499999999999 C 75.39770857425334 63.9743373046321, 66.1406553264614 78.9687582413302, 50.250000000000014 87.03555308033607 C 34.54865539228622 95.00624548067042, 17.590620651271553 90.29638240436964, 5.480294426184406e-15 89.5 C -16.847968824431476 88.7372397661719, -32.382980242828936 89.6818280646011, -47.689999999999976 82.60150301295975 C -63.74959324223292 75.1730719952966, -77.27142977762603 65.04430269303984, -86.06560462809749 49.69000000000003 C -94.84784120247872 34.35654109365306, -96.67880542645688 17.590459164590612, -95 1.1634144591899855e-14 C -93.40474991806319 -16.714969454704665, -85.83878040009859 -30.176827189787602, -77.07626093681506 -44.49999999999998 C -68.48875537139932 -58.53709592172691, -59.78684881708811 -70.71810123462024, -46.12500000000004 -79.89084349911445 C -31.90399782177102 -89.43900857326942, -17.117492172090376 -95.6208569519316, -1.7680838162689912e-14 -96.25 C 17.42616675853088 -96.89048819537281, 32.604872069000194 -91.30523706046031, 48.124999999999936 -83.35494511425226 C 64.20208148728074 -75.11934989009448, 80.53937872975759 -67.29516003624032, 88.33459118601272 -51.00000000000004 C 96.03774549832913 -34.897278873736724, 89.0561690198359 -17.81911111787299, 88 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 87.83 0 C 87.5551104106254 17.484718516847604, 95.16127715466017 34.74963105642935, 86.50727758402758 49.94499999999999 C 77.84990328247498 65.14629455992826, 59.80875022938145 68.6539166070951, 44.21500000000001 76.5826264566579 C 29.396758375489803 84.11702559690347, 16.533901742833184 92.20444258129785, 5.7515536921955445e-15 93.93 C -17.56198148944071 95.76285276019921, -35.17832492952776 96.1755728839107, -49.88499999999998 86.40335453557344 C -64.42964616977311 76.73880034577543, -67.07555683863683 58.889186090717956, -75.63865876653286 43.67000000000003 C -84.09849199523896 28.63435318786967, -98.51711635059414 17.25222189595266, -98.5 1.206277097160143e-14 C -98.48288504887265 -17.250811320073485, -84.34877504334715 -28.780575409619935, -75.55205622615443 -43.619999999999976 C -66.86093647073717 -58.281286656612146, -63.230342222349634 -75.4345590754149, -48.600000000000044 -84.17766924784742 C -33.93357389700559 -92.94234319091034, -17.025973616417954 -90.19821090033776, -1.630678445404658e-14 -88.77 C 15.977895940302826 -87.42970630164737, 29.38189187799461 -82.73892939223205, 44.10999999999994 -76.40076112186321 C 60.461233804495656 -69.36408876567695, 79.25079249329674 -66.31020434586661, 88.09210407295308 -50.86000000000004 C 96.93350510099964 -35.40963934294652, 88.10983120877545 -17.799036801646473, 87.83 0 z ;M 102.87 0 C 100.60412172987674 17.8655933362356, 85.53754352796288 28.604858280384207, 75.95908816593312 43.855 C 66.77647829932806 58.47490441348097, 64.20185353081875 76.67202079060546, 49.27000000000002 85.33814328891859 C 34.33463676216738 94.00630274472348, 17.255471196681203 88.61139941746183, 5.384771975850912e-15 87.94 C -16.62338090404565 87.29319481409648, -32.13105073147386 88.83642498642243, -47.104999999999976 81.58825329053197 C -62.593549158874595 74.0909884333756, -75.11183789801551 63.203277636192524, -82.85265038005723 47.83500000000003 C -90.43100426068291 32.78926071449635, -88.33481436911549 16.845994873358578, -88.2 1.0801384768479656e-14 C -88.0661541958799 -16.72496592774988, -90.31714156576788 -32.8325291006581, -82.09054802472696 -47.394999999999975 C -73.84119732253154 -61.99775494831187, -58.70114242558277 -68.16576009477593, -44.58000000000004 -77.21482500142054 C -29.826455382596357 -86.66914383925732, -17.522369834392396 -100.13333736150332, -1.8369701987210297e-14 -100 C 17.510547309053553 -99.86675260260256, 28.908254552710822 -85.0894876419882, 44.18999999999994 -76.53932518646872 C 59.70239533946346 -67.86011372570036, 77.14713304516553 -64.89164530763992, 87.9622002623854 -50.78500000000004 C 99.23322575875696 -36.08362498889298, 105.20080735972847 -18.37753465535834, 102.87 0 z ;M 96.65 0 C 97.5682370155223 17.290645042626103, 91.44243921640975 32.85986013368205, 81.65753532283473 47.144999999999996 C 72.23761953500264 60.89728781209352, 58.31868393027413 67.69602416070182, 44.205000000000005 76.5653059485822 C 29.586348647997518 85.75191795153148, 17.265486227503665 98.5023411385901, 6.0289361922024196e-15 98.46 C -17.260135494401737 98.41767198331847, -28.927850358240754 84.61477988915865, -44.07999999999998 76.34879959763612 C -59.63539109726837 67.86283824713713, -77.60369551546168 65.19715075831209, -87.6850721331744 50.625000000000036 C -97.93164740539275 35.81406243807856, -99.13895928925051 17.870177323503324, -96.9 1.1866827483737853e-14 C -94.78582581853146 -16.874209235069404, -84.03526438034655 -28.885451186299278, -75.855165117479 -43.79499999999998 C -67.48656343152348 -59.04812484966506, -64.58702634493868 -77.07802892327148, -49.685000000000045 -86.05694437405965 C -34.754341245902474 -95.05311170556791, -17.423866102474058 -90.01428351214383, -1.6440883278553216e-14 -89.5 C 16.944874403202444 -88.99985442555268, 33.406945286813375 -91.76595741651028, 48.01999999999994 -83.17307977945752 C 62.60280079933599 -74.59799227491723, 68.26035047536544 -58.944088507890214, 76.799132807604 -44.340000000000046 C 85.38138197865302 -29.66156909334073, 95.74829471964232 -16.979348111836277, 96.65 0 z ;M 100.43 0 C 99.44111609671702 17.552560474217483, 85.45003481640393 29.038106989746822, 76.37478035974965 44.09499999999999 C 67.47982214730594 58.85276076308644, 64.07619623688856 76.5210513546238, 49.13500000000001 85.10431642989678 C 34.197839864932604 93.68526288681738, 17.224945520414785 88.19944893969671, 5.386608946049633e-15 87.97 C -16.995859874251966 87.74360264955502, -33.675744430814035 92.32280785019591, -48.38499999999998 83.80527832422013 C -63.09093119233604 75.28967380919008, -67.46629494853046 58.573580703738266, -76.07167146842508 43.92000000000003 C -84.74078159210374 29.157891156391287, -97.50578376593529 17.119125303246612, -97.6 1.1952552759678167e-14 C -97.6942955026296 -17.13352843141885, -85.16966290503643 -29.388429432236997, -76.5566456945444 -44.19999999999998 C -67.96991930904315 -58.966358953746784, -62.77231119032221 -74.64857202786988, -48.62500000000004 -84.22097051803664 C -34.121978463364755 -94.03405086895964, -17.446142869940783 -97.50541642989344, -1.7634913907721887e-14 -96 C 16.824136546866306 -94.54825609504428, 29.53246273910814 -84.92008419882137, 44.00999999999994 -76.22755604110633 C 58.26564148077935 -67.66825740177873, 71.6180443525204 -60.425177429348025, 81.51031100419134 -47.060000000000045 C 92.07153193494764 -32.79101629986303, 101.4285520767086 -17.724169293174832, 100.43 0 z ;M 97.27 0 C 98.58345261039341 17.558366186082086, 94.2994917286897 34.203939932148074, 84.091066707469 48.54999999999999 C 74.21975411889315 62.42231066985079, 58.473444022898576 67.23312887448718, 43.57000000000001 75.46545368577598 C 28.941333692804605 83.54599751254223, 16.64874697133146 93.54662780123404, 5.8170722959499274e-15 95 C -17.27803955307615 96.50830704429953, -33.78857056294901 93.13333275238398, -48.19499999999998 83.47618867078205 C -62.265894952404224 74.04396533562448, -68.01933932212052 58.825944468473296, -76.14095350072783 43.96000000000003 C -84.0905443486636 29.408930041052358, -92.00739521206805 16.483816295811398, -93.8 1.1487186976002173e-14 C -95.70727280919573 -17.538240901971744, -94.76889052685837 -34.35072747684755, -86.34273275730855 -49.84999999999997 C -77.83404631199598 -65.50107770786477, -64.5344993843803 -76.3187721614444, -48.310000000000045 -83.67537451365246 C -32.817324666057125 -90.70014915251777, -17.009590728815464 -88.78959332709252, -1.6349034768617164e-14 -89 C 17.210968156731738 -89.21289768843408, 34.09370369400777 -93.47659088564015, 49.00499999999994 -84.87914982491287 C 63.91783177263862 -76.28082345658234, 68.61922431545376 -59.49398069945713, 77.12822246104209 -44.530000000000044 C 85.58365918742902 -29.660212768381562, 95.99397423560407 -17.058040356269963, 97.27 0 z ;M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;\"\t\t\t\t\tdur=\"30s\" repeatCount=\"indefinite\"></animate><animateTransform id=\"cat1\" attributeName=\"transform\" type=\"scale\" values=\"1;1.05;1.05;1.02;1\" dur=\"0.15s\"\t\t\t\t\tbegin=\"shell_avatar.mousedown\" repeatCount=\"1\" additive=\"sum\"></animateTransform></path></g><g fill=\"url(#grad1)\" transform=\"rotate(90)\"><path id=\"c1\" d=\"M 98.1584 0 C 98.3156 17.3952 89.0511 31.3348 79.5494 45.9279 C 70.339 60.0814 60.6163 71.2177 46.1724 79.9729 C 31.4266 88.9178 17.2493 94.3909 5.77261e-15 94.2739 C -17.1547 94.1581 -30.8225 87.6907 -45.7979 79.3244 C -61.0143 70.8266 -73.5583 62.554 -83.0507 47.9493 C -92.6677 33.1579 -98.4872 17.5705 -97.1793 1.19010e-14 C -95.9465 -16.9777 -84.488 -29.0862 -76.1351 -43.9566 C -67.6795 -59.0155 -63.8629 -76.1085 -49.262 -85.3243 C -34.502 -94.6464 -17.4328 -93.0037 -1.69174e-14 -92.0939 C 16.8967 -91.214 31.8608 -89.0341 46.4198 -80.4014 C 60.872 -71.8326 69.6003 -59.5351 78.6792 -45.4254 C 88.0511 -30.9104 98.015 -17.2766 98.1584 0 Z\"\t\t\t\ttransform=\"rotate(364.878)\"><animate id=\"wave1\" attributeName=\"d\" values=\"M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;M 104 0 C 103.6860370504768 18.670459122547623, 99.74513350853894 36.21879096669579, 88.33459118601274 50.99999999999999 C 77.42609021132327 65.13086500091876, 59.95986915829964 68.15050131663435, 44.50000000000001 77.07626093681503 C 29.040130841700375 86.00202055699572, 17.851519240361377 102, 6.245698675651501e-15 102 C -17.851519240361355 102, -28.89224164002164 85.74082198544978, -44.49999999999998 77.07626093681505 C -60.41578578366853 68.24070016127133, -78.942855942454 66.40974514759691, -90.0666419935816 52.000000000000036 C -101.58041073743591 37.08507152827802, -106.51375198961607 18.673591324066255, -104 1.2736326711132473e-14 C -101.57139126725896 -18.041098385442222, -86.17817517682458 -28.73502209016882, -77.07626093681506 -44.49999999999998 C -67.97434669680554 -60.264977909831146, -66.77256915682678 -79.42941623510848, -52.00000000000004 -90.0666419935816 C -36.96347614018194 -100.89393257665785, -18.33904556278876 -102.64701322308922, -1.8369701987210297e-14 -100 C 17.32727177622791 -97.49902374391826, 28.55026288749344 -84.4439984999364, 43.99999999999994 -76.21023553303064 C 60.07413421086994 -67.64370718198207, 78.79942390068253 -66.31128907769772, 90.06664199358158 -52.00000000000004 C 101.7221231317663 -37.19555062013585, 104.31680324149117 -18.83936298577321, 104 0 z ;M 102 0 C 101.82727211782054 17.85068357984393, 86.53189445508919 29.35841045474146, 77.07626093681505 44.49999999999999 C 67.96000753916402 59.09812997944896, 63.13859410212405 75.0566405949403, 49.000000000000014 84.87048957087498 C 34.41435518048109 94.99464438014832, 17.754300288879765 97.84390177587221, 6.000769315822031e-15 98 C -17.848085350949756 98.1569227951557, -34.936562555189376 96.05567507853976, -49.49999999999998 85.73651497465943 C -63.65084226105117 75.70970588855481, -67.15343120157955 58.79045409878119, -76.21023553303058 44.00000000000003 C -85.53194873850353 28.77692945084744, -101.82533168325062 17.849529545864502, -102 1.2491397351303002e-14 C -102.17467942383016 -17.85066458952948, -86.26579096020939 -29.195449136347488, -77.07626093681506 -44.49999999999998 C -68.05733453379239 -59.52042188438431, -65.25784853671414 -77.99137523784161, -50.00000000000004 -86.60254037844385 C -34.75370973790514 -95.20718230502631, -17.506833792572294 -87.99999999999999, -1.6165337748745062e-14 -88 C 17.50683379257223 -88.00000000000001, 34.671187347637854 -95.05929697358921, 49.999999999999936 -86.6025403784439 C 65.35816177516672 -78.12959215818911, 68.91293714727685 -60.037780348188306, 77.94228634059945 -45.00000000000004 C 87.13593221909689 -29.68859445350606, 102.172805244453 -17.858678638015444, 102 0 z ;M 88 0 C 87.0071643812453 16.750584310000846, 89.16591640357322 32.23066622251636, 82.48891971046778 47.62499999999999 C 75.39770857425334 63.9743373046321, 66.1406553264614 78.9687582413302, 50.250000000000014 87.03555308033607 C 34.54865539228622 95.00624548067042, 17.590620651271553 90.29638240436964, 5.480294426184406e-15 89.5 C -16.847968824431476 88.7372397661719, -32.382980242828936 89.6818280646011, -47.689999999999976 82.60150301295975 C -63.74959324223292 75.1730719952966, -77.27142977762603 65.04430269303984, -86.06560462809749 49.69000000000003 C -94.84784120247872 34.35654109365306, -96.67880542645688 17.590459164590612, -95 1.1634144591899855e-14 C -93.40474991806319 -16.714969454704665, -85.83878040009859 -30.176827189787602, -77.07626093681506 -44.49999999999998 C -68.48875537139932 -58.53709592172691, -59.78684881708811 -70.71810123462024, -46.12500000000004 -79.89084349911445 C -31.90399782177102 -89.43900857326942, -17.117492172090376 -95.6208569519316, -1.7680838162689912e-14 -96.25 C 17.42616675853088 -96.89048819537281, 32.604872069000194 -91.30523706046031, 48.124999999999936 -83.35494511425226 C 64.20208148728074 -75.11934989009448, 80.53937872975759 -67.29516003624032, 88.33459118601272 -51.00000000000004 C 96.03774549832913 -34.897278873736724, 89.0561690198359 -17.81911111787299, 88 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 97 0 C 95.96205478306072 17.380245680862355, 92.31438589595038 33.26885450645463, 82.33303513778658 47.53499999999999 C 72.73454993850302 61.25392338906356, 58.07526843673644 67.1203245271079, 43.85500000000001 75.95908816593311 C 29.1689379616367 85.08737092091096, 17.266933647153582 97.78319544979668, 6.0442442771917615e-15 98.71 C -17.46539769433808 99.64745712962134, -31.760081272699992 89.97780532702197, -46.659999999999975 80.81749068116382 C -61.254519580560164 71.8449322457867, -74.9987279481924 63.057416617025154, -82.80068885583016 47.80500000000003 C -90.46529056195176 32.82111328110031, -87.3041822839497 16.816028610356618, -88 1.0776891832496709e-14 C -88.72578785785936 -17.54032572221827, -95.38715406508265 -34.80323520486043, -86.85368774554138 -50.144999999999975 C -78.30929038357452 -65.50641700627851, -59.99419319499677 -68.75787837688742, -44.82000000000004 -77.63051719523706 C -29.55758597966676 -86.55474040488905, -17.677948608071002 -101.20050810368325, -1.8540540215691355e-14 -100.93 C 17.66220221833233 -100.65973284769198, 28.66762264672243 -84.98120430879537, 44.03499999999994 -76.27085731129554 C 59.54270404931096 -67.48097206941182, 78.04582993349926 -65.57146684415069, 88.2133476294829 -50.93000000000004 C 98.53103081570782 -36.07229128519377, 98.0783410651801 -18.056668439457074, 97 0 z ;M 87.83 0 C 87.5551104106254 17.484718516847604, 95.16127715466017 34.74963105642935, 86.50727758402758 49.94499999999999 C 77.84990328247498 65.14629455992826, 59.80875022938145 68.6539166070951, 44.21500000000001 76.5826264566579 C 29.396758375489803 84.11702559690347, 16.533901742833184 92.20444258129785, 5.7515536921955445e-15 93.93 C -17.56198148944071 95.76285276019921, -35.17832492952776 96.1755728839107, -49.88499999999998 86.40335453557344 C -64.42964616977311 76.73880034577543, -67.07555683863683 58.889186090717956, -75.63865876653286 43.67000000000003 C -84.09849199523896 28.63435318786967, -98.51711635059414 17.25222189595266, -98.5 1.206277097160143e-14 C -98.48288504887265 -17.250811320073485, -84.34877504334715 -28.780575409619935, -75.55205622615443 -43.619999999999976 C -66.86093647073717 -58.281286656612146, -63.230342222349634 -75.4345590754149, -48.600000000000044 -84.17766924784742 C -33.93357389700559 -92.94234319091034, -17.025973616417954 -90.19821090033776, -1.630678445404658e-14 -88.77 C 15.977895940302826 -87.42970630164737, 29.38189187799461 -82.73892939223205, 44.10999999999994 -76.40076112186321 C 60.461233804495656 -69.36408876567695, 79.25079249329674 -66.31020434586661, 88.09210407295308 -50.86000000000004 C 96.93350510099964 -35.40963934294652, 88.10983120877545 -17.799036801646473, 87.83 0 z ;M 102.87 0 C 100.60412172987674 17.8655933362356, 85.53754352796288 28.604858280384207, 75.95908816593312 43.855 C 66.77647829932806 58.47490441348097, 64.20185353081875 76.67202079060546, 49.27000000000002 85.33814328891859 C 34.33463676216738 94.00630274472348, 17.255471196681203 88.61139941746183, 5.384771975850912e-15 87.94 C -16.62338090404565 87.29319481409648, -32.13105073147386 88.83642498642243, -47.104999999999976 81.58825329053197 C -62.593549158874595 74.0909884333756, -75.11183789801551 63.203277636192524, -82.85265038005723 47.83500000000003 C -90.43100426068291 32.78926071449635, -88.33481436911549 16.845994873358578, -88.2 1.0801384768479656e-14 C -88.0661541958799 -16.72496592774988, -90.31714156576788 -32.8325291006581, -82.09054802472696 -47.394999999999975 C -73.84119732253154 -61.99775494831187, -58.70114242558277 -68.16576009477593, -44.58000000000004 -77.21482500142054 C -29.826455382596357 -86.66914383925732, -17.522369834392396 -100.13333736150332, -1.8369701987210297e-14 -100 C 17.510547309053553 -99.86675260260256, 28.908254552710822 -85.0894876419882, 44.18999999999994 -76.53932518646872 C 59.70239533946346 -67.86011372570036, 77.14713304516553 -64.89164530763992, 87.9622002623854 -50.78500000000004 C 99.23322575875696 -36.08362498889298, 105.20080735972847 -18.37753465535834, 102.87 0 z ;M 96.65 0 C 97.5682370155223 17.290645042626103, 91.44243921640975 32.85986013368205, 81.65753532283473 47.144999999999996 C 72.23761953500264 60.89728781209352, 58.31868393027413 67.69602416070182, 44.205000000000005 76.5653059485822 C 29.586348647997518 85.75191795153148, 17.265486227503665 98.5023411385901, 6.0289361922024196e-15 98.46 C -17.260135494401737 98.41767198331847, -28.927850358240754 84.61477988915865, -44.07999999999998 76.34879959763612 C -59.63539109726837 67.86283824713713, -77.60369551546168 65.19715075831209, -87.6850721331744 50.625000000000036 C -97.93164740539275 35.81406243807856, -99.13895928925051 17.870177323503324, -96.9 1.1866827483737853e-14 C -94.78582581853146 -16.874209235069404, -84.03526438034655 -28.885451186299278, -75.855165117479 -43.79499999999998 C -67.48656343152348 -59.04812484966506, -64.58702634493868 -77.07802892327148, -49.685000000000045 -86.05694437405965 C -34.754341245902474 -95.05311170556791, -17.423866102474058 -90.01428351214383, -1.6440883278553216e-14 -89.5 C 16.944874403202444 -88.99985442555268, 33.406945286813375 -91.76595741651028, 48.01999999999994 -83.17307977945752 C 62.60280079933599 -74.59799227491723, 68.26035047536544 -58.944088507890214, 76.799132807604 -44.340000000000046 C 85.38138197865302 -29.66156909334073, 95.74829471964232 -16.979348111836277, 96.65 0 z ;M 100.43 0 C 99.44111609671702 17.552560474217483, 85.45003481640393 29.038106989746822, 76.37478035974965 44.09499999999999 C 67.47982214730594 58.85276076308644, 64.07619623688856 76.5210513546238, 49.13500000000001 85.10431642989678 C 34.197839864932604 93.68526288681738, 17.224945520414785 88.19944893969671, 5.386608946049633e-15 87.97 C -16.995859874251966 87.74360264955502, -33.675744430814035 92.32280785019591, -48.38499999999998 83.80527832422013 C -63.09093119233604 75.28967380919008, -67.46629494853046 58.573580703738266, -76.07167146842508 43.92000000000003 C -84.74078159210374 29.157891156391287, -97.50578376593529 17.119125303246612, -97.6 1.1952552759678167e-14 C -97.6942955026296 -17.13352843141885, -85.16966290503643 -29.388429432236997, -76.5566456945444 -44.19999999999998 C -67.96991930904315 -58.966358953746784, -62.77231119032221 -74.64857202786988, -48.62500000000004 -84.22097051803664 C -34.121978463364755 -94.03405086895964, -17.446142869940783 -97.50541642989344, -1.7634913907721887e-14 -96 C 16.824136546866306 -94.54825609504428, 29.53246273910814 -84.92008419882137, 44.00999999999994 -76.22755604110633 C 58.26564148077935 -67.66825740177873, 71.6180443525204 -60.425177429348025, 81.51031100419134 -47.060000000000045 C 92.07153193494764 -32.79101629986303, 101.4285520767086 -17.724169293174832, 100.43 0 z ;M 97.27 0 C 98.58345261039341 17.558366186082086, 94.2994917286897 34.203939932148074, 84.091066707469 48.54999999999999 C 74.21975411889315 62.42231066985079, 58.473444022898576 67.23312887448718, 43.57000000000001 75.46545368577598 C 28.941333692804605 83.54599751254223, 16.64874697133146 93.54662780123404, 5.8170722959499274e-15 95 C -17.27803955307615 96.50830704429953, -33.78857056294901 93.13333275238398, -48.19499999999998 83.47618867078205 C -62.265894952404224 74.04396533562448, -68.01933932212052 58.825944468473296, -76.14095350072783 43.96000000000003 C -84.0905443486636 29.408930041052358, -92.00739521206805 16.483816295811398, -93.8 1.1487186976002173e-14 C -95.70727280919573 -17.538240901971744, -94.76889052685837 -34.35072747684755, -86.34273275730855 -49.84999999999997 C -77.83404631199598 -65.50107770786477, -64.5344993843803 -76.3187721614444, -48.310000000000045 -83.67537451365246 C -32.817324666057125 -90.70014915251777, -17.009590728815464 -88.78959332709252, -1.6349034768617164e-14 -89 C 17.210968156731738 -89.21289768843408, 34.09370369400777 -93.47659088564015, 49.00499999999994 -84.87914982491287 C 63.91783177263862 -76.28082345658234, 68.61922431545376 -59.49398069945713, 77.12822246104209 -44.530000000000044 C 85.58365918742902 -29.660212768381562, 95.99397423560407 -17.058040356269963, 97.27 0 z ;M 102 0 C 102 17.85951467281289, 86.87204367700592 29.533206594083104, 77.94228634059948 44.99999999999999 C 69.01252900419304 60.46679340591688, 66.4667934059169 79.40483384960629, 51.000000000000014 88.33459118601273 C 35.53320659408312 97.26434852241918, 17.859514672812903 90, 5.5109105961630896e-15 90 C -17.85951467281288 90, -35.53320659408308 97.26434852241918, -50.99999999999998 88.33459118601274 C -66.46679340591687 79.4048338496063, -69.01252900419303 60.46679340591692, -77.94228634059947 45.00000000000003 C -86.87204367700592 29.533206594083133, -102 17.859514672812914, -102 1.2491397351303002e-14 C -102 -17.85951467281287, -86.87204367700593 -29.533206594083083, -77.9422863405995 -44.99999999999997 C -69.01252900419306 -60.46679340591687, -66.46679340591693 -79.40483384960628, -51.00000000000004 -88.33459118601273 C -35.53320659408315 -97.26434852241918, -17.85951467281292 -89.99999999999999, -1.6532731788489267e-14 -90 C 17.859514672812853 -90.00000000000001, 35.533206594083055 -97.26434852241921, 50.99999999999993 -88.33459118601279 C 66.46679340591683 -79.40483384960635, 69.012529004193 -60.46679340591694, 77.94228634059945 -45.00000000000004 C 86.8720436770059 -29.53320659408314, 102 -17.85951467281291, 102 0 z ;\"\t\t\t\t\tdur=\"30s\" repeatCount=\"indefinite\"></animate><animateTransform id=\"ratate1\" attributeName=\"transform\" type=\"rotate\" from=\"90\" to=\"450\" dur=\"30s\"\t\t\t\t\trepeatCount=\"indefinite\"></animateTransform><animateTransform id=\"cat1\" attributeName=\"transform\" type=\"scale\" values=\"1;1.05;1.05;1.02;1\" dur=\"0.15s\"\t\t\t\t\tbegin=\"shell_avatar.mousedown\" repeatCount=\"1\" additive=\"sum\"></animateTransform></path></g><circle cx=\"0\" cy=\"0\" r=\"76\" class=\"sapWCShellBarCoPilotMiddle\" id=\"shell_avatar\"></circle></svg>"]);
-
-    _templateObject7$4 = function _templateObject7() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject6$4() {
-    var data = _taggedTemplateLiteral(["<h1 class=\"", "\"><bdi class=\"", "\">", "</bdi></h1>\t\t\t\t"]);
-
-    _templateObject6$4 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$8() {
-    var data = _taggedTemplateLiteral(["<img class=\"", "\" src=\"", "\" />\t\t\t\t"]);
-
-    _templateObject5$8 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$9() {
-    var data = _taggedTemplateLiteral(["<button tabindex=\"0\" class=\"", "\" @click=\"", "\">\t\t\t\t", "", "<span class=\"", "\"></span></button>\t\t"]);
-
-    _templateObject4$9 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$c() {
-    var data = _taggedTemplateLiteral(["<img class=\"", "\" src=\"", "\" @click=\"", "\" />\t\t"]);
-
-    _templateObject3$c = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$i() {
-    var data = _taggedTemplateLiteral(["<slot name=\"icon\"></slot>\t\t"]);
-
-    _templateObject2$i = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$o() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><div class=\"", "\">\t\t", "", "", "<ui5-popover class=\"sapWCShellBarMenuPopover\" no-header placement-type=\"Bottom\"><ui5-list separators=\"None\" mode=\"SingleSelect\" @ui5-itemPress=", "><slot name=\"menuItems\"></slot></ui5-list></ui5-popover><h2 class=\"", "\">", "</h2></div><div class=\"sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerMiddle\">\t\t", "</div><div class=\"sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerRight\"><div class=\"sapWCShellBarOverflowContainerRightChild\">\t\t\t", "</div></div><ui5-popover class=\"sapWCShellBarOverflowPopover\" placement-type=\"Bottom\" horizontal-align=\"", "\" no-header no-arrow><ui5-list separators=\"None\" @ui5-itemPress=\"", "\">\t\t\t", "</ui5-list></ui5-popover><div class=\"", "\"></div><div id=\"", "-searchfield-wrapper\"\t\tclass=\"", "\"\t\tstyle=\"", "\"\t\t@focusout=", "\t>\t\t", "</div></div>"]);
-
-    _templateObject$o = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$n = function block0(context) {
-    return html(_templateObject$o(), ifDefined(classMap(context.classes.wrapper)), ifDefined(context.rtl), ifDefined(classMap(context.classes.leftContainer)), context.icon ? block1$i(context) : undefined, !context.interactiveLogo ? block2$c(context) : undefined, context.showArrowDown ? block3$9(context) : undefined, ifDefined(context._menuItemPress), ifDefined(classMap(context.classes.secondaryTitle)), ifDefined(context.secondaryTitle), context.showCoPilot ? block6$4(context) : block7$2(context), repeat(context._itemsInfo, undefined, function (item, index) {
-      return block8$2(item, index, context);
-    }), ifDefined(context.popoverHorizontalAlign), ifDefined(context._actionList.itemPress), repeat(context._hiddenIcons, undefined, function (item, index) {
-      return block11$1(item, index, context);
-    }), ifDefined(classMap(context.classes.blockLayer)), ifDefined(context._id), ifDefined(classMap(context.classes.searchField)), ifDefined(styleMap$1(context.styles.searchField)), ifDefined(context._searchField.focusout), context.searchField ? block12$1(context) : undefined);
-  };
-
-  var block1$i = function block1(context) {
-    return html(_templateObject2$i());
-  };
-
-  var block2$c = function block2(context) {
-    return html(_templateObject3$c(), ifDefined(classMap(context.classes.logo)), ifDefined(context.logo), ifDefined(context._logoPress));
-  };
-
-  var block3$9 = function block3(context) {
-    return html(_templateObject4$9(), ifDefined(classMap(context.classes.button)), ifDefined(context._header.press), context.interactiveLogo ? block4$8(context) : undefined, context.primaryTitle ? block5$4(context) : undefined, ifDefined(classMap(context.classes.arrow)));
-  };
-
-  var block4$8 = function block4(context) {
-    return html(_templateObject5$8(), ifDefined(classMap(context.classes.logo)), ifDefined(context.logo));
-  };
-
-  var block5$4 = function block5(context) {
-    return html(_templateObject6$4(), ifDefined(classMap(context.classes.buttonTitle)), ifDefined(classMap(context.classes.title)), ifDefined(context.primaryTitle));
-  };
-
-  var block6$4 = function block6(context) {
-    return html(_templateObject7$4(), ifDefined(context._coPilotPress));
-  };
-
-  var block7$2 = function block7(context) {
-    return html(_templateObject8$2());
-  };
-
-  var block8$2 = function block8(item, index, context) {
-    return html(_templateObject9$2(), item.src ? block9$1(item, index, context) : block10$1(item, index, context));
-  };
-
-  var block9$1 = function block9(item, index, context) {
-    return html(_templateObject10$1(), ifDefined(item._tabIndex), ifDefined(context.notificationCount), ifDefined(item.refItemid), ifDefined(item.classes), ifDefined(item.src), ifDefined(item.id), ifDefined(item.style), ifDefined(item.press));
-  };
-
-  var block10$1 = function block10(item, index, context) {
-    return html(_templateObject11$1(), ifDefined(item._tabIndex), ifDefined(item.id), ifDefined(item.style), ifDefined(item.classes), ifDefined(item.press), ifDefined(item.subStyles), ifDefined(item.subclasses));
-  };
-
-  var block11$1 = function block11(item, index, context) {
-    return html(_templateObject12$1(), ifDefined(item.refItemid), ifDefined(item.src), ifDefined(item.press), ifDefined(item.text));
-  };
-
-  var block12$1 = function block12(context) {
-    return html(_templateObject13$1());
-  };
-
-  var styles$7 = ":host(ui5-shellbar:not([hidden])){display:inline-block;width:100%}ui5-shellbar:not([hidden]){display:inline-block;width:100%}.sapWCShellBarWrapper{position:relative;display:flex;justify-content:space-between;align-items:center;background:var(--sapUiShellColor,var(--sapShellColor,var(--sapPrimary1,#354a5f)));height:2.75rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;box-sizing:border-box}.sapWCShellBarIconButton,.sapWCShellBarImageButton,.sapWCShellBarMenuButton,::slotted(ui5-icon){height:2.25rem;padding:0;margin-left:.5rem;border:none;outline:none;background:transparent;color:var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff));box-sizing:border-box;cursor:pointer;border-radius:.25rem;position:relative;font-size:.75rem;font-weight:700}.sapWCShellBarIconButton:hover,.sapWCShellBarImageButton:hover,.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive:hover{background:var(--sapUiShellHoverBackground,#283848)}.sapWCShellBarIconButton:active,.sapWCShellBarImageButton:active,.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive:active{background:var(--sapUiShellActiveBackground,#23303e);color:var(--sapUiShellActiveTextColor,#fff)}.sapWCShellBarIconButton:focus:after,.sapWCShellBarImageButton:focus:after,.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive:focus:after{content:\"\";position:absolute;width:calc(100% - .375rem);height:calc(100% - .375rem);border:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff));pointer-events:none;left:2px;top:2px;z-index:1}.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive::-moz-focus-inner{border:none}.sapWCShellBarMenuButtonTitle{display:inline-block;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));margin:0;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:auto}.sapWCShellBarMenuButtonNoTitle{min-width:2.25rem;justify-content:center}.sapWCShellBarMenuButtonNoTitle span{margin-left:0}.sapWCShellBarMenuButtonMerged span{margin-left:.5rem}.sapWCShellBarSecondaryTitle{display:inline-block;margin:0 .5rem;font-size:var(--sapMFontSmallSize,.75rem);color:var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff));line-height:1rem;font-weight:400;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.sapWCShellBarMenuButtonInteractive .sapWCShellBarMenuButtonArrow{display:inline-block;margin-left:.5rem;width:10px;height:10px;width:0;height:0;color:var(--sapUiShellInteractiveTextColor,var(--sapShell_InteractiveTextColor,#d1e8ff));border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff))}.sapWCShellBarOverflowContainer{display:flex;justify-content:center;align-items:center;height:100%;overflow:hidden}.sapWCShellBarCoPilot{width:50px;height:30px}.sapWCShellBarCoPilotBehindLayer{animation:Behind_layer 9s linear;animation-iteration-count:infinite;transform-origin:center}.sapWCShellBarOverflowContainerMiddle{align-self:center;height:2.5rem;width:3rem;flex-shrink:0}@keyframes Behind_layer{0%{transform:rotate(1turn)}}.sapWCShellBarCoPilotTopLayer{animation:Top_layer 9s linear;animation-iteration-count:infinite;transform-origin:center}@keyframes Top_layer{0%{transform:rotate(-1turn)}}.sapWCShellBarSizeS{padding:.25rem 1rem}.sapWCShellBarSizeS ::slotted(ui5-icon){margin-right:0}.sapWCShellBarSizeS .sapWCShellBarSearchField{width:200px}.sapWCShellBarSizeM{padding:.25rem 2rem}.sapWCShellBarSizeL{padding:.25rem 2rem}.sapWCShellBarSizeXL{padding:.25rem 3rem}.sapWCShellBarSizeXXL{padding:.25rem 3rem}.sapWCShellBarLogo{cursor:pointer;height:1.675rem}.sapWCShellBarLogo:not([src]){display:none}.sapWCShellBarIconButton{min-width:2.25rem;font-size:1rem}.sapWCShellBarImageButtonImage{border-radius:50%;width:1.75rem;height:1.75rem;display:flex;background-size:cover}.sapWCShellBarImageButton{display:flex;justify-content:center;align-items:center;min-width:2.25rem;height:2.25rem;display:inline-flex}.sapWCShellBarOverflowContainerLeft{flex-basis:50%;max-width:calc(50% - 1.5rem);justify-content:flex-start;margin-right:.5rem}.sapWCShellBarMenuButton{white-space:nowrap;overflow:hidden;display:flex;align-items:center;padding:.25rem .5rem;cursor:text;-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}.sapWCShellBarMenuButton.sapWCShellBarMenuButtonInteractive{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer}.sapWCShellBarMenuButton.sapWCShellBarMenuButtonNoLogo{margin-left:0}.sapWCShellBarOverflowContainerRight{display:block;overflow:hidden;box-sizing:border-box;white-space:nowrap;margin-left:8rem;flex:1}.sapWCShellBarOverflowContainerRight .sapWCShellBarOverflowContainerRightChild{display:flex;float:right}.sapWCShellBarOverflowIcon{display:none}.sapWCShellBarSizeM .sapWCShellBarSecondaryTitle{display:none}.sapWCShellBarSizeS .sapWCShellBarSecondaryTitle{display:none}.sapWCShellBarSizeS .sapWCShellBarMenuButtonTitle{display:none}.sapWCShellBarSizeS .sapWCShellBarOverflowContainerRight{margin-left:0}.sapWCOverflowButtonShown{display:inline-block}.sapWCShellBarHiddenIcon,.sapWCShellBarUnsetIcon{visibility:hidden}.svg-box-content{width:40px;height:30px}.sapWCShellBarSearchFieldHidden{display:none}.sapWCShellBarHasSearchField.sapWCShellBarSizeL .sapWCShellBarOverflowContainerRight{margin-left:1rem}.sapWCShellBarHasSearchField.sapWCShellBarSizeXL .sapWCShellBarOverflowContainerRight{margin-left:1rem}.sapWCShellBarHasNotifications .sapWCShellBarBellIcon{position:relative}.sapWCShellBarHasNotifications .sapWCShellBarBellIcon:before{content:attr(data-ui5-notification-count);position:absolute;width:auto;height:1rem;min-width:1rem;background:var(--sapUiContentBadgeBackground,var(--sapContent_BadgeBackground,#ab2b2b));color:var(--sapUiShellTextColor,var(--sapShell_TextColor,#fff));top:.125rem;left:1.5rem;padding:.25rem;border-radius:1rem;display:flex;justify-content:center;align-items:center;font-size:var(--sapMFontSmallSize,.75rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));z-index:2;box-sizing:border-box}.sapWCShellBarMenuButton{margin-left:.5rem}.sapWCShellBarBlockLayer{top:0;left:0;right:0;bottom:0;position:fixed;outline:0 none;z-index:100}.sapWCShellBarBlockLayerHidden{display:none}.sapWCShellBarSearchField{z-index:101;position:absolute;width:240px;top:.25rem}.sapWCShellBarBlockLayerShown .sapWCShellBarSearchIcon{background:var(--sapUiHighlight,var(--sapHighlightColor,#0854a0));color:var(--sapUiShellActiveTextColor,#fff);border-top-left-radius:0;border-bottom-left-radius:0}.sapWCShellBarCoPilotPlaceholder{width:2.75rem;height:2.75rem}.sapWCShellBarCoPilotMiddle{fill:var(--sapUiShellColor,var(--sapShellColor,var(--sapPrimary1,#354a5f)))}.sapWCShellBarCoPilotWrapper{background:var(--sapUiShellColor,var(--sapShellColor,var(--sapPrimary1,#354a5f)))}[dir=rtl] ::slotted(ui5-icon){margin-left:.5rem;margin-right:0}[dir=rtl] .sapWCShellBarMenuButton{margin-right:.5rem;margin-left:0}[dir=rtl] .sapWCShellBarMenuButtonInteractive .sapWCShellBarMenuButtonArrow{margin-right:.5rem;margin-left:0}[dir=rtl] .sapWCShellBarOverflowContainerRight{margin-right:8rem;margin-left:0}[dir=rtl] .sapWCShellBarOverflowContainerRight .sapWCShellBarOverflowContainerRightChild{float:left}[dir=rtl] .sapWCShellBarSizeS .sapWCShellBarOverflowContainerRight{margin-right:0}::slotted(ui5-icon){width:2.25rem;height:2.25rem;margin-right:.5rem;margin-left:0;display:flex;justify-content:center;align-items:center}::slotted(ui5-icon:hover){background:var(--sapUiShellHoverBackground,#283848)}::slotted(ui5-icon:active){background:var(--sapUiShellActiveBackground,#23303e);color:var(--sapUiShellActiveTextColor,#fff)}::slotted(ui5-icon:focus):after{content:\"\";position:absolute;width:calc(100% - .375rem);height:calc(100% - .375rem);border:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff));pointer-events:none;left:2px;top:2px;z-index:1}";
-
-  /**
-   * @public
-   */
-
-  var metadata$r = {
-    tag: "ui5-shellbar",
-    properties:
-    /** @lends  sap.ui.webcomponents.main.ShellBar.prototype */
-    {
-      /**
-       * Defines the <code>logo</code> source URI.
-       * @type {string}
-       * @public
-       */
-      logo: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>primaryTitle</code>.
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      primaryTitle: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>secondaryTitle</code>.
-       * <br><br>
-       * <b>Note:</b> On smaller screen width, the <code>secondaryTitle</code> would be hidden.
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      secondaryTitle: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>notificationCount</code>,
-       * displayed in the notification icon top-right corner.
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      notificationCount: {
-        type: String
-      },
-
-      /**
-       * Defines the source URI of the profile action.
-       * If no source is set - profile will be excluded from actions.
-       * @type {string}
-       * @public
-       */
-      profile: {
-        type: String
-      },
-
-      /**
-       * Defines, if the notification icon would be displayed.
-       * @type {boolean}
-       * @public
-       */
-      showNotifications: {
-        type: Boolean
-      },
-
-      /**
-       * Defines, if the product switch icon would be displayed.
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      showProductSwitch: {
-        type: Boolean
-      },
-
-      /**
-       * Defines, if the product CoPilot icon would be displayed.
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      showCoPilot: {
-        type: Boolean
-      },
-      _breakpointSize: {
-        type: String
-      },
-      _itemsInfo: {
-        type: Object,
-        deepEqual: true
-      },
-      _actionList: {
-        type: Object
-      },
-      _showBlockLayer: {
-        type: Boolean
-      },
-      _searchField: {
-        type: Object
-      },
-      _header: {
-        type: Object
-      }
-    },
-    slots:
-    /** @lends  sap.ui.webcomponents.main.ShellBar.prototype */
-    {
-      /**
-       * Defines the <code>ui5-shellbar</code> aditional items.
-       * </br></br>
-       * <b>Note:</b>
-       * You can use the &nbsp;&lt;ui5-shellbar-item>&lt;/ui5-shellbar-item>.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @public
-       */
-      items: {
-        type: HTMLElement,
-        multiple: true
-      },
-
-      /**
-       * Defines the items displayed in menu after a click on the primary title.
-       * </br></br>
-       * <b>Note:</b>
-       * You can use the &nbsp;&lt;ui5-li>&lt;/ui5-li> and its ancestors.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @since 0.10
-       * @public
-       */
-      menuItems: {
-        type: HTMLElement,
-        multiple: true
-      },
-
-      /**
-       * Defines the <code>ui5-input</code>, that will be used as a search field.
-       *
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      searchField: {
-        type: HTMLElement
-      },
-
-      /**
-       * Defines a <code>ui5-icon</code> in the bar that will be placed in the beginning.
-       *
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      icon: {
-        type: HTMLElement
-      }
-    },
-    defaultSlot: "items",
-    events:
-    /** @lends sap.ui.webcomponents.main.ShellBar.prototype */
-    {
-      /**
-       *
-       * Fired, when the notification icon is pressed.
-       *
-       *
-       * @event
-       * @param {HTMLElement} targetRef dom ref of the clicked element
-       * @public
-       */
-      notificationsPress: {
-        detail: {
-          targetRef: {
-            type: HTMLElement
-          }
-        }
-      },
-
-      /**
-       * Fired, when the profile icon is pressed.
-       *
-       * @event
-       * @param {HTMLElement} targetRef dom ref of the clicked element
-       * @public
-       */
-      profilePress: {
-        detail: {
-          targetRef: {
-            type: HTMLElement
-          }
-        }
-      },
-
-      /**
-       * Fired, when the product switch icon is pressed.
-       *
-       * @event
-       * @param {HTMLElement} targetRef dom ref of the clicked element
-       * @public
-       */
-      productSwitchPress: {
-        detail: {
-          targetRef: {
-            type: HTMLElement
-          }
-        }
-      },
-
-      /**
-       * Fired, when the logo is pressed.
-       *
-       * @event
-       * @param {HTMLElement} targetRef dom ref of the clicked element
-       * @since 0.10
-       * @public
-       */
-      logoPress: {
-        detail: {
-          targetRef: {
-            type: HTMLElement
-          }
-        }
-      },
-
-      /**
-       * Fired, when the co pilot is pressed.
-       *
-       * @event
-       * @param {HTMLElement} targetRef dom ref of the clicked element
-       * @since 0.10
-       * @public
-       */
-      coPilotPress: {
-        detail: {
-          targetRef: {
-            type: HTMLElement
-          }
-        }
-      },
-
-      /**
-       * Fired, when a menu item is selected
-       *
-       * @event
-       * @param {HTMLElement} item dom ref of the clicked list item
-       * @since 0.10
-       * @public
-       */
-      menuItemPress: {
-        detail: {
-          item: {
-            type: HTMLElement
-          }
-        }
-      }
-    }
-  };
-  /**
-   * @class
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-shellbar</code> is meant to serve as an application header
-   * and includes numerous built-in features, such as: logo, profile icon, title, search field, notifications and so on.
-   * <br><br>
-   * <h3>ES6 Module Import</h3>
-   * <code>import "@ui5/webcomponents/dist/ShellBar";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.ShellBar
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-shellbar
-   * @appenddocs ShellBarItem
-   * @public
-   * @since 0.8.0
-   */
-
-  var ShellBar =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(ShellBar, _UI5Element);
-
-    _createClass(ShellBar, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$r;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$7;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$n;
-      }
-    }, {
-      key: "FIORI_3_BREAKPOINTS",
-      get: function get() {
-        return [559, 1023, 1439, 1919, 10000];
-      }
-    }, {
-      key: "FIORI_3_BREAKPOINTS_MAP",
-      get: function get() {
-        return {
-          "559": "S",
-          "1023": "M",
-          "1439": "L",
-          "1919": "XL",
-          "10000": "XXL"
-        };
-      }
-    }]);
-
-    function ShellBar() {
-      var _this;
-
-      _classCallCheck(this, ShellBar);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(ShellBar).call(this));
-      _this._itemsInfo = [];
-      _this._isInitialRendering = true;
-      _this._focussedItem = null; // marks if preventDefault() is called in item's press handler
-
-      _this._defaultItemPressPrevented = false;
-
-      var that = _assertThisInitialized(_this);
-
-      _this._actionList = {
-        itemPress: function itemPress(event) {
-          var popover = _this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover");
-
-          if (!_this._defaultItemPressPrevented) {
-            popover.close();
-          }
-
-          _this._defaultItemPressPrevented = false;
-        }
-      };
-      _this._header = {
-        press: function press(event) {
-          var menuPopover = _this.shadowRoot.querySelector(".sapWCShellBarMenuPopover");
-
-          if (_this.menuItems.length) {
-            menuPopover.openBy(_this.shadowRoot.querySelector(".sapWCShellBarMenuButton"));
-          }
-        }
-      };
-      _this._itemNav = new ItemNavigation(_assertThisInitialized(_this));
-
-      _this._itemNav.getItemsCallback = function () {
-        var items = that._itemsInfo.filter(function (info) {
-          var isVisible = info.classes.indexOf("sapWCShellBarHiddenIcon") === -1;
-          var isSet = info.classes.indexOf("sapWCShellBarUnsetIcon") === -1;
-
-          if (isVisible && isSet) {
-            return true;
-          }
-
-          return false;
-        }).sort(function (item1, item2) {
-          if (item1.domOrder < item2.domOrder) {
-            return -1;
-          }
-
-          if (item1.domOrder > item2.domOrder) {
-            return 1;
-          }
-
-          return 0;
-        });
-
-        _this._itemNav.rowSize = items.length;
-        return items.map(function (item) {
-          var clone = JSON.parse(JSON.stringify(item));
-          clone.press = item.press;
-          return clone;
-        });
-      };
-
-      _this._itemNav.setItemsCallback = function (items) {
-        var newItems = that._itemsInfo.map(function (stateItem) {
-          var mappingItem = items.filter(function (item) {
-            return item.id === stateItem.id;
-          })[0];
-          var clone = JSON.parse(JSON.stringify(stateItem));
-          clone._tabIndex = mappingItem ? mappingItem._tabIndex : "-1";
-          clone.press = stateItem.press;
-          return clone;
-        });
-
-        that._itemsInfo = newItems;
-      };
-
-      _this._delegates.push(_this._itemNav);
-
-      _this._searchField = {
-        left: 0,
-        focusout: function focusout(event) {
-          _this._showBlockLayer = false;
-        }
-      };
-
-      _this._handleResize = function (event) {
-        _this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover").close();
-
-        _this._overflowActions();
-      };
-
-      return _this;
-    }
-
-    _createClass(ShellBar, [{
-      key: "_menuItemPress",
-      value: function _menuItemPress(event) {
-        this.fireEvent("menuItemPress", {
-          item: event.detail.item
-        });
-      }
-    }, {
-      key: "_logoPress",
-      value: function _logoPress(event) {
-        this.fireEvent("logoPress", {
-          targetRef: this.shadowRoot.querySelector(".sapWCShellBarLogo")
-        });
-      }
-    }, {
-      key: "_coPilotPress",
-      value: function _coPilotPress(event) {
-        this.fireEvent("coPilotPress", {
-          targetRef: this.shadowRoot.querySelector(".ui5-shellbar-coPilot")
-        });
-      }
-    }, {
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        var size = this._handleBarBreakpoints();
-
-        if (size !== "S") {
-          this._itemNav.init();
-        }
-
-        this._hiddenIcons = this._itemsInfo.filter(function (info) {
-          var isHidden = info.classes.indexOf("sapWCShellBarHiddenIcon") !== -1;
-          var isSet = info.classes.indexOf("sapWCShellBarUnsetIcon") === -1;
-          var isOverflowIcon = info.classes.indexOf("sapWCShellBarOverflowIcon") !== -1;
-          return isHidden && isSet && !isOverflowIcon;
-        });
-      }
-    }, {
-      key: "onAfterRendering",
-      value: function onAfterRendering() {
-        this._overflowActions();
-
-        if (this._focussedItem) {
-          this._focussedItem._tabIndex = "0";
-        }
-      }
-      /**
-       * Closes the overflow area.
-       * Useful to manually close the overflow after having suppressed automatic closing with preventDefault() of ShellbarItem's press event
-       * @public
-       */
-
-    }, {
-      key: "closeOverflow",
-      value: function closeOverflow() {
-        var popover = this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover");
-
-        if (popover) {
-          popover.close();
-        }
-      }
-    }, {
-      key: "_handleBarBreakpoints",
-      value: function _handleBarBreakpoints() {
-        var width = this.getBoundingClientRect().width;
-        var breakpoints = ShellBar.FIORI_3_BREAKPOINTS;
-        var size = breakpoints.filter(function (bp1) {
-          return width < bp1;
-        })[0] || ShellBar.FIORI_3_BREAKPOINTS[ShellBar.FIORI_3_BREAKPOINTS.length - 1];
-        var mappedSize = ShellBar.FIORI_3_BREAKPOINTS_MAP[size];
-
-        if (this._breakpointSize !== mappedSize) {
-          this._breakpointSize = mappedSize;
-        }
-
-        return mappedSize;
-      }
-    }, {
-      key: "_handleSizeS",
-      value: function _handleSizeS() {
-        var _this2 = this;
-
-        var hasIcons = this.showNotifications || this.showProductSwitch || this.searchField || this.items.length;
-        this._itemsInfo = this._getAllItems(hasIcons).map(function (info) {
-          var isOverflowIcon = info.classes.indexOf("sapWCShellBarOverflowIcon") !== -1;
-          var isImageIcon = info.classes.indexOf("sapWCShellBarImageButton") !== -1;
-          var shouldStayOnScreen = isOverflowIcon || isImageIcon && _this2.profile;
-          return Object.assign({}, info, {
-            classes: "".concat(info.classes, " ").concat(shouldStayOnScreen ? "" : "sapWCShellBarHiddenIcon", " sapWCShellBarIconButton"),
-            style: "order: ".concat(shouldStayOnScreen ? 1 : -1)
-          });
-        });
-      }
-    }, {
-      key: "_handleActionsOverflow",
-      value: function _handleActionsOverflow() {
-        var _this3 = this;
-
-        var rightContainerRect = this.shadowRoot.querySelector(".sapWCShellBarOverflowContainerRight").getBoundingClientRect();
-        var icons = this.shadowRoot.querySelectorAll(".sapWCShellBarIconButton:not(.sapWCShellBarOverflowIcon):not(.sapWCShellBarUnsetIcon)");
-        var isRTL = getRTL();
-        var overflowCount = [].filter.call(icons, function (icon) {
-          var iconRect = icon.getBoundingClientRect();
-
-          if (isRTL) {
-            return iconRect.left + iconRect.width > rightContainerRect.left + rightContainerRect.width;
-          }
-
-          return iconRect.left < rightContainerRect.left;
-        });
-        overflowCount = overflowCount.length;
-
-        var items = this._getAllItems(!!overflowCount);
-
-        items.map(function (item) {
-          _this3._itemsInfo.forEach(function (stateItem) {
-            if (stateItem.id === item.id) {
-              item._tabIndex = stateItem._tabIndex;
-            }
-          });
-
-          return item;
-        });
-        var itemsByPriority = items.sort(function (item1, item2) {
-          if (item1.priority > item2.priority) {
-            return 1;
-          }
-
-          if (item1.priority < item2.priority) {
-            return -1;
-          }
-
-          return 0;
-        });
-        var focusableItems = [];
-
-        for (var i = 0; i < itemsByPriority.length; i++) {
-          if (i < overflowCount) {
-            itemsByPriority[i].classes = "".concat(itemsByPriority[i].classes, " sapWCShellBarHiddenIcon");
-            itemsByPriority[i].style = "order: -1";
-          } else {
-            focusableItems.push(itemsByPriority[i]);
-          }
-        }
-
-        this._focussedItem = this._findInitiallyFocussedItem(focusableItems);
-        return itemsByPriority;
-      }
-    }, {
-      key: "_findInitiallyFocussedItem",
-      value: function _findInitiallyFocussedItem(items) {
-        items.sort(function (item1, item2) {
-          var order1 = parseInt(item1.style.split("order: ")[1]);
-          var order2 = parseInt(item2.style.split("order: ")[1]);
-
-          if (order1 === order2) {
-            return 0;
-          }
-
-          if (order1 < order2) {
-            return -1;
-          }
-
-          return 1;
-        });
-        var focusedItem = items.filter(function (item) {
-          return item.classes.indexOf("sapWCShellBarUnsetIcon") === -1 && item.classes.indexOf("sapWCShellBarOverflowIcon") === -1 && item.classes.indexOf("sapWCShellBarHiddenIcon") === -1;
-        })[0];
-        return focusedItem;
-      }
-    }, {
-      key: "_overflowActions",
-      value: function _overflowActions() {
-        var size = this._handleBarBreakpoints();
-
-        if (size === "S") {
-          return this._handleSizeS();
-        }
-
-        var items = this._handleActionsOverflow();
-
-        this._itemsInfo = items;
-      }
-    }, {
-      key: "_toggleActionPopover",
-      value: function _toggleActionPopover() {
-        var popover = this.shadowRoot.querySelector(".sapWCShellBarOverflowPopover");
-        var overflowButton = this.shadowRoot.querySelector(".sapWCShellBarOverflowIcon");
-        popover.openBy(overflowButton);
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isEscape(event)) {
-          return this._handleEscape(event);
-        }
-
-        if (isSpace(event)) {
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "_handleEscape",
-      value: function _handleEscape() {
-        var searchButton = this.shadowRoot.querySelector(".sapWCShellBarSearchIcon");
-
-        if (this._showBlockLayer) {
-          this._showBlockLayer = false;
-          setTimeout(function () {
-            searchButton.focus();
-          }, 0);
-        }
-      }
-    }, {
-      key: "onEnterDOM",
-      value: function onEnterDOM() {
-        ResizeHandler.register(this, this._handleResize);
-      }
-    }, {
-      key: "onExitDOM",
-      value: function onExitDOM() {
-        ResizeHandler.deregister(this, this._handleResize);
-      }
-    }, {
-      key: "_handleSearchIconPress",
-      value: function _handleSearchIconPress(event) {
-        var searchField = this.shadowRoot.querySelector("#".concat(this._id, "-searchfield-wrapper"));
-        var triggeredByOverflow = event.target.tagName.toLowerCase() === "ui5-li";
-        var overflowButton = this.shadowRoot.querySelector(".sapWCShellBarOverflowIcon");
-        var overflowButtonRect = overflowButton.getBoundingClientRect();
-        var isRTL = getRTL();
-        var right = "";
-
-        if (isRTL) {
-          right = "".concat((triggeredByOverflow ? overflowButton.offsetLeft : event.target.offsetLeft) + overflowButtonRect.width, "px");
-        } else {
-          right = "calc(100% - ".concat(triggeredByOverflow ? overflowButton.offsetLeft : event.target.offsetLeft, "px)");
-        }
-
-        this._searchField = Object.assign({}, this._searchField, {
-          "right": right
-        });
-        this._showBlockLayer = true;
-        setTimeout(function () {
-          var inputSlot = searchField.children[0];
-
-          if (inputSlot) {
-            inputSlot.assignedNodes()[0].focus();
-          }
-        }, 100);
-      }
-    }, {
-      key: "_handleCustomActionPress",
-      value: function _handleCustomActionPress(event) {
-        var refItemId = event.target.getAttribute("data-ui5-external-action-item-id");
-        var actions = this.shadowRoot.querySelectorAll(".sapWCShellBarItemCustomAction");
-        var elementIndex = [].indexOf.apply(actions, [event.target]);
-
-        if (this.searchField) {
-          elementIndex += 1;
-        }
-
-        this._itemNav.currentIndex = elementIndex;
-
-        if (refItemId) {
-          var shellbarItem = this.items.filter(function (item) {
-            return item.shadowRoot.querySelector("#".concat(refItemId));
-          })[0];
-          var prevented = !shellbarItem.fireEvent("press", {
-            targetRef: event.target
-          }, true);
-          this._defaultItemPressPrevented = prevented;
-        }
-      }
-    }, {
-      key: "_handleOverflowPress",
-      value: function _handleOverflowPress(event) {
-        this._toggleActionPopover();
-      }
-    }, {
-      key: "_handleNotificationsPress",
-      value: function _handleNotificationsPress(event) {
-        this.fireEvent("notificationsPress", {
-          targetRef: this.shadowRoot.querySelector(".sapWCShellBarBellIcon")
-        });
-      }
-    }, {
-      key: "_handleProfilePress",
-      value: function _handleProfilePress(event) {
-        this.fireEvent("profilePress", {
-          targetRef: this.shadowRoot.querySelector(".sapWCShellBarImageButton")
-        });
-      }
-    }, {
-      key: "_handleProductSwitchPress",
-      value: function _handleProductSwitchPress(event) {
-        this.fireEvent("productSwitchPress", {
-          targetRef: this.shadowRoot.querySelector(".sapWCShellBarIconProductSwitch")
-        });
-      }
-      /**
-       * Returns all items that will be placed in the right of the bar as icons / dom elements.
-       * @param {Boolean} showOverflowButton Determines if overflow button should be visible (not overflowing)
-       */
-
-    }, {
-      key: "_getAllItems",
-      value: function _getAllItems(showOverflowButton) {
-        var _this4 = this;
-
-        var domOrder = -1;
-        var items = [{
-          src: "sap-icon://search",
-          text: "Search",
-          classes: "".concat(this.searchField ? "" : "sapWCShellBarUnsetIcon", " sapWCShellBarSearchIcon sapWCShellBarIconButton"),
-          priority: 4,
-          domOrder: this.searchField ? ++domOrder : -1,
-          style: "order: ".concat(this.searchField ? 1 : -10),
-          id: "".concat(this._id, "-item-", 1),
-          press: this._handleSearchIconPress.bind(this),
-          _tabIndex: "-1"
-        }].concat(_toConsumableArray(this.items.map(function (item, index) {
-          return {
-            src: item.src,
-            id: item._id,
-            refItemid: item._id,
-            text: item.text,
-            classes: "sapWCShellBarItemCustomAction sapWCShellBarIconButton",
-            priority: 1,
-            domOrder: ++domOrder,
-            style: "order: ".concat(2),
-            show: true,
-            press: _this4._handleCustomActionPress.bind(_this4),
-            _tabIndex: "-1"
-          };
-        })), [{
-          src: "sap-icon://bell",
-          text: "Notifications",
-          classes: "".concat(this.showNotifications ? "" : "sapWCShellBarUnsetIcon", " sapWCShellBarBellIcon sapWCShellBarIconButton"),
-          priority: 3,
-          style: "order: ".concat(this.showNotifications ? 3 : -10),
-          id: "".concat(this._id, "-item-", 2),
-          show: this.showNotifications,
-          domOrder: this.showNotifications ? ++domOrder : -1,
-          press: this._handleNotificationsPress.bind(this),
-          _tabIndex: "-1"
-        }, {
-          src: "sap-icon://overflow",
-          text: "Overflow",
-          classes: "".concat(showOverflowButton ? "" : "sapWCShellBarHiddenIcon", " sapWCOverflowButtonShown sapWCShellBarOverflowIcon sapWCShellBarIconButton"),
-          priority: 5,
-          order: 4,
-          style: "order: ".concat(showOverflowButton ? 4 : -1),
-          domOrder: showOverflowButton ? ++domOrder : -1,
-          id: "".concat(this.id, "-item-", 5),
-          press: this._handleOverflowPress.bind(this),
-          _tabIndex: "-1",
-          show: true
-        }, {
-          text: "Person",
-          classes: "".concat(this.profile ? "" : "sapWCShellBarUnsetIcon", " sapWCShellBarImageButton sapWCShellBarIconButton"),
-          priority: 4,
-          subclasses: "sapWCShellBarImageButtonImage",
-          style: "order: ".concat(this.profile ? 5 : -10, ";"),
-          subStyles: "".concat(this.profile ? "background-image: url(".concat(this.profile, ")") : ""),
-          id: "".concat(this._id, "-item-", 3),
-          domOrder: this.profile ? ++domOrder : -1,
-          show: this.profile,
-          press: this._handleProfilePress.bind(this),
-          _tabIndex: "-1"
-        }, {
-          src: "sap-icon://grid",
-          text: "Product Switch",
-          classes: "".concat(this.showProductSwitch ? "" : "sapWCShellBarUnsetIcon", " sapWCShellBarIconButton sapWCShellBarIconProductSwitch"),
-          priority: 2,
-          style: "order: ".concat(this.showProductSwitch ? 6 : -10),
-          id: "".concat(this._id, "-item-", 4),
-          show: this.showProductSwitch,
-          domOrder: this.showProductSwitch ? ++domOrder : -1,
-          press: this._handleProductSwitchPress.bind(this),
-          _tabIndex: "-1"
-        }]);
-        return items;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var _wrapper;
-
-        return {
-          wrapper: (_wrapper = {
-            "sapWCShellBarWrapper": true
-          }, _defineProperty(_wrapper, "sapWCShellBarSize".concat(this._breakpointSize), true), _defineProperty(_wrapper, "sapWCShellBarHasSearchField", this.searchField), _defineProperty(_wrapper, "sapWCShellBarBlockLayerShown", this._showBlockLayer), _defineProperty(_wrapper, "sapWCShellBarHasNotifications", !!this.notificationCount), _wrapper),
-          leftContainer: {
-            "sapWCShellBarOverflowContainer": true,
-            "sapWCShellBarOverflowContainerLeft": true
-          },
-          logo: {
-            "sapWCShellBarLogo": true
-          },
-          button: {
-            "sapWCShellBarMenuButtonNoTitle": !this.primaryTitle,
-            "sapWCShellBarMenuButtonNoLogo": !this.logo,
-            "sapWCShellBarMenuButtonMerged": this._breakpointSize === "S",
-            "sapWCShellBarMenuButtonInteractive": !!this.menuItems.length,
-            "sapWCShellBarMenuButton": true
-          },
-          buttonTitle: {
-            "sapWCShellBarMenuButtonTitle": true
-          },
-          secondaryTitle: {
-            "sapWCShellBarSecondaryTitle": true
-          },
-          arrow: {
-            "sapWCShellBarMenuButtonArrow": true
-          },
-          searchField: {
-            "sapWCShellBarSearchField": true,
-            "sapWCShellBarSearchFieldHidden": !this._showBlockLayer
-          },
-          blockLayer: {
-            "sapWCShellBarBlockLayer": true,
-            "sapWCShellBarBlockLayerHidden": !this._showBlockLayer
-          }
-        };
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        var _searchField;
-
-        return {
-          searchField: (_searchField = {}, _defineProperty(_searchField, getRTL() ? "left" : "right", this._searchField.right), _defineProperty(_searchField, "top", "".concat(parseInt(this._searchField.top), "px")), _searchField)
-        };
-      }
-    }, {
-      key: "interactiveLogo",
-      get: function get() {
-        return this._breakpointSize === "S";
-      }
-    }, {
-      key: "showArrowDown",
-      get: function get() {
-        return this.primaryTitle || this.logo && this.interactiveLogo;
-      }
-    }, {
-      key: "popoverHorizontalAlign",
-      get: function get() {
-        return getRTL() ? "Left" : "Right";
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Promise.all([Icon.define(), List.define(), Popover.define(), StandardListItem.define()]);
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(ShellBar), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return ShellBar;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    ShellBar.define();
-  });
-
-  function _templateObject$p() {
-    var data = _taggedTemplateLiteral(["<span id=\"", "\"></span>\n"]);
-
-    _templateObject$p = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$o = function block0(context) {
-    return html(_templateObject$p(), ifDefined(context._id));
-  };
-
-  /**
-   * @public
-   */
-
-  var metadata$s = {
-    tag: "ui5-shellbar-item",
-    properties:
-    /** @lends sap.ui.webcomponents.main.ShellBarItem.prototype */
-    {
-      /**
-       * Defines the item source URI.
-       * @type {string}
-       * @public
-       */
-      src: {
-        type: String
-      },
-
-      /**
-       * Defines the item text.
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      text: {
-        type: String
-      },
-      _icon: {
-        type: HTMLElement
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.ShellBarItem.prototype */
-    {
-      /**
-       * Fired, when the item is pressed.
-       *
-       * @event
-       * @param {HTMLElement} targetRef dom ref of the clicked element
-       * @public
-       */
-      press: {
-        detail: {
-          targetRef: {
-            type: HTMLElement
-          }
-        }
-      }
-    }
-  };
-  /**
-   * @class
-   * The <code>ui5-shellbar-item</code> represents a custom item, that
-   * might be added to the <code>ui5-shellbar</code>.
-   * <br><br>
-   * <h3>ES6 Module Import</h3>
-   * <code>import "@ui5/webcomponents/dist/ShellBarItem";</code>
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.ShellBarItem
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-shellbar-item
-   * @public
-   */
-
-  var ShellBarItem =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(ShellBarItem, _UI5Element);
-
-    function ShellBarItem() {
-      _classCallCheck(this, ShellBarItem);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ShellBarItem).apply(this, arguments));
-    }
-
-    _createClass(ShellBarItem, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$s;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$o;
-      }
-    }]);
-
-    return ShellBarItem;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    ShellBarItem.define();
-  });
-
-  function _templateObject$q() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\trole=\"checkbox\"\taria-checked=\"", "\"\ttabindex=\"", "\"\tdir=\"", "\"><div class=\"ui5-switch-inner\"><div class=\"ui5-switch-track\"><div class=\"ui5-switch-slider\"><span class=\"ui5-switch-text ui5-switch-text--on\">", "</span><span class=\"ui5-switch-text ui5-switch-text--off\">", "</span><span class=\"ui5-switch-handle\"></span></div></div></div><input type='checkbox' ?checked=\"", "\" class=\"ui5-switch-input\" data-sap-no-tab-ref/></div>"]);
-
-    _templateObject$q = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$p = function block0(context) {
-    return html(_templateObject$q(), ifDefined(classMap(context.classes.main)), ifDefined(context.checked), ifDefined(context.tabIndex), ifDefined(context.rtl), ifDefined(context.textOn), ifDefined(context.textOff), ifDefined(context.checked));
-  };
-
-  var switchCss = ":host(ui5-switch:not([hidden])){display:inline-block}ui5-switch:not([hidden]){display:inline-block}.ui5-switch-wrapper{position:relative;width:100%;height:var(--_ui5_switch_height,2.75rem);min-width:var(--_ui5_switch_width,3.875rem);cursor:pointer;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0)}.ui5-switch-wrapper.ui5-switch--no-label{min-width:var(--_ui5_switch_no_label_width,3.25rem)}.ui5-switch-inner{display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;pointer-events:none}.ui5-switch-track{height:var(--_ui5_switch_track_height,1.375rem);width:100%;display:flex;align-items:center;background:var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#ededed));border:1px solid;border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_switch_track_border_radius,.75rem);box-sizing:border-box}.ui5-switch--no-label .ui5-switch-track{height:var(--_ui5_switch_track_no_label_height,1.25rem)}.ui5-switch-slider{position:relative;height:var(--_ui5_switch_height,2.75rem);width:100%;transition:transform .1s ease-in;transform-origin:top left}.ui5-switch-handle{position:absolute;left:-1px;width:var(--_ui5_switch_handle_width,2rem);height:var(--_ui5_switch_handle_height,2rem);background:var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#fafafa));border:var(--_ui5_switch_handle_border_width,1px) solid var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_switch_handle_border_radius,1rem);box-sizing:border-box}.ui5-switch-text{display:flex;justify-content:center;position:absolute;min-width:1.625rem;padding:0 .125rem;font-size:var(--sapMFontSmallSize,.75rem);font-family:\"72\",\"72full\",Arial,Helvetica,sans-serif;text-transform:uppercase;text-align:center;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));white-space:nowrap;user-select:none;-webkit-user-select:none;-ms-user-select:none}.ui5-switch-text--on{left:calc(-100% + 1.9125rem)}.ui5-switch-text--off{right:0}.ui5-switch-handle,.ui5-switch-text{top:50%;transform:translateY(-50%)}.ui5-switch-desktop.ui5-switch-wrapper:focus:after{content:\"\";position:absolute;left:-var(--_ui5_switch_outline,1px);top:0;bottom:0;width:100%;border:var(--_ui5_switch_outline,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));pointer-events:none}.ui5-switch-wrapper .ui5-switch-input{position:absolute;left:0;width:0;height:0;margin:0;visibility:hidden;-webkit-appearance:none}.ui5-switch-wrapper.ui5-switch--disabled{opacity:.4;cursor:default}.ui5-switch-wrapper.ui5-switch--disabled .ui5-switch-track{background:var(--_ui5_switch_track_disabled_bg,var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#ededed)));border-color:var(--_ui5_switch_track_disabled_border_color,var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a))))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-track{background:var(--_ui5_switch_track_disabled_checked_bg,var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7)))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_checked_bg,var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.ui5-switch-wrapper.ui5-switch--disabled .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_bg,var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#fafafa)));border-color:var(--_ui5_switch_handle_disabled_border_color,var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-track{background:var(--_ui5_switch_track_disabled_semantic_checked_bg,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_switch_track_disabled_semantic_checked_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_semantic_checked_bg,var(--sapUiSuccessBGLighten5,#fff));border-color:var(--_ui5_switch_handle_disabled_semantic_checked_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled:not(.ui5-switch--checked) .ui5-switch-track{background:var(--_ui5_switch_track_disabled_semantic_bg,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--_ui5_switch_track_disabled_semantic_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled:not(.ui5-switch--checked) .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_semantic_bg,var(--sapUiErrorBGLighten4,#fff));border-color:var(--_ui5_switch_handle_disabled_semantic_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-text{color:var(--_ui5_switch_text_disabled_color,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-handle{background:var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))));border-color:var(--_ui5_switch_handle_checked_border_color,var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-track{background:var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7));border-color:var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#4e84ba))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(100%) translateX(-1.875rem)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-handle,.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-track{border-color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e)))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-track{background:var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-handle{background:var(--sapUiSuccessBGLighten5,#fff)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text{justify-content:center;font-size:var(--sapMFontSmallSize,.75rem)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text:before{font-family:SAP-icons;speak:none;width:.75rem;height:.75rem;line-height:.75rem}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text--on:before{content:\"\\e05b\";color:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text--off:before{content:\"\\e03e\";color:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-handle,.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-track{border-color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-track{background:var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-handle{background:var(--sapUiErrorBGLighten4,#fff)}.ui5-switch-desktop.ui5-switch-wrapper:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)))}.ui5-switch-desktop.ui5-switch-wrapper:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_hover_bg,var(--sapUiButtonHoverBackgroundDarken2,#e1f0fe));border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border-color:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-track{background:var(--_ui5_switch_track_hover_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7));border-color:var(--_ui5_switch_track_hover_border_color,var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#4e84ba)))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_semantic_hover_bg,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--_ui5_switch_handle_semantic_hover_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--_ui5_switch_handle_semantic_hover_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_semantic_checked_hover_bg,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_switch_handle_semantic_checked_hover_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--_ui5_switch_handle_semantic_checked_hover_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-text--on:before,.ui5-switch-wrapper.ui5-switch--semantic:hover .ui5-switch-text--on:before{color:var(--_ui5_switch_text_on_semantic_color,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-text--off:before,.ui5-switch-wrapper.ui5-switch--semantic:hover .ui5-switch-text--off:before{color:var(--_ui5_switch_text_off_semantic_color,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))))}.sapUiSizeCompact.ui5-switch-wrapper{height:var(--_ui5_switch_compact_height,2rem);min-width:var(--_ui5_switch_compact_width,3.5rem)}.sapUiSizeCompact.ui5-switch-wrapper .ui5-switch-handle{height:var(--_ui5_switch_handle_compact_height,1.625rem);width:var(--_ui5_switch_handle_compact_width,1.625rem)}.sapUiSizeCompact.ui5-switch-wrapper .ui5-switch-text--on{left:calc(-100% + 1.5625rem)}.sapUiSizeCompact.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(100%) translateX(-1.5rem)}.sapUiSizeCompact.ui5-switch-wrapper.ui5-switch--no-label{min-width:var(--_ui5_switch_compact_no_label_width,2.5rem)}.sapUiSizeCompact.ui5-switch--no-label .ui5-switch-track{height:var(--_ui5_switch_track_compact_no_label_height,1rem)}[dir=rtl].ui5-switch-wrapper .ui5-switch-handle{left:0;right:-1px}[dir=rtl].ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(1.875rem) translateX(-100%)}[dir=rtl].ui5-switch-wrapper .ui5-switch-text--on{right:calc(-100% + 1.9125rem);left:auto}[dir=rtl].ui5-switch-wrapper .ui5-switch-text--off{right:auto;left:0}.sapUiSizeCompact[dir=rtl].ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(-100%) translateX(1.5rem)}.sapUiSizeCompact[dir=rtl].ui5-switch-wrapper .ui5-switch-text--on{right:calc(-100% + 1.5625rem)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$t = {
-    tag: "ui5-switch",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Switch.prototype */
-    {
-      /**
-       * Defines if the <code>ui5-switch</code> is checked.
-       * <br><br>
-       * <b>Note:</b> The property can be changed with user interaction,
-       * either by cliking/tapping on the <code>ui5-switch</code>, or by
-       * pressing the <code>Enter</code> or <code>Space</code> key.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      checked: {
-        type: Boolean
-      },
-
-      /**
-       * Defines whether the <code>ui5-switch</code> is disabled.
-       * <br><br>
-       * <b>Note:</b> A disabled <code>ui5-switch</code> is noninteractive.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the text of the <code>ui5-switch</code> when switched on.
-       *
-       * <br><br>
-       * <b>Note:</b> We recommend using short texts, up to 3 letters (larger texts would be cut off).
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      textOn: {
-        type: String
-      },
-
-      /**
-       * Defines the text of the <code>ui5-switch</code> when switched off.
-       *
-       * <br><br>
-       * <b>Note:</b> We recommend using short texts, up to 3 letters (larger texts would be cut off).
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      textOff: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>ui5-switch</code> type.
-       * <br>
-       *
-       * <b>Note:</b> If <code>graphical</code> type is set,
-       * positive and negative icons will replace the <code>textOn</code> and <code>textOff</code>.
-       * @type {string}
-       * @defaultvalue false
-       * @public
-       */
-      graphical: {
-        type: Boolean
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.Switch.prototype */
-    {
-      /**
-       * Fired when the <code>ui5-switch</code> checked state changes.
-       *
-       * @public
-       * @event
-       */
-      change: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   * The <code>ui5-switch</code> component is used for changing between binary states.
-   * </br>
-   * The component can display texts, that will be switched, based on the component state, via the <code>textOn</code> and <code>textOff</code> properties,
-   * but texts longer than 3 letters will be cuttted off.
-   * </br>
-   * However, users are able to customize the width of <code>ui5-switch</code> with pure CSS (&lt;ui5-switch style="width: 200px">), and set widths, depending on the texts they would use.
-   * </br>
-   * Note: the component would not automatically stretch to fit the whole text width.
-   *
-   * <h3>Keyboard Handling</h3>
-   * The state can be changed by pressing the Space and Enter keys.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Switch";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Switch
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-switch
-   * @public
-   * @since 0.8.0
-   */
-
-  var Switch =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Switch, _UI5Element);
-
-    function Switch() {
-      _classCallCheck(this, Switch);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Switch).apply(this, arguments));
-    }
-
-    _createClass(Switch, [{
-      key: "onclick",
-      value: function onclick(event) {
-        this.toggle();
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isSpace(event)) {
-          event.preventDefault();
-        }
-
-        if (isEnter(event)) {
-          this.toggle();
-        }
-      }
-    }, {
-      key: "onkeyup",
-      value: function onkeyup(event) {
-        if (isSpace(event)) {
-          this.toggle();
-        }
-      }
-    }, {
-      key: "toggle",
-      value: function toggle() {
-        if (!this.disabled) {
-          this.checked = !this.checked;
-          this.fireEvent("change");
-        }
-      }
-    }, {
-      key: "textOn",
-      get: function get() {
-        return this.graphical ? "" : this.textOn;
-      }
-    }, {
-      key: "textOff",
-      get: function get() {
-        return this.graphical ? "" : this.textOff;
-      }
-    }, {
-      key: "tabIndex",
-      get: function get() {
-        return this.disabled ? undefined : "0";
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var hasLabel = this.graphical || this.textOn || this.textOff;
-        return {
-          main: {
-            "ui5-switch-wrapper": true,
-            "ui5-switch-desktop": isDesktop(),
-            "ui5-switch--disabled": this.disabled,
-            "ui5-switch--checked": this.checked,
-            "ui5-switch--semantic": this.graphical,
-            "ui5-switch--no-label": !hasLabel,
-            "sapUiSizeCompact": getCompactSize()
-          }
-        };
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$t;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return switchCss;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$p;
-      }
-    }]);
-
-    return Switch;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Switch.define();
-  });
-
-  /**
-   * Different types of MessageStrip.
-   */
-
-  var MessageStripTypes = {
-    /**
-     * default type (no special styling)
-     */
-    Information: "Information",
-
-    /**
-     * accept type
-     */
-    Positive: "Positive",
-
-    /**
-     * reject style
-     */
-    Negative: "Negative",
-
-    /**
-     * warning type
-     */
-    Warning: "Warning"
-  };
-
-  var MessageStripType =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(MessageStripType, _DataType);
-
-    function MessageStripType() {
-      _classCallCheck(this, MessageStripType);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(MessageStripType).apply(this, arguments));
-    }
-
-    _createClass(MessageStripType, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!MessageStripTypes[value];
-      }
-    }]);
-
-    return MessageStripType;
-  }(DataType);
-
-  MessageStripType.generataTypeAcessors(MessageStripTypes);
-
-  function _templateObject3$d() {
-    var data = _taggedTemplateLiteral(["<ui5-icon\n\t\t\tclass=\"", "\"\n\t\t\tsrc=\"sap-icon://decline\"\n\t\t\ttabindex=\"0\"\n\t\t\trole=\"button\"\n\t\t\ttitle=\"", "\"\n\t\t\t@ui5-press=\"", "\"></ui5-icon>\n\t"]);
-
-    _templateObject3$d = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$j() {
-    var data = _taggedTemplateLiteral(["<ui5-icon class=\"ui5-messagestrip-icon\" src=\"", "\"></ui5-icon>\n\t"]);
-
-    _templateObject2$j = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$r() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"\n\trole=\"alert\"\n\taria-live=\"assertive\"\n\taria-labelledby=\"", "\">\n\n\t", "<span class=\"ui5-messagestrip-hidden-text\">", "</span><span class=\"", "\"><slot></slot></span>\n\n\t", "</div>\n"]);
-
-    _templateObject$r = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$q = function block0(context) {
-    return html(_templateObject$r(), ifDefined(classMap(context.classes.main)), ifDefined(context._id), !context.noIcon ? block1$j(context) : undefined, ifDefined(context.hiddenText), ifDefined(classMap(context.classes.label)), !context.noCloseButton ? block2$d(context) : undefined);
-  };
-
-  var block1$j = function block1(context) {
-    return html(_templateObject2$j(), ifDefined(context.messageStripIcon));
-  };
-
-  var block2$d = function block2(context) {
-    return html(_templateObject3$d(), ifDefined(classMap(context.classes.closeIcon)), ifDefined(context._closeButtonText), ifDefined(context._closeButton.press));
-  };
-
-  var messageStripCss = ":host(ui5-messagestrip:not([hidden])){display:inline-block;width:100%}ui5-messagestrip:not([hidden]){display:inline-block;width:100%}.ui5-messagestrip-root{width:100%;height:100%;display:flex;border-radius:var(--_ui5_messagestrip_border_radius,.1875rem);padding:var(--_ui5_messagestrip_padding,.125rem .125rem);border-width:var(--_ui5_messagestrip_border_width,1px);border-style:solid;box-sizing:border-box;padding:.4375rem 2rem .4375rem 2.5rem;position:relative}.ui5-messagestrip-root .ui5-messagestrip-icon{width:var(--_ui5_messagestrip_icon_width,2.5rem);box-sizing:border-box;position:absolute;top:var(--_ui5_messagestrip_icon_top,.4375rem);left:0}.ui5-messagestrip -root.ui5-messagestrip-text{width:100%;color:var(--sapTextColor,var(--sapPrimary6,#32363a));line-height:1.2}.ui5-messagestrip-root ui5-button{height:var(--_ui5_messagestrip_button_height,1.625rem);border-width:var(--_ui5_messagestrip_button_border_width,0);border-style:var(--_ui5_messagestrip_button_border_style,none);border-color:var(--_ui5_messagestrip_button_border_color,transparent);border-radius:var(--_ui5_messagestrip_button_border_radius,0)}.ui5-messagestrip-icon--hidden{padding:.4375rem 2rem .4375rem 1rem}.ui5-messagestrip-close-icon--hidden{padding-right:1rem}.ui5-messagestrip-text{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem)}.ui5-messagestrip--info{background-color:var(--sapUiNeutralBG,var(--sapNeutralBackground,#f4f4f4));border-color:var(--sapUiNeutralBorder,var(--sapNeutralColor,#6a6d70));color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)))}.ui5-messagestrip--info .ui5-messagestrip-icon{color:var(--sapUiNeutralElement,var(--sapNeutralElementColor,var(--sapNeutralColor,#6a6d70)))}.ui5-messagestrip--positive{background-color:var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6));border-color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e)))}.ui5-messagestrip--positive .ui5-messagestrip-icon{color:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))}.ui5-messagestrip--negative{background-color:var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb));border-color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))}.ui5-messagestrip--negative .ui5-messagestrip-icon{color:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))}.ui5-messagestrip--warning{background-color:var(--sapUiWarningBG,var(--sapWarningBackground,#fef7f1));border-color:var(--sapUiWarningBorder,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c)))}.ui5-messagestrip--warning .ui5-messagestrip-icon{color:var(--sapUiCriticalElement,var(--sapCriticalElementColor,var(--sapCriticalColor,#e9730c)))}.ui5-messagestrip-close-icon{width:var(--_ui5_messagestrip_close_button_size,1.625rem);height:var(--_ui5_messagestrip_close_button_size,1.625rem);border-radius:.2rem;font-size:.75rem;background:transparent;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));outline:0;cursor:pointer;position:absolute;right:.125rem;top:.125rem;border:var(--_ui5_messagestrip_close_button_border,none);-webkit-user-select:none;-ms-user-select:none;user-select:none}.ui5-messagestrip-close-icon:hover{background-color:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.ui5-messagestrip-close-icon:active{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff)}.ui5-messagestrip-close-icon:focus:after{content:\"\";position:absolute;top:1px;bottom:1px;left:1px;right:1px;border:var(--_ui5_messagestrip_focus_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));pointer-events:none}.ui5-messagestrip-close-icon:active:focus:after{border:var(--_ui5_messagestrip_focus_width,1px) dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.ui5-messagestrip-hidden-text{position:absolute;clip:rect(1px,1px,1px,1px);user-select:none;left:0;top:0}";
-
-  /**
-   * @public
-   */
-
-  var metadata$u = {
-    tag: "ui5-messagestrip",
-    properties:
-    /** @lends sap.ui.webcomponents.main.MessageStrip.prototype */
-    {
-      /**
-       * Defines the <code>ui5-messagestrip</code> type.
-       * <br></br>
-       * <b>Note:</b> Available options are <code>Information"</code>, <code>"Positive"</code>, <code>"Negative"</code>,
-       * and "Warning".
-       *
-       * @type {MessageStripType}
-       * @defaultvalue "Information"
-       * @public
-       */
-      type: {
-        type: MessageStripType,
-        defaultValue: MessageStripType.Information
-      },
-
-      /**
-       * Defines the icon src URI to be displayed as graphical element within the <code>ui5-messagestrip</code>.
-       * <br></br>
-       * <b>Note:</b> If no icon is given, the default icon for the <code>ui5-messagestrip</code> type will be added.
-       * The SAP-icons font provides numerous options.
-       * <br></br>
-       * Example:
-       * <br>
-       * <pre>ui5-messagestrip icon="sap-icon://palette"</pre>
-       *
-       * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      icon: {
-        type: String
-      },
-
-      /**
-       * Defines whether the MessageStrip renders icon in the beginning.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      noIcon: {
-        type: Boolean
-      },
-
-      /**
-       * Defines whether the MessageStrip renders close icon.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      noCloseButton: {
-        type: Boolean
-      },
-      _closeButton: {
-        type: Object
-      }
-    },
-    slots:
-    /** @lends sap.ui.webcomponents.main.MessageStrip.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-messagestrip</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    defaultSlot: "text",
-    events:
-    /** @lends sap.ui.webcomponents.main.MessageStrip.prototype */
-    {
-      /**
-       * Fired when the close button is pressed either with a
-       * click/tap or by using the Enter or Space key.
-       *
-       * @event
-       * @public
-       */
-      close: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-messagestrip</code> component enables the embedding of app-related messages.
-   * It displays 4 types of messages, each with corresponding semantic color and icon: Information, Positive, Warning and Negative.
-   * Each message can have a close button, so that it can be removed from the UI if needed.
-   *
-   * <h3>Usage</h3>
-   *
-   * For the <code>ui5-messagestrip</code> component, you can define whether it displays
-   * an icon in the beginning and a close button. Moreover, its size and background
-   * can be controlled with CSS.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/MessageStrip";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.MessageStrip
-   * @extends UI5Element
-   * @tagname ui5-messagestrip
-   * @public
-   * @since 0.9.0
-   */
-
-  var MessageStrip =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(MessageStrip, _UI5Element);
-
-    _createClass(MessageStrip, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$u;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$q;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return messageStripCss;
-      }
-    }]);
-
-    function MessageStrip() {
-      var _this;
-
-      _classCallCheck(this, MessageStrip);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(MessageStrip).call(this));
-      _this._closeButton = {
-        press: _this._handleCloseIconPress.bind(_assertThisInitialized(_this))
-      };
-      _this.resourceBundle = getResourceBundle("@ui5/webcomponents");
-      return _this;
-    }
-
-    _createClass(MessageStrip, [{
-      key: "_handleCloseIconPress",
-      value: function _handleCloseIconPress() {
-        this.fireEvent("close", {});
-      }
-    }, {
-      key: "hiddenText",
-      get: function get() {
-        return "Message Strip ".concat(this.type, " ").concat(this.noCloseButton ? "" : "closable", ".");
-      }
-    }, {
-      key: "_closeButtonText",
-      get: function get() {
-        return this.resourceBundle.getText(MESSAGE_STRIP_CLOSE_BUTTON);
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          label: {
-            "ui5-messagestrip-text": true,
-            "ui5-messagestripNoCloseButton": this.noCloseButton
-          },
-          closeIcon: {
-            "ui5-messagestrip-close-icon": true
-          },
-          main: _defineProperty({
-            "ui5-messagestrip-root": true,
-            "ui5-messagestrip-icon--hidden": this.noIcon,
-            "ui5-messagestrip-close-icon--hidden": this.noCloseButton
-          }, this.typeClasses, true)
-        };
-      }
-    }, {
-      key: "messageStripIcon",
-      get: function get() {
-        return this.icon || MessageStrip.iconMappings()[this.type];
-      }
-    }, {
-      key: "typeClasses",
-      get: function get() {
-        return MessageStrip.typeClassesMappings()[this.type];
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return fetchResourceBundle("@ui5/webcomponents");
-
-                case 2:
-                  _context.next = 4;
-                  return Promise.all([Icon.define()]);
-
-                case 4:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(MessageStrip), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 6:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }, {
-      key: "typeClassesMappings",
-      value: function typeClassesMappings() {
-        return {
-          "Information": "ui5-messagestrip--info",
-          "Positive": "ui5-messagestrip--positive",
-          "Negative": "ui5-messagestrip--negative",
-          "Warning": "ui5-messagestrip--warning"
-        };
-      }
-    }, {
-      key: "iconMappings",
-      value: function iconMappings() {
-        return {
-          "Information": "sap-icon://message-information",
-          "Positive": "sap-icon://message-success",
-          "Negative": "sap-icon://message-error",
-          "Warning": "sap-icon://message-warning"
-        };
-      }
-    }]);
-
-    return MessageStrip;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    MessageStrip.define();
-  });
-
-  function _templateObject7$5() {
-    var data = _taggedTemplateLiteral(["<ui5-li type=\"Active\" ?selected=", " data-ui5-token-id=\"", "\">", "</ui5-li>\t\t\t"]);
-
-    _templateObject7$5 = function _templateObject7() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject6$5() {
-    var data = _taggedTemplateLiteral(["<ui5-li type=\"Active\" data-ui5-token-id=\"", "\" .selected=\"", "\">", "</ui5-li>\t\t\t\t"]);
-
-    _templateObject6$5 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$9() {
-    var data = _taggedTemplateLiteral(["", ""]);
-
-    _templateObject5$9 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$a() {
-    var data = _taggedTemplateLiteral(["<ui5-icon src=\"sap-icon://slim-arrow-down\" \t\t\t\tslot=\"icon\"\t\t\t\t@ui5-press=", "\t\t\t\tclass=\"", "\"\t\t\t></ui5-icon>\t\t"]);
-
-    _templateObject4$a = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$e() {
-    var data = _taggedTemplateLiteral(["<ui5-token ?readonly=\"", "\" class=\"ui5-multi-combobox--token\" data-ui5-id=\"", "\" >", "</ui5-token>\t\t\t\t"]);
-
-    _templateObject3$e = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$k() {
-    var data = _taggedTemplateLiteral(["", ""]);
-
-    _templateObject2$k = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$s() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"><ui5-input id=\"ui5-multi-combobox--input\"\t\tvalue=\"", "\"\t\tplaceholder=\"", "\"\t\t?disabled=", "\t\t?readonly=", "\t\tvalue-state=\"", "\"\t\t@ui5-input=\"", "\"\t\t@ui5-change=", "\t\t@keydown=\"", "\"><ui5-tokenizer slot=\"_beginContent\"\t\t\tshow-more\t\t\tclass=\"ui5-multi-combobox-tokenizer\"\t\t\t?disabled=\"", "\"\t\t\t@ui5-showMoreItemsPress=\"", "\"\t\t\t@ui5-tokenDelete=\"", "\"\t\t\t@focusout=\"", "\"\t\t>\t\t\t", "</ui5-tokenizer>\t\t", "</ui5-input><ui5-popover \t\tclass=\"ui5-multi-combobox-selected-items--popover\"\t\thorizontal-align=\"Stretch\"\t\tno-header\t\t?no-arrow=", "\t\tplacement-type=\"Bottom\"><ui5-list separators=\"None\" mode=\"", "\"\t\t\t@ui5-selectionChange=", ">\t\t\t", "</ui5-list></ui5-popover><ui5-popover class=\"ui5-multi-combobox-all-items--popover\"\t\tno-arrow\t\tno-header\t\thorizontal-align=\"Stretch\"\t\tinitial-focus=\"ui5-multi-combobox--input\"\t\thorizontal-align=\"Left\"\t\tplacement-type=\"Bottom\"\t\t@ui5-selectionChange=", "\t\t@ui5-afterClose=", "\t\t@ui5-afterOpen=", "><ui5-list separators=\"None\" mode=\"MultiSelect\" class=\"ui5-multi-combobox-all-items-list\">\t\t\t", "</ui5-list></ui5-popover></div>"]);
-
-    _templateObject$s = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$r = function block0(context) {
-    return html(_templateObject$s(), ifDefined(classMap(context.classes.main)), ifDefined(context.value), ifDefined(context.placeholder), ifDefined(context.disabled), ifDefined(context.readonly), ifDefined(context.valueState), ifDefined(context._inputLiveChange), ifDefined(context._inputChange), ifDefined(context._keydown), ifDefined(context.disabled), ifDefined(context._showMorePopover), ifDefined(context._tokenDelete), ifDefined(context._tokenizerFocusOut), repeat(context.items, undefined, function (item, index) {
-      return block1$k(item, index, context);
-    }), !context.readonly ? block3$a(context) : undefined, ifDefined(context.editable), ifDefined(context.selectedItemsListMode), ifDefined(context._listSelectionChange), repeat(context.items, undefined, function (item, index) {
-      return block4$9(item, index, context);
-    }), ifDefined(context._listSelectionChange), ifDefined(context._toggleIcon), ifDefined(context._toggleIcon), repeat(context._filteredItems, undefined, function (item, index) {
-      return block6$5(item, index, context);
-    }));
-  };
-
-  var block1$k = function block1(item, index, context) {
-    return html(_templateObject2$k(), item.selected ? block2$e(item, index, context) : undefined);
-  };
-
-  var block2$e = function block2(item, index, context) {
-    return html(_templateObject3$e(), ifDefined(context.readonly), ifDefined(item._id), ifDefined(item.textContent));
-  };
-
-  var block3$a = function block3(context) {
-    return html(_templateObject4$a(), ifDefined(context._showAllItemsPopover), ifDefined(classMap(context.classes.icon)));
-  };
-
-  var block4$9 = function block4(item, index, context) {
-    return html(_templateObject5$9(), item.selected ? block5$5(item, index, context) : undefined);
-  };
-
-  var block5$5 = function block5(item, index, context) {
-    return html(_templateObject6$5(), ifDefined(item._id), ifDefined(context.editable), ifDefined(item.textContent));
-  };
-
-  var block6$5 = function block6(item, index, context) {
-    return html(_templateObject7$5(), ifDefined(item.selected), ifDefined(item._id), ifDefined(item.textContent));
-  };
-
-  function _templateObject3$f() {
-    var data = _taggedTemplateLiteral(["<span @click=\"", "\" class=\"ui5-tokenizer-more-text\">", "</span>\t"]);
-
-    _templateObject3$f = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$l() {
-    var data = _taggedTemplateLiteral(["<div class=\"ui5-tokenizer--token--wrapper\"><slot name=\"", "\"></slot></div>\t\t"]);
-
-    _templateObject2$l = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$t() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"><div class=\"", "\" @ui5-delete=", "><div class=\"ui5-tokenizer-token-placeholder\"><div style=\"display: inline-block\"></div></div>\t\t", "</div>\t", "</div>"]);
-
-    _templateObject$t = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$s = function block0(context) {
-    return html(_templateObject$t(), ifDefined(classMap(context.classes.wrapper)), ifDefined(classMap(context.classes.content)), ifDefined(context._tokenDelete), repeat(context.tokens, undefined, function (item, index) {
-      return block1$l(item, index, context);
-    }), context.showNMore ? block2$f(context) : undefined);
-  };
-
-  var block1$l = function block1(item, index, context) {
-    return html(_templateObject2$l(), ifDefined(item._individualSlot));
-  };
-
-  var block2$f = function block2(context) {
-    return html(_templateObject3$f(), ifDefined(context._openOverflowPopover), ifDefined(context._nMoreText));
-  };
-
-  var styles$8 = ":host(ui5-tokenizer){display:inline-block;box-sizing:border-box;border:1px solid #000;height:2.25rem}ui5-tokenizer{display:inline-block;box-sizing:border-box;border:1px solid #000;height:2.25rem}.sapUiSizeCompact.ui5-tokenizer--wrapper{padding:.1875rem .125rem}.ui5-tokenizer--wrapper{height:100%;display:flex;align-items:center;padding:.1875rem;overflow-x:scroll;box-sizing:border-box;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.ui5-tokenizer-no-padding{padding:0}.ui5-tokenizer--wrapper.ui5-tokenizer-nmore--wrapper{overflow-x:hidden}.ui5-tokenizer--token--wrapper{display:inline-flex;align-items:center;box-sizing:border-box;height:100%}.ui5-tokenizer--content{height:100%}.ui5-tokenizer--content.ui5-tokenizer-nmore--content{overflow:hidden}.ui5-tokenizer-more-text{display:inline-block;margin-left:3px;cursor:pointer;white-space:nowrap;font-size:var(--sapMFontMediumSize,.875rem)}.ui5-tokenizer-token-placeholder{display:inline-block;height:1px;width:1px;margin-top:auto}";
-
-  /**
-   * @public
-   */
-
-  var metadata$v = {
-    tag: "ui5-tokenizer",
-    slots:
-    /** @lends sap.ui.webcomponents.main.Tokenizer.prototype */
-    {
-      tokens: {
-        type: HTMLElement,
-        multiple: true,
-        individualSlots: true
-      }
-    },
-    defaultSlot: "tokens",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Tokenizer.prototype */
-    {
-      showMore: {
-        type: Boolean
-      },
-      disabled: {
-        type: Boolean
-      },
-      _nMoreText: {
-        type: String
-      },
-      _hiddenTokens: {
-        type: Object,
-        multiple: true
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.Tokenizer.prototype */
-    {
-      tokenDelete: {
-        detail: {
-          ref: {
-            type: HTMLElement
-          }
-        }
-      },
-      showMoreItemsPress: {
-        detail: {
-          ref: {
-            type: HTMLElement
-          }
-        }
-      }
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * A container for tokens.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Tokenizer
-   * @extends UI5Element
-   * @tagname ui5-tokenizer
-   * @usestextcontent
-   * @private
-   */
-
-  var Tokenizer =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Tokenizer, _UI5Element);
-
-    _createClass(Tokenizer, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$v;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$s;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$8;
-      }
-    }]);
-
-    function Tokenizer() {
-      var _this;
-
-      _classCallCheck(this, Tokenizer);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Tokenizer).call(this));
-      _this._itemsCount = 0;
-      _this._lastIndex = 0;
-      _this._lastTokenCount = 0;
-      _this._recalculateLayouting = false;
-      _this._resizeHandler = _this._handleResize.bind(_assertThisInitialized(_this));
-      _this._itemNav = new ItemNavigation(_assertThisInitialized(_this));
-
-      _this._itemNav.getItemsCallback = function () {
-        if (_this.disabled) {
-          return [];
-        }
-
-        return _this._getTokens();
-      };
-
-      _this.resourceBundle = getResourceBundle("@ui5/webcomponents");
-
-      _this._delegates.push(_this._itemNav);
-
-      return _this;
-    }
-
-    _createClass(Tokenizer, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        this._itemNav.init();
-
-        if (this._lastTokenCount !== this.tokens.length) {
-          this._recalculateLayouting = true;
-        }
-
-        this._lastTokenCount = this.tokens.length;
-        this._nMoreText = this.resourceBundle.getText(MULTIINPUT_SHOW_MORE_TOKENS, [this._hiddenTokens.length]);
-      }
-    }, {
-      key: "onAfterRendering",
-      value: function onAfterRendering() {
-        if (this._recalculateLayouting) {
-          this._handleResize();
-
-          this._recalculateLayouting = false;
-        }
-      }
-    }, {
-      key: "onEnterDOM",
-      value: function onEnterDOM() {
-        ResizeHandler.register(this.shadowRoot.querySelector(".ui5-tokenizer--content"), this._resizeHandler);
-      }
-    }, {
-      key: "onExitDOM",
-      value: function onExitDOM() {
-        ResizeHandler.deregister(this.shadowRoot.querySelector(".ui5-tokenizer--content"), this._resizeHandler);
-      }
-    }, {
-      key: "_openOverflowPopover",
-      value: function _openOverflowPopover() {
-        this.fireEvent("showMoreItemsPress");
-      }
-    }, {
-      key: "_handleResize",
-      value: function _handleResize() {
-        var overflowTokens = this._getTokens(true);
-
-        if (!overflowTokens.length) {
-          this._hiddenTokens = [];
-        }
-
-        this._hiddenTokens = overflowTokens;
-      }
-    }, {
-      key: "_getTokens",
-      value: function _getTokens(overflow) {
-        var firstToken = this.shadowRoot.querySelector(".ui5-tokenizer-token-placeholder");
-
-        if (!firstToken) {
-          return [];
-        }
-
-        var firstTokenTop = firstToken.getBoundingClientRect().top;
-        var tokens = [];
-
-        if (firstToken && this.tokens.length) {
-          this.tokens.forEach(function (token) {
-            var tokenTop = token.getBoundingClientRect().top;
-            var tokenOverflows = overflow && tokenTop > firstTokenTop;
-            var tokenVisible = !overflow && tokenTop <= firstTokenTop;
-            (tokenVisible || tokenOverflows) && tokens.push(token);
-          });
-        }
-
-        return tokens;
-      }
-    }, {
-      key: "_tokenDelete",
-      value: function _tokenDelete(event) {
-        if (event.detail && event.detail.backSpace) {
-          this._deleteByBackspace();
-        }
-
-        this._updateAndFocus();
-
-        this.fireEvent("tokenDelete", {
-          ref: event.target
-        });
-      }
-      /* Keyboard handling */
-
-    }, {
-      key: "_updateAndFocus",
-      value: function _updateAndFocus() {
-        var _this2 = this;
-
-        if (this._getTokens().length) {
-          this._itemNav.update();
-
-          setTimeout(function () {
-            _this2._itemNav.focusCurrent();
-          }, 0);
-        }
-      }
-    }, {
-      key: "_deleteByBackspace",
-      value: function _deleteByBackspace() {
-        var newIndex = this._itemNav.currentIndex - 1;
-
-        if (newIndex < 0) {
-          this._itemNav.currentIndex = 0;
-        } else {
-          this._itemNav.currentIndex = newIndex;
-        }
-      }
-    }, {
-      key: "showNMore",
-      get: function get() {
-        return this.showMore && this._hiddenTokens.length;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          wrapper: {
-            "ui5-tokenizer-nmore--wrapper": this.showMore,
-            "ui5-tokenizer--wrapper": true,
-            "ui5-tokenizer-no-padding": !this.tokens.length,
-            "sapUiSizeCompact": getCompactSize()
-          },
-          content: {
-            "ui5-tokenizer--content": true,
-            "ui5-tokenizer-nmore--content": this.showMore
-          }
-        };
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return fetchResourceBundle("@ui5/webcomponents");
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(Tokenizer), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return Tokenizer;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Tokenizer.define();
-  });
-
-  function _templateObject2$m() {
-    var data = _taggedTemplateLiteral(["<ui5-icon @click=\"", "\" src=\"", "\" class=\"ui5-token--icon\"></ui5-icon>\t"]);
-
-    _templateObject2$m = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$u() {
-    var data = _taggedTemplateLiteral(["<div tabindex=\"", "\" @click=\"", "\" @keydown=\"", "\" class=\"ui5-token--wrapper\"><span class=\"ui5-token--text\"><slot></slot></span>\t", "</div>"]);
-
-    _templateObject$u = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$t = function block0(context) {
-    return html(_templateObject$u(), ifDefined(context._tabIndex), ifDefined(context._select), ifDefined(context._keydown), !context.readonly ? block1$m(context) : undefined);
-  };
-
-  var block1$m = function block1(context) {
-    return html(_templateObject2$m(), ifDefined(context._delete), ifDefined(context.iconURI));
-  };
-
-  var styles$9 = ":host(ui5-token){display:inline-block;background:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-width:1px;border-style:solid;border-color:var(--_ui5_token_border_color,var(--sapUiButtonBackgroundDarken24,#c2c2c2));border-radius:var(--_ui5_token_border_radius,.25rem);color:var(--_ui5_token_text_color,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));height:1.625rem;box-sizing:border-box}:host(ui5-token[data-ui5-compact-size]){font-size:.75rem;height:1.25rem}:host(ui5-token[data-ui5-compact-size]) .ui5-token--icon{padding:0 .25rem;width:.75rem;height:.75rem}:host(ui5-token:not([readonly]):hover){background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));border-color:var(--_ui5_token_hover_border_color,var(--sapUiButtonHoverBorderColorLighten30,#4ba0f6))}:host(ui5-token[selected]:not([readonly])){color:var(--sapUiToggleButtonPressedTextColor,#fff);background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));border:1px solid var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))))}:host(ui5-token[selected]:not([readonly]):hover){background:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border:1px solid var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}:host(ui5-token[readonly]){color:var(--sapUiContentForegroundTextColor,var(--sapContent_ForegroundTextColor,#32363a))}:host(ui5-token[readonly]) .ui5-token--wrapper{padding-right:.375rem}:host(ui5-token[selected]) .ui5-token--wrapper:focus{outline:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}ui5-token{display:inline-block;background:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-width:1px;border-style:solid;border-color:var(--_ui5_token_border_color,var(--sapUiButtonBackgroundDarken24,#c2c2c2));border-radius:var(--_ui5_token_border_radius,.25rem);color:var(--_ui5_token_text_color,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));height:1rem;box-sizing:border-box}ui5-token[data-ui5-compact-size]{font-size:.75rem;height:1.25rem}ui5-token[data-ui5-compact-size] .ui5-token--icon{padding:0 .25rem;width:.75rem;height:.75rem}ui5-token:not([readonly]):hover{background:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));border-color:var(--_ui5_token_hover_border_color,var(--sapUiButtonHoverBorderColorLighten30,#4ba0f6))}ui5-token[selected]:not([readonly]){color:var(--sapUiToggleButtonPressedTextColor,#fff);background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));border:1px solid var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))))}ui5-token[selected]:not([readonly]):hover{background:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border:1px solid var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}ui5-token[readonly]{color:var(--sapUiContentForegroundTextColor,var(--sapContent_ForegroundTextColor,#32363a))}ui5-token[readonly] .ui5-token--wrapper{padding-right:.375rem}ui5-token[selected] .ui5-token--wrapper:focus{outline:1px dotted var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.ui5-token--icon{padding:.25rem .5rem;color:inherit;cursor:pointer;width:1rem;height:1rem;color:var(--_ui5_token_icon_color,var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0))))}.ui5-token--wrapper{display:flex;align-items:center;height:100%;width:100%;cursor:default;padding-left:.375rem;padding-top:.25rem;padding-bottom:.25rem;box-sizing:border-box;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));user-select:none}.ui5-token--wrapper:focus{outline-offset:-2px;outline:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000))}.ui5-token--text{white-space:nowrap}";
-
-  /**
-   * @public
-   */
-
-  var metadata$w = {
-    tag: "ui5-token",
-    defaultSlot: "text",
-    usesNodeText: true,
-    slots:
-    /** @lends sap.ui.webcomponents.main.Token.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-token</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.Token.prototype */
-    {
-      /**
-       * Defines whether the <code>ui5-token</code> is selected or not.
-       *
-       * @type {boolean}
-       * @public
-       */
-      selected: {
-        type: Boolean
-      },
-
-      /**
-       * Defines whether the <code>ui5-token</code> is read-only.
-       * <br><br>
-       * <b>Note:</b> A read-only <code>ui5-token</code> can not be deleted or selected,
-       * but still provides visual feedback upon user interaction.
-       *
-       * @type {boolean}
-       * @public
-       */
-      readonly: {
-        type: Boolean
-      },
-      _tabIndex: {
-        type: String,
-        defaultValue: "-1"
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.Token.prototype */
-    {
-      /**
-       * Fired when the backspace, delete or close icon of the token is pressed
-       *
-       * @event
-       * @param {boolean} backSpace indicates whether token is deleted by backspace key
-       * @param {boolean} delete indicates whether token is deleted by delete key
-       * @public
-       */
-      "delete": {
-        detail: {
-          "backSpace": {
-            type: Boolean
-          },
-          "delete": {
-            type: Boolean
-          }
-        }
-      },
-
-      /**
-       * Fired when the a token is selected by user interaction with mouse, clicking space or enter
-       *
-       * @event
-       * @public
-       */
-      select: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * Tokens are small items of information (similar to tags) that mainly serve to visualize previously selected items.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Token
-   * @extends UI5Element
-   * @tagname ui5-token
-   * @usestextcontent
-   * @private
-   */
-
-  var Token =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Token, _UI5Element);
-
-    function Token() {
-      _classCallCheck(this, Token);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Token).apply(this, arguments));
-    }
-
-    _createClass(Token, [{
-      key: "_select",
-      value: function _select() {
-        this.fireEvent("select");
-      }
-    }, {
-      key: "_delete",
-      value: function _delete() {
-        this.fireEvent("delete");
-      }
-    }, {
-      key: "_keydown",
-      value: function _keydown(event) {
-        var isBS = isBackSpace(event);
-        var isD = isDelete(event);
-
-        if (!this.readonly && (isBS || isD)) {
-          event.preventDefault();
-          this.fireEvent("delete", {
-            backSpace: isBS,
-            "delete": isD
-          });
-        }
-
-        if (isEnter(event) || isSpace(event)) {
-          this.fireEvent("select", {});
-        }
-      }
-    }, {
-      key: "iconURI",
-      get: function get() {
-        return getTheme() === "sap_fiori_3" ? "sap-icon://decline" : "sap-icon://sys-cancel";
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Icon.define();
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(Token), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }, {
-      key: "metadata",
-      get: function get() {
-        return metadata$w;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$t;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$9;
-      }
-    }]);
-
-    return Token;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Token.define();
-  });
-
-  var styles$a = ":host(ui5-multi-combobox:not([hidden])){display:inline-block;width:100%;--_ui5_popover_content_padding:0}ui5-multi-combobox:not([hidden]){display:inline-block;width:100%}.ui5-multi-combobox--wrapper{display:flex;overflow:hidden;width:100%;height:100%}.ui5-multi-combobox--icon{color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));cursor:pointer;outline:none;box-sizing:border-box;width:2.375rem}.ui5-multi-combobox--icon[data-ui5-compact-size]{width:2rem}.ui5-multi-combobox--icon:active{background-color:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0)))));color:var(--sapUiButtonActiveTextColor,#fff)}.ui5-multi-combobox--icon.ui5-multi-combobox-icon-pressed{background:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.ui5-multi-combobox--icon:not(.ui5-multi-combobox-icon-pressed):not(:active):hover{background:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe)))}.ui5-multi-combobox--token{height:80%}.sapUiSizeCompact .ui5-multi-combobox--token{height:100%}.ui5-multi-combobox-tokenizer{max-width:calc(100% - 3rem - var(--sap_wc_input_icon_min_width, 2.375rem));border:none;width:auto;min-width:0;height:100%}";
-
-  /**
-   * @public
-   */
-
-  var metadata$x = {
-    tag: "ui5-multi-combobox",
-    defaultSlot: "items",
-    slots:
-    /** @lends sap.ui.webcomponents.main.MultiComboBox.prototype */
-    {
-      /**
-       * Defines the <code>ui5-multi-combobox</code> items.
-       * </br></br>
-       * Example: </br>
-       * &lt;ui5-multi-combobox></br>
-       * &nbsp;&nbsp;&nbsp;&nbsp;&lt;ui5-li>Item #1&lt;/ui5-li></br>
-       * &nbsp;&nbsp;&nbsp;&nbsp;&lt;ui5-li>Item #2&lt;/ui5-li></br>
-       * &lt;/ui5-multi-combobox>
-       * <br> <br>
-       *
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      items: {
-        type: HTMLElement,
-        multiple: true,
-        listenFor: {
-          include: ["*"]
-        }
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.MultiComboBox.prototype */
-    {
-      /**
-       * Defines the value of the <code>ui5-multi-combobox</code>.
-       * <br><br>
-       * <b>Note:</b> The property is updated upon typing.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      value: {
-        type: String,
-        defaultValue: ""
-      },
-
-      /**
-       * Defines a short hint intended to aid the user with data entry when the
-       * <code>ui5-multi-combobox</code> has no value.
-       * <br><br>
-       * <b>Note:</b> The placeholder is not supported in IE. If the placeholder is provided, it won`t be displayed in IE.
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      placeholder: {
-        type: String,
-        defaultValue: ""
-      },
-
-      /**
-       * Defines if the user input will be prevented if no matching item has been found
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      validateInput: {
-        type: Boolean
-      },
-
-      /**
-       * Defines whether <code>ui5-multi-combobox</code> is in disabled state.
-       * <br><br>
-       * <b>Note:</b> A disabled <code>ui5-multi-combobox</code> is completely uninteractive.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the value state of the <code>ui5-multi-combobox</code>.
-       * Available options are: <code>None</code>, <code>Success</code>, <code>Warning</code>, and <code>Error</code>.
-       *
-       * @type {string}
-       * @defaultvalue "None"
-       * @public
-       */
-      valueState: {
-        type: ValueState,
-        defaultValue: ValueState.None
-      },
-
-      /**
-       * Defines whether the <code>ui5-multi-combobox</code> is readonly.
-       * <br><br>
-       * <b>Note:</b> A read-only <code>ui5-multi-combobox</code> is not editable,
-       * but still provides visual feedback upon user interaction.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      readonly: {
-        type: Boolean
-      },
-      _filteredItems: {
-        type: Object
-      },
-      _iconPressed: {
-        type: Boolean
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.MultiComboBox.prototype */
-    {
-      /**
-       * Fired when the input operation has finished by pressing Enter or on focusout.
-       *
-       * @event
-       * @public
-       */
-      change: {},
-
-      /**
-       * Fired when the value of the <code>ui5-multi-combobox</code> changes at each keystroke.
-       *
-       * @event
-       * @public
-       */
-      input: {},
-
-      /**
-       * Fired when selection is changed by user interaction
-       * in <code>SingleSelect</code> and <code>MultiSelect</code> modes.
-       *
-       * @event
-       * @param {Array} items an array of the selected items.
-       * @public
-       */
-      selectionChange: {
-        detail: {
-          items: {
-            type: Array
-          }
-        }
-      }
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-multi-combobox</code> component provides a list box with items and a text field allowing the user to either type a value directly into the control or choose from the list of existing items.
-   *
-   * A drop-down list for selecting and filtering values.
-   * <h3>Description</h3>
-   * The <code>ui5-multi-combobox</code> component is commonly used to enable users to select one or more options from a predefined list. The control provides an editable input field to filter the list, and a dropdown arrow of available options.
-   * The select options in the list have checkboxes that permit multi-selection. Entered values are displayed as tokens.
-   * <h3>Structure</h3>
-   * The <code>ui5-multi-combobox</code> consists of the following elements:
-   * <ul>
-   * <li> Tokenizer - a list of tokens with selected options.
-   * <li> Input field - displays the selected option/s as token/s. Users can type to filter the list.
-   * <li> Drop-down arrow - expands\collapses the option list.</li>
-   * <li> Option list - the list of available options.</li>
-   * </ul>
-   * <h3>Keyboard Handling</h3>
-   *
-   * The <code>ui5-multi-combobox</code> provides advanced keyboard handling.
-   *
-   * <h4>Picker</h3>
-   * If the <code>ui5-multi-combobox</code> is focused,
-   * you can open or close the drop-down by pressing <code>F4</code>, <code>ALT+UP</code> or <code>ALT+DOWN</code> keys.
-   * Once the drop-down is opened, you can use the <code>UP</code> and <code>DOWN</code> arrow keys
-   * to navigate through the available options and select one by pressing the <code>Space</code> or <code>Enter</code> keys.
-   * <br>
-   *
-   * <h4>Tokens</h2>
-   * <ul>
-   * <li> Left/Right arrow keys - moves the focus selection form the currently focues token to the previous/next one (if available). </li>
-   * <li> Delete -  deletes the token and focuses the previous token. </li>
-   * <li> Backspace -  deletes the token and focus the next token. </li>
-   * </ul>
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/MultiComboBox";</code>
-   *
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.MultiComboBox
-   * @extends UI5Element
-   * @tagname ui5-multi-combobox
-   * @public
-   * @since 0.11.0
-   */
-
-  var MultiComboBox =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(MultiComboBox, _UI5Element);
-
-    _createClass(MultiComboBox, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$x;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$r;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$a;
-      }
-    }]);
-
-    function MultiComboBox() {
-      var _this;
-
-      _classCallCheck(this, MultiComboBox);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(MultiComboBox).call(this));
-      _this._filteredItems = [];
-      _this._inputLastValue = "";
-      _this._deleting = false;
-      return _this;
-    }
-
-    _createClass(MultiComboBox, [{
-      key: "_inputChange",
-      value: function _inputChange() {
-        this.fireEvent("change");
-      }
-    }, {
-      key: "_showMorePopover",
-      value: function _showMorePopover() {
-        this._togglePopover(true);
-      }
-    }, {
-      key: "_showAllItemsPopover",
-      value: function _showAllItemsPopover() {
-        this._togglePopover(false);
-      }
-    }, {
-      key: "_inputLiveChange",
-      value: function _inputLiveChange(event) {
-        var input = event.target;
-        var value = input.value;
-
-        var filteredItems = this._filterItems(value);
-
-        var oldValueState = this.valueState;
-
-        if (!filteredItems.length && value && this.validateInput) {
-          input.value = this._inputLastValue;
-          input.valueState = "Error";
-          setTimeout(function () {
-            input.valueState = oldValueState;
-          }, 2000);
-          return;
-        }
-
-        this._inputLastValue = input.value;
-        this.value = input.value;
-        this._filteredItems = filteredItems;
-
-        if (filteredItems.length === 0) {
-          this._getPopover().close();
-        } else {
-          this._getPopover().openBy(this);
-        }
-
-        this.fireEvent("input");
-      }
-    }, {
-      key: "_tokenDelete",
-      value: function _tokenDelete(event) {
-        var token = event.detail.ref;
-        var deletingItem = this.items.filter(function (item) {
-          return item._id === token.getAttribute("data-ui5-id");
-        })[0];
-        deletingItem.selected = false;
-        this._deleting = true;
-        this.fireEvent("selectionChange", {
-          items: this._getSelectedItems()
-        });
-      }
-    }, {
-      key: "_tokenizerFocusOut",
-      value: function _tokenizerFocusOut() {
-        var _this2 = this;
-
-        var tokenizer = this.shadowRoot.querySelector("ui5-tokenizer");
-        var tokensCount = tokenizer.tokens.length - 1;
-        tokenizer.tokens.forEach(function (token) {
-          token.selected = false;
-        });
-
-        if (tokensCount === 0 && this._deleting) {
-          setTimeout(function () {
-            _this2.shadowRoot.querySelector("ui5-input").focus();
-          }, 0);
-        }
-
-        this._deleting = false;
-      }
-    }, {
-      key: "_keydown",
-      value: function _keydown(event) {
-        if (isShow(event) && !this.readonly && !this.disabled) {
-          event.preventDefault();
-
-          this._togglePopover();
-        }
-
-        if (isDown(event) && this._getPopover()._isOpen && this.items.length) {
-          event.preventDefault();
-          var list = this.shadowRoot.querySelector(".ui5-multi-combobox-all-items-list");
-          list._itemNavigation.current = 0;
-          list.items[0].focus();
-        }
-      }
-    }, {
-      key: "_filterItems",
-      value: function _filterItems(value) {
-        return this.items.filter(function (item) {
-          return item.textContent && item.textContent.toLowerCase().startsWith(value.toLowerCase());
-        });
-      }
-    }, {
-      key: "_toggleIcon",
-      value: function _toggleIcon() {
-        this._iconPressed = !this._iconPressed;
-      }
-    }, {
-      key: "_getSelectedItems",
-      value: function _getSelectedItems() {
-        return this.items.filter(function (item) {
-          return item.selected;
-        });
-      }
-    }, {
-      key: "_listSelectionChange",
-      value: function _listSelectionChange(event) {
-        var _this3 = this;
-
-        event.target.items.forEach(function (item) {
-          _this3.items.forEach(function (mcbItem) {
-            if (mcbItem._id === item.getAttribute("data-ui5-token-id")) {
-              mcbItem.selected = item.selected;
-            }
-          });
-        });
-        this.fireEvent("selectionChange", {
-          items: this._getSelectedItems()
-        });
-      }
-    }, {
-      key: "_getPopover",
-      value: function _getPopover(isMorePopover) {
-        return this.shadowRoot.querySelector(".ui5-multi-combobox-".concat(isMorePopover ? "selected" : "all", "-items--popover"));
-      }
-    }, {
-      key: "_togglePopover",
-      value: function _togglePopover(isMorePopover) {
-        var popover = this._getPopover(isMorePopover);
-
-        var otherPopover = this._getPopover(!isMorePopover);
-
-        if (popover && popover._isOpen) {
-          return popover.close();
-        }
-
-        otherPopover && otherPopover.close();
-        popover && popover.openBy(this);
-      }
-    }, {
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        this._inputLastValue = this.value;
-        var hasSelectedItem = this.items.some(function (item) {
-          return item.selected;
-        });
-
-        if (!hasSelectedItem) {
-          var morePopover = this.shadowRoot.querySelector(".ui5-multi-combobox-selected-items--popover");
-          morePopover && morePopover.close();
-        }
-
-        var input = this.shadowRoot.querySelector("ui5-input");
-
-        if (input && !input.value) {
-          this._filteredItems = this.items;
-        }
-
-        var filteredItems = this._filterItems(this.value);
-
-        this._filteredItems = filteredItems;
-      }
-    }, {
-      key: "editable",
-      get: function get() {
-        return !this.readonly;
-      }
-    }, {
-      key: "selectedItemsListMode",
-      get: function get() {
-        return this.readonly ? "None" : "MultiSelect";
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var _icon;
-
-        return {
-          main: {
-            "ui5-multi-combobox--wrapper": true,
-            "sapUiSizeCompact": getCompactSize()
-          },
-          icon: (_icon = {}, _defineProperty(_icon, "ui5-multi-combobox-icon-pressed", this._iconPressed), _defineProperty(_icon, "ui5-multi-combobox--icon", true), _icon)
-        };
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Promise.all([Input.define(), Tokenizer.define(), Token.define(), Icon.define(), Popover.define(), List.define(), StandardListItem.define()]);
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(MultiComboBox), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return MultiComboBox;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    MultiComboBox.define();
-  });
-
-  var scroll = (function (_ref) {
-    var _ref$element = _ref.element,
-        element = _ref$element === void 0 ? animationConfig.element : _ref$element,
-        _ref$duration = _ref.duration,
-        duration = _ref$duration === void 0 ? animationConfig.duration : _ref$duration,
-        _ref$progress = _ref.progress,
-        progressCallback = _ref$progress === void 0 ? animationConfig.identity : _ref$progress,
-        _ref$dx = _ref.dx,
-        dx = _ref$dx === void 0 ? 0 : _ref$dx,
-        _ref$dy = _ref.dy,
-        dy = _ref$dy === void 0 ? 0 : _ref$dy;
-    var scrollLeft;
-    var scrollTop;
-    return animate({
-      beforeStart: function beforeStart() {
-        scrollLeft = element.scrollLeft;
-        scrollTop = element.scrollTop;
-      },
-      duration: duration,
-      element: element,
-      progress: function progress(_progress) {
-        progressCallback(_progress);
-        element.scrollLeft = scrollLeft + _progress * dx; // easing - linear
-
-        element.scrollTop = scrollTop + _progress * dy; // easing - linear
-      }
-    });
-  });
-
-  var scrollEventName = "scroll";
-
-  var ScrollEnablement =
-  /*#__PURE__*/
-  function (_EventProvider) {
-    _inherits(ScrollEnablement, _EventProvider);
-
-    function ScrollEnablement() {
-      _classCallCheck(this, ScrollEnablement);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ScrollEnablement).call(this));
-    }
-
-    _createClass(ScrollEnablement, [{
-      key: "scrollTo",
-      value: function scrollTo(left, top) {
-        this._container.scrollLeft = left;
-        this._container.scrollTop = top;
-      }
-    }, {
-      key: "move",
-      value: function move(dx, dy) {
-        return scroll({
-          element: this._container,
-          dx: dx,
-          dy: dy
-        });
-      }
-    }, {
-      key: "getScrollLeft",
-      value: function getScrollLeft() {
-        return this._container.scrollLeft;
-      }
-    }, {
-      key: "getScrollTop",
-      value: function getScrollTop() {
-        return this._container.scrollTop;
-      }
-    }, {
-      key: "_isTouchInside",
-      value: function _isTouchInside(touch) {
-        var rect = this._container.getBoundingClientRect();
-
-        var x = touch.clientX;
-        var y = touch.clientY;
-        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-      }
-    }, {
-      key: "ontouchstart",
-      value: function ontouchstart(event) {
-        var touch = event.touches[0];
-        this._prevDragX = touch.pageX;
-        this._prevDragY = touch.pageY;
-        this._canScroll = this._isTouchInside(touch);
-      }
-    }, {
-      key: "ontouchmove",
-      value: function ontouchmove(event) {
-        if (!this._canScroll) {
-          return;
-        }
-
-        var container = this._container;
-        var touch = event.touches[0];
-        var dragX = touch.pageX;
-        var dragY = touch.pageY;
-        container.scrollLeft += this._prevDragX - dragX;
-        container.scrollTop += this._prevDragY - dragY;
-        this.fireEvent(scrollEventName, {});
-        this._prevDragX = dragX;
-        this._prevDragY = dragY;
-      }
-    }, {
-      key: "scrollContainer",
-      set: function set(container) {
-        this._container = container;
-      },
-      get: function get() {
-        return this._container;
-      }
-    }]);
-
-    return ScrollEnablement;
-  }(EventProvider);
-
-  function _templateObject19() {
-    var data = _taggedTemplateLiteral(["\t\t\t\t\t\t\t\t(", ")\t\t\t\t\t\t\t"]);
-
-    _templateObject19 = function _templateObject19() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject18() {
-    var data = _taggedTemplateLiteral(["<ui5-icon src=\"", "\"></ui5-icon>\t\t\t\t\t\t\t"]);
-
-    _templateObject18 = function _templateObject18() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject17() {
-    var data = _taggedTemplateLiteral(["<ui5-li-custom id=\"", "\"\t\t\t\t\t\tclass=\"", "\"\t\t\t\t\t\ttype=\"", "\"\t\t\t\t\t\t?selected=\"", "\"\t\t\t\t\t\t?disabled=\"", "\"\t\t\t\t\t><div class=\"", "\">\t\t\t\t\t\t\t", "", "", "</div></ui5-li-custom>\t\t\t\t"]);
-
-    _templateObject17 = function _templateObject17() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject16() {
-    var data = _taggedTemplateLiteral(["", ""]);
-
-    _templateObject16 = function _templateObject16() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject15$1() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\" id=\"ui5-tc-contentItem-", "\" ?hidden=\"", "\"><slot name=\"", "\"></slot></div>\t\t\t"]);
-
-    _templateObject15$1 = function _templateObject15() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject14$1() {
-    var data = _taggedTemplateLiteral(["", ""]);
-
-    _templateObject14$1 = function _templateObject14() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject13$2() {
-    var data = _taggedTemplateLiteral(["<ui5-button\t\t\t\t@ui5-press=\"", "\"\t\t\t\tclass=\"", "\"\t\t\t\ticon=\"sap-icon://slim-arrow-down\"\t\t\t\ttype=\"Transparent\"\t\t\t></ui5-button>\t\t"]);
-
-    _templateObject13$2 = function _templateObject13() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject12$2() {
-    var data = _taggedTemplateLiteral(["<li id=\"", "\" role=\"separator\" class=\"", "\"></li>\t\t\t\t\t"]);
-
-    _templateObject12$2 = function _templateObject12() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject11$2() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\" id=\"", "-text\"><span class=\"", "\"></span>\t\t\t\t", "</span>\t\t"]);
-
-    _templateObject11$2 = function _templateObject11() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject10$2() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\" id=\"", "-additionalText\">", "</span>\t\t"]);
-
-    _templateObject10$2 = function _templateObject10() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject9$3() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\">\t\t", "", "</div>"]);
-
-    _templateObject9$3 = function _templateObject9() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject8$3() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\" id=\"", "-text\"><span class=\"", "\"></span>\t\t\t\t", "</span>\t\t"]);
-
-    _templateObject8$3 = function _templateObject8() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject7$6() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\" id=\"", "-additionalText\">", "</span>\t\t"]);
-
-    _templateObject7$6 = function _templateObject7() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject6$6() {
-    var data = _taggedTemplateLiteral(["<ui5-icon src=\"", "\" class=\"", "\"></ui5-icon><div class=\"", "\">\t\t", "", "</div>"]);
-
-    _templateObject6$6 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$a() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\" id=\"", "-additionalText\">(", ")</span>\t\t"]);
-
-    _templateObject5$a = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$b() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"><span class=\"", "\" id=\"", "-text\"><span class=\"", "\"></span>\t\t\t", "</span>\t\t", "</div>"]);
-
-    _templateObject4$b = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$g() {
-    var data = _taggedTemplateLiteral(["<li class=\"", "\"\t\t\t\t\t\t\tid=\"", "\"\t\t\t\t\t\t\ttabindex=\"", "\"\t\t\t\t\t\t\t@click=\"", "\"\t\t\t\t\t\t\t@keydown=\"", "\"\t\t\t\t\t\t\t@keyup=\"", "\"\t\t\t\t\t\t\trole=\"tab\"\t\t\t\t\t\t\taria-posinset=\"", "\"\t\t\t\t\t\t\taria-setsize=\"", "\"\t\t\t\t\t\t\taria-controls=\"ui5-tc-contentItem-", "\"\t\t\t\t\t\t\taria-selected=\"", "\"\t\t\t\t\t\t\t?aria-disabled=\"", "\"\t\t\t\t\t\t\t?disabled=\"", "\"\t\t\t\t\t\t\taria-labelledby=\"", "\"\t\t\t\t\t\t>\t\t\t\t\t\t\t", "", "", "</li>\t\t\t\t\t"]);
-
-    _templateObject3$g = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$n() {
-    var data = _taggedTemplateLiteral(["", "", ""]);
-
-    _templateObject2$n = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$v() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><div class=\"", "\" id=\"", "-header\"><ui5-icon @ui5-press=\"", "\" class=\"", "\" src=\"sap-icon://slim-arrow-left\" tabindex=\"-1\"></ui5-icon><!-- tab items --><div class=\"", "\" id=\"", "-headerScrollContainer\"><ul role=\"tablist\" class=\"", "\">\t\t\t\t", "</ul></div><ui5-icon @ui5-press=\"", "\" class=\"", "\" src=\"sap-icon://slim-arrow-right\" tabindex=\"-1\"></ui5-icon><!-- overflow button -->\t\t", "</div><!-- content area --><div class=\"", "\">\t\t", "</div><!-- overflow menu --><ui5-popover\t\tid=\"", "-overflowMenu\"\t\tno-arrow\t\tno-header\t\tplacement-type=\"Bottom\"\t\thorizontal-align=\"Right\"><ui5-list @ui5-itemPress=\"", "\">\t\t\t", "</ui5-list></ui5-popover></div>"]);
-
-    _templateObject$v = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$u = function block0(context) {
-    return html(_templateObject$v(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(classMap(context.classes.header)), ifDefined(context._id), ifDefined(context._headerBackArrow.click), ifDefined(classMap(context.classes.headerBackArrow)), ifDefined(classMap(context.classes.headerScrollContainer)), ifDefined(context._id), ifDefined(classMap(context.classes.headerList)), repeat(context.renderItems, undefined, function (item, index) {
-      return block1$n(item, index, context);
-    }), ifDefined(context._headerForwardArrow.click), ifDefined(classMap(context.classes.headerForwardArrow)), context.showOverflow ? block12$2(context) : undefined, ifDefined(classMap(context.classes.content)), repeat(context.renderItems, undefined, function (item, index) {
-      return block13$1(item, index, context);
-    }), ifDefined(context._id), ifDefined(context._overflowList.click), repeat(context.renderItems, undefined, function (item, index) {
-      return block15(item, index, context);
-    }));
-  };
-
-  var block1$n = function block1(item, index, context) {
-    return html(_templateObject2$n(), !item.isSeparator ? block2$g(item, index, context) : undefined, item.isSeparator ? block11$2(item, index, context) : undefined);
-  };
-
-  var block2$g = function block2(item, index, context) {
-    return html(_templateObject3$g(), ifDefined(item.headerItemClasses), ifDefined(item.item._id), ifDefined(item.item._tabIndex), ifDefined(context._headerItem.click), ifDefined(context._headerItem.keydown), ifDefined(context._headerItem.keyup), ifDefined(item.position), ifDefined(context.renderItems.length), ifDefined(item.position), ifDefined(item.selected), ifDefined(item.disabled), ifDefined(item.disabled), ifDefined(item.ariaLabelledBy), item.isTextOnlyTab ? block3$b(item, index, context) : undefined, item.isIconTab ? block5$6(item, index, context) : undefined, item.isMixedModeTab ? block8$3(item, index, context) : undefined);
-  };
-
-  var block3$b = function block3(item, index, context) {
-    return html(_templateObject4$b(), ifDefined(item.headerItemContentClasses), ifDefined(item.headerItemTextClasses), ifDefined(item.item._id), ifDefined(item.headerItemSemanticIconClasses), ifDefined(item.item.text), item.item.additionalText ? block4$a(item, index, context) : undefined);
-  };
-
-  var block4$a = function block4(item, index, context) {
-    return html(_templateObject5$a(), ifDefined(item.headerItemAdditionalTextClasses), ifDefined(item.item._id), ifDefined(item.item.additionalText));
-  };
-
-  var block5$6 = function block5(item, index, context) {
-    return html(_templateObject6$6(), ifDefined(item.item.icon), ifDefined(item.headerItemIconClasses), ifDefined(item.headerItemContentClasses), item.item.additionalText ? block6$6(item, index, context) : undefined, item.item.text ? block7$3(item, index, context) : undefined);
-  };
-
-  var block6$6 = function block6(item, index, context) {
-    return html(_templateObject7$6(), ifDefined(item.headerItemAdditionalTextClasses), ifDefined(item.item._id), ifDefined(item.item.additionalText));
-  };
-
-  var block7$3 = function block7(item, index, context) {
-    return html(_templateObject8$3(), ifDefined(item.headerItemTextClasses), ifDefined(item.item._id), ifDefined(item.headerItemSemanticIconClasses), ifDefined(item.item.text));
-  };
-
-  var block8$3 = function block8(item, index, context) {
-    return html(_templateObject9$3(), ifDefined(item.headerItemContentClasses), item.item.additionalText ? block9$2(item, index, context) : undefined, item.item.text ? block10$2(item, index, context) : undefined);
-  };
-
-  var block9$2 = function block9(item, index, context) {
-    return html(_templateObject10$2(), ifDefined(item.headerItemAdditionalTextClasses), ifDefined(item.item._id), ifDefined(item.item.additionalText));
-  };
-
-  var block10$2 = function block10(item, index, context) {
-    return html(_templateObject11$2(), ifDefined(item.headerItemTextClasses), ifDefined(item.item._id), ifDefined(item.headerItemSemanticIconClasses), ifDefined(item.item.text));
-  };
-
-  var block11$2 = function block11(item, index, context) {
-    return html(_templateObject12$2(), ifDefined(item._id), ifDefined(classMap(context.classes.separator)));
-  };
-
-  var block12$2 = function block12(context) {
-    return html(_templateObject13$2(), ifDefined(context._overflowButton.click), ifDefined(classMap(context.classes.overflowButton)));
-  };
-
-  var block13$1 = function block13(item, index, context) {
-    return html(_templateObject14$1(), !item.isSeparator ? block14$1(item, index, context) : undefined);
-  };
-
-  var block14$1 = function block14(item, index, context) {
-    return html(_templateObject15$1(), ifDefined(item.contentItemClasses), ifDefined(item.position), ifDefined(item.hidden), ifDefined(item.item._individualSlot));
-  };
-
-  var block15 = function block15(item, index, context) {
-    return html(_templateObject16(), !item.isSeparator ? block16(item, index, context) : undefined);
-  };
-
-  var block16 = function block16(item, index, context) {
-    return html(_templateObject17(), ifDefined(item.item._id), ifDefined(item.overflowItemClasses), ifDefined(item.overflowItemState), ifDefined(item.selected), ifDefined(item.disabled), ifDefined(item.overflowItemContentClasses), item.item.icon ? block17(item, index, context) : undefined, ifDefined(item.item.text), item.item.additionalText ? block18(item, index, context) : undefined);
-  };
-
-  var block17 = function block17(item, index, context) {
-    return html(_templateObject18(), ifDefined(item.item.icon));
-  };
-
-  var block18 = function block18(item, index, context) {
-    return html(_templateObject19(), ifDefined(item.item.additionalText));
-  };
-
-  /**
-   * @public
-   */
-
-  var metadata$y = {
-    properties:
-    /** @lends sap.ui.webcomponents.main.TabBase.prototype */
-    {},
-    events:
-    /** @lends sap.ui.webcomponents.main.TabBase.prototype */
-    {}
-  };
-  /**
-   * @class
-   * Represents a base class for all tabs inside a TabContainer.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.TabBase
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @public
-   */
-
-  var TabBase =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(TabBase, _UI5Element);
-
-    function TabBase() {
-      _classCallCheck(this, TabBase);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(TabBase).apply(this, arguments));
-    }
-
-    _createClass(TabBase, [{
-      key: "isSeparator",
-      value: function isSeparator() {
-        return false;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$y;
-      }
-    }]);
-
-    return TabBase;
-  }(UI5Element);
-
-  var SemanticColors = {
-    /**
-     * Default color (brand color)
-     * @public
-     */
-    Default: "Default",
-
-    /**
-     * Positive color
-     * @public
-     */
-    Positive: "Positive",
-
-    /**
-     * Negative color
-     * @public
-     */
-    Negative: "Negative",
-
-    /**
-     * Critical color
-     * @public
-     */
-    Critical: "Critical",
-
-    /**
-     * Neutral color.
-     * @public
-     */
-    Neutral: "Neutral"
-  };
-
-  var SemanticColor =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(SemanticColor, _DataType);
-
-    function SemanticColor() {
-      _classCallCheck(this, SemanticColor);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(SemanticColor).apply(this, arguments));
-    }
-
-    _createClass(SemanticColor, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!SemanticColors[value];
-      }
-    }]);
-
-    return SemanticColor;
-  }(DataType);
-
-  SemanticColor.generataTypeAcessors(SemanticColors);
-
-  var tabContainerCss = ":host(ui5-tabcontainer:not([hidden])){display:inline-block;width:100%}ui5-tabcontainer:not([hidden]){width:100%}.ui5-tab-container{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:1rem}.ui5-tc__header{background-color:var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:var(--_ui5_tc_header_border_bottom,.0625rem solid var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));box-shadow:var(--_ui5_tc_header_box_shadow,var(--sapUiShadowHeader,0 1px .5rem 0 rgba(0,0,0,.05)));display:flex;align-items:center}.ui-tc__headerScrollContainer{box-sizing:border-box;overflow:hidden;flex:1}.ui5-tc__headerList{display:flex;margin:0;padding:0;list-style:none}.ui5-tc__separator{width:0;border-left:2px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));margin:.5rem .25rem}.ui5-tc__headerItem{color:var(--_ui5_tc_headerItem_color,var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70))));cursor:pointer;flex-shrink:0;margin:0 1rem;font-size:var(--sapMFontSmallSize,.75rem);text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));position:relative;display:inline-flex;align-items:center}.ui5-tc__headerItem:last-child{margin-right:0}.ui5-tc__headerItemContent{pointer-events:none}.ui5-tc__headerItem--selected.ui5-tc__headerItem--textOnly{color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))}.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem--selected.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemContent:after,.ui5-tc__headerItem--selected.ui5-tc__headerItem--textOnly .ui5-tc__headerItemContent:after{content:\"\";border-bottom:var(--_ui5_tc_headerItemContent_border_bottom,.188rem solid var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));width:100%;position:absolute;bottom:0;left:0}.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon:after{bottom:-.8rem}.ui5-tc__headerItem--disabled,.ui5-tc__overflowItem--disabled{cursor:default;opacity:.5}.ui5-tc__headerItem:focus,.ui5-tc__separator:focus{outline:none}.ui5-tc__headerItem--mixedMode:focus .ui5-tc__headerItemContent,.ui5-tc__headerItem--textOnly:focus .ui5-tc__headerItemContent,.ui5-tc__headerItem--withIcon:focus .ui5-tc-headerItemIcon{outline:var(--_ui5_tc_headerItem_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)))}.ui5-tc-headerItemSemanticIcon:before{display:var(--_ui5_tc_headerItemSemanticIcon_display,none);font-family:SAP-icons;font-size:.75rem;margin-right:.25rem;speak:none;-webkit-font-smoothing:antialiased}.ui5-tc-headerItemSemanticIcon--positive:before{content:\"\\e1ab\"}.ui5-tc-headerItemSemanticIcon--negative:before{content:\"\\e1ac\"}.ui5-tc-headerItemSemanticIcon--critical:before{content:\"\\e1ae\"}.ui5-tc__headerItem--mixedMode,.ui5-tc__headerItem--withIcon{margin-top:.75rem;padding-bottom:.75rem}.ui5-tc-headerItemIcon{border:var(--_ui5_tc_headerItemIcon_border,1px solid var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)));color:var(--_ui5_tc_headerItemIcon_color,var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));pointer-events:none;border-radius:50%;font-size:1.5rem;margin-right:.25rem;height:3rem;width:3rem;position:relative}.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_selected_background,var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)));color:var(--_ui5_tc_headerItemIcon_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))));text-shadow:none}.ui5-tc__headerItem--withIcon .ui5-tc__headerItemAdditionalText+.ui5-tc__headerItemText{display:block;margin-top:.625rem}.ui5-tc__headerItem--textOnly{font-size:var(--sapMFontMediumSize,.875rem);height:3rem;display:flex;align-items:center}.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemAdditionalText,.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemText{display:inline-block;vertical-align:middle}.ui5-tc__headerItem--mixedMode .ui5-tc__headerItemAdditionalText{font-size:1.5rem;margin-right:.5rem}.ui5-tc__headerArrow{align-self:stretch;cursor:pointer;color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHighlightColor,#0854a0)));font-size:1rem;padding:0 .4rem;visibility:hidden}.ui5-tc__headerArrow:active,.ui5-tc__headerArrow:hover{color:var(--sapUiHighlight,var(--sapHighlightColor,#0854a0))}.ui5-tc__headerArrow--visible{visibility:visible}.ui-tc__overflowButton{display:none;margin-left:auto;margin-right:.25rem}.ui-tc__overflowButton--visible{display:block}.ui5-tc__overflowItem{color:var(--_ui5_tc_overflowItem_default_color,var(--sapUiHighlight,var(--sapHighlightColor,#0854a0)))}.ui5-tc__overflowItemContent{display:flex;align-items:center;padding:0 .5rem;height:3rem}.ui5-tc__overflowItem ui5-icon{font-size:1.375rem;width:1.375rem;height:1.375rem;padding-right:1rem}.ui5-tc__content{background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:var(--_ui5_tc_content_border_bottom,.0625rem solid var(--sapUiObjectHeaderBorderColor,#d9d9d9));padding:1rem;position:relative}.ui5-tc__content--collapsed{display:none}.ui5-tc--transparent .ui5-tc__content{background-color:transparent}.ui5-tc__contentItem--hidden{display:none}.ui5-tc-headerItemSemanticIcon--positive:before,.ui5-tc__headerItem--positive .ui5-tc-headerItemIcon,.ui5-tc__headerItem--positive.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--positive{color:var(--sapUiPositive,var(--sapPositiveColor,#107e3e));border-color:var(--_ui5_tc_headerItem_positive_selected_border_color,var(--sapUiPositive,var(--sapPositiveColor,#107e3e)))}.ui5-tc__headerItem--positive.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_positive_selected_background,var(--sapUiPositive,var(--sapPositiveColor,#107e3e)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--positive .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem.ui5-tc__headerItem--positive .ui5-tc__headerItemContent:after{border-color:var(--sapUiPositive,var(--sapPositiveColor,#107e3e))}.ui5-tc-headerItemSemanticIcon--negative:before,.ui5-tc__headerItem--negative .ui5-tc-headerItemIcon,.ui5-tc__headerItem--negative.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--negative{color:var(--sapUiNegative,var(--sapNegativeColor,#b00));border-color:var(--_ui5_tc_headerItem_negative_selected_border_color,var(--sapUiNegative,var(--sapNegativeColor,#b00)))}.ui5-tc__headerItem--negative.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_negative_selected_background,var(--sapUiNegative,var(--sapNegativeColor,#b00)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--negative .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem.ui5-tc__headerItem--negative .ui5-tc__headerItemContent:after{border-color:var(--sapUiNegative,var(--sapNegativeColor,#b00))}.ui5-tc-headerItemSemanticIcon--critical:before,.ui5-tc__headerItem--critical .ui5-tc-headerItemIcon,.ui5-tc__headerItem--critical.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--critical{color:var(--sapUiCritical,var(--sapCriticalColor,#e9730c));border-color:var(--_ui5_tc_headerItem_critical_selected_border_color,var(--sapUiCritical,var(--sapCriticalColor,#e9730c)))}.ui5-tc__headerItem--critical.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_critical_selected_background,var(--sapUiCritical,var(--sapCriticalColor,#e9730c)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--critical .ui5-tc-headerItemIcon:after,.ui5-tc__headerItem.ui5-tc__headerItem--critical .ui5-tc__headerItemContent:after{border-color:var(--sapUiCritical,var(--sapCriticalColor,#e9730c))}.ui5-tc__headerItem--neutral .ui5-tc-headerItemIcon,.ui5-tc__headerItem--nutral.ui5-tc__headerItem--textOnly,.ui5-tc__overflowItem--neutral{color:var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70));border-color:var(--_ui5_tc_headerItem_neutral_selected_border_color,var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70)))}.ui5-tc__headerItem--neutral.ui5-tc__headerItem--selected .ui5-tc-headerItemIcon{background-color:var(--_ui5_tc_headerItemIcon_neutral_selected_background,var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70)));color:var(--_ui5_tc_headerItemIcon_semantic_selected_color,var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff)))))}.ui5-tc__headerItem--neutral .ui5-tc-headerItemIcon:after,.ui5-tc__headerItems.ui5-tc__headerItem--neutral .ui5-tc__headerItemContent:after{border-color:var(--sapUiNeutral,var(--sapNeutralColor,#6a6d70))}[dir=rtl] .ui5-tc__headerItem:last-child{margin-left:0}[dir=rtl] .ui5-tc-headerItemSemanticIcon:before{margin-left:.25rem;margin-right:0}[dir=rtl] .ui5-tc-headerItemIcon{margin-left:.25rem;margin-right:0}[dir=rtl] .ui5-tc__headerItem--mixedMode .ui5-tc__headerItemAdditionalText{margin-right:0;margin-left:.5rem}[dir=rtl] .ui-tc__overflowButton{margin-right:auto;margin-left:.25rem}.sapUiSizeCompact .ui5-tc__headerItem--textOnly,.sapUiSizeCompact .ui5-tc__overflowItemContent{height:2rem}.sapUiSizeCompact .ui5-tc__headerItem--textOnly{line-height:1.325rem}.sapUiSizeCompact .ui5-tc-headerItemIcon{font-size:1rem;height:2rem;width:2rem}.sapUiSizeCompact .ui5-tc__headerItem--withIcon .ui5-tc__headerItemAdditionalText+.ui5-tc__headerItemText{margin-top:.3125rem}";
-
-  var SCROLL_STEP = 128;
-  /**
-   * @public
-   */
-
-  var metadata$z = {
-    tag: "ui5-tabcontainer",
-    defaultSlot: "items",
-    slots:
-    /** @lends  sap.ui.webcomponents.main.TabContainer.prototype */
-    {
-      /**
-       * Defines the tabs.
-       * <br><b>Note:</b> Only <code>ui5-tab</code> and <code>ui5-tab-separator</code> are allowed.
-       *
-       * @type {TabBase[]}
-       * @public
-       * @slot
-       */
-      items: {
-        type: TabBase,
-        multiple: true,
-        individualSlots: true,
-        listenFor: {
-          include: ["*"]
-        }
-      }
-    },
-    properties:
-    /** @lends  sap.ui.webcomponents.main.TabContainer.prototype */
-    {
-      /**
-       * Determines whether the tabs are in a fixed state that is not
-       * expandable/collapsible by user interaction.
-       *
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      fixed: {
-        type: Boolean
-      },
-
-      /**
-       * Determines whether the tab content is collapsed.
-       *
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      collapsed: {
-        type: Boolean
-      },
-
-      /**
-       * Specifies if the overflow select list is displayed.
-       * <br><br>
-       * The overflow select list represents a list, where all tab filters are displayed
-       * so that it's easier for the user to select a specific tab filter.
-       *
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      showOverflow: {
-        type: Boolean
-      },
-      _headerItem: {
-        type: Object
-      },
-      _overflowButton: {
-        type: Object
-      },
-      _headerBackArrow: {
-        type: Object
-      },
-      _headerForwardArrow: {
-        type: Object
-      },
-      _overflowList: {
-        type: Object
-      },
-      _selectedTab: {
-        type: TabBase,
-        association: true
-      },
-      _scrollable: {
-        type: Boolean
-      },
-      _scrollableBack: {
-        type: Boolean
-      },
-      _scrollableForward: {
-        type: Boolean
-      }
-    },
-    events:
-    /** @lends  sap.ui.webcomponents.main.TabContainer.prototype */
-    {
-      /**
-       * Fired when an item is selected.
-       *
-       * @event
-       * @param {HTMLElement} item The selected <code>item</code>.
-       * @public
-       */
-      itemSelect: {
-        item: {
-          type: HTMLElement
-        }
-      }
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-tabcontainer</code> represents a collection of tabs with associated content.
-   * Navigation through the tabs changes the content display of the currently active content area.
-   * A tab can be labeled with text only, or icons with text.
-   *
-   * <h3>Structure</h3>
-   *
-   * The <code>ui5-tabcontainer</code> can hold two types of entities:
-   * <ul>
-   * <li><code>ui5-tab</code> - contains all the information on an item (text and icon)</li>
-   * <li><code>ui5-tab-separator</code> - used to separate tabs with a vertical line</li>
-   * </ul>
-   *
-   * <h3>ES6 import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/TabContainer";</code>
-   * <br>
-   * <code>import "@ui5/webcomponents/dist/Tab";</code> (for <code>ui5-tab</code>)
-   * <br>
-   * <code>import "@ui5/webcomponents/dist/TabSeparator";</code> (for <code>ui5-tab-separator</code>)
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.TabContainer
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @appenddocs Tab TabSeparator
-   * @tagname ui5-tabcontainer
-   * @public
-   */
-
-  var TabContainer =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(TabContainer, _UI5Element);
-
-    _createClass(TabContainer, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$z;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return tabContainerCss;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$u;
-      }
-    }]);
-
-    function TabContainer() {
-      var _this;
-
-      _classCallCheck(this, TabContainer);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(TabContainer).call(this));
-      _this._onHeaderItemSelect = _this._onHeaderItemSelect.bind(_assertThisInitialized(_this));
-      _this._onHeaderItemKeyDown = _this._onHeaderItemKeyDown.bind(_assertThisInitialized(_this));
-      _this._onHeaderItemKeyUp = _this._onHeaderItemKeyUp.bind(_assertThisInitialized(_this));
-      _this._onOverflowListItemSelect = _this._onOverflowListItemSelect.bind(_assertThisInitialized(_this));
-      _this._onOverflowButtonClick = _this._onOverflowButtonClick.bind(_assertThisInitialized(_this));
-      _this._onHeaderBackArrowClick = _this._onHeaderBackArrowClick.bind(_assertThisInitialized(_this));
-      _this._onHeaderForwardArrowClick = _this._onHeaderForwardArrowClick.bind(_assertThisInitialized(_this));
-      _this._handleHeaderResize = _this._handleHeaderResize.bind(_assertThisInitialized(_this));
-      _this._updateScrolling = _this._updateScrolling.bind(_assertThisInitialized(_this));
-      _this._headerItem = {
-        click: _this._onHeaderItemSelect,
-        keydown: _this._onHeaderItemKeyDown,
-        keyup: _this._onHeaderItemKeyUp
-      };
-      _this._overflowButton = {
-        click: _this._onOverflowButtonClick
-      };
-      _this._headerBackArrow = {
-        click: _this._onHeaderBackArrowClick
-      };
-      _this._headerForwardArrow = {
-        click: _this._onHeaderForwardArrowClick
-      };
-      _this._overflowList = {
-        click: _this._onOverflowListItemSelect
-      }; // Init ScrollEnablement
-
-      _this._scrollEnablement = new ScrollEnablement();
-
-      _this._scrollEnablement.attachEvent("scroll", _this._updateScrolling);
-
-      _this._delegates.push(_this._scrollEnablement); // Init ItemNavigation
-
-
-      _this._initItemNavigation();
-
-      return _this;
-    }
-
-    _createClass(TabContainer, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        var _this2 = this;
-
-        var hasSelected = this.items.some(function (item) {
-          return item.selected;
-        });
-        this.items.forEach(function (item) {
-          item._getTabContainerHeaderItemCallback = function (_) {
-            return _this2.getDomRef().querySelector("#".concat(item._id));
-          };
-        });
-
-        if (!hasSelected) {
-          this.items[0].selected = true;
-        }
-
-        this.calculateRenderItems();
-
-        this._itemNavigation.init();
-      }
-    }, {
-      key: "calculateRenderItems",
-      value: function calculateRenderItems() {
-        var _this3 = this;
-
-        this.renderItems = this.items.map(function (item, index) {
-          var isSeparator = item.isSeparator();
-
-          if (isSeparator) {
-            return {
-              isSeparator: isSeparator,
-              _tabIndex: item._tabIndex,
-              _id: item._id
-            };
-          }
-
-          return {
-            item: item,
-            isMixedModeTab: !item.icon && _this3.mixedMode,
-            isTextOnlyTab: !item.icon && !_this3.mixedMode,
-            isIconTab: item.icon,
-            position: index + 1,
-            disabled: item.disabled || undefined,
-            selected: item.selected || false,
-            hidden: !item.selected,
-            ariaLabelledBy: calculateAriaLabelledBy(item),
-            contentItemClasses: calculateContentItemClasses(item),
-            headerItemClasses: calculateHeaderItemClasses(item, _this3.mixedMode),
-            headerItemContentClasses: calculateHeaderItemContentClasses(item),
-            headerItemIconClasses: calculateHeaderItemIconClasses(item),
-            headerItemSemanticIconClasses: calculateHeaderItemSemanticIconClasses(item),
-            headerItemTextClasses: calculateHeaderItemTextClasses(item),
-            headerItemAdditionalTextClasses: calculateHeaderItemAdditionalTextClasses(item),
-            overflowItemClasses: calculateOverflowItemClasses(item),
-            overflowItemContentClasses: calculateOverflowItemContentClasses(item),
-            overflowItemState: calculateOverflowItemState(item)
-          };
-        }, this);
-      }
-    }, {
-      key: "onAfterRendering",
-      value: function onAfterRendering() {
-        this._scrollEnablement.scrollContainer = this._getHeaderScrollContainer();
-
-        this._updateScrolling();
-      }
-    }, {
-      key: "onEnterDOM",
-      value: function onEnterDOM() {
-        ResizeHandler.register(this._getHeader(), this._handleHeaderResize);
-      }
-    }, {
-      key: "onExitDOM",
-      value: function onExitDOM() {
-        ResizeHandler.deregister(this._getHeader(), this._handleHeaderResize);
-      }
-    }, {
-      key: "_onHeaderItemKeyDown",
-      value: function _onHeaderItemKeyDown(event) {
-        if (isEnter(event)) {
-          this._onHeaderItemSelect(event);
-        } // Prevent Scrolling
-
-
-        if (isSpace(event)) {
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "_onHeaderItemKeyUp",
-      value: function _onHeaderItemKeyUp(event) {
-        if (isSpace(event)) {
-          this._onHeaderItemSelect(event);
-        }
-      }
-    }, {
-      key: "_initItemNavigation",
-      value: function _initItemNavigation() {
-        var _this4 = this;
-
-        this._itemNavigation = new ItemNavigation(this);
-
-        this._itemNavigation.getItemsCallback = function () {
-          return _this4._getTabs();
-        };
-
-        this._delegates.push(this._itemNavigation);
-      }
-    }, {
-      key: "_onHeaderItemSelect",
-      value: function _onHeaderItemSelect(event) {
-        if (!event.target.hasAttribute("disabled")) {
-          this._onItemSelect(event.target);
-        }
-      }
-    }, {
-      key: "_onOverflowListItemSelect",
-      value: function _onOverflowListItemSelect(event) {
-        this._onItemSelect(event.detail.item);
-
-        this._getPopover().close();
-
-        this.shadowRoot.querySelector("#".concat(event.detail.item.id)).focus();
-      }
-    }, {
-      key: "_onItemSelect",
-      value: function _onItemSelect(target) {
-        var _this5 = this;
-
-        var selectedIndex = findIndex(this.items, function (item) {
-          return item._id === target.id;
-        });
-        var selectedTabIndex = findIndex(this._getTabs(), function (item) {
-          return item._id === target.id;
-        });
-        var currentSelectedTab = this.items[selectedIndex]; // update selected items
-
-        this.items.forEach(function (item, index) {
-          if (!item.isSeparator()) {
-            var selected = selectedIndex === index;
-            item.selected = selected;
-
-            if (selected) {
-              _this5._itemNavigation.current = selectedTabIndex;
-            }
-          }
-        }, this); // update collapsed state
-
-        if (!this.fixed) {
-          if (currentSelectedTab === this._selectedTab) {
-            this.collapsed = !this.collapsed;
-          } else {
-            this.collapsed = false;
-          }
-        } // select the tab
-
-
-        this._selectedTab = currentSelectedTab;
-        this.fireEvent("itemSelect", {
-          item: currentSelectedTab
-        });
-      }
-    }, {
-      key: "_onOverflowButtonClick",
-      value: function _onOverflowButtonClick(event) {
-        this._getPopover().openBy(event.target);
-      }
-    }, {
-      key: "_onHeaderBackArrowClick",
-      value: function _onHeaderBackArrowClick() {
-        var _this6 = this;
-
-        this._scrollEnablement.move(-SCROLL_STEP, 0).promise().then(function (_) {
-          return _this6._updateScrolling();
-        });
-      }
-    }, {
-      key: "_onHeaderForwardArrowClick",
-      value: function _onHeaderForwardArrowClick() {
-        var _this7 = this;
-
-        this._scrollEnablement.move(SCROLL_STEP, 0).promise().then(function (_) {
-          return _this7._updateScrolling();
-        });
-      }
-    }, {
-      key: "_handleHeaderResize",
-      value: function _handleHeaderResize() {
-        this._updateScrolling();
-      }
-    }, {
-      key: "_updateScrolling",
-      value: function _updateScrolling() {
-        var headerScrollContainer = this._getHeaderScrollContainer();
-
-        this._scrollable = headerScrollContainer.offsetWidth < headerScrollContainer.scrollWidth;
-        this._scrollableBack = headerScrollContainer.scrollLeft > 0;
-        this._scrollableForward = Math.ceil(headerScrollContainer.scrollLeft) < headerScrollContainer.scrollWidth - headerScrollContainer.offsetWidth;
-      }
-    }, {
-      key: "_getHeader",
-      value: function _getHeader() {
-        return this.shadowRoot.querySelector("#".concat(this._id, "-header"));
-      }
-    }, {
-      key: "_getTabs",
-      value: function _getTabs() {
-        return this.items.filter(function (item) {
-          return !item.isSeparator();
-        });
-      }
-    }, {
-      key: "_getHeaderScrollContainer",
-      value: function _getHeaderScrollContainer() {
-        return this.shadowRoot.querySelector("#".concat(this._id, "-headerScrollContainer"));
-      }
-    }, {
-      key: "_getPopover",
-      value: function _getPopover() {
-        return this.shadowRoot.querySelector("#".concat(this._id, "-overflowMenu"));
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            "ui5-tab-container": true,
-            "sapUiSizeCompact": getCompactSize()
-          },
-          header: {
-            "ui5-tc__header": true,
-            "ui5-tc__header--scrollable": this._scrollable
-          },
-          headerScrollContainer: {
-            "ui-tc__headerScrollContainer": true
-          },
-          headerList: {
-            "ui5-tc__headerList": true
-          },
-          separator: {
-            "ui5-tc__separator": true
-          },
-          headerBackArrow: {
-            "ui5-tc__headerArrow": true,
-            "ui5-tc__headerArrowLeft": true,
-            "ui5-tc__headerArrow--visible": this._scrollableBack
-          },
-          headerForwardArrow: {
-            "ui5-tc__headerArrow": true,
-            "ui5-tc__headerArrowRight": true,
-            "ui5-tc__headerArrow--visible": this._scrollableForward
-          },
-          overflowButton: {
-            "ui-tc__overflowButton": true,
-            "ui-tc__overflowButton--visible": this._scrollable
-          },
-          content: {
-            "ui5-tc__content": true,
-            "ui5-tc__content--collapsed": this.collapsed
-          }
-        };
-      }
-    }, {
-      key: "mixedMode",
-      get: function get() {
-        return this.items.some(function (item) {
-          return item.icon;
-        }) && this.items.some(function (item) {
-          return item.text;
-        });
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Promise.all([Button.define(), CustomListItem.define(), Icon.define(), List.define(), Popover.define()]);
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(TabContainer), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return TabContainer;
-  }(UI5Element);
-
-  var findIndex = function findIndex(arr, predicate) {
-    for (var i = 0; i < arr.length; i++) {
-      var result = predicate(arr[i]);
-
-      if (result) {
-        return i;
-      }
-    }
-
-    return -1;
-  };
-  /* CSS classes calculation helpers */
-
-
-  var calculateAriaLabelledBy = function calculateAriaLabelledBy(item) {
-    var labels = [];
-
-    if (item.text) {
-      labels.push("".concat(item._id, "-text"));
-    }
-
-    if (item.additionalText) {
-      labels.push("".concat(item._id, "-additionalText"));
-    }
-
-    if (item.icon) {
-      labels.push("".concat(item._id, "-icon"));
-    }
-
-    return labels.join(" ");
-  };
-
-  var calculateHeaderItemClasses = function calculateHeaderItemClasses(item, mixedMode) {
-    var classes = ["ui5-tc__headerItem"];
-
-    if (item.selected) {
-      classes.push("ui5-tc__headerItem--selected");
-    }
-
-    if (item.disabled) {
-      classes.push("ui5-tc__headerItem--disabled");
-    }
-
-    if (!item.icon && !mixedMode) {
-      classes.push("ui5-tc__headerItem--textOnly");
-    }
-
-    if (item.icon) {
-      classes.push("ui5-tc__headerItem--withIcon");
-    }
-
-    if (!item.icon && mixedMode) {
-      classes.push("ui5-tc__headerItem--mixedMode");
-    }
-
-    if (item.semanticColor !== SemanticColor.Default) {
-      classes.push("ui5-tc__headerItem--".concat(item.semanticColor.toLowerCase()));
-    }
-
-    return classes.join(" ");
-  };
-
-  var calculateHeaderItemContentClasses = function calculateHeaderItemContentClasses(item) {
-    var classes = ["ui5-tc__headerItemContent"];
-    return classes.join(" ");
-  };
-
-  var calculateHeaderItemIconClasses = function calculateHeaderItemIconClasses(item) {
-    var classes = ["ui5-tc-headerItemIcon"];
-    return classes.join(" ");
-  };
-
-  var calculateHeaderItemSemanticIconClasses = function calculateHeaderItemSemanticIconClasses(item) {
-    var classes = ["ui5-tc-headerItemSemanticIcon"];
-
-    if (item.semanticColor !== SemanticColor.Default) {
-      classes.push("ui5-tc-headerItemSemanticIcon--".concat(item.semanticColor.toLowerCase()));
-    }
-
-    return classes.join(" ");
-  };
-
-  var calculateHeaderItemTextClasses = function calculateHeaderItemTextClasses(item) {
-    var classes = ["ui5-tc__headerItemText"];
-    return classes.join(" ");
-  };
-
-  var calculateHeaderItemAdditionalTextClasses = function calculateHeaderItemAdditionalTextClasses(item) {
-    var classes = ["ui5-tc__headerItemAdditionalText"];
-    return classes.join(" ");
-  };
-
-  var calculateOverflowItemClasses = function calculateOverflowItemClasses(item) {
-    var classes = ["ui5-tc__overflowItem"];
-
-    if (item.semanticColor !== SemanticColor.Default) {
-      classes.push("ui5-tc__overflowItem--".concat(item.semanticColor.toLowerCase()));
-    }
-
-    if (item.disabled) {
-      classes.push("ui5-tc__overflowItem--disabled");
-    }
-
-    return classes.join(" ");
-  };
-
-  var calculateOverflowItemContentClasses = function calculateOverflowItemContentClasses(item) {
-    var classes = ["ui5-tc__overflowItemContent"];
-    return classes.join(" ");
-  };
-
-  var calculateOverflowItemState = function calculateOverflowItemState(item) {
-    return item.disabled ? "Inactive" : "Active";
-  };
-
-  var calculateContentItemClasses = function calculateContentItemClasses(item) {
-    var classes = ["ui5-tc__contentItem"];
-    return classes.join(" ");
-  };
-
-  Bootstrap.boot().then(function (_) {
-    TabContainer.define();
-  });
-
-  function _templateObject$w() {
-    var data = _taggedTemplateLiteral(["<div id=\"", "\"><slot></slot></div>"]);
-
-    _templateObject$w = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$v = function block0(context) {
-    return html(_templateObject$w(), ifDefined(context._id));
-  };
-
-  /**
-   * @public
-   */
-
-  var metadata$A = {
-    tag: "ui5-tab",
-    defaultSlot: "content",
-    slots:
-    /** @lends sap.ui.webcomponents.main.Tab.prototype */
-    {
-      /**
-       * Defines the tab content.
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      content: {
-        type: HTMLElement,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.Tab.prototype */
-    {
-      /**
-       * The text to be displayed for the item.
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      text: {
-        type: String
-      },
-
-      /**
-       * Enabled items can be selected.
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      disabled: {
-        type: Boolean
-      },
-
-      /**
-       * Represents the "additionalText" text, which is displayed in the tab filter.
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      additionalText: {
-        type: String
-      },
-
-      /**
-       * Defines the icon source URI to be displayed as graphical element within the <code>ui5-tab</code>.
-       * The SAP-icons font provides numerous built-in icons.
-       * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      icon: {
-        type: String
-      },
-
-      /**
-       * Defines the <code>ui5-tab</code> semantic color.
-       * The color is applied to:
-       * <ul>
-       * <li>the <code>ui5-tab</code> icon</li>
-       * <li>the <code>text</code> when <code>ui5-tab</code> overflows</li>
-       * <li>the tab selection line</li>
-       * </ul>
-       * <br>
-       * Available semantic colors are: <code>"Default"</code>, <code>"Neutral", <code>"Positive"</code>, <code>"Critical"</code> and <code>"Negative"</code>.
-       * <br><br>
-       * <b>Note:</b> The color value depends on the current theme.
-       * @type {string}
-       * @defaultvalue "Default"
-       * @public
-       */
-      semanticColor: {
-        type: SemanticColor,
-        defaultValue: SemanticColor.Default
-      },
-
-      /**
-       * Specifies if the <code>ui5-tab</code> is selected.
-       *
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      selected: {
-        type: Boolean
-      },
-      _tabIndex: {
-        type: String,
-        defaultValue: "-1"
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.Tab.prototype */
-    {}
-  };
-  /**
-   * @class
-   * The <code>ui5-tab</code> represents a selectable item inside a <code>ui5-tabcontainer</code>.
-   * It defines both the item in the tab strip (top part of the <code>ui5-tabcontainer</code>) and the
-   * content that is presented to the user once the tab is selected.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Tab
-   * @extends TabBase
-   * @tagname ui5-tab
-   * @public
-   */
-
-  var Tab =
-  /*#__PURE__*/
-  function (_TabBase) {
-    _inherits(Tab, _TabBase);
-
-    function Tab() {
-      _classCallCheck(this, Tab);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Tab).apply(this, arguments));
-    }
-
-    _createClass(Tab, [{
-      key: "getFocusDomRef",
-      value: function getFocusDomRef() {
-        var focusedDomRef = _get(_getPrototypeOf(Tab.prototype), "getFocusDomRef", this).call(this);
-
-        if (this._getTabContainerHeaderItemCallback) {
-          focusedDomRef = this._getTabContainerHeaderItemCallback();
-        }
-
-        return focusedDomRef;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Icon.define();
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(Tab), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }, {
-      key: "metadata",
-      get: function get() {
-        return metadata$A;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$v;
-      }
-    }]);
-
-    return Tab;
-  }(TabBase);
-
-  Bootstrap.boot().then(function (_) {
-    Tab.define();
-  });
-
-  function _templateObject$x() {
-    var data = _taggedTemplateLiteral(["<li id=\"_id\" role=\"separator\"></li>"]);
-
-    _templateObject$x = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$w = function block0(context) {
-    return html(_templateObject$x());
-  };
-
-  /**
-   * @public
-   */
-
-  var metadata$B = {
-    tag: "ui5-tab-separator",
-    properties:
-    /** @lends sap.ui.webcomponents.main.TabSeparator.prototype */
-    {},
-    events:
-    /** @lends sap.ui.webcomponents.main.TabSeparator.prototype */
-    {}
-  };
-  /**
-   * @class
-   * The <code>ui5-tab-separator</code> represents a vertical line to separate tabs inside a <code>ui5-tabcontainer</code>.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.TabSeparator
-   * @extends TabBase
-   * @tagname ui5-tab-separator
-   * @public
-   */
-
-  var TabSeparator =
-  /*#__PURE__*/
-  function (_TabBase) {
-    _inherits(TabSeparator, _TabBase);
-
-    function TabSeparator() {
-      _classCallCheck(this, TabSeparator);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(TabSeparator).apply(this, arguments));
-    }
-
-    _createClass(TabSeparator, [{
-      key: "isSeparator",
-      value: function isSeparator() {
-        return true;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$B;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$w;
-      }
-    }]);
-
-    return TabSeparator;
-  }(TabBase);
-
-  Bootstrap.boot().then(function (_) {
-    TabSeparator.define();
-  });
-
   var CSSSize =
   /*#__PURE__*/
   function (_DataType) {
@@ -33549,979 +22575,94 @@
     return CSSSize;
   }(DataType);
 
-  function _templateObject2$o() {
-    var data = _taggedTemplateLiteral(["<slot name=\"header\"></slot>\t"]);
-
-    _templateObject2$o = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$y() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\" >\t", "</div>"]);
-
-    _templateObject$y = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$x = function block0(context) {
-    return html(_templateObject$y(), ifDefined(classMap(context.classes.main)), context.header ? block1$o(context) : undefined);
-  };
-
-  var block1$o = function block1(context) {
-    return html(_templateObject2$o());
-  };
-
-  var styles$b = ":host(ui5-table-column){display:inline-block;width:100%;height:100%}ui5-table-column{display:inline-block;width:100%;height:100%}.sapWCTableColumn{padding:.25rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:.875rem;height:100%;box-sizing:border-box}.sapWCTableColumnFirst{padding-left:1rem}.sapWCTableColumnLast{padding-right:1rem}";
-
-  var metadata$C = {
-    tag: "ui5-table-column",
-    slots:
-    /** @lends sap.ui.webcomponents.main.TableColumn.prototype */
-    {
-      /**
-       * Defines the HTML Element to be displayed in the column header.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @public
-       */
-      header: {
-        type: HTMLElement
-      }
-    },
-    defaultSlot: "header",
-    properties:
-    /** @lends sap.ui.webcomponents.main.TableColumn.prototype */
-    {
-      /**
-       * Defines the minimum screen width required to display this column. By default it is always displayed.
-       * </br></br>
-       * The responsive behavior of the <code>ui5-table</code> is determined by this property. As an example, by setting
-       * <code>minWidth</code> property to <code>40em</code> shows this column on tablet (and desktop) but hides it on mobile.
-       * </br>
-       * For further responsive design options, see <code>demandPopin</code> property.
-       *
-       * @type {number}
-       * @public
-       */
-      minWidth: {
-        type: Integer,
-        defaultValue: Infinity
-      },
-
-      /**
-       * The text for the column when it pops in.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      popinText: {
-        type: String
-      },
-
-      /**
-       * According to your <code>minWidth</code> settings, the <code>ui5-table-column</code> can be hidden
-       * in different screen sizes.
-       * </br></br>
-       * Setting this property to <code>true</code>, shows this column as pop-in instead of hiding it.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      demandPopin: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the width of the column. If you leave it empty, then this column covers the remaining space.
-       *
-       * @type {CSSSize}
-       * @public
-       */
-      width: {
-        type: CSSSize,
-        defaultValue: ""
-      },
-      _first: {
-        type: Boolean
-      },
-      _last: {
-        type: Boolean
-      }
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-table-column</code> component allows to define column specific properties that are applied
-   * when rendering the <code>ui5-table</code> component.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.TableColumn
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-table-column
-   * @public
-   */
-
-  var TableColumn =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(TableColumn, _UI5Element);
-
-    function TableColumn() {
-      _classCallCheck(this, TableColumn);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(TableColumn).apply(this, arguments));
-    }
-
-    _createClass(TableColumn, [{
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapWCTableColumn: true,
-            sapWCTableColumnFirst: this._first,
-            sapWCTableColumnLast: this._last
-          }
-        };
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$C;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$b;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$x;
-      }
-    }]);
-
-    return TableColumn;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    TableColumn.define();
-  });
-
-  function _templateObject$z() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"><slot></slot></div>"]);
-
-    _templateObject$z = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$y = function block0(context) {
-    return html(_templateObject$z(), ifDefined(classMap(context.classes.main)));
-  };
-
-  var styles$c = ":host(ui5-table-cell){display:inline-block;width:100%;height:100%;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)))}ui5-table-cell{display:inline-block;width:100%;height:100%;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)))}.sapWCTableCell{overflow:hidden;padding:.25rem .0625rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:.875rem;height:100%;box-sizing:border-box}.sapWCTableCellWithBorder{border-bottom:1px solid #e5e5e5}.sapWCTableCellFirst{padding-left:.75rem}.sapWCTableCellLast{padding-right:.75rem}";
-
-  /**
-   * @public
-   */
-
-  var metadata$D = {
-    tag: "ui5-table-cell",
-    slots:
-    /** @lends sap.ui.webcomponents.main.TableCell.prototype */
-    {
-      /**
-       * Specifies the content of the <code>ui5-table-cell</code>.
-       *
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      content: {
-        type: HTMLElement,
-        multiple: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.TableCell.prototype */
-    {
-      _firstInRow: {
-        type: Boolean
-      },
-      _lastInRow: {
-        type: Boolean
-      },
-      _hasBorder: {
-        type: Boolean
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.TableCell.prototype */
-    {}
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-table-cell</code> component defines the structure of the data in a single <code>ui5-table</code> cell.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.TableCell
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-table-cell
-   * @public
-   */
-
-  var TableCell =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(TableCell, _UI5Element);
-
-    function TableCell() {
-      _classCallCheck(this, TableCell);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(TableCell).apply(this, arguments));
-    }
-
-    _createClass(TableCell, [{
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapWCTableCell: true,
-            sapWCTableCellFirst: this._firstInRow,
-            sapWCTableCellLast: this._lastInRow,
-            sapWCTableCellWithBorder: this._hasBorder
-          }
-        };
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$D;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$c;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$y;
-      }
-    }]);
-
-    return TableCell;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    TableCell.define();
-  });
-
-  function _templateObject3$h() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"\t\t\tstyle=\"grid-column-end: ", "\" ><span class=\"", "\">", "</span><div><slot name=\"", "\"></slot></div></div>\t"]);
-
-    _templateObject3$h = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$p() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"><slot name=\"", "\"></slot></div>\t"]);
-
-    _templateObject2$p = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$A() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tstyle=\"", "\"\ttabindex=\"", "\">\t", "", "</div>"]);
-
-    _templateObject$A = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$z = function block0(context) {
-    return html(_templateObject$A(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._tabIndex), repeat(context.visibleCells, undefined, function (item, index) {
-      return block1$p(item, index, context);
-    }), repeat(context.popinCells, undefined, function (item, index) {
-      return block2$h(item, index, context);
-    }));
-  };
-
-  var block1$p = function block1(item, index, context) {
-    return html(_templateObject2$p(), ifDefined(classMap(context.classes.cellWrapper)), ifDefined(item._individualSlot));
-  };
-
-  var block2$h = function block2(item, index, context) {
-    return html(_templateObject3$h(), ifDefined(classMap(context.classes.popin)), ifDefined(context.visibleColumnLength), ifDefined(classMap(context.classes.popinTitle)), ifDefined(item.popinText), ifDefined(item.cell._individualSlot));
-  };
-
-  var styles$d = ":host(ui5-table-row:not([hidden])){display:inline-block;width:100%}ui5-table-row:not([hidden]){display:inline-block;width:100%}.sapWCTableRow{display:grid;align-items:center;background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-sizing:border-box}.sapWCTableRow:focus{outline:1px solid var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));outline-offset:-3px;outline-style:dotted}.sapWCTablePopinRow{padding:.25rem 1rem;grid-column-start:1;display:flex;flex-direction:column;align-items:flex-start}.sapWCTablePopinTitle{color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.sapMWCTableRowCellContainer{height:100%;padding:.25rem;box-sizing:border-box}.sapWCTableRowWithBorder{border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed))}";
-
-  /**
-   * @public
-   */
-
-  var metadata$E = {
-    tag: "ui5-table-row",
-    defaultSlot: "cells",
-    slots:
-    /** @lends sap.ui.webcomponents.main.TableRow.prototype */
-    {
-      /**
-       * Defines the cells of the <code>ui5-table-row</code>.
-       * <br><b>Note:</b> Only <code>ui5-table-cell</code> is allowed.
-       *
-       * @type {TableCell[]}
-       * @slot
-       * @public
-       */
-      cells: {
-        type: TableCell,
-        multiple: true,
-        individualSlots: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.TableRow.prototype */
-    {
-      _columnsInfo: {
-        type: Object,
-        multiple: true,
-        deepEqual: true
-      },
-      _tabIndex: {
-        type: String,
-        defaultValue: "-1"
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.TableRow.prototype */
-    {
-      _focused: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-table-row</code> component represents a row in the <code>ui5-table</code>.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.TableRow
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-table-row
-   * @public
-   */
-
-  var TableRow =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(TableRow, _UI5Element);
-
-    function TableRow() {
-      _classCallCheck(this, TableRow);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(TableRow).apply(this, arguments));
-    }
-
-    _createClass(TableRow, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        var _this = this;
-
-        this.visibleCells = [];
-        this.popinCells = [];
-
-        this._columnsInfo.forEach(function (info, index) {
-          if (info.visible) {
-            _this.visibleCells.push(_this.cells[index]);
-
-            _this.cells[index]._firstInRow = index === 0;
-          } else if (info.demandPopin) {
-            _this.popinCells.push({
-              cell: _this.cells[index],
-              popinText: info.popinText
-            });
-          }
-        }, this);
-
-        this.visibleColumnLength = this.visibleCells.length + 1;
-        var lastVisibleCell = this.visibleCells[this.visibleCells.length - 1];
-
-        if (lastVisibleCell) {
-          lastVisibleCell._lastInRow = true;
-        }
-      }
-    }, {
-      key: "onfocusin",
-      value: function onfocusin(event) {
-        this.fireEvent("_focused", event);
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapWCTableRow: true,
-            sapWCTableRowWithBorder: true
-          },
-          popin: {
-            sapWCTablePopinRow: true
-          },
-          popinTitle: {
-            sapWCTablePopinTitle: true
-          },
-          cellWrapper: {
-            sapMWCTableRowCellContainer: true
-          }
-        };
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        var gridTemplateColumns = this._columnsInfo.reduce(function (acc, info) {
-          return info.visible ? "".concat(acc, "minmax(0, ").concat(info.width || "1fr", ") ") : acc;
-        }, "");
-
-        return {
-          main: {
-            "grid-template-columns": gridTemplateColumns
-          },
-          popin: {
-            "grid-column-end": 6
-          }
-        };
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$E;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$d;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$z;
-      }
-    }]);
-
-    return TableRow;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    TableRow.define();
-  });
-
-  function _templateObject5$b() {
-    var data = _taggedTemplateLiteral(["<div id=\"noData\" class=\"sapWCTableNoDataRow\"><span>", "</span></div>\t\t"]);
-
-    _templateObject5$b = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$c() {
-    var data = _taggedTemplateLiteral(["", ""]);
-
-    _templateObject4$c = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$i() {
-    var data = _taggedTemplateLiteral(["<div style=\"width: 100%\"><slot name=\"", "\"></slot></div>\t"]);
-
-    _templateObject3$i = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$q() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapWCTableColumnWrapper\"><slot name=\"", "\"></slot></div>\t\t"]);
-
-    _templateObject2$q = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$B() {
-    var data = _taggedTemplateLiteral(["<div\tstyle=\"display: grid; place-items: center;\"><!-- columns --><div class=\"", "\" style=\"", "\">\t\t", "</div><!-- rows -->\t", "", "</div>"]);
-
-    _templateObject$B = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$A = function block0(context) {
-    return html(_templateObject$B(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context.visibleColumns, undefined, function (item, index) {
-      return block1$q(item, index, context);
-    }), repeat(context.rows, undefined, function (item, index) {
-      return block2$i(item, index, context);
-    }), !context.rows.length ? block3$c(context) : undefined);
-  };
-
-  var block1$q = function block1(item, index, context) {
-    return html(_templateObject2$q(), ifDefined(item._individualSlot));
-  };
-
-  var block2$i = function block2(item, index, context) {
-    return html(_templateObject3$i(), ifDefined(item._individualSlot));
-  };
-
-  var block3$c = function block3(context) {
-    return html(_templateObject4$c(), context.showNoData ? block4$b(context) : undefined);
-  };
-
-  var block4$b = function block4(context) {
-    return html(_templateObject5$b(), ifDefined(context.noDataText));
-  };
-
-  var styles$e = ":host(ui5-table:not([hidden])){display:inline-block;width:100%}ui5-table:not([hidden]){display:inline-block;width:100%}.sapWCTableHeader{width:100%;display:grid;border-bottom:1px solid var(--sapUiListTableGroupHeaderBorderColor,#d9d9d9);height:3rem}.sapWCTableColumnWrapper{background:var(--sapUiListHeaderBackground,var(--sapList_HeaderBackground,#f7f7f7));border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));height:100%;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.sapUiSizeCompact.sapWCTableHeader{height:2rem}.sapWCTableNoDataRow{display:flex;align-items:center;width:100%;height:auto;justify-content:center;text-align:center;padding:.5rem 1rem;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:.875rem;box-sizing:border-box;color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));min-height:3rem;border-bottom:1px solid var(--sapUiListTableGroupHeaderBorderColor,#d9d9d9)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$F = {
-    tag: "ui5-table",
-    slots:
-    /** @lends sap.ui.webcomponents.main.Table.prototype */
-    {
-      /**
-       * Defines the <code>ui5-table</code> rows.
-       * <br><b>Note:</b> Only <code>ui5-table-row</code> is allowed.
-       *
-       * @type {TableRow[]}
-       * @slot
-       * @public
-       */
-      rows: {
-        type: TableRow,
-        multiple: true,
-        individualSlots: true
-      },
-
-      /**
-       * Defines the configuration for the columns of the <code>ui5-table</code>.
-       * <br><b>Note:</b> Only <code>ui5-table-column</code> is allowed.
-       *
-       * @type {TableColumn[]}
-       * @slot
-       * @public
-       */
-      columns: {
-        type: TableColumn,
-        multiple: true,
-        individualSlots: true,
-        listenFor: {
-          exclude: ["header"]
-        }
-      }
-    },
-    defaultSlot: "rows",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Table.prototype */
-    {
-      /**
-       * Defines the text that will be displayed when there is no data and <code>showNoData</code> is present.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      noDataText: {
-        type: String
-      },
-
-      /**
-       * Defines if the value of <code>noDataText</code> will be diplayed when there is no rows present in the table.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      showNoData: {
-        type: Boolean
-      },
-
-      /**
-       * Determines whether the column headers remain fixed at the top of the page during
-       * vertical scrolling as long as the Web Component is in the viewport.
-       * <br><br>
-       * <b>Limitations:</b>
-       * <ul>
-       * <li>Browsers that do not support this feature:
-       * <ul>
-       * <li>Internet Explorer</li>
-       * <li>Microsoft Edge lower than version 41 (EdgeHTML 16)</li>
-       * <li>Mozilla Firefox lower than version 59</li>
-       * </ul></li>
-       * <li>Scrolling behavior:
-       * <ul>
-       * <li>If the Web Component is placed in layout containers that have the <code>overflow: hidden</code>
-       * or <code>overflow: auto</code> style definition, this can
-       * prevent the sticky elements of the Web Component from becoming fixed at the top of the viewport.</li>
-       * </ul></li>
-       * </ul>
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      stickyColumnHeader: {
-        type: Boolean
-      },
-      _hiddenColumns: {
-        type: Object,
-        multiple: true
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.Table.prototype */
-    {}
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-table</code> component provides a set of sophisticated and convenient functions for responsive table design.
-   * It provides a comprehensive set of features for displaying and dealing with vast amounts of data.
-   * <br><br>
-   * To render the <code>Table</code> properly, the order of the <code>columns</code> should match with the
-   * order of the item <code>cells</code> in the <code>rows</code>.
-   * <br><br>
-   * Desktop and tablet devices are supported.
-   * On tablets, special consideration should be given to the number of visible columns
-   * and rows due to the limited performance of some devices.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Table";</code>
-   * <br>
-   * <b>Note:</b> This also includes the <code>ui5-table-column</code>, <code>ui5-table-row</code> and <code>ui5-table-cell</code> Web Components.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Table
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-table
-   * @appenddocs TableColumn TableRow TableCell
-   * @public
-   */
-
-  var Table =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Table, _UI5Element);
-
-    _createClass(Table, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$F;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$e;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$A;
-      }
-    }]);
-
-    function Table() {
-      var _this;
-
-      _classCallCheck(this, Table);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Table).call(this));
-      _this._itemNavigation = new ItemNavigation(_assertThisInitialized(_this));
-
-      _this._itemNavigation.getItemsCallback = function getItemsCallback() {
-        return this.rows;
-      }.bind(_assertThisInitialized(_this));
-
-      _this._delegates.push(_this._itemNavigation);
-
-      _this.fnOnRowFocused = _this.onRowFocused.bind(_assertThisInitialized(_this));
-      return _this;
-    }
-
-    _createClass(Table, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        var _this2 = this;
-
-        var columnSettings = this.getColumnPropagationSettings();
-
-        this._itemNavigation.init();
-
-        this.rows.forEach(function (row) {
-          row._columnsInfo = columnSettings;
-          row.removeEventListener("ui5-_focused", _this2.fnOnRowFocused);
-          row.addEventListener("ui5-_focused", _this2.fnOnRowFocused);
-        });
-        this.visibleColumns = this.columns.filter(function (column, index) {
-          return !_this2._hiddenColumns[index];
-        });
-      }
-    }, {
-      key: "onEnterDOM",
-      value: function onEnterDOM() {
-        ResizeHandler.register(this.getDomRef(), this.popinContent.bind(this));
-      }
-    }, {
-      key: "onExitDOM",
-      value: function onExitDOM() {
-        ResizeHandler.deregister(this.getDomRef(), this.popinContent.bind(this));
-      }
-    }, {
-      key: "onRowFocused",
-      value: function onRowFocused(event) {
-        this._itemNavigation.update(event.target);
-      }
-    }, {
-      key: "onkeydown",
-      value: function onkeydown(event) {
-        if (isSpace(event)) {
-          event.preventDefault();
-        }
-      }
-    }, {
-      key: "popinContent",
-      value: function popinContent(_event) {
-        var clientRect = this.getDomRef().getBoundingClientRect();
-        var tableWidth = clientRect.width;
-        var hiddenColumns = [];
-        var visibleColumnsIndexes = []; // store the hidden columns
-
-        this.columns.forEach(function (column, index) {
-          if (tableWidth < column.minWidth && column.minWidth !== Infinity) {
-            hiddenColumns[index] = {
-              index: index,
-              popinText: column.popinText,
-              demandPopin: column.demandPopin
-            };
-          } else {
-            visibleColumnsIndexes.push(index);
-          }
-        });
-
-        if (visibleColumnsIndexes.length) {
-          this.columns[visibleColumnsIndexes[0]]._first = true;
-          this.columns[visibleColumnsIndexes[visibleColumnsIndexes.length - 1]]._last = true;
-        } // invalidate only if hidden columns count has changed
-
-
-        if (this._hiddenColumns.length !== hiddenColumns.length) {
-          this._hiddenColumns = hiddenColumns;
-        }
-      }
-      /**
-       * Gets settings to be propagated from columns to rows.
-       *
-       * @returns {object}
-       * @memberof Table
-       */
-
-    }, {
-      key: "getColumnPropagationSettings",
-      value: function getColumnPropagationSettings() {
-        var _this3 = this;
-
-        return this.columns.map(function (column, index) {
-          return {
-            index: index,
-            width: column.width,
-            minWidth: column.minWidth,
-            demandPopin: column.demandPopin,
-            popinText: column.popinText,
-            visible: !_this3._hiddenColumns[index]
-          };
-        }, this);
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapWCTableHeader: true,
-            sapUiSizeCompact: getCompactSize()
-          },
-          columns: {
-            sapWCTableColumnWrapper: true
-          }
-        };
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        var gridTemplateColumns = this.visibleColumns.reduce(function (acc, column) {
-          return "".concat(acc, "minmax(0, ").concat(column.width || "1fr", ") ");
-        }, "");
-        return {
-          main: {
-            "grid-template-columns": gridTemplateColumns,
-            position: this.stickyColumnHeader ? "sticky" : "",
-            top: this.stickyColumnHeader ? "0px" : "",
-            "z-index": this.stickyColumnHeader ? "1" : ""
-          }
-        };
-      }
-    }]);
-
-    return Table;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Table.define();
-  });
-
-  function _templateObject5$c() {
+  function _templateObject5$2() {
     var data = _taggedTemplateLiteral(["<span class=\"", "\">", "</span>\t"]);
 
-    _templateObject5$c = function _templateObject5() {
+    _templateObject5$2 = function _templateObject5() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject4$d() {
+  function _templateObject4$3() {
     var data = _taggedTemplateLiteral(["<br/>\t\t\t\t"]);
 
-    _templateObject4$d = function _templateObject4() {
+    _templateObject4$3 = function _templateObject4() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject3$j() {
+  function _templateObject3$6() {
     var data = _taggedTemplateLiteral(["", "", ""]);
 
-    _templateObject3$j = function _templateObject3() {
+    _templateObject3$6 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$r() {
+  function _templateObject2$7() {
     var data = _taggedTemplateLiteral(["<div id=\"", "-mirror\" style=\"", "\" class=\"", "\" aria-hidden=\"true\">\t\t\t", "</div>\t"]);
 
-    _templateObject2$r = function _templateObject2() {
+    _templateObject2$7 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$C() {
+  function _templateObject$b() {
     var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tstyle=\"", "\"\t?aria-invalid=\"", "\">\t", "<div class=\"", "\" style=\"", "\"><textarea\t\t\tid=\"", "-inner\"\t\t\tclass=\"", "\"\t\t\tplaceholder=\"", "\"\t\t\t?disabled=\"", "\"\t\t\t?readonly=\"", "\"\t\t\tmaxlength=\"", "\"\t\t\t.value=\"", "\"\t\t\t@change=\"", "\"\t\t\tdata-sap-focus-ref></textarea></div>\t", "<slot name=\"formSupport\"></slot></div>"]);
 
-    _templateObject$C = function _templateObject() {
+    _templateObject$b = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$B = function block0(context) {
-    return html(_templateObject$C(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context.ariaInvalid), context.growing ? block1$r(context) : undefined, ifDefined(classMap(context.classes.focusDiv)), ifDefined(styleMap$1(context.styles.inner)), ifDefined(context._id), ifDefined(classMap(context.classes.inner)), ifDefined(context.placeholder), ifDefined(context.disabled), ifDefined(context.readonly), ifDefined(context._exceededTextProps.calcedMaxLength), ifDefined(context.value), ifDefined(context._listeners.change), context.showExceededText ? block4$c(context) : undefined);
+  var block0$a = function block0(context) {
+    return html(_templateObject$b(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context.ariaInvalid), context.growing ? block1$7(context) : undefined, ifDefined(classMap(context.classes.focusDiv)), ifDefined(styleMap$1(context.styles.inner)), ifDefined(context._id), ifDefined(classMap(context.classes.inner)), ifDefined(context.placeholder), ifDefined(context.disabled), ifDefined(context.readonly), ifDefined(context._exceededTextProps.calcedMaxLength), ifDefined(context.value), ifDefined(context._listeners.change), context.showExceededText ? block4$2(context) : undefined);
   };
 
-  var block1$r = function block1(context) {
-    return html(_templateObject2$r(), ifDefined(context._id), ifDefined(styleMap$1(context.styles.mirror)), ifDefined(classMap(context.classes.mirror)), repeat(context._mirrorText, undefined, function (item, index) {
-      return block2$j(item, index, context);
+  var block1$7 = function block1(context) {
+    return html(_templateObject2$7(), ifDefined(context._id), ifDefined(styleMap$1(context.styles.mirror)), ifDefined(classMap(context.classes.mirror)), repeat(context._mirrorText, undefined, function (item, index) {
+      return block2$6(item, index, context);
     }));
   };
 
-  var block2$j = function block2(item, index, context) {
-    return html(_templateObject3$j(), ifDefined(item.text), !item.last ? block3$d(item, index, context) : undefined);
+  var block2$6 = function block2(item, index, context) {
+    return html(_templateObject3$6(), ifDefined(item.text), !item.last ? block3$3(item, index, context) : undefined);
   };
 
-  var block3$d = function block3(item, index, context) {
-    return html(_templateObject4$d());
+  var block3$3 = function block3(item, index, context) {
+    return html(_templateObject4$3());
   };
 
-  var block4$c = function block4(context) {
-    return html(_templateObject5$c(), ifDefined(classMap(context.classes.exceededText)), ifDefined(context._exceededTextProps.exceededText));
+  var block4$2 = function block4(context) {
+    return html(_templateObject5$2(), ifDefined(classMap(context.classes.exceededText)), ifDefined(context._exceededTextProps.exceededText));
   };
 
-  var styles$f = ":host(ui5-textarea:not([hidden])){display:inline-block}ui5-textarea:not([hidden]){display:inline-block}.sapWCTextArea{height:3rem;background:transparent;display:inline-flex;vertical-align:top;outline:none;position:relative;overflow:hidden;box-sizing:border-box}.sapWCTextArea:not(.sapWCTextAreaDisabled):not(.sapWCTextAreaWarning):hover .sapWCTextAreaInner{border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCTextArea.sapWCTextAreaReadonly .sapWCTextAreaInner{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)))}.sapWCTextAreaMirror~.sapWCTextAreaFocusDiv{height:100%;width:100%;top:0;position:absolute}.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaFocusDiv,.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaMirror{overflow:hidden}.sapWCTextAreaMirror{line-height:1.4;visibility:hidden;width:100%;word-break:break-all;padding:.5625rem .6875rem;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));white-space:pre-wrap;box-sizing:border-box}.sapWCTextAreaInner{width:100%;margin:0;padding:.5625rem .6875rem;line-height:1.4;box-sizing:border-box;color:var(--sapUiFieldTextColor,var(--sapField_TextColor,var(--sapTextColor,var(--sapPrimary6,#32363a))));background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));outline:none;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));-webkit-appearance:none;-moz-appearance:textfield;overflow:auto;resize:none}.sapWCTextAreaHasFocus:after{content:\"\";border:var(--_ui5_textarea_focus_after_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:2px;left:2px;right:2px;bottom:2px;pointer-events:none}.sapWCTextAreaWarning .sapWCTextAreaHasFocus:after{top:3px;left:3px;right:3px;bottom:3px}.sapWCTextAreaGrowing.sapWCTextAreaNoCols .sapWCTextAreaFocusDiv{overflow:hidden;width:100%}.sapWCTextAreaInner::-webkit-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner::-moz-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner:-ms-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaWithCounter{flex-direction:column;display:flex}.sapWCTextAreaWithCounter .sapWCTextAreaExceededText{overflow:hidden;align-self:flex-end;padding:.125rem .125rem .5rem;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem)}.sapWCTextAreaCounter{text-align:right;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.sapWCTextAreaWarningInner{border-width:var(--_ui5_textarea_warning_border_width,2px);border-style:var(--_ui5_textarea_warning_border_style,solid);background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.sapWCTextAreaContent{display:flex;flex-direction:column;height:100%}.sapWCTextAreaDisabled{opacity:.5;user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-user-select:none}.sapWCTextAreaFocusDiv{display:flex;width:100%;height:100%;position:relative}";
+  var TEXTAREA_CHARACTERS_LEFT = {
+    key: "TEXTAREA_CHARACTERS_LEFT",
+    defaultText: "{0} characters remaining"
+  };
+  var TEXTAREA_CHARACTERS_EXCEEDED = {
+    key: "TEXTAREA_CHARACTERS_EXCEEDED",
+    defaultText: "{0} characters over limit"
+  };
+
+  var styles$5 = ":host(ui5-textarea:not([hidden])){display:inline-block}ui5-textarea:not([hidden]){display:inline-block}.sapWCTextArea{height:3rem;background:transparent;display:inline-flex;vertical-align:top;outline:none;position:relative;overflow:hidden;box-sizing:border-box}.sapWCTextArea:not(.sapWCTextAreaDisabled):not(.sapWCTextAreaWarning):hover .sapWCTextAreaInner{border:1px solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapHighlightColor,#0854a0)))}.sapWCTextArea.sapWCTextAreaReadonly .sapWCTextAreaInner{background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,.5)))}.sapWCTextAreaMirror~.sapWCTextAreaFocusDiv{height:100%;width:100%;top:0;position:absolute}.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaFocusDiv,.sapWCTextAreaGrowing.sapWCTextAreaNoMaxLines .sapWCTextAreaMirror{overflow:hidden}.sapWCTextAreaMirror{line-height:1.4;visibility:hidden;width:100%;word-break:break-all;padding:.5625rem .6875rem;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));white-space:pre-wrap;box-sizing:border-box}.sapWCTextAreaInner{width:100%;margin:0;padding:.5625rem .6875rem;line-height:1.4;box-sizing:border-box;color:var(--sapUiFieldTextColor,var(--sapField_TextColor,var(--sapTextColor,var(--sapPrimary6,#32363a))));background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary5,#89919a)));outline:none;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));-webkit-appearance:none;-moz-appearance:textfield;overflow:auto;resize:none}.sapWCTextAreaHasFocus:after{content:\"\";border:var(--_ui5_textarea_focus_after_width,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:2px;left:2px;right:2px;bottom:2px;pointer-events:none}.sapWCTextAreaWarning .sapWCTextAreaHasFocus:after{top:3px;left:3px;right:3px;bottom:3px}.sapWCTextAreaGrowing.sapWCTextAreaNoCols .sapWCTextAreaFocusDiv{overflow:hidden;width:100%}.sapWCTextAreaInner::-webkit-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner::-moz-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaInner:-ms-input-placeholder{font-size:var(--sapMFontMediumSize,.875rem);font-style:italic}.sapWCTextAreaWithCounter{flex-direction:column;display:flex}.sapWCTextAreaWithCounter .sapWCTextAreaExceededText{overflow:hidden;align-self:flex-end;padding:.125rem .125rem .5rem;color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem)}.sapWCTextAreaCounter{text-align:right;font-size:var(--sapMFontMediumSize,.875rem);font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif))}.sapWCTextAreaWarningInner{border-width:var(--_ui5_textarea_warning_border_width,2px);border-style:var(--_ui5_textarea_warning_border_style,solid);background:var(--sapUiFieldWarningBackground,var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBaseColor,var(--sapPrimary3,#fff)))));border-color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningBorderColor,var(--sapCriticalColor,#e9730c))))}.sapWCTextAreaContent{display:flex;flex-direction:column;height:100%}.sapWCTextAreaDisabled{opacity:.5;user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-user-select:none}.sapWCTextAreaFocusDiv{display:flex;width:100%;height:100%;position:relative}";
 
   /**
    * @public
    */
 
-  var metadata$G = {
+  var metadata$c = {
     tag: "ui5-textarea",
     properties:
     /** @lends sap.ui.webcomponents.main.TextArea.prototype */
@@ -34731,12 +22872,12 @@
     _createClass(TextArea, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$G;
+        return metadata$c;
       }
     }, {
       key: "styles",
       get: function get() {
-        return styles$f;
+        return styles$5;
       }
     }, {
       key: "render",
@@ -34746,7 +22887,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$B;
+        return block0$a;
       }
     }]);
 
@@ -34973,1068 +23114,6 @@
 
   Bootstrap.boot().then(function (_) {
     TextArea.define();
-  });
-
-  function _templateObject6$7() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapWCTimelineItemDesc\"><slot></slot></div>\t\t"]);
-
-    _templateObject6$7 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$d() {
-    var data = _taggedTemplateLiteral(["<span>", "</span>\t"]);
-
-    _templateObject5$d = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$e() {
-    var data = _taggedTemplateLiteral(["<ui5-link @ui5-press=\"", "\">", "</ui5-link>\t"]);
-
-    _templateObject4$e = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$k() {
-    var data = _taggedTemplateLiteral(["", "", ""]);
-
-    _templateObject3$k = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$s() {
-    var data = _taggedTemplateLiteral(["<ui5-icon class=\"sapWCTimelineItemIcon\" src=\"", "\"></ui5-icon>\t\t"]);
-
-    _templateObject2$s = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$D() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><div class=\"", "\">\t\t", "</div><div class=\"sapWCTimelineBubble\" tabindex=\"", "\" data-sap-focus-ref><div class=\"sapWCTimelineItemTitle\">\t\t\t", "<span>", "</span></div><div class=\"sapWCTimelineItemSubtitle\">", "</div>\t\t", "<span class=\"sapWCTimelineBubbleArrow sapWCTimelineBubbleArrowLeft\"></span></div></div>"]);
-
-    _templateObject$D = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$C = function block0(context) {
-    return html(_templateObject$D(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(classMap(context.classes.indicator)), context.icon ? block1$s(context) : undefined, ifDefined(context._tabIndex), context.itemName ? block2$k(context) : undefined, ifDefined(context.titleText), ifDefined(context.subtitleText), context.description ? block5$7(context) : undefined);
-  };
-
-  var block1$s = function block1(context) {
-    return html(_templateObject2$s(), ifDefined(context.icon));
-  };
-
-  var block2$k = function block2(context) {
-    return html(_templateObject3$k(), context.itemNameClickable ? block3$e(context) : undefined, !context.itemNameClickable ? block4$d(context) : undefined);
-  };
-
-  var block3$e = function block3(context) {
-    return html(_templateObject4$e(), ifDefined(context.onItemNamePress), ifDefined(context.itemName));
-  };
-
-  var block4$d = function block4(context) {
-    return html(_templateObject5$d(), ifDefined(context.itemName));
-  };
-
-  var block5$7 = function block5(context) {
-    return html(_templateObject6$7());
-  };
-
-  var styles$g = ":host(ui5-timeline-item:not([hidden])){display:block}ui5-timeline-item:not([hidden]){display:block}.sapWCTimelineItem{display:flex}.sapWCTimelineIndicator{position:relative;width:2rem}.sapWCTimelineIndicator:before{content:\"\";display:inline-block;background-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));width:1px;position:absolute;top:2.125rem;bottom:-1.625rem;left:50%}.sapWCTimelineIndicatorNoIcon:before{bottom:-2.125rem;top:1.875rem}.sapWCTimelineIndicatorNoIcon:after{content:\"\";display:inline-block;box-sizing:border-box;border:1px solid var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70));background-color:var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70));border-radius:50%;width:.4375rem;height:.4375rem;position:absolute;top:.9375rem;left:50%;transform:translateX(-50%)}:host(ui5-timeline-item:last-child) .sapWCTimelineIndicator:before{display:none}ui5-timeline-item:last-child .sapWCTimelineIndicator:before{display:none}.sapWCTimelineItemIcon{color:var(--sapContent_NonInteractiveIconColor,var(--sapPrimary7,#6a6d70));font-size:1.375rem;margin-top:.25rem;width:100%}.sapWCTimelineBubble{background:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));box-sizing:border-box;border-radius:.25rem;flex:1;position:relative;margin-left:.5rem;padding:1rem}.sapWCTimelineBubble:focus{outline:none}.sapWCTimelineBubble:focus:after{content:\"\";border:var(--_ui5_TimelineItem_bubble_outline_width,.0625rem) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:var(--_ui5_TimelineItem_bubble_outline_top,-.125rem);right:var(--_ui5_TimelineItem_bubble_outline_right,-.125rem);bottom:var(--_ui5_TimelineItem_bubble_outline_bottom,-.125rem);left:var(--_ui5_TimelineItem_bubble_outline_left,-.625rem);pointer-events:none}.sapWCTimelineBubbleArrow{width:var(--_ui5_TimelineItem_arrow_size,1.625rem);padding-bottom:var(--_ui5_TimelineItem_arrow_size,1.625rem);position:absolute;pointer-events:none;top:0;left:0;overflow:hidden}.sapWCTimelineBubbleArrow:before{content:\"\";background:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#ededed));position:absolute;top:0;left:0;width:100%;height:100%;transform-origin:0 100%;transform:rotate(45deg)}.sapWCTimelineBubbleArrowLeft{left:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem))}.sapWCTimelineBubbleArrowLeft:before{left:50%;width:50%;transform-origin:100% 100%}.sapWCTimelineBubbleArrowRight{right:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem));left:auto}.sapWCTimelineBubbleArrowRight:before{width:50%;transform-origin:0 0}.sapWCTimelineItemDesc,.sapWCTimelineItemTitle{color:var(--sapUiListTextColor,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-weight:400;font-size:var(--sapMFontMediumSize,.875rem)}.sapWCTimelineItemTitle span{display:inline-block;vertical-align:top}.sapWCTimelineItemSubtitle{color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapPrimary7,#6a6d70)));font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-weight:400;font-size:var(--sapMFontSmallSize,.75rem);padding-top:.375rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sapWCTimelineItemDesc{padding-top:.75rem}.sapUiSizeCompact .sapWCTimelineBubble{padding:.5rem}.sapUiSizeCompact .sapWCTimelineIndicator:before{bottom:-.5rem}[dir=rtl] .sapWCTimelineBubbleArrowLeft{right:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem));left:auto;transform:scaleX(-1)}[dir=rtl] .sapWCTimelineBubbleArrowRight{right:calc(-1*var(--_ui5_TimelineItem_arrow_size, 1.625rem));left:auto}[dir=rtl] .sapWCTimelineBubble{margin-left:auto;margin-right:.5rem}[dir=rtl] .sapWCTimelineBubble:focus:after{left:var(--_ui5_TimelineItem_bubble_rtl_left_offset,-.125rem);right:var(--_ui5_TimelineItem_bubble_rtl_right_offset,-.625rem)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$H = {
-    tag: "ui5-timeline-item",
-    defaultSlot: "description",
-    slots:
-    /** @lends sap.ui.webcomponents.main.TimelineItem.prototype */
-    {
-      /**
-       * Determines the description of the <code>ui5-timeline-item</code>.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @public
-       */
-      description: {
-        type: HTMLElement,
-        multiple: false
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.TimelineItem.prototype */
-    {
-      /**
-       * Defines the icon to be displayed as graphical element within the <code>ui5-timeline-item</code>.
-       * SAP-icons font provides numerous options.
-       * </br></br>
-       *
-       * See all the available icons in the <ui5-link target="_blank" href="https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html" class="api-table-content-cell-link">Icon Explorer</ui5-link>.
-       *
-       * @type {string}
-       * @defaultvalue ""
-       * @public
-       */
-      icon: {
-        type: String
-      },
-
-      /**
-       * Defines the name of the item.
-       *
-       * @type {string}
-       * @defaultvalue false
-       * @public
-       */
-      itemName: {
-        type: String
-      },
-
-      /**
-       * Defines whether the <code>itemName</code> is clickable.
-       *
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      itemNameClickable: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the title text of the component.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      titleText: {
-        type: String
-      },
-
-      /**
-       * Defines the subtitle text of the component.
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      subtitleText: {
-        type: String
-      },
-      _tabIndex: {
-        type: String,
-        defaultValue: "-1"
-      }
-    },
-    events:
-    /** @lends sap.ui.webcomponents.main.TimelineItem.prototype */
-    {
-      /**
-       * Fired when the item name is pressed either with a
-       * click/tap or by using the Enter or Space key.
-       * </br></br>
-       * <b>Note:</b> The event will not be fired if the <code>item-name-clickable</code>
-       * attribute is not set.
-       *
-       * @event
-       * @public
-       */
-      itemNamePress: {}
-    }
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * An entry posted on the timeline.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.TimelineItem
-   * @extends UI5Element
-   * @tagname ui5-timeline
-   * @public
-   */
-
-  var TimelineItem =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(TimelineItem, _UI5Element);
-
-    _createClass(TimelineItem, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$H;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$C;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$g;
-      }
-    }]);
-
-    function TimelineItem() {
-      _classCallCheck(this, TimelineItem);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(TimelineItem).call(this));
-    }
-
-    _createClass(TimelineItem, [{
-      key: "onItemNamePress",
-      value: function onItemNamePress() {
-        this.fireEvent("itemNamePress", {});
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapWCTimelineItem: true,
-            sapUiSizeCompact: getCompactSize()
-          },
-          indicator: {
-            sapWCTimelineIndicator: true,
-            sapWCTimelineIndicatorNoIcon: !this.icon
-          }
-        };
-      }
-    }, {
-      key: "rtl",
-      get: function get() {
-        return getEffectiveRTL() ? "rtl" : undefined;
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return Promise.all([Icon.define(), Link.define()]);
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(TimelineItem), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return TimelineItem;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    TimelineItem.define();
-  });
-
-  function _templateObject2$t() {
-    var data = _taggedTemplateLiteral(["<li class=\"sapWCTimelineListItem\"><slot name=\"", "\"></slot></li>\t\t"]);
-
-    _templateObject2$t = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$E() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"><ul class=\"sapWCTimelineList\">\t\t", "</ul></div>"]);
-
-    _templateObject$E = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$D = function block0(context) {
-    return html(_templateObject$E(), ifDefined(classMap(context.classes.main)), repeat(context.items, undefined, function (item, index) {
-      return block1$t(item, index, context);
-    }));
-  };
-
-  var block1$t = function block1(item, index, context) {
-    return html(_templateObject2$t(), ifDefined(item._individualSlot));
-  };
-
-  var styles$h = ":host(ui5-timeline:not([hidden])){display:block}ui5-timeline:not([hidden]){display:block}.sapWCTimeline{background-color:var(--sapUiBaseBG,var(--sapBackgroundColor,#fafafa));padding:1rem 1rem 1rem .5rem;box-sizing:border-box;overflow:hidden}.sapWCTimelineList{list-style:none;margin:0;padding:0}.sapWCTimelineListItem{margin-bottom:1.625rem}.sapWCTimelineListItem:last-child{margin-bottom:0}.sapUiSizeCompact.sapWCTimeline{padding:.5rem}.sapUiSizeCompact .sapWCTimelineListItem{margin-bottom:.5rem}.sapUiSizeCompact .sapWCTimelineListItem :last-child{margin-bottom:0}";
-
-  /**
-   * @public
-   */
-
-  var metadata$I = {
-    tag: "ui5-timeline",
-    defaultSlot: "items",
-    slots:
-    /** @lends sap.ui.webcomponents.main.Timeline.prototype */
-    {
-      /**
-       * Determines the content of the <code>ui5-timeline</code>.
-       *
-       * @type {TimelineItem[]}
-       * @slot
-       * @public
-       */
-      items: {
-        type: TimelineItem,
-        multiple: true,
-        individualSlots: true
-      }
-    },
-    properties:
-    /** @lends sap.ui.webcomponents.main.Timeline.prototype */
-    {},
-    events:
-    /** @lends sap.ui.webcomponents.main.Timeline.prototype */
-    {}
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The timeline control shows entries (such as objects, events, or posts) in chronological order.
-   * A common use case is to provide information about changes to an object, or events related to an object.
-   * These entries can be generated by the system (for example, value XY changed from A to B), or added manually.
-   * There are two distinct variants of the timeline: basic and social. The basic timeline is read-only,
-   * while the social timeline offers a high level of interaction and collaboration, and is integrated within SAP Jam.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Timeline
-   * @extends UI5Element
-   * @tagname ui5-timeline
-   * @appenddocs TimelineItem
-   * @public
-   * @since 0.8.0
-   */
-
-  var Timeline =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Timeline, _UI5Element);
-
-    _createClass(Timeline, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$I;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$h;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$D;
-      }
-    }]);
-
-    function Timeline() {
-      var _this;
-
-      _classCallCheck(this, Timeline);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Timeline).call(this));
-
-      _this.initItemNavigation();
-
-      return _this;
-    }
-
-    _createClass(Timeline, [{
-      key: "onBeforeRendering",
-      value: function onBeforeRendering() {
-        this._itemNavigation.init();
-      }
-    }, {
-      key: "initItemNavigation",
-      value: function initItemNavigation() {
-        var _this2 = this;
-
-        this._itemNavigation = new ItemNavigation(this);
-
-        this._itemNavigation.getItemsCallback = function () {
-          return _this2.items;
-        };
-
-        this._delegates.push(this._itemNavigation);
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: {
-            sapWCTimeline: true,
-            sapUiSizeCompact: getCompactSize()
-          }
-        };
-      }
-    }], [{
-      key: "define",
-      value: function () {
-        var _define = _asyncToGenerator(
-        /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
-          var _get2;
-
-          var _len,
-              params,
-              _key,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return TimelineItem.define();
-
-                case 2:
-                  for (_len = _args.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-                    params[_key] = _args[_key];
-                  }
-
-                  (_get2 = _get(_getPrototypeOf(Timeline), "define", this)).call.apply(_get2, [this].concat(params));
-
-                case 4:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this);
-        }));
-
-        function define() {
-          return _define.apply(this, arguments);
-        }
-
-        return define;
-      }()
-    }]);
-
-    return Timeline;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Timeline.define();
-  });
-
-  var TitleLevels = {
-    H1: "H1",
-    H2: "H2",
-    H3: "H3",
-    H4: "H4",
-    H5: "H5",
-    H6: "H6"
-  };
-
-  var TitleLevel =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(TitleLevel, _DataType);
-
-    function TitleLevel() {
-      _classCallCheck(this, TitleLevel);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(TitleLevel).apply(this, arguments));
-    }
-
-    _createClass(TitleLevel, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!TitleLevels[value];
-      }
-    }]);
-
-    return TitleLevel;
-  }(DataType);
-
-  TitleLevel.generataTypeAcessors(TitleLevels);
-
-  function _templateObject7$7() {
-    var data = _taggedTemplateLiteral(["<h6\t\t\tclass=\"", "\"\t\t\trole=\"heading\">\t\t\t\t<span id=\"", "-inner\"><slot></slot></span></h6>"]);
-
-    _templateObject7$7 = function _templateObject7() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject6$8() {
-    var data = _taggedTemplateLiteral(["<h5\t\t\tclass=\"", "\"\t\t\trole=\"heading\">\t\t\t\t<span id=\"", "-inner\"><slot></slot></span></h5>"]);
-
-    _templateObject6$8 = function _templateObject6() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject5$e() {
-    var data = _taggedTemplateLiteral(["<h4\t\t\tclass=\"", "\"\t\t\trole=\"heading\">\t\t\t\t<span id=\"", "-inner\"><slot></slot></span></h4>"]);
-
-    _templateObject5$e = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$f() {
-    var data = _taggedTemplateLiteral(["<h3\t\t\tclass=\"", "\"\t\t\trole=\"heading\">\t\t\t\t<span id=\"", "-inner\"><slot></slot></span></h3>"]);
-
-    _templateObject4$f = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$l() {
-    var data = _taggedTemplateLiteral(["<h2\t\t\tclass=\"", "\"\t\t\trole=\"heading\">\t\t\t\t<span id=\"", "-inner\"><slot></slot></span></h2>"]);
-
-    _templateObject3$l = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$u() {
-    var data = _taggedTemplateLiteral(["<h1\t\t\tclass=\"", "\"\t\t\trole=\"heading\">\t\t\t\t<span id=\"", "-inner\"><slot></slot></span></h1>"]);
-
-    _templateObject2$u = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$F() {
-    var data = _taggedTemplateLiteral(["", "", "", "", "", "", ""]);
-
-    _templateObject$F = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$E = function block0(context) {
-    return html(_templateObject$F(), context.h1 ? block1$u(context) : undefined, context.h2 ? block2$l(context) : undefined, context.h3 ? block3$f(context) : undefined, context.h4 ? block4$e(context) : undefined, context.h5 ? block5$8(context) : undefined, context.h6 ? block6$7(context) : undefined);
-  };
-
-  var block1$u = function block1(context) {
-    return html(_templateObject2$u(), ifDefined(classMap(context.classes.main)), ifDefined(context._id));
-  };
-
-  var block2$l = function block2(context) {
-    return html(_templateObject3$l(), ifDefined(classMap(context.classes.main)), ifDefined(context._id));
-  };
-
-  var block3$f = function block3(context) {
-    return html(_templateObject4$f(), ifDefined(classMap(context.classes.main)), ifDefined(context._id));
-  };
-
-  var block4$e = function block4(context) {
-    return html(_templateObject5$e(), ifDefined(classMap(context.classes.main)), ifDefined(context._id));
-  };
-
-  var block5$8 = function block5(context) {
-    return html(_templateObject6$8(), ifDefined(classMap(context.classes.main)), ifDefined(context._id));
-  };
-
-  var block6$7 = function block6(context) {
-    return html(_templateObject7$7(), ifDefined(classMap(context.classes.main)), ifDefined(context._id));
-  };
-
-  var titleCss = ":host(ui5-title:not([hidden])){display:block;max-width:100%;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)))}ui5-title:not([hidden]){display:block;overflow:hidden;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));text-shadow:var(--sapUiShadowText,0 0 .125rem var(--sapUiContentContrastShadowColor,var(--sapContent_ContrastShadowColor,#fff)));max-width:100%}.sapMTitle{display:inline-block;position:relative;font-weight:var(--sapUiFontHeaderWeight,normal);box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;vertical-align:bottom;-webkit-margin-before:0;-webkit-margin-after:0;-webkit-margin-start:0;-webkit-margin-end:0;margin:0;cursor:text}.sapMTitle.sapMTitleWrap{white-space:pre-line}.sapMTitleStyleH1{font-size:var(--sapMFontHeader1Size,2.25rem)}.sapMTitleStyleH2{font-size:var(--sapMFontHeader2Size,1.5rem)}.sapMTitleStyleH3{font-size:var(--sapMFontHeader3Size,1.25rem)}.sapMTitleStyleH4{font-size:var(--sapMFontHeader4Size,1.125rem)}.sapMTitleStyleH5{font-size:var(--sapMFontHeader5Size,1rem)}.sapMTitleStyleH6{font-size:var(--sapMFontHeader6Size,.875rem)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$J = {
-    tag: "ui5-title",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Title.prototype */
-    {
-      /**
-       * Defines whether the <code>ui5-title</code> would wrap.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-      */
-      wrap: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the <code>ui5-title</code> level.
-       * Available options are: <code>"H6"</code> to <code>"H1"</code>.
-       *
-       * @type {string}
-       * @defaultvalue "H2"
-       * @public
-      */
-      level: {
-        type: TitleLevel,
-        defaultValue: TitleLevel.H2
-      }
-    },
-    slots:
-    /** @lends sap.ui.webcomponents.main.Title.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-title</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    defaultSlot: "text"
-  };
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-title</code> component is used to display titles inside a page.
-   * It is a simple, large-sized text with explicit header/title semantics.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Title";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Title
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @tagname ui5-title
-   * @public
-   */
-
-  var Title =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Title, _UI5Element);
-
-    function Title() {
-      _classCallCheck(this, Title);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(Title).apply(this, arguments));
-    }
-
-    _createClass(Title, [{
-      key: "normalizedLevel",
-      get: function get() {
-        return this.level.toLowerCase();
-      }
-    }, {
-      key: "h1",
-      get: function get() {
-        return this.normalizedLevel === "h1";
-      }
-    }, {
-      key: "h2",
-      get: function get() {
-        return this.normalizedLevel === "h2";
-      }
-    }, {
-      key: "h3",
-      get: function get() {
-        return this.normalizedLevel === "h3";
-      }
-    }, {
-      key: "h4",
-      get: function get() {
-        return this.normalizedLevel === "h4";
-      }
-    }, {
-      key: "h5",
-      get: function get() {
-        return this.normalizedLevel === "h5";
-      }
-    }, {
-      key: "h6",
-      get: function get() {
-        return this.normalizedLevel === "h6";
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        return {
-          main: _defineProperty({
-            sapMTitle: true,
-            sapMTitleWrap: this.wrap,
-            sapUiSelectable: true
-          }, "sapMTitleStyle".concat(this.level), true)
-        };
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$J;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$E;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return titleCss;
-      }
-    }]);
-
-    return Title;
-  }(UI5Element);
-
-  Bootstrap.boot().then(function (_) {
-    Title.define();
-  });
-
-  function _templateObject3$m() {
-    var data = _taggedTemplateLiteral(["<span id=\"", "-content\" class=\"", "\"><bdi><slot></slot></bdi></span>\t\t"]);
-
-    _templateObject3$m = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$v() {
-    var data = _taggedTemplateLiteral(["<ui5-icon\t\t\t\tclass=\"", "\"\t\t\t\tsrc=\"", "\"\t\t\t></ui5-icon>\t\t"]);
-
-    _templateObject2$v = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$G() {
-    var data = _taggedTemplateLiteral(["<button\t\ttype=\"button\"\t\tclass=\"", "\"\t\t?disabled=\"", "\"\t\tdata-sap-focus-ref\t\t\taria-pressed=\"", "\"\t\tdir=\"", "\"\t>\t\t", "", "</button>"]);
-
-    _templateObject$G = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$F = function block0(context) {
-    return html(_templateObject$G(), ifDefined(classMap(context.classes.main)), ifDefined(context.disabled), ifDefined(context.pressed), ifDefined(context.rtl), context.icon ? block1$v(context) : undefined, context.textContent ? block2$m(context) : undefined);
-  };
-
-  var block1$v = function block1(context) {
-    return html(_templateObject2$v(), ifDefined(classMap(context.classes.icon)), ifDefined(context.icon));
-  };
-
-  var block2$m = function block2(context) {
-    return html(_templateObject3$m(), ifDefined(context._id), ifDefined(classMap(context.classes.text)));
-  };
-
-  var toggleBtnCss = ":host(ui5-togglebutton:not([hidden])){display:inline-block}ui5-togglebutton:not([hidden]){display:inline-block}ui5-togglebutton .sapMBtn:before{content:\"\";min-height:inherit;font-size:0}.sapMBtn.sapMToggleBtnPressed{color:var(--sapUiToggleButtonPressedTextColor,#fff);text-shadow:none}.sapMBtn.sapMToggleBtnPressed.sapMBtnNegative{background-color:var(--sapUiButtonRejectActiveBackground,#a20000);border-color:var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000));color:var(--sapUiToggleButtonPressedTextColor,#fff)}.sapMBtn.sapMToggleBtnPressed.sapMBtnNegative:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnNegative:hover{background-color:var(--_ui5_toggle_button_pressed_negative_hover,var(--sapUiButtonRejectActiveBackgroundLighten5,#b00));border-color:var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectActiveBackground,#a20000))}.sapMBtn.sapMToggleBtnPressed.sapMBtnPositive{background-color:var(--sapUiButtonAcceptActiveBackground,#0d6733);border-color:var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733));color:var(--sapUiToggleButtonPressedTextColor,#fff)}.sapMBtn.sapMToggleBtnPressed.sapMBtnPositive:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnPositive:hover{background-color:var(--_ui5_toggle_button_pressed_positive_hover,var(--sapUiButtonAcceptActiveBackgroundLighten5,#107e3e));border-color:var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptActiveBackground,#0d6733))}.sapMBtn.sapMToggleBtnPressed.sapMBtnDefault:not(:active):not(:hover),.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:not(:active):not(:hover),.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:not(:active):not(:hover){background-color:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))));border-color:var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:focus,.sapMBtn.sapMToggleBtnPressed:not(.sapMBtnNegative):not(.sapMBtnPositive):focus{border-color:var(--_ui5_toggle_button_pressed_focussed,var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:focus:after,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:focus:after,.sapMBtn.sapMToggleBtnPressed:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:hover,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:active,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:hover,.sapMBtn.sapMToggleBtnPressed:active,.sapMBtn.sapMToggleBtnPressed:hover{background-color:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border-color:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:active:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnEmphasized:hover:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:active:focus,.sapMBtn.sapMToggleBtnPressed.sapMBtnTransparent:hover:focus,.sapMBtn.sapMToggleBtnPressed:active:focus .sapMBtn.sapMToggleBtnPressed:hover:focus{border-color:var(--_ui5_toggle_button_pressed_focussed_hovered,var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}";
-
-  /**
-   * @public
-   */
-
-  var metadata$K = {
-    tag: "ui5-togglebutton",
-    properties:
-    /** @lends  sap.ui.webcomponents.main.ToggleButton.prototype */
-    {
-      /**
-       * Determines whether the <code>ui5-togglebutton</code> is displayed as pressed.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      pressed: {
-        type: Boolean
-      }
-    },
-    defaultSlot: "text"
-  };
-  /**
-   * @class
-   *
-   *<h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-togglebutton</code> component is an enhanced <code>ui5-button</code>
-   * that can be toggled between pressed and normal states.
-   * Users can use the <code>ui5-togglebutton</code> as a switch to turn a setting on or off.
-   * It can also be used to represent an independent choice similar to a check box.
-   * <br><br>
-   * Clicking or tapping on a <code>ui5-togglebutton</code> changes its state to <code>pressed</code>. The button returns to
-   * its initial state when the user clicks or taps on it again.
-   * By applying additional custom CSS-styling classes, apps can give a different style to any <code>ui5-togglebutton</code>.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/ToggleButton";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.ToggleButton
-   * @extends Button
-   * @tagname ui5-togglebutton
-   * @public
-   */
-
-  var ToggleButton =
-  /*#__PURE__*/
-  function (_Button) {
-    _inherits(ToggleButton, _Button);
-
-    function ToggleButton() {
-      _classCallCheck(this, ToggleButton);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ToggleButton).apply(this, arguments));
-    }
-
-    _createClass(ToggleButton, [{
-      key: "onclick",
-      value: function onclick() {
-        if (!this.disabled) {
-          this.pressed = !this.pressed;
-          this.fireEvent("press", {
-            pressed: this.pressed
-          });
-        }
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var result = _get(_getPrototypeOf(ToggleButton.prototype), "classes", this);
-
-        result.main.sapMToggleBtnPressed = this.pressed;
-        return result;
-      }
-    }], [{
-      key: "metadata",
-      get: function get() {
-        return metadata$K;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$F;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return [Button.styles, toggleBtnCss];
-      }
-    }]);
-
-    return ToggleButton;
-  }(Button);
-
-  Bootstrap.boot().then(function (_) {
-    ToggleButton.define();
-  });
-
-  function _templateObject$H() {
-    var data = _taggedTemplateLiteral(["<li\ttabindex=\"", "\"\tclass=\"", "\"><div id=\"", "-content\" class=\"", "\"><span class=\"", "\"><slot></slot></span></div></li>"]);
-
-    _templateObject$H = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$G = function block0(context) {
-    return html(_templateObject$H(), ifDefined(context._tabIndex), ifDefined(classMap(context.classes.main)), ifDefined(context._id), ifDefined(classMap(context.classes.inner)), ifDefined(classMap(context.classes.span)));
-  };
-
-  var groupheaderListItemCss = ".sapMLIB.sapMGHLI{height:3rem;color:var(--sapUiListTableGroupHeaderTextColor,#32363a);background:var(--ui5-group-header-listitem-background-color,var(--sapUiListGroupHeaderBackground,var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))));padding-top:1rem;font-size:var(--sapMFontHeader6Size,.875rem);font-weight:var(--sapUiFontHeaderWeight,normal);line-height:2rem;border-bottom:1px solid var(--sapUiListTableGroupHeaderBorderColor,#d9d9d9)}.sapMGHLI>.sapMLIBContent{display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center}.sapMGHLITitle{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sapUiSizeCompact.sapMGHLI{height:2rem}";
-
-  /**
-   * @public
-   */
-
-  var metadata$L = {
-    tag: "ui5-li-groupheader",
-    properties:
-    /** @lends  sap.ui.webcomponents.main.GroupHeaderListItem.prototype */
-    {},
-    slots:
-    /** @lends sap.ui.webcomponents.main.GroupHeaderListItem.prototype */
-    {
-      /**
-       * Defines the text of the <code>ui5-li-groupheader</code>.
-       * <br><b>Note:</b> Аlthough this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
-       *
-       * @type {Node[]}
-       * @slot
-       * @public
-       */
-      text: {
-        type: Node,
-        multiple: true
-      }
-    },
-    defaultSlot: "text",
-    events:
-    /** @lends  sap.ui.webcomponents.main.GroupHeaderListItem.prototype */
-    {}
-  };
-  /**
-   * @class
-   * The <code>ui5-li-group-header</code> is a special list item, used only to separate other list items into logical groups.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.GroupHeaderListItem
-   * @extends ListItemBase
-   * @tagname ui5-li-groupheader
-   * @public
-   */
-
-  var GroupHeaderListItem =
-  /*#__PURE__*/
-  function (_ListItemBase) {
-    _inherits(GroupHeaderListItem, _ListItemBase);
-
-    function GroupHeaderListItem() {
-      _classCallCheck(this, GroupHeaderListItem);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(GroupHeaderListItem).apply(this, arguments));
-    }
-
-    _createClass(GroupHeaderListItem, [{
-      key: "classes",
-      get: function get() {
-        var result = _get(_getPrototypeOf(GroupHeaderListItem.prototype), "classes", this); // Modify main classes
-
-
-        result.main.sapMGHLI = true;
-        result.main.sapMLIBTypeInactive = true; // Define span classes
-
-        result.span = {
-          sapMGHLITitle: true
-        };
-        return result;
-      }
-    }], [{
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$G;
-      }
-    }, {
-      key: "metadata",
-      get: function get() {
-        return metadata$L;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return [ListItemBase.styles, groupheaderListItemCss];
-      }
-    }]);
-
-    return GroupHeaderListItem;
-  }(ListItemBase);
-
-  Bootstrap.boot().then(function (_) {
-    GroupHeaderListItem.define();
   });
 
   var FormSupport =
