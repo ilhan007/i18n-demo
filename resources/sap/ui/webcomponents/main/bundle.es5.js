@@ -3939,6 +3939,13 @@
     addCustomCSS: addCustomCSS
   });
 
+  var belizeThemeProperties = ":root{--sapPrimary1:#3f5161;--sapPrimary2:#427cac;--sapPrimary3:#eff4f9;--sapPrimary4:#fff;--sapPrimary5:#fafafa;--sapPrimary6:#bfbfbf;--sapPrimary7:#333;--sapAccentColor1:#e09d00;--sapAccentColor2:#e6600d;--sapAccentColor3:#c14646;--sapAccentColor4:#ab218e;--sapAccentColor5:#678bc7;--sapAccentColor6:#0092d1;--sapAccentColor7:#1a9898;--sapAccentColor8:#759421;--sapAccentColor9:#925ace;--sapAccentColor10:#647987;--sapShellColor:transparent;--sapShell_BorderColor:transparent;--sapFontFamily:\"72\",\"72full\",Arial,Helvetica,sans-serif;--sapFontSize:calc(0.875*var(--sapContent_GridSize));--sapLinkColor:#0070b1;--sapCompanyLogo:none;--sapBackgroundImage:none;--sapBackgroundImageOpacity:1.0;--sapBackgroundImageRepeat:false;--sapContent_GridSize:1rem;--sapNegativeColor:#b00;--sapCriticalColor:#e78c07;--sapPositiveColor:#2b7c2b;--sapInformativeColor:#427cac;--sapNeutralColor:#5e696e;--sapIndicationColor_1:#800;--sapIndicationColor_2:#b00;--sapIndicationColor_3:#e78c07;--sapIndicationColor_4:#2b7c2b;--sapIndicationColor_5:#427cac;--sapElement_LineHeight:calc(3*var(--sapContent_GridSize, 1rem));--sapElement_Height:calc(2.5*var(--sapContent_GridSize, 1rem));--sapElement_BorderWidth:calc(0.0625*var(--sapContent_GridSize, 1rem));--sapContent_LineHeight:1.4;--sapContent_ElementHeight:1.37em;--sapContent_ElementHeight_PX:22px;--sapContent_ContrastTextColor:#fff;--sapContent_FocusColor:#000;--sapContent_ContrastFocusColor:#fff;--sapContent_ShadowColor:#000;--sapContent_ContrastShadowColor:#fff;--sapContent_SearchHighlightColor:#d4f7db;--sapContent_HelpColor:#3f8600;--sapContent_MonospaceFontFamily:lucida console,monospace;--sapContent_DisabledOpacity:0.5;--sapContent_ContrastTextThreshold:0.65;--sapButton_BorderCornerRadius:calc(0.2*var(--sapContent_GridSize, 1rem));--sapField_TextColor:#000;--sapField_BorderCornerRadius:0;--sapGroup_TitleBackground:transparent;--sapGroup_BorderCornerRadius:0;--sapGroup_FooterBackground:transparent;--sapToolbar_Background:transparent;--sapScrollBar_Dimension:calc(0.7*var(--sapContent_GridSize, 1rem));--sapBlockLayer_Background:#000;--sapTile_BorderColor:transparent;--sapUiFontCondensedFamily:\"Arial Narrow\",HelveticaNeue-CondensedBold,Arial,sans-serif;--sapUiFontHeaderWeight:normal;--sapMFontHeader1Size:1.625rem;--sapMFontHeader2Size:1.375rem;--sapMFontHeader3Size:1.250rem;--sapMFontHeader4Size:1.125rem;--sapMFontHeader5Size:1rem;--sapMFontHeader6Size:0.875rem;--sapMFontSmallSize:0.75rem;--sapMFontMediumSize:0.875rem;--sapMFontLargeSize:1rem;--sapUiTranslucentBGOpacity:0;--sapMPlatformDependent:false;--sapUiDesktopFontSize:12px;--sapUiFontLargeSize:13px;--sapUiFontSmallSize:11px;--sapUiFontHeader1Size:26px;--sapUiFontHeader2Size:20px;--sapUiFontHeader3Size:18px;--sapUiFontHeader4Size:16px;--sapUiFontHeader5Size:14px;--sapUiLineHeight:18px;--sapUiNotifierSeparatorWidth:1px;--sapUiButtonLiteBackground:transparent;--sapUiButtonLiteBorderColor:transparent;--sapUiListTableTextSize:0.875rem;--sapUiListTableIconSize:1rem;--_ui5_button_base_min_width:2.5rem;--_ui5_button_base_min_compact_width:2rem;--_ui5_button_base_height:2.5rem;--_ui5_button_compact_height:1.625rem;--_ui5_button_border_radius:0.2rem;--_ui5_button_base_padding:0 0.6875rem 0 0.6875rem;--_ui5_button_compact_padding:0 0.4375rem;--_ui5_button_base_icon_only_padding:0 0.5625rem;--_ui5_button_base_icon_margin:0.563rem;--_ui5_button_base_icon_only_font_size:1.375rem;--_ui5_button_focus_after_bottom:1px;--_ui5_button_focus_after_right:1px;--_ui5_button_focus_after_left:1px;--_ui5_button_focus_after_top:1px;--_ui5_button_emphasized_font_weight:normal;--_ui5_popover_arrow_shadow_color:rgba(0,0,0,0.3);--_ui5_popover_content_padding:.4375em;--_ui5_datepicker_icon_border:none;--_ui5_daypicker_item_margin:2px;--_ui5_daypicker_item_border:none;--_ui5_daypicker_item_outline_width:1px;--_ui5_daypicker_item_outline_offset:1px;--_ui5_daypicker_daynames_container_height:2rem;--_ui5_daypicker_weeknumbers_container_padding_top:2rem;--_ui5_daypicker_item_border_radius:0;--_ui5_daypicker_item_now_inner_border_radius:0;--_ui5_daypicker_item_now_selected_focus_after_width:calc(100% - 0.125rem);--_ui5_daypicker_item_now_selected_focus_after_height:calc(100% - 0.125rem);--_ui5_calendar_header_arrow_button_border:none;--_ui5_calendar_header_arrow_button_border_radius:0.25rem;--_ui5_calendar_header_middle_button_width:2.5rem;--_ui5_calendar_header_middle_button_flex:1;--_ui5_calendar_header_middle_button_focus_border_radius:0.25rem;--_ui5_calendar_header_middle_button_focus_border:none;--_ui5_calendar_header_middle_button_focus_after_display:block;--_ui5_calendar_header_middle_button_focus_after_width:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_height:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_top_offset:1px;--_ui5_calendar_header_middle_button_focus_after_left_offset:1px;--_ui5_card_content_padding:1rem;--_ui5_card_header_active_bg:#f0f0f0;--_ui5_card_header_hover_bg:#fafafa;--_ui5_checkbox_wrapper_padding:.8125rem;--_ui5_checkbox_width_height:3rem;--_ui5_checkbox_inner_width_height:1.375rem;--_ui5_checkbox_inner_border_radius:0;--_ui5_checkbox_wrapped_focus_padding:.375rem;--_ui5_checkbox_wrapped_content_margin_top:.125rem;--_ui5_checkbox_wrapped_focus_left_top_bottom_position:.5625rem;--_ui5_checkbox_focus_position:.6875rem;--_ui5_checkbox_compact_wrapper_padding:.5rem;--_ui5_checkbox_compact_width_height:2rem;--_ui5_checkbox_compact_inner_size:1rem;--_ui5_checkbox_compact_focus_position:.375rem;--_ui5_checkbox_compact_wrapped_label_margin_top:-1px;--_ui5_input_height:2.5rem;--_ui5_input_compact_height:1.625rem;--_ui5_input_wrapper_border_radius:0;--_ui5_input_state_border_width:0.125rem;--_ui5_input_error_font_weight:normal;--_ui5_input_focus_border_width:1px;--_ui5_input_error_warning_border_style:solid;--_ui5_input_error_warning_font_style:normal;--_ui5_input_disabled_font_weight:normal;--sap_wc_input_disabled_opacity:0.5;--sap_wc_input_icon_min_width:2.375rem;--sap_wc_input_compact_min_width:2rem;--_ui5_link_opacity:0.5;--_ui5_link_outline_element_size:calc(100% - 0.125rem);--_ui5_listitembase_focus_width:1px;--_ui5_messagestrip_icon_width:2.5rem;--_ui5_messagestrip_border_radius:0.1875rem;--_ui5_messagestrip_button_border_width:0;--_ui5_messagestrip_button_border_style:none;--_ui5_messagestrip_button_border_color:transparent;--_ui5_messagestrip_button_border_radius:0;--_ui5_messagestrip_padding:0.125rem .125rem;--_ui5_messagestrip_button_height:1.625rem;--_ui5_messagestrip_border_width:1px;--_ui5_messagestrip_close_button_border:none;--_ui5_messagestrip_close_button_size:1.625rem;--_ui5_messagestrip_icon_top:0.4375rem;--_ui5_messagestrip_focus_width:1px;--_ui5_monthpicker_item_border_radius:0;--_ui5_monthpicker_item_border:none;--_ui5_monthpicker_item_margin:1px;--_ui5_monthpicker_item_focus_after_width:calc(100% - 0.375rem);--_ui5_monthpicker_item_focus_after_height:calc(100% - 0.375rem);--_ui5_monthpicker_item_focus_after_offset:2px;--_ui5_radiobutton_border_width:1px;--_ui5_radiobutton_warning_error_border_dash:0;--_ui5_select_state_error_warning_border_style:solid;--_ui5_select_state_error_warning_border_width:0.125rem;--_ui5_select_hover_icon_left_border:none;--_ui5_select_rtl_hover_icon_left_border:none;--_ui5_select_rtl_hover_icon_right_border:none;--_ui5_select_focus_width:1px;--_ui5_switch_height:2.75rem;--_ui5_switch_width:3.875rem;--_ui5_switch_no_label_width:3.25rem;--_ui5_switch_outline:1px;--_ui5_switch_compact_height:2rem;--_ui5_switch_compact_width:3.5rem;--_ui5_switch_compact_no_label_width:2.5rem;--_ui5_switch_track_height:1.375rem;--_ui5_switch_track_no_label_height:1.25rem;--_ui5_switch_track_compact_no_label_height:1rem;--_ui5_switch_track_border_radius:0.75rem;--_ui5_switch_handle_width:2rem;--_ui5_switch_handle_height:2rem;--_ui5_switch_handle_border_width:1px;--_ui5_switch_handle_border_radius:1rem;--_ui5_switch_handle_compact_width:1.625rem;--_ui5_switch_handle_compact_height:1.625rem;--_ui5_tc_headerItemSemanticIcon_display:none;--_ui5_textarea_focus_after_width:1px;--_ui5_textarea_warning_border_style:solid;--_ui5_textarea_warning_border_width:2px;--_ui5_TimelineItem_arrow_size:1.625rem;--_ui5_TimelineItem_bubble_outline_width:0.0625rem;--_ui5_TimelineItem_bubble_outline_top:-0.125rem;--_ui5_TimelineItem_bubble_outline_right:-0.125rem;--_ui5_TimelineItem_bubble_outline_bottom:-0.125rem;--_ui5_TimelineItem_bubble_outline_left:-0.625rem;--_ui5_TimelineItem_bubble_rtl_left_offset:-0.125rem;--_ui5_TimelineItem_bubble_rtl_right_offset:-0.625rem;--_ui5_yearpicker_item_border:none;--_ui5_yearpicker_item_border_radius:0;--_ui5_yearpicker_item_margin:1px;--_ui5_yearpicker_item_focus_after_width:calc(100% - 0.375rem);--_ui5_yearpicker_item_focus_after_height:calc(100% - 0.375rem);--_ui5_yearpicker_item_focus_after_offset:2px;--_ui5_token_border_radius:0.125rem;--sapBrandColor:var(--sapPrimary2,#427cac);--sapBaseColor:var(--sapPrimary3,#eff4f9);--sapBackgroundColorDefault:var(--sapPrimary5,#fafafa);--sapBackgroundColor:var(--sapPrimary5,#fafafa);--sapTextColor:var(--sapPrimary7,#333);--sapNegativeElementColor:var(--sapNegativeColor,#b00);--sapNegativeTextColor:var(--sapNegativeColor,#b00);--sapCriticalElementColor:var(--sapCriticalColor,#e78c07);--sapCriticalTextColor:var(--sapCriticalColor,#e78c07);--sapPositiveElementColor:var(--sapPositiveColor,#2b7c2b);--sapPositiveTextColor:var(--sapPositiveColor,#2b7c2b);--sapInformationBorderColor:var(--sapInformativeColor,#427cac);--sapInformativeElementColor:var(--sapInformativeColor,#427cac);--sapInformativeTextColor:var(--sapInformativeColor,#427cac);--sapNeutralBorderColor:var(--sapNeutralColor,#5e696e);--sapNeutralElementColor:var(--sapNeutralColor,#5e696e);--sapNeutralTextColor:var(--sapNeutralColor,#5e696e);--sapInformationColor:var(--sapInformativeColor,#427cac);--sapContent_IconHeight:var(--sapContent_GridSize,1rem);--sapContent_ContrastIconColor:var(--sapContent_ContrastTextColor,#fff);--sapContent_MarkerIconColor:var(--sapAccentColor5,#678bc7);--sapContent_ForegroundBorderColor:var(--sapPrimary6,#bfbfbf);--sapContent_BadgeBackground:var(--sapAccentColor3,#c14646);--sapButton_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapField_Background:var(--sapPrimary4,#fff);--sapField_BorderColor:var(--sapPrimary6,#bfbfbf);--sapField_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapField_RequiredColor:var(--sapAccentColor3,#c14646);--sapGroup_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapList_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapList_Background:var(--sapPrimary4,#fff);--sapPageFooter_Background:var(--sapPrimary4,#fff);--sapTile_Background:var(--sapPrimary4,#fff);--sapUiShellColor:var(--sapShellColor,transparent);--sapUiFontFamily:var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif);--sapUiFontSize:var(--sapFontSize,calc(0.875*var(--sapContent_GridSize)));--sapUiLink:var(--sapLinkColor,#0070b1);--sapUiGlobalLogo:var(--sapCompanyLogo,none);--sapUiGlobalBackgroundImage:var(--sapBackgroundImage,none);--sapUiBackgroundImage:var(--sapBackgroundImage,none);--sapUiGlobalBackgroundImageOpacity:var(--sapBackgroundImageOpacity,1.0);--sapUiGlobalBackgroundRepeat:var(--sapBackgroundImageRepeat,false);--sapUiElementLineHeight:var(--sapElement_LineHeight,calc(3*var(--sapContent_GridSize, 1rem)));--sapUiElementHeight:var(--sapElement_Height,calc(2.5*var(--sapContent_GridSize, 1rem)));--sapUiElementBorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapUiContentLineHeight:var(--sapContent_LineHeight,1.4);--sapUiContentElementHeight:var(--sapContent_ElementHeight,1.37em);--sapUiContentElementHeightPX:var(--sapContent_ElementHeight_PX,22px);--sapUiContentFocusColor:var(--sapContent_FocusColor,#000);--sapUiContentContrastFocusColor:var(--sapContent_ContrastFocusColor,#fff);--sapUiContentShadowColor:var(--sapContent_ShadowColor,#000);--sapUiContentContrastShadowColor:var(--sapContent_ContrastShadowColor,#fff);--sapUiContentSearchHighlightColor:var(--sapContent_SearchHighlightColor,#d4f7db);--sapUiContentHelpColor:var(--sapContent_HelpColor,#3f8600);--sapUiContentDisabledOpacity:var(--sapContent_DisabledOpacity,0.5);--sapUiContentContrastTextThreshold:var(--sapContent_ContrastTextThreshold,0.65);--sapUiContentContrastTextColor:var(--sapContent_ContrastTextColor,#fff);--sapUiShellBorderColor:var(--sapShell_BorderColor,transparent);--sapUiButtonBorderCornerRadius:var(--sapButton_BorderCornerRadius,calc(0.2*var(--sapContent_GridSize, 1rem)));--sapUiFieldBorderCornerRadius:var(--sapField_BorderCornerRadius,0);--sapUiFieldTextColor:var(--sapField_TextColor,#000);--sapUiGroupTitleBackground:var(--sapGroup_TitleBackground,transparent);--sapUiGroupFooterBackground:var(--sapGroup_FooterBackground,transparent);--sapUiToolbarBackground:var(--sapToolbar_Background,transparent);--sapUiScrollBarDimension:var(--sapScrollBar_Dimension,calc(0.7*var(--sapContent_GridSize, 1rem)));--sapUiBlockLayerBackground:var(--sapBlockLayer_Background,#000);--sapUiTileBorderColor:var(--sapTile_BorderColor,transparent);--sapUiContentGridSize:var(--sapContent_GridSize,1rem);--sapUiPrimary1:var(--sapPrimary1,#3f5161);--sapUiPrimary2:var(--sapPrimary2,#427cac);--sapUiPrimary3:var(--sapPrimary3,#eff4f9);--sapUiPrimary4:var(--sapPrimary4,#fff);--sapUiPrimary5:var(--sapPrimary5,#fafafa);--sapUiPrimary6:var(--sapPrimary6,#bfbfbf);--sapUiPrimary7:var(--sapPrimary7,#333);--sapUiAccent1:var(--sapAccentColor1,#e09d00);--sapUiAccent2:var(--sapAccentColor2,#e6600d);--sapUiAccent3:var(--sapAccentColor3,#c14646);--sapUiAccent4:var(--sapAccentColor4,#ab218e);--sapUiAccent5:var(--sapAccentColor5,#678bc7);--sapUiAccent6:var(--sapAccentColor6,#0092d1);--sapUiAccent7:var(--sapAccentColor7,#1a9898);--sapUiAccent8:var(--sapAccentColor8,#759421);--sapUiAccent9:var(--sapAccentColor9,#925ace);--sapUiAccent10:var(--sapAccentColor10,#647987);--sapUiNeutralBorder:var(--sapNeutralColor,#5e696e);--sapUiNegative:var(--sapNegativeColor,#b00);--sapUiCritical:var(--sapCriticalColor,#e78c07);--sapUiPositive:var(--sapPositiveColor,#2b7c2b);--sapUiInformative:var(--sapInformativeColor,#427cac);--sapUiNeutral:var(--sapNeutralColor,#5e696e);--sapUiIndication1:var(--sapIndicationColor_1,#800);--sapUiIndication2:var(--sapIndicationColor_2,#b00);--sapUiIndication3:var(--sapIndicationColor_3,#e78c07);--sapUiIndication4:var(--sapIndicationColor_4,#2b7c2b);--sapUiIndication5:var(--sapIndicationColor_5,#427cac);--sapUiFontHeader6Size:var(--sapUiFontLargeSize,13px);--sapGroup_Title_FontSize:var(--sapFontSize,calc(0.875*var(--sapContent_GridSize)));--sapHighlightColor:var(--sapBrandColor,var(--sapPrimary2,#427cac));--sapUiBrand:var(--sapBrandColor,var(--sapPrimary2,#427cac));--sapPageHeader_Background:var(--sapBaseColor,var(--sapPrimary3,#eff4f9));--sapObjectHeader_Background:var(--sapBaseColor,var(--sapPrimary3,#eff4f9));--sapUiBaseColor:var(--sapBaseColor,var(--sapPrimary3,#eff4f9));--sapUiBaseBG:var(--sapBackgroundColor,var(--sapPrimary5,#fafafa));--sapUiGlobalBackgroundColor:var(--sapBackgroundColor,var(--sapPrimary5,#fafafa));--sapTitleColor:var(--sapTextColor,var(--sapPrimary7,#333));--sapUiBaseText:var(--sapTextColor,var(--sapPrimary7,#333));--sapUiNegativeElement:var(--sapNegativeElementColor,var(--sapNegativeColor,#b00));--sapUiNegativeText:var(--sapNegativeTextColor,var(--sapNegativeColor,#b00));--sapUiCriticalElement:var(--sapCriticalElementColor,var(--sapCriticalColor,#e78c07));--sapUiCriticalText:var(--sapCriticalTextColor,var(--sapCriticalColor,#e78c07));--sapUiPositiveElement:var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b));--sapUiPositiveText:var(--sapPositiveTextColor,var(--sapPositiveColor,#2b7c2b));--sapUiInformationBorder:var(--sapInformationBorderColor,var(--sapInformativeColor,#427cac));--sapUiInformativeElement:var(--sapInformativeElementColor,var(--sapInformativeColor,#427cac));--sapUiInformativeText:var(--sapInformativeTextColor,var(--sapInformativeColor,#427cac));--sapUiNeutralElement:var(--sapNeutralElementColor,var(--sapNeutralColor,#5e696e));--sapUiNeutralText:var(--sapNeutralTextColor,var(--sapNeutralColor,#5e696e));--sapField_InformationColor:var(--sapInformationColor,var(--sapInformativeColor,#427cac));--sapUiContentIconHeight:var(--sapContent_IconHeight,var(--sapContent_GridSize,1rem));--sapUiContentContrastIconColor:var(--sapContent_ContrastIconColor,var(--sapContent_ContrastTextColor,#fff));--sapUiContentMarkerIconColor:var(--sapContent_MarkerIconColor,var(--sapAccentColor5,#678bc7));--sapUiContentForegroundBorderColor:var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf));--sapUiContentBadgeBackground:var(--sapContent_BadgeBackground,var(--sapAccentColor3,#c14646));--sapUiButtonBorderWidth:var(--sapButton_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapField_HelpBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_Hover_Background:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_Focus_Background:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_InvalidBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_WarningBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_SuccessBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_InformationBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapUiFieldBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_Focus_BorderColor:var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf));--sapUiFieldBorderColor:var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf));--sapUiFieldBorderWidth:var(--sapField_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiFieldRequiredColor:var(--sapField_RequiredColor,var(--sapAccentColor3,#c14646));--sapUiGroupBorderWidth:var(--sapGroup_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiListBorderWidth:var(--sapList_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiListBackground:var(--sapList_Background,var(--sapPrimary4,#fff));--sapUiPageFooterBackground:var(--sapPageFooter_Background,var(--sapPrimary4,#fff));--sapUiTileBackground:var(--sapTile_Background,var(--sapPrimary4,#fff));--sapUiFontHeaderFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiDesktopFontFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiLinkActive:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiLinkVisited:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiLinkHover:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiDragAndDropActiveColor:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiDragAndDropActiveBorderColor:var(--sapUiLink,var(--sapLinkColor,#0070b1));--_ui5_button_focus_after_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_button_positive_border_focus_hover_color:var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_card_header_focus_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_checkbox_focus_outline:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_monthpicker_item_focus_after_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_panel_focus_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_tc_headerItem_focus_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_yearpicker_item_focus_after_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--sapUiFieldActiveTextColor:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff));--ui5-badge-border-color-scheme-1:var(--sapUiAccent1,var(--sapAccentColor1,#e09d00));--ui5-badge-border-color-scheme-2:var(--sapUiAccent2,var(--sapAccentColor2,#e6600d));--ui5-badge-border-color-scheme-3:var(--sapUiAccent3,var(--sapAccentColor3,#c14646));--sapUiCalendarColorToday:var(--sapUiAccent4,var(--sapAccentColor4,#ab218e));--ui5-badge-border-color-scheme-4:var(--sapUiAccent4,var(--sapAccentColor4,#ab218e));--ui5-badge-border-color-scheme-5:var(--sapUiAccent5,var(--sapAccentColor5,#678bc7));--ui5-badge-border-color-scheme-6:var(--sapUiAccent6,var(--sapAccentColor6,#0092d1));--ui5-busyindicator-color:var(--sapUiAccent6,var(--sapAccentColor6,#0092d1));--ui5-badge-border-color-scheme-7:var(--sapUiAccent7,var(--sapAccentColor7,#1a9898));--ui5-badge-border-color-scheme-8:var(--sapUiAccent8,var(--sapAccentColor8,#759421));--ui5-badge-border-color-scheme-9:var(--sapUiAccent9,var(--sapAccentColor9,#925ace));--ui5-badge-border-color-scheme-10:var(--sapUiAccent10,var(--sapAccentColor10,#647987));--_ui5_tc_headerItem_negative_selected_border_color:var(--sapUiNegative,var(--sapNegativeColor,#b00));--_ui5_tc_headerItemIcon_negative_selected_background:var(--sapUiNegative,var(--sapNegativeColor,#b00));--_ui5_tc_headerItem_critical_selected_border_color:var(--sapUiCritical,var(--sapCriticalColor,#e78c07));--_ui5_tc_headerItemIcon_critical_selected_background:var(--sapUiCritical,var(--sapCriticalColor,#e78c07));--_ui5_tc_headerItem_positive_selected_border_color:var(--sapUiPositive,var(--sapPositiveColor,#2b7c2b));--_ui5_tc_headerItemIcon_positive_selected_background:var(--sapUiPositive,var(--sapPositiveColor,#2b7c2b));--_ui5_tc_headerItem_neutral_selected_border_color:var(--sapUiNeutral,var(--sapNeutralColor,#5e696e));--_ui5_tc_headerItemIcon_neutral_selected_background:var(--sapUiNeutral,var(--sapNeutralColor,#5e696e));--sapSelectedColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapActiveColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapField_Hover_BorderColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapField_Hover_HelpBackground:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapList_HighlightColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapUiHighlight:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapUiPageHeaderBackground:var(--sapPageHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#eff4f9)));--sapUiObjectHeaderBackground:var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#eff4f9)));--sapUiTextTitle:var(--sapTitleColor,var(--sapTextColor,var(--sapPrimary7,#333)));--sapUiListTextColor:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary7,#333)));--_ui5_switch_text_disabled_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary7,#333)));--sapUiButtonRejectBorderColor:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)));--sapUiButtonRejectActiveBackground:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)));--_ui5_switch_text_off_semantic_color:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)));--sapUiButtonAcceptBorderColor:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)));--sapUiButtonAcceptActiveBackground:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)));--_ui5_switch_text_on_semantic_color:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)));--sapUiFieldInformationColor:var(--sapField_InformationColor,var(--sapInformationColor,var(--sapInformativeColor,#427cac)));--sapUiDragAndDropBorderColor:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_switch_track_disabled_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_switch_handle_disabled_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf)));--sapUiFieldHelpBackground:var(--sapField_HelpBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldHoverBackground:var(--sapField_Hover_Background,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapField_Focus_HelpBackground:var(--sapField_Focus_Background,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldFocusBackground:var(--sapField_Focus_Background,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldInvalidBackground:var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldWarningBackground:var(--sapField_WarningBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldSuccessBackground:var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldInformationBackground:var(--sapField_InformationBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--_ui5_input_disabled_background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--_ui5_select_disabled_background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldFocusBorderColor:var(--sapField_Focus_BorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_checkbox_inner_border:solid .125rem var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_input_disabled_border_color:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_select_disabled_border_color:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--sapUiButtonActionSelectBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--sapUiListGroupHeaderBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--_ui5_daypicker_item_othermonth_background_color:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--ui5-listitem-background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--sapUiSelected:var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiActive:var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiFieldHoverBorderColor:var(--sapField_Hover_BorderColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiFieldHoverHelpBackground:var(--sapField_Hover_HelpBackground,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiListHighlightColor:var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_headerItemIcon_border:1px solid var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_headerItemIcon_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_headerItemIcon_selected_background:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_overflowItem_default_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_header_border_bottom:0.125rem solid var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#eff4f9))));--sapUiButtonRejectHoverBorderColor:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));--sapUiButtonRejectActiveBorderColor:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));--_ui5_button_negative_focus_border_color:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));--sapUiButtonAcceptHoverBorderColor:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--sapUiButtonAcceptActiveBorderColor:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--_ui5_button_positive_border_color:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--_ui5_button_positive_focus_border_color:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--_ui5_checkbox_hover_background:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapPrimary4,#fff))));--_ui5_radiobutton_hover_fill:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapPrimary4,#fff))));--sapUiFieldFocusHelpBackground:var(--sapField_Focus_HelpBackground,var(--sapField_Focus_Background,var(--sapField_Background,var(--sapPrimary4,#fff))));--ui5-group-header-listitem-background-color:var(--sapUiListGroupHeaderBackground,var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff))));--_ui5_checkbox_checkmark_color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--_ui5_radiobutton_selected_fill:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--_ui5_tc_headerItemContent_border_bottom:0.125rem solid var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiButtonActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiFieldActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiFieldActiveBorderColor:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiListActiveBackground:var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--_ui5_button_negative_active_border_color:var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))));--_ui5_button_positive_border_hover_color:var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)))));--_ui5_button_positive_border_active_color:var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)))));--sapUiButtonActiveBorderColor:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiButtonEmphasizedActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiButtonLiteActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiSegmentedButtonActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiInfobarActiveBackground:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiButtonEmphasizedActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))))));--_ui5_button_active_border_color:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))))));--sapUiButtonLiteActiveBorderColor:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))))));--sapErrorBackground:#ffe4e4;--sapWarningBackground:#fef0db;--sapSuccessBackground:#e4f5e4;--sapInformationBackground:#ebf2f7;--sapNeutralBackground:#f4f5f6;--sapErrorColor:#e00;--sapWarningColor:#f9a429;--sapSuccessColor:#38a238;--sapContent_ImagePlaceholderForegroundColor:#fff;--sapContent_LabelColor:#666;--sapContent_ForegroundColor:#e5e5e5;--sapContent_DisabledTextColor:#333;--sapButton_Background:#f7f7f7;--sapField_ReadOnly_BorderColor:#ccc;--sapGroup_TitleBorderColor:#ccc;--sapGroup_ContentBackground:#fff;--sapShell_TextColor:#346187;--sapShell_BackgroundPatternColor:hsla(0,0%,100%,0.08);--sapScrollBar_FaceColor:#b2b2b2;--sapContent_NonInteractiveIconColor:#878787;--sapContent_MarkerTextColor:#147575;--sapContent_ImagePlaceholderBackground:#ceddec;--sapList_BorderColor:#e5e5e5;--sapList_HeaderBackground:#f7f7f7;--sapInfobar_Background:#168282;--sapToolbar_SeparatorColor:rgba(63,81,97,0.2);--sapUiLinkInverted:#7ed0ff;--sapUiNotificationBarBG:rgba(51,51,51,0.98);--sapUiNotifierSeparator:#000;--sapUiNotificationBarBorder:#666;--sapUiFieldPlaceholderTextColor:#757575;--sapUiDragAndDropActiveBackground:rgba(0,112,177,0.05);--sapUiContentShadowColorFade15:rgba(0,0,0,0.15);--sapUiLinkDarken15:#004065;--sapUiShellBorderColorLighten30:rgba(NaN,NaN,NaN,0.054901960784313725);--sapBackgroundColorFade72:hsla(0,0%,98%,0.72);--sapUiAccent1Lighten50:#fff6e0;--sapUiAccent2Lighten40:#fcd9c3;--sapUiAccent3Lighten46:#fcf6f6;--sapUiAccent4Lighten46:#f3c3e9;--sapUiAccent5Lighten32:#dee6f3;--sapUiAccent6Lighten52:#dbf4ff;--sapUiAccent7Lighten64:#fafefe;--sapUiAccent8Lighten61:#f9fcf0;--sapUiAccent9Lighten37:#f2ebf9;--sapUiAccent10Lighten49:#f1f3f4;--sapContent_IconColor:#346187;--sapUiShellHoverBackground:#346187;--sapUiShellActiveBackground:#2a4f6d;--sapUiShellActiveTextColor:#fff;--sapUiShellHoverToggleBackground:#152736;--sapPageHeader_BorderColor:#d1e0ee;--sapUiListFooterBackground:#ceddec;--sapUiListTableGroupHeaderBackground:#f2f2f2;--sapUiListBackgroundDarken3:#f7f7f7;--sapUiListBackgroundDarken10:#e6e6e6;--sapUiListBackgroundDarken13:#dedede;--sapUiListBackgroundDarken15:#d9d9d9;--sapUiListBackgroundDarken20:#ccc;--sapUiTileBackgroundDarken20:#ccc;--sapUiErrorBG:var(--sapErrorBackground,#ffe4e4);--sapUiWarningBG:var(--sapWarningBackground,#fef0db);--sapUiSuccessBG:var(--sapSuccessBackground,#e4f5e4);--sapUiInformationBG:var(--sapInformationBackground,#ebf2f7);--sapUiNeutralBG:var(--sapNeutralBackground,#f4f5f6);--sapErrorBorderColor:var(--sapErrorColor,#e00);--sapField_InvalidColor:var(--sapErrorColor,#e00);--sapWarningBorderColor:var(--sapWarningColor,#f9a429);--sapField_WarningColor:var(--sapWarningColor,#f9a429);--sapSuccessBorderColor:var(--sapSuccessColor,#38a238);--sapField_SuccessColor:var(--sapSuccessColor,#38a238);--sapUiContentImagePlaceholderForegroundColor:var(--sapContent_ImagePlaceholderForegroundColor,#fff);--sapUiContentLabelColor:var(--sapContent_LabelColor,#666);--sapUiContentForegroundColor:var(--sapContent_ForegroundColor,#e5e5e5);--sapUiContentDisabledTextColor:var(--sapContent_DisabledTextColor,#333);--sapButton_Reject_Background:var(--sapButton_Background,#f7f7f7);--sapButton_Accept_Background:var(--sapButton_Background,#f7f7f7);--sapUiButtonBackground:var(--sapButton_Background,#f7f7f7);--sapUiFieldReadOnlyBorderColor:var(--sapField_ReadOnly_BorderColor,#ccc);--sapUiGroupTitleBorderColor:var(--sapGroup_TitleBorderColor,#ccc);--sapUiGroupContentBackground:var(--sapGroup_ContentBackground,#fff);--sapUiShellTextColor:var(--sapShell_TextColor,#346187);--sapUiShellBackgroundPatternColor:var(--sapShell_BackgroundPatternColor,hsla(0,0%,100%,0.08));--sapScrollBar_BorderColor:var(--sapScrollBar_FaceColor,#b2b2b2);--sapUiScrollBarFaceColor:var(--sapScrollBar_FaceColor,#b2b2b2);--sapUiContentNonInteractiveIconColor:var(--sapContent_NonInteractiveIconColor,#878787);--sapUiContentMarkerTextColor:var(--sapContent_MarkerTextColor,#147575);--sapUiContentImagePlaceholderBackground:var(--sapContent_ImagePlaceholderBackground,#ceddec);--sapList_HeaderBorderColor:var(--sapList_BorderColor,#e5e5e5);--sapUiListBorderColor:var(--sapList_BorderColor,#e5e5e5);--sapUiListHeaderBackground:var(--sapList_HeaderBackground,#f7f7f7);--sapUiInfobarBackground:var(--sapInfobar_Background,#168282);--sapUiToolbarSeparatorColor:var(--sapToolbar_SeparatorColor,rgba(63,81,97,0.2));--_ui5_link_subtle_color:var(--sapUiLinkDarken15,#004065);--ui5-badge-bg-color-scheme-1:var(--sapUiAccent1Lighten50,#fff6e0);--ui5-badge-bg-color-scheme-2:var(--sapUiAccent2Lighten40,#fcd9c3);--ui5-badge-bg-color-scheme-3:var(--sapUiAccent3Lighten46,#fcf6f6);--ui5-badge-bg-color-scheme-4:var(--sapUiAccent4Lighten46,#f3c3e9);--ui5-badge-bg-color-scheme-5:var(--sapUiAccent5Lighten32,#dee6f3);--ui5-badge-bg-color-scheme-6:var(--sapUiAccent6Lighten52,#dbf4ff);--ui5-badge-bg-color-scheme-7:var(--sapUiAccent7Lighten64,#fafefe);--ui5-badge-bg-color-scheme-8:var(--sapUiAccent8Lighten61,#f9fcf0);--ui5-badge-bg-color-scheme-9:var(--sapUiAccent9Lighten37,#f2ebf9);--ui5-badge-bg-color-scheme-10:var(--sapUiAccent10Lighten49,#f1f3f4);--sapScrollBar_SymbolColor:var(--sapContent_IconColor,#346187);--sapUiContentIconColor:var(--sapContent_IconColor,#346187);--sapUiPageHeaderBorderColor:var(--sapPageHeader_BorderColor,#d1e0ee);--sapUiObjectHeaderBorderColor:#d1e0ee;--sapUiButtonRejectActiveBackgroundDarken5:#a20000;--sapUiButtonRejectActiveBackgroundLighten5:#d40000;--sapUiButtonAcceptActiveBackgroundDarken5:#246924;--sapUiButtonAcceptActiveBackgroundLighten5:#328f32;--_ui5_daypicker_item_othermonth_hover_background_color:var(--sapUiListBackgroundDarken10,#e6e6e6);--_ui5_card_border_color:var(--sapUiTileBackgroundDarken20,#ccc);--_ui5_switch_track_disabled_semantic_bg:var(--sapUiErrorBG,var(--sapErrorBackground,#ffe4e4));--_ui5_switch_handle_semantic_hover_bg:var(--sapUiErrorBG,var(--sapErrorBackground,#ffe4e4));--_ui5_switch_track_disabled_semantic_checked_bg:var(--sapUiSuccessBG,var(--sapSuccessBackground,#e4f5e4));--_ui5_switch_handle_semantic_checked_hover_bg:var(--sapUiSuccessBG,var(--sapSuccessBackground,#e4f5e4));--sapUiErrorBorder:var(--sapErrorBorderColor,var(--sapErrorColor,#e00));--sapUiFieldInvalidColor:var(--sapField_InvalidColor,var(--sapErrorColor,#e00));--sapUiWarningBorder:var(--sapWarningBorderColor,var(--sapWarningColor,#f9a429));--sapUiFieldWarningColor:var(--sapField_WarningColor,var(--sapWarningColor,#f9a429));--sapUiSuccessBorder:var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238));--sapUiFieldSuccessColor:var(--sapField_SuccessColor,var(--sapSuccessColor,#38a238));--_ui5_daypicker_item_othermonth_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_daypicker_item_othermonth_hover_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_daypicker_dayname_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_daypicker_weekname_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_input_disabled_color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,#333));--sapUiButtonRejectBackground:var(--sapButton_Reject_Background,var(--sapButton_Background,#f7f7f7));--sapUiButtonAcceptBackground:var(--sapButton_Accept_Background,var(--sapButton_Background,#f7f7f7));--_ui5_token_background:var(--sapUiButtonBackground,var(--sapButton_Background,#f7f7f7));--_ui5_checkbox_inner_readonly_border:0.125rem solid var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,#ccc));--ui5-panel-bottom-border-color:var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#ccc));--sapUiDragAndDropBackground:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--ui5-panel-background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--_ui5_tc_headerItemIcon_selected_color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--_ui5_tc_headerItemIcon_semantic_selected_color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--sapUiScrollBarBorderColor:var(--sapScrollBar_BorderColor,var(--sapScrollBar_FaceColor,#b2b2b2));--sapUiDragAndDropColor:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,#878787));--sapUiListHeaderBorderColor:var(--sapList_HeaderBorderColor,var(--sapList_BorderColor,#e5e5e5));--sapUiButtonActionSelectBorderColor:var(--sapUiListBorderColor,var(--sapList_BorderColor,#e5e5e5));--ui5-listitem-border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#e5e5e5));--sapUiShadowText:0 0 0.125rem #fff;--sapUiToggleButtonPressedBackground:#346187;--sapUiSelectedDarken10:#346187;--sapUiActiveLighten3:#4684b7;--sapUiScrollBarSymbolColor:var(--sapScrollBar_SymbolColor,var(--sapContent_IconColor,#346187));--_ui5_token_icon_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,#346187));--_ui5_tc_header_box_shadow:inset 0 -0.25rem 0 -0.125rem var(--sapUiObjectHeaderBorderColor,#d1e0ee);--_ui5_tc_content_border_bottom:0.125rem solid var(--sapUiObjectHeaderBorderColor,#d1e0ee);--_ui5_toggle_button_pressed_negative_hover:var(--sapUiButtonRejectActiveBackgroundDarken5,#a20000);--_ui5_toggle_button_pressed_positive_hover:var(--sapUiButtonAcceptActiveBackgroundDarken5,#246924);--_ui5_card_header_border_color:var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc));--_ui5_switch_track_disabled_semantic_border_color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapErrorColor,#e00)));--_ui5_switch_handle_semantic_hover_border_color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapErrorColor,#e00)));--_ui5_switch_handle_disabled_semantic_border_color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapErrorColor,#e00)));--_ui5_checkbox_inner_error_border:0.125rem solid var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorColor,#e00)));--_ui5_radiobutton_selected_error_fill:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorColor,#e00)));--_ui5_checkbox_inner_warning_border:0.125rem solid var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningColor,#f9a429)));--_ui5_switch_track_disabled_semantic_checked_border_color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238)));--_ui5_switch_handle_semantic_checked_hover_border_color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238)));--_ui5_switch_handle_disabled_semantic_checked_border_color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238)));--sapUiSegmentedButtonSelectedBackground:var(--sapUiToggleButtonPressedBackground,#346187);--_ui5_switch_handle_checked_bg:var(--sapUiToggleButtonPressedBackground,#346187);--_ui5_daypicker_item_selected_background_color:var(--sapUiSelectedDarken10,#346187);--_ui5_daypicker_item_selected_hover_background_color:var(--sapUiSelectedDarken10,#346187);--_ui5_monthpicker_item_selected_hover:var(--sapUiSelectedDarken10,#346187);--_ui5_monthpicker_item_selected_focus:var(--sapUiSelectedDarken10,#346187);--_ui5_yearpicker_item_selected_focus:var(--sapUiSelectedDarken10,#346187);--sapShell_Background:#cad8e6;--sapField_ReadOnly_Background:hsla(0,0%,94.9%,0.5);--_ui5_switch_handle_disabled_checked_bg:var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,#346187));--sapButton_Emphasized_Background:#5496cd;--sapUiShellBackground:var(--sapShell_Background,#cad8e6);--sapField_ReadOnly_HelpBackground:var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,0.5));--sapUiFieldReadOnlyBackground:var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,0.5));--sapList_SelectionBackgroundColor:#e8f0f6;--sapUiButtonEmphasizedBackground:var(--sapButton_Emphasized_Background,#5496cd);--sapButton_BorderColor:#ababab;--sapButton_Hover_Background:#eaeaea;--sapGroup_ContentBorderColor:#ebebeb;--sapScrollBar_TrackColor:#fff;--sapScrollBar_Hover_FaceColor:#aaa;--sapUiFieldReadOnlyHelpBackground:var(--sapField_ReadOnly_HelpBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,0.5)));--sapUiListSelectionBackgroundColor:var(--sapList_SelectionBackgroundColor,#e8f0f6);--sapUiErrorBGLighten4:#fff8f8;--sapUiSuccessBGLighten5:#f7fcf7;--sapUiContentForegroundColorLighten5:#f2f2f2;--sapUiContentForegroundColorLighten7:#f7f7f7;--sapUiContentForegroundColorDarken3:#ddd;--sapUiContentForegroundColorDarken5:#d8d8d8;--sapUiContentForegroundColorDarken10:#ccc;--sapUiSegmentedButtonBackground:#fff;--sapUiButtonBackgroundDarken7:#e5e5e5;--sapUiButtonBackgroundDarken2:#f2f2f2;--sapUiButtonBackgroundDarken10:#dedede;--sapButton_Hover_BorderColor:var(--sapButton_BorderColor,#ababab);--sapUiButtonBorderColor:var(--sapButton_BorderColor,#ababab);--sapUiButtonHoverBackground:var(--sapButton_Hover_Background,#eaeaea);--sapUiGroupContentBorderColor:var(--sapGroup_ContentBorderColor,#ebebeb);--sapUiScrollBarTrackColor:var(--sapScrollBar_TrackColor,#fff);--sapUiScrollBarHoverFaceColor:var(--sapScrollBar_Hover_FaceColor,#aaa);--sapUiListVerticalBorderColor:#ddd;--sapUiListTableGroupHeaderBorderColor:#ccc;--sapUiListTableFooterBorder:#ccc;--sapUiListTableFixedBorder:#999;--sapUiListBorderColorLighten10:#fff;--sapUiInfobarHoverBackground:#147575;--_ui5_switch_handle_disabled_semantic_bg:var(--sapUiErrorBGLighten4,#fff8f8);--_ui5_switch_handle_disabled_semantic_checked_bg:var(--sapUiSuccessBGLighten5,#f7fcf7);--sapUiFieldWarningColorDarken100:#000;--_ui5_daypicker_item_background_color:var(--sapUiContentForegroundColorLighten5,#f2f2f2);--_ui5_monthpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_monthpicker_item_hover_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_yearpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_yearpicker_item_hover_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_daypicker_item_weekend_background_color:var(--sapUiContentForegroundColorDarken3,#ddd);--_ui5_daypicker_item_hover_background_color:var(--sapUiContentForegroundColorDarken5,#d8d8d8);--_ui5_monthpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#d8d8d8);--_ui5_yearpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#d8d8d8);--_ui5_daypicker_item_weekend_hover_background_color:var(--sapUiContentForegroundColorDarken10,#ccc);--_ui5_switch_track_bg:var(--sapUiButtonBackgroundDarken7,#e5e5e5);--_ui5_switch_track_hover_bg:var(--sapUiButtonBackgroundDarken7,#e5e5e5);--_ui5_switch_handle_bg:var(--sapUiButtonBackgroundDarken2,#f2f2f2);--_ui5_token_border_color:var(--sapUiButtonBackgroundDarken10,#dedede);--sapUiButtonHoverBorderColor:var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,#ababab));--_ui5_button_focussed_border_color:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,#ababab));--sapUiButtonAcceptHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--sapUiButtonRejectHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--sapUiSegmentedButtonHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--sapUiSegmentedButtonFooterHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--_ui5_daypicker_item_now_selected_text_border_color:var(--sapUiListBorderColorLighten10,#fff);--sapUiShadowLevel0:0 0 0 1px rgba(0,0,0,0.15);--sapUiToggleButtonPressedBorderColor:#2d5475;--sapUiToggleButtonPressedHoverBackground:#427bac;--_ui5_checkbox_checkmark_warning_color:var(--sapUiFieldWarningColorDarken100,#000);--_ui5_radiobutton_selected_warning_fill:var(--sapUiFieldWarningColorDarken100,#000);--_ui5_switch_track_disabled_bg:var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#e5e5e5));--_ui5_switch_handle_disabled_bg:var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#f2f2f2));--_ui5_switch_handle_checked_border_color:var(--sapUiToggleButtonPressedBorderColor,#2d5475);--_ui5_toggle_button_pressed_focussed:var(--sapUiToggleButtonPressedBorderColor,#2d5475);--_ui5_toggle_button_pressed_focussed_hovered:var(--sapUiToggleButtonPressedBorderColor,#2d5475);--sapUiToggleButtonPressedHoverBorderColor:var(--sapUiToggleButtonPressedHoverBackground,#427bac);--sapUiSegmentedButtonSelectedHoverBackground:var(--sapUiToggleButtonPressedHoverBackground,#427bac);--_ui5_switch_handle_checked_hover_bg:var(--sapUiToggleButtonPressedHoverBackground,#427bac);--sapUiShadowHeader:0 0.125rem 0 0 #eff4f9,inset 0 -0.125rem 0 0 #d1e0ee;--sapList_Hover_Background:#f0f0f0;--sapUiSegmentedButtonSelectedHoverBorderColor:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#427bac));--sapButton_Emphasized_BorderColor:#408ac7;--sapUiPageFooterBorderColor:#ebebeb;--sapUiShellGroupTextColor:#343434;--sapUiShellContainerBackground:#fff;--sapUiListHoverBackground:var(--sapList_Hover_Background,#f0f0f0);--sapUiButtonEmphasizedHoverBackground:#408ac7;--sapUiButtonEmphasizedHoverBorderColor:#408ac7;--sapUiButtonEmphasizedBorderColor:var(--sapButton_Emphasized_BorderColor,#408ac7);--sapUiButtonLiteActionSelectHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,#f0f0f0));--sapUiToggleButtonPressedBackgroundLighten50Desaturate47:#dedede;--_ui5_button_emphasized_focused_border_color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,#408ac7));--sapUiSegmentedButtonBorderColor:#bfbfbf;--sapUiSegmentedButtonFooterBorderColor:#bfbfbf;--sapUiButtonHoverBackgroundDarken2:#e5e5e5;--sapUiButtonHoverBackgroundDarken5:#ddd;--_ui5_switch_track_checked_bg:var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#dedede);--_ui5_switch_track_hover_checked_bg:var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#dedede);--_ui5_switch_handle_hover_bg:var(--sapUiButtonHoverBackgroundDarken2,#e5e5e5);--_ui5_token_hover_border_color:var(--sapUiButtonHoverBackgroundDarken5,#ddd);--_ui5_switch_track_disabled_checked_bg:var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#dedede));--sapGroup_TitleTextColor:#333;--sapUiShellAltContainerBackground:#6391be;--sapTile_TitleTextColor:#333;--sapPageFooter_TextColor:#333;--sapHighlightTextColor:#fff;--sapPageHeader_TextColor:#666;--sapUiGroupTitleTextColor:var(--sapGroup_TitleTextColor,#333);--sapUiTileTitleTextColor:var(--sapTile_TitleTextColor,#333);--sapUiPageFooterTextColor:var(--sapPageFooter_TextColor,#333);--sapUiShadowLevel1:0 0.125rem 0.5rem 0 rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.15);--sapUiShadowLevel2:0 0.625rem 1.875rem 0 rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.15);--sapUiShadowLevel3:0 1.25rem 5rem 0 rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.15);--sapUiHighlightTextColor:var(--sapHighlightTextColor,#fff);--sapUiPageHeaderTextColor:var(--sapPageHeader_TextColor,#666);--sapUiButtonLiteHoverBackground:hsla(0,0%,69.8%,0.5);--_ui5_tc_headerItem_color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#333));--sapUiListFooterTextColor:var(--sapUiPageFooterTextColor,var(--sapPageFooter_TextColor,#333));--sapUiButtonLiteHoverBorderColor:var(--sapUiButtonLiteHoverBackground,hsla(0,0%,69.8%,0.5));--sapUiButtonFooterHoverBackground:var(--sapUiButtonLiteHoverBackground,hsla(0,0%,69.8%,0.5));--sapUiToggleButtonPressedBorderColorLighten19Desaturate46:#818181;--sapUiListActiveTextColor:#fff;--_ui5_switch_track_checked_border_color:var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#818181);--sapUiSegmentedButtonActiveIconColor:#fff;--_ui5_switch_track_hover_border_color:var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#818181));--sapTile_IconColor:#93b7d5;--sapContent_ForegroundTextColor:#333;--sapButton_TextColor:#346187;--sapList_HeaderTextColor:#333;--sapUiTileIconColor:var(--sapTile_IconColor,#93b7d5);--sapUiListTableGroupHeaderTextColor:#147575;--sapUiContentForegroundTextColor:var(--sapContent_ForegroundTextColor,#333);--sapUiButtonIconColor:#346187;--sapUiButtonTextColor:var(--sapButton_TextColor,#346187);--sapUiListHeaderTextColor:var(--sapList_HeaderTextColor,#333);--sapUiListSelectionHoverBackground:#dde9f2;--sapUiButtonRejectTextColor:#b00;--sapUiButtonAcceptTextColor:#2b7c2b;--sapUiButtonLiteTextColor:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187));--sapUiButtonHeaderTextColor:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187));--_ui5_token_text_color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187));--sapUiButtonHeaderDisabledTextColor:var(--sapUiButtonHeaderTextColor,var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187)));--sapUiSegmentedButtonSelectedIconColor:#fff;--sapButton_Emphasized_TextColor:#fff;--sapUiButtonEmphasizedTextColor:var(--sapButton_Emphasized_TextColor,#fff);--sapButton_Hover_TextColor:#346187;--sapUiSegmentedButtonIconColor:#346187;--sapUiButtonHoverTextColor:var(--sapButton_Hover_TextColor,#346187);--sapTile_TextColor:#666;--sapUiTileTextColor:var(--sapTile_TextColor,#666);--sapUiButtonFooterTextColor:#346187;--sapUiButtonActiveTextColor:#fff;--sapUiToggleButtonPressedTextColor:#fff;--sapUiSegmentedButtonTextColor:#346187;--sapUiSegmentedButtonSelectedTextColor:var(--sapUiToggleButtonPressedTextColor,#fff);--sapUiButtonEmphasizedTextShadow:#000;--sapUiSegmentedButtonActiveTextColor:#fff}";
+
+  var belizeHcbThemeProperties = ":root{--sapFontFamily:\"72\",\"72full\",Arial,Helvetica,sans-serif;--sapFontSize:calc(0.875*var(--sapContent_GridSize));--sapCompanyLogo:none;--sapBackgroundImage:none;--sapBackgroundImageOpacity:1.0;--sapBackgroundImageRepeat:false;--sapContent_GridSize:1rem;--sapHC_StandardBackground:#000;--sapHC_HighlightBackground:#7a5100;--sapHC_HighlightAltBackground:#0f5d94;--sapHC_ReducedBackground:#585858;--sapHC_ReducedAltBackground:#a2a39f;--sapHC_StandardForeground:#fff;--sapHC_EnhancedForeground:#03b803;--sapHC_ReducedForeground:#666;--sapHC_ReducedAltForeground:#999;--sapHC_NegativeColor:#ff5e5e;--sapHC_CriticalColor:#ffab1d;--sapHC_PositiveColor:#9c9;--sapHC_InformativeColor:#7a5100;--sapHC_NeutralColor:#fff;--sapAccentColor1:#ffc847;--sapAccentColor2:#ed884a;--sapAccentColor3:#db9292;--sapAccentColor4:#e269c9;--sapAccentColor5:#8ca7d5;--sapAccentColor6:#6bd3ff;--sapAccentColor7:#7fc6c6;--sapAccentColor8:#b2e484;--sapAccentColor9:#b995e0;--sapAccentColor10:#b0bcc5;--sapIndicationColor_1:#ff5e5e;--sapIndicationColor_2:#ff9191;--sapIndicationColor_3:#ffab1d;--sapIndicationColor_4:#9c9;--sapIndicationColor_5:#0f5d94;--sapElement_LineHeight:calc(3*var(--sapContent_GridSize, 1rem));--sapElement_Height:calc(2.5*var(--sapContent_GridSize, 1rem));--sapElement_BorderWidth:calc(0.0625*var(--sapContent_GridSize, 1rem));--sapContent_LineHeight:1.4;--sapContent_ElementHeight:1.37em;--sapContent_ElementHeight_PX:22px;--sapContent_MonospaceFontFamily:lucida console,monospace;--sapContent_DisabledOpacity:0.5;--sapContent_ContrastTextThreshold:0.65;--sapShell_BackgroundImageOpacity:1.0;--sapShell_BackgroundImageRepeat:false;--sapShell_Favicon:none;--sapButton_BorderCornerRadius:calc(0.2*var(--sapContent_GridSize, 1rem));--sapField_BorderCornerRadius:0;--sapGroup_BorderCornerRadius:0;--sapScrollBar_Dimension:calc(0.7*var(--sapContent_GridSize, 1rem));--sapUiFontSize:16px;--sapUiFontCondensedFamily:\"Arial Narrow\",HelveticaNeue-CondensedBold,Arial,sans-serif;--sapUiFontHeaderWeight:normal;--sapMFontHeader1Size:1.625rem;--sapMFontHeader2Size:1.375rem;--sapMFontHeader3Size:1.250rem;--sapMFontHeader4Size:1.125rem;--sapMFontHeader5Size:1rem;--sapMFontHeader6Size:0.875rem;--sapMFontSmallSize:0.75rem;--sapMFontMediumSize:0.875rem;--sapMFontLargeSize:1rem;--sapUiTranslucentBGOpacity:100%;--sapUiDesktopFontSize:12px;--sapUiFontLargeSize:13px;--sapUiFontSmallSize:11px;--sapUiFontHeader1Size:26px;--sapUiFontHeader2Size:20px;--sapUiFontHeader3Size:18px;--sapUiFontHeader4Size:16px;--sapUiFontHeader5Size:14px;--sapUiLineHeight:18px;--sapUiNotifierSeparatorWidth:1px;--sapUiButtonEmphasizedTextShadow:none;--sapUiListTableTextSize:0.875rem;--sapUiListTableIconSize:1rem;--sapUiShadowText:none;--_ui5_button_base_min_width:2.5rem;--_ui5_button_base_min_compact_width:2rem;--_ui5_button_base_height:2.5rem;--_ui5_button_compact_height:1.625rem;--_ui5_button_base_padding:0 0.6875rem 0 0.6875rem;--_ui5_button_compact_padding:0 0.4375rem;--_ui5_button_base_icon_only_padding:0 0.5625rem;--_ui5_button_base_icon_margin:0.563rem;--_ui5_button_base_icon_only_font_size:1.375rem;--_ui5_button_emphasized_font_weight:normal;--_ui5_button_border_radius:0.375rem;--_ui5_button_focus_after_bottom:-1px;--_ui5_button_focus_after_right:-1px;--_ui5_button_focus_after_left:-1px;--_ui5_button_focus_after_top:-1px;--_ui5_button_focussed_border_color:transparent;--_ui5_button_positive_border_active_color:transparent;--_ui5_button_active_border_color:transparent;--_ui5_button_positive_focus_border_color:transparent;--_ui5_button_negative_focus_border_color:transparent;--_ui5_button_negative_active_border_color:transparent;--_ui5_calendar_header_middle_button_focus_after_width:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_height:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_top_offset:1px;--_ui5_calendar_header_middle_button_focus_after_left_offset:1px;--_ui5_calendar_header_arrow_button_border_radius:0.375rem;--_ui5_calendar_header_middle_button_width:5.75rem;--_ui5_calendar_header_middle_button_flex:auto;--_ui5_calendar_header_middle_button_focus_border_radius:0;--_ui5_calendar_header_middle_button_focus_after_display:none;--_ui5_card_content_padding:1rem;--_ui5_checkbox_wrapper_padding:.8125rem;--_ui5_checkbox_width_height:3rem;--_ui5_checkbox_inner_width_height:1.375rem;--_ui5_checkbox_wrapped_focus_padding:.375rem;--_ui5_checkbox_wrapped_content_margin_top:.125rem;--_ui5_checkbox_wrapped_focus_left_top_bottom_position:.5625rem;--_ui5_checkbox_focus_position:.6875rem;--_ui5_checkbox_compact_wrapper_padding:.5rem;--_ui5_checkbox_compact_width_height:2rem;--_ui5_checkbox_compact_inner_size:1rem;--_ui5_checkbox_compact_focus_position:.375rem;--_ui5_checkbox_compact_wrapped_label_margin_top:-1px;--_ui5_checkbox_inner_border_radius:0;--_ui5_datepicker_icon_border:1px solid transparent;--_ui5_daypicker_daynames_container_height:2rem;--_ui5_daypicker_weeknumbers_container_padding_top:2rem;--_ui5_daypicker_item_border_radius:0;--_ui5_daypicker_item_now_inner_border_radius:0;--_ui5_daypicker_item_margin:0;--_ui5_daypicker_item_outline_width:0.125rem;--_ui5_daypicker_item_outline_offset:0;--_ui5_daypicker_item_now_selected_focus_after_width:calc(100% - 0.25rem);--_ui5_daypicker_item_now_selected_focus_after_height:calc(100% - 0.25rem);--_ui5_input_height:2.5rem;--_ui5_input_compact_height:1.625rem;--_ui5_input_wrapper_border_radius:0;--sap_wc_input_disabled_opacity:0.5;--sap_wc_input_icon_min_width:2.375rem;--sap_wc_input_compact_min_width:2rem;--_ui5_input_focus_border_width:0.125rem;--_ui5_input_state_border_width:1px;--_ui5_input_error_warning_border_style:dashed;--_ui5_input_error_warning_font_style:italic;--_ui5_input_error_font_weight:bold;--_ui5_input_disabled_font_weight:normal;--_ui5_link_opacity:0.5;--_ui5_link_outline_element_size:calc(100% - 0.1875rem);--_ui5_listitembase_focus_width:0.125rem;--_ui5_monthpicker_item_border_radius:0;--_ui5_monthpicker_item_margin:0;--_ui5_monthpicker_item_focus_after_width:calc(100% - 0.25rem);--_ui5_monthpicker_item_focus_after_height:calc(100% - 0.25rem);--_ui5_monthpicker_item_focus_after_offset:0;--_ui5_messagestrip_icon_width:2.5rem;--_ui5_messagestrip_border_radius:0.1875rem;--_ui5_messagestrip_button_border_width:0;--_ui5_messagestrip_button_border_style:none;--_ui5_messagestrip_button_border_color:transparent;--_ui5_messagestrip_button_border_radius:0;--_ui5_messagestrip_padding:0.125rem .125rem;--_ui5_messagestrip_button_height:1.625rem;--_ui5_messagestrip_close_button_size:1.5rem;--_ui5_messagestrip_border_width:0.125rem;--_ui5_messagestrip_icon_top:0.375rem;--_ui5_messagestrip_focus_width:0.125rem;--_ui5_popover_content_padding:.4375em;--_ui5_popover_arrow_shadow_color:hsla(0,0%,100%,0.3);--_ui5_radiobutton_border_width:0.125rem;--_ui5_radiobutton_warning_error_border_dash:5;--_ui5_select_state_error_warning_border_style:dashed;--_ui5_select_state_error_warning_border_width:1px;--_ui5_select_rtl_hover_icon_left_border:none;--_ui5_select_focus_width:0.125rem;--_ui5_switch_height:2.75rem;--_ui5_switch_width:3.875rem;--_ui5_switch_no_label_width:3.25rem;--_ui5_switch_compact_height:2rem;--_ui5_switch_compact_width:3.5rem;--_ui5_switch_compact_no_label_width:2.5rem;--_ui5_switch_track_height:1.375rem;--_ui5_switch_track_no_label_height:1.25rem;--_ui5_switch_track_compact_no_label_height:1rem;--_ui5_switch_track_border_radius:0.75rem;--_ui5_switch_handle_width:2rem;--_ui5_switch_handle_height:2rem;--_ui5_switch_handle_border_radius:1rem;--_ui5_switch_handle_compact_width:1.625rem;--_ui5_switch_handle_compact_height:1.625rem;--_ui5_switch_outline:0.125rem;--_ui5_switch_handle_border_width:0.125rem;--_ui5_tc_headerItemSemanticIcon_display:inline-block;--_ui5_textarea_focus_after_width:2px;--_ui5_textarea_warning_border_style:dashed;--_ui5_textarea_warning_border_width:1px;--_ui5_TimelineItem_arrow_size:1.625rem;--_ui5_TimelineItem_bubble_outline_width:0.125rem;--_ui5_TimelineItem_bubble_outline_top:-0.1875rem;--_ui5_TimelineItem_bubble_outline_right:-0.1875rem;--_ui5_TimelineItem_bubble_outline_bottom:-0.1875rem;--_ui5_TimelineItem_bubble_outline_left:-0.6875rem;--_ui5_TimelineItem_bubble_rtl_left_offset:-0.1875rem;--_ui5_TimelineItem_bubble_rtl_right_offset:-0.6875rem;--_ui5_toggle_button_pressed_focussed:transparent;--_ui5_toggle_button_pressed_focussed_hovered:transparent;--_ui5_yearpicker_item_border_radius:0;--_ui5_yearpicker_item_margin:0;--_ui5_yearpicker_item_focus_after_width:calc(100% - 0.25rem);--_ui5_yearpicker_item_focus_after_height:calc(100% - 0.25rem);--_ui5_yearpicker_item_focus_after_offset:0;--_ui5_token_border_radius:0.125rem;--sapBaseColor:var(--sapHC_StandardBackground,#000);--sapShellColor:var(--sapHC_StandardBackground,#000);--sapBackgroundColorDefault:var(--sapHC_StandardBackground,#000);--sapBackgroundColor:var(--sapHC_StandardBackground,#000);--sapBrandColor:var(--sapHC_HighlightBackground,#7a5100);--sapTextColor:var(--sapHC_StandardForeground,#fff);--sapLinkColor:var(--sapHC_StandardForeground,#fff);--sapErrorBackground:var(--sapHC_StandardBackground,#000);--sapWarningBackground:var(--sapHC_StandardBackground,#000);--sapSuccessBackground:var(--sapHC_StandardBackground,#000);--sapInformationBackground:var(--sapHC_StandardBackground,#000);--sapNeutralBackground:var(--sapHC_StandardBackground,#000);--sapNegativeColor:var(--sapHC_NegativeColor,#ff5e5e);--sapCriticalColor:var(--sapHC_CriticalColor,#ffab1d);--sapPositiveColor:var(--sapHC_PositiveColor,#9c9);--sapInformativeColor:var(--sapHC_InformativeColor,#7a5100);--sapNeutralColor:var(--sapHC_NeutralColor,#fff);--sapSelectedColor:var(--sapHC_HighlightAltBackground,#0f5d94);--sapContent_IconHeight:var(--sapContent_GridSize,1rem);--sapContent_IconColor:var(--sapHC_StandardForeground,#fff);--sapContent_ImagePlaceholderForegroundColor:var(--sapHC_ReducedAltForeground,#999);--sapContent_FocusColor:var(--sapHC_StandardForeground,#fff);--sapContent_ShadowColor:var(--sapHC_StandardForeground,#fff);--sapContent_HelpColor:var(--sapHC_EnhancedForeground,#03b803);--sapContent_DisabledTextColor:var(--sapHC_ReducedForeground,#666);--sapContent_ForegroundBorderColor:var(--sapHC_StandardForeground,#fff);--sapShell_BorderColor:var(--sapHC_StandardForeground,#fff);--sapButton_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapButton_BorderColor:var(--sapHC_StandardForeground,#fff);--sapField_BorderColor:var(--sapHC_StandardForeground,#fff);--sapField_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapField_ReadOnly_Background:var(--sapHC_ReducedBackground,#585858);--sapField_ReadOnly_BorderColor:var(--sapHC_ReducedAltForeground,#999);--sapGroup_TitleBorderColor:var(--sapHC_StandardForeground,#fff);--sapGroup_Title_FontSize:var(--sapFontSize,calc(0.875*var(--sapContent_GridSize)));--sapGroup_ContentBorderColor:var(--sapHC_StandardForeground,#fff);--sapGroup_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapToolbar_SeparatorColor:var(--sapHC_StandardForeground,#fff);--sapList_HeaderBorderColor:var(--sapHC_StandardForeground,#fff);--sapList_BorderColor:var(--sapHC_ReducedAltForeground,#999);--sapList_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapScrollBar_FaceColor:var(--sapHC_ReducedAltForeground,#999);--sapScrollBar_Hover_FaceColor:var(--sapHC_StandardForeground,#fff);--sapPageHeader_BorderColor:var(--sapHC_StandardForeground,#fff);--sapTile_BorderColor:var(--sapHC_StandardForeground,#fff);--sapUiFontFamily:var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif);--sapUiGlobalLogo:var(--sapCompanyLogo,none);--sapUiGlobalBackgroundImage:var(--sapBackgroundImage,none);--sapUiBackgroundImage:var(--sapBackgroundImage,none);--sapUiUx3ShellBackgroundImageURL:var(--sapBackgroundImage,none);--sapUiGlobalBackgroundImageOpacity:var(--sapBackgroundImageOpacity,1.0);--sapUiGlobalBackgroundRepeat:var(--sapBackgroundImageRepeat,false);--sapUiElementLineHeight:var(--sapElement_LineHeight,calc(3*var(--sapContent_GridSize, 1rem)));--sapUiElementHeight:var(--sapElement_Height,calc(2.5*var(--sapContent_GridSize, 1rem)));--sapUiElementBorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapUiContentLineHeight:var(--sapContent_LineHeight,1.4);--sapUiContentElementHeight:var(--sapContent_ElementHeight,1.37em);--sapUiContentElementHeightPX:var(--sapContent_ElementHeight_PX,22px);--sapUiContentDisabledOpacity:var(--sapContent_DisabledOpacity,0.5);--sapUiContentContrastTextThreshold:var(--sapContent_ContrastTextThreshold,0.65);--sapUiShellBackgroundImageOpacity:var(--sapShell_BackgroundImageOpacity,1.0);--sapUiShellBackgroundImageRepeat:var(--sapShell_BackgroundImageRepeat,false);--sapUiShellFavicon:var(--sapShell_Favicon,none);--sapUiButtonBorderCornerRadius:var(--sapButton_BorderCornerRadius,calc(0.2*var(--sapContent_GridSize, 1rem)));--sapUiFieldBorderCornerRadius:var(--sapField_BorderCornerRadius,0);--sapUiScrollBarDimension:var(--sapScrollBar_Dimension,calc(0.7*var(--sapContent_GridSize, 1rem)));--sapUiContentGridSize:var(--sapContent_GridSize,1rem);--sapUiHcStandardBackground:var(--sapHC_StandardBackground,#000);--sapUiHcHighlightBackground:var(--sapHC_HighlightBackground,#7a5100);--sapUiHcHighlightAltBackground:var(--sapHC_HighlightAltBackground,#0f5d94);--sapUiHcReducedBackground:var(--sapHC_ReducedBackground,#585858);--sapUiHcReducedAltBackground:var(--sapHC_ReducedAltBackground,#a2a39f);--sapUiHcStandardForeground:var(--sapHC_StandardForeground,#fff);--sapUiHcEnhancedForeground:var(--sapHC_EnhancedForeground,#03b803);--sapUiHcReducedForeground:var(--sapHC_ReducedForeground,#666);--sapUiHcReducedAltForeground:var(--sapHC_ReducedAltForeground,#999);--sapUiHcNegativeColor:var(--sapHC_NegativeColor,#ff5e5e);--sapUiHcCriticalColor:var(--sapHC_CriticalColor,#ffab1d);--sapUiHcPositiveColor:var(--sapHC_PositiveColor,#9c9);--sapUiHcInformativeColor:var(--sapHC_InformativeColor,#7a5100);--sapUiHcNeutralColor:var(--sapHC_NeutralColor,#fff);--sapUiAccent1:var(--sapAccentColor1,#ffc847);--sapUiAccent2:var(--sapAccentColor2,#ed884a);--sapUiAccent3:var(--sapAccentColor3,#db9292);--sapUiAccent4:var(--sapAccentColor4,#e269c9);--sapUiAccent5:var(--sapAccentColor5,#8ca7d5);--sapUiAccent6:var(--sapAccentColor6,#6bd3ff);--sapUiAccent7:var(--sapAccentColor7,#7fc6c6);--sapUiAccent8:var(--sapAccentColor8,#b2e484);--sapUiAccent9:var(--sapAccentColor9,#b995e0);--sapUiAccent10:var(--sapAccentColor10,#b0bcc5);--sapUiIndication1:var(--sapIndicationColor_1,#ff5e5e);--sapUiIndication2:var(--sapIndicationColor_2,#ff9191);--sapUiIndication3:var(--sapIndicationColor_3,#ffab1d);--sapUiIndication4:var(--sapIndicationColor_4,#9c9);--sapUiIndication5:var(--sapIndicationColor_5,#0f5d94);--sapUiFontHeader6Size:var(--sapUiFontLargeSize,13px);--sapPageHeader_Background:var(--sapBaseColor,var(--sapHC_StandardBackground,#000));--sapObjectHeader_Background:var(--sapBaseColor,var(--sapHC_StandardBackground,#000));--sapUiBaseColor:var(--sapBaseColor,var(--sapHC_StandardBackground,#000));--sapUiShellColor:var(--sapShellColor,var(--sapHC_StandardBackground,#000));--sapContent_ImagePlaceholderBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapContent_ForegroundColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_BackgroundImage:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_BackgroundPatternColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_BackgroundGradient:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapButton_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapField_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapGroup_TitleBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapGroup_ContentBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapGroup_FooterBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapToolbar_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapList_HeaderBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapList_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapScrollBar_TrackColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapPageFooter_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapInfobar_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapBlockLayer_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapTile_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapUiBaseBG:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapUiGlobalBackgroundColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapHighlightColor:var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100));--sapUiBrand:var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100));--sapTitleColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapContent_MarkerTextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapContent_LabelColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapContent_ContrastTextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapShell_TextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapField_TextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapField_RequiredColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapUiBaseText:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapUiLink:var(--sapLinkColor,var(--sapHC_StandardForeground,#fff));--sapUiErrorBG:var(--sapErrorBackground,var(--sapHC_StandardBackground,#000));--sapUiWarningBG:var(--sapWarningBackground,var(--sapHC_StandardBackground,#000));--sapUiSuccessBG:var(--sapSuccessBackground,var(--sapHC_StandardBackground,#000));--sapUiInformationBG:var(--sapInformationBackground,var(--sapHC_StandardBackground,#000));--sapUiNeutralBG:var(--sapNeutralBackground,var(--sapHC_StandardBackground,#000));--sapNegativeElementColor:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapNegativeTextColor:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapErrorColor:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapUiNegative:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapCriticalElementColor:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapCriticalTextColor:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapWarningColor:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapUiCritical:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapPositiveElementColor:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapPositiveTextColor:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapSuccessColor:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapUiPositive:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapInformativeElementColor:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapInformativeTextColor:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapInformationColor:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapUiInformative:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapNeutralBorderColor:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapNeutralElementColor:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapNeutralTextColor:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapUiNeutralBorder:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapUiNeutral:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapList_SelectionBackgroundColor:var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94));--sapUiSelected:var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94));--sapUiContentIconHeight:var(--sapContent_IconHeight,var(--sapContent_GridSize,1rem));--sapContent_ContrastIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapContent_NonInteractiveIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapContent_MarkerIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapScrollBar_SymbolColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapUiContentIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapUiContentImagePlaceholderForegroundColor:var(--sapContent_ImagePlaceholderForegroundColor,var(--sapHC_ReducedAltForeground,#999));--sapContent_ContrastFocusColor:var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff));--sapUiContentFocusColor:var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff));--sapContent_ContrastShadowColor:var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff));--sapUiContentShadowColor:var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff));--sapUiContentHelpColor:var(--sapContent_HelpColor,var(--sapHC_EnhancedForeground,#03b803));--sapUiContentDisabledTextColor:var(--sapContent_DisabledTextColor,var(--sapHC_ReducedForeground,#666));--sapUiContentForegroundBorderColor:var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiShellBorderColor:var(--sapShell_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiButtonBorderWidth:var(--sapButton_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapButton_Hover_BorderColor:var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff));--sapButton_Emphasized_BorderColor:var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiButtonBorderColor:var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_Hover_BorderColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_Focus_BorderColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_InvalidColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_WarningColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_SuccessColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_InformationColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiFieldBorderColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiFieldBorderWidth:var(--sapField_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapField_ReadOnly_HelpBackground:var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858));--sapUiFieldReadOnlyBackground:var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858));--sapUiFieldReadOnlyBorderColor:var(--sapField_ReadOnly_BorderColor,var(--sapHC_ReducedAltForeground,#999));--sapUiGroupTitleBorderColor:var(--sapGroup_TitleBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiGroupContentBorderColor:var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiGroupBorderWidth:var(--sapGroup_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiToolbarSeparatorColor:var(--sapToolbar_SeparatorColor,var(--sapHC_StandardForeground,#fff));--sapUiListHeaderBorderColor:var(--sapList_HeaderBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiListBorderColor:var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999));--sapUiListBorderWidth:var(--sapList_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapScrollBar_BorderColor:var(--sapScrollBar_FaceColor,var(--sapHC_ReducedAltForeground,#999));--sapUiScrollBarFaceColor:var(--sapScrollBar_FaceColor,var(--sapHC_ReducedAltForeground,#999));--sapUiScrollBarHoverFaceColor:var(--sapScrollBar_Hover_FaceColor,var(--sapHC_StandardForeground,#fff));--sapUiPageHeaderBorderColor:var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiTileBorderColor:var(--sapTile_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiFontHeaderFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiDesktopFontFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiListGroupHeaderBackground:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_daypicker_item_weekend_background_color:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_select_disabled_background:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_switch_track_disabled_checked_bg:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_switch_track_disabled_semantic_checked_bg:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_switch_handle_disabled_semantic_checked_bg:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_daypicker_dayname_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_daypicker_weekname_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_select_disabled_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_track_disabled_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_track_disabled_semantic_checked_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_track_disabled_semantic_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_checked_bg:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_semantic_checked_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_semantic_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--sapUiFieldPlaceholderTextColor:var(--sapUiHcReducedAltForeground,var(--sapHC_ReducedAltForeground,#999));--_ui5_switch_text_disabled_color:var(--sapUiHcReducedAltForeground,var(--sapHC_ReducedAltForeground,#999));--sapUiPageHeaderBackground:var(--sapPageHeader_Background,var(--sapBaseColor,var(--sapHC_StandardBackground,#000)));--sapUiObjectHeaderBackground:var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapHC_StandardBackground,#000)));--sapUiContentImagePlaceholderBackground:var(--sapContent_ImagePlaceholderBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiContentForegroundColor:var(--sapContent_ForegroundColor,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackground:var(--sapShell_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackgroundImage:var(--sapShell_BackgroundImage,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackgroundPatternColor:var(--sapShell_BackgroundPatternColor,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackgroundGradient:var(--sapShell_BackgroundGradient,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapButton_Emphasized_Background:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapButton_Reject_Background:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapButton_Accept_Background:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiButtonBackground:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_HelpBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Hover_Background:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Hover_HelpBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Focus_Background:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Focus_HelpBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_WarningBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_SuccessBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_InformationBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiFieldBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiGroupTitleBackground:var(--sapGroup_TitleBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiGroupContentBackground:var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiGroupFooterBackground:var(--sapGroup_FooterBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiToolbarBackground:var(--sapToolbar_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiListHeaderBackground:var(--sapList_HeaderBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiListBackground:var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiScrollBarTrackColor:var(--sapScrollBar_TrackColor,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiPageFooterBackground:var(--sapPageFooter_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiInfobarBackground:var(--sapInfobar_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiBlockLayerBackground:var(--sapBlockLayer_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiTileBackground:var(--sapTile_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapActiveColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapContent_SearchHighlightColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapContent_BadgeBackground:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapButton_Hover_Background:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapField_InvalidBackground:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapList_HighlightColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapList_Hover_Background:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiHighlight:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiShellHoverBackground:var(--sapUiBrand,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiShellActiveBackground:var(--sapUiBrand,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiTextTitle:var(--sapTitleColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentMarkerTextColor:var(--sapContent_MarkerTextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentLabelColor:var(--sapContent_LabelColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentContrastTextColor:var(--sapContent_ContrastTextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapShell_InteractiveTextColor:var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiShellTextColor:var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldTextColor:var(--sapField_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldRequiredColor:var(--sapField_RequiredColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiShellActiveTextColor:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiListTextColor:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_track_hover_border_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_text_on_semantic_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_text_off_semantic_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkActive:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkVisited:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkHover:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkInverted:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiNegativeElement:var(--sapNegativeElementColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e)));--sapUiNegativeText:var(--sapNegativeTextColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e)));--sapErrorBorderColor:var(--sapErrorColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e)));--sapUiCriticalElement:var(--sapCriticalElementColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d)));--sapUiCriticalText:var(--sapCriticalTextColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d)));--sapWarningBorderColor:var(--sapWarningColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d)));--sapUiPositiveElement:var(--sapPositiveElementColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9)));--sapUiPositiveText:var(--sapPositiveTextColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9)));--sapSuccessBorderColor:var(--sapSuccessColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9)));--sapUiInformativeElement:var(--sapInformativeElementColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100)));--sapUiInformativeText:var(--sapInformativeTextColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100)));--sapInformationBorderColor:var(--sapInformationColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100)));--sapUiNeutralElement:var(--sapNeutralElementColor,var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff)));--sapUiNeutralText:var(--sapNeutralTextColor,var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff)));--sapUiListSelectionBackgroundColor:var(--sapList_SelectionBackgroundColor,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--sapUiShellHoverToggleBackground:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--sapUiToggleButtonPressedBackground:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_checkbox_hover_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_radiobutton_hover_fill:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_positive_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_negative_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_critical_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_neutral_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--sapUiContentContrastIconColor:var(--sapContent_ContrastIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentNonInteractiveIconColor:var(--sapContent_NonInteractiveIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentMarkerIconColor:var(--sapContent_MarkerIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiScrollBarSymbolColor:var(--sapScrollBar_SymbolColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--ui5-busyindicator-color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_checkbox_checkmark_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_radiobutton_selected_fill:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_radiobutton_selected_warning_fill:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_radiobutton_selected_error_fill:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_tc_headerItemIcon_selected_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_tc_headerItemIcon_semantic_selected_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentContrastFocusColor:var(--sapContent_ContrastFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_button_positive_border_focus_hover_color:var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_button_focus_after_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_calendar_header_middle_button_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_card_header_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_checkbox_focus_outline:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_monthpicker_item_focus_after_border:2px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_panel_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_tc_headerItem_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_yearpicker_item_focus_after_border:2px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentContrastShadowColor:var(--sapContent_ContrastShadowColor,var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff)));--sapUiShadowLevel0:0 0 0 1px var(--sapUiContentShadowColor,var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff)));--sapUiDragAndDropActiveColor:var(--sapUiContentHelpColor,var(--sapContent_HelpColor,var(--sapHC_EnhancedForeground,#03b803)));--sapUiDragAndDropActiveBorderColor:var(--sapUiContentHelpColor,var(--sapContent_HelpColor,var(--sapHC_EnhancedForeground,#03b803)));--sapUiButtonHeaderDisabledTextColor:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,var(--sapHC_ReducedForeground,#666)));--_ui5_input_disabled_color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,var(--sapHC_ReducedForeground,#666)));--sapUiDragAndDropBorderColor:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_track_checked_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_handle_semantic_hover_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_handle_semantic_checked_hover_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonHoverBorderColor:var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonEmphasizedBorderColor:var(--sapButton_Emphasized_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonActiveBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonAcceptBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonRejectBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonLiteBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiToggleButtonPressedBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiSegmentedButtonBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiSegmentedButtonFooterBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_calendar_header_arrow_button_border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_messagestrip_close_button_border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_token_border_color:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldHoverBorderColor:var(--sapField_Hover_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldFocusBorderColor:var(--sapField_Focus_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldInvalidColor:var(--sapField_InvalidColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldWarningColor:var(--sapField_WarningColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldSuccessColor:var(--sapField_SuccessColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldInformationColor:var(--sapField_InformationColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldActiveBorderColor:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_checkbox_inner_border:solid .125rem var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldReadOnlyHelpBackground:var(--sapField_ReadOnly_HelpBackground,var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858)));--_ui5_input_disabled_background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858)));--_ui5_checkbox_inner_readonly_border:0.125rem solid var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_input_disabled_border_color:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--ui5-panel-bottom-border-color:var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiNotifierSeparator:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiNotificationBarBorder:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiPageFooterBorderColor:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiCalendarColorToday:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-1:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-2:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-3:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-4:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-5:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-6:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-7:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-8:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-9:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-10:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonActionSelectBorderColor:var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_daypicker_item_border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--ui5-listitem-border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_monthpicker_item_border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_yearpicker_item_border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--sapUiScrollBarBorderColor:var(--sapScrollBar_BorderColor,var(--sapScrollBar_FaceColor,var(--sapHC_ReducedAltForeground,#999)));--sapUiObjectHeaderBorderColor:var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_card_border_color:var(--sapUiTileBorderColor,var(--sapTile_BorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-group-header-listitem-background-color:var(--sapUiListGroupHeaderBackground,var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858)));--_ui5_tc_header_border_bottom:0.125rem solid var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapHC_StandardBackground,#000))));--sapUiShellContainerBackground:var(--sapUiShellBackground,var(--sapShell_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiShellAltContainerBackground:var(--sapUiShellBackground,var(--sapShell_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonEmphasizedBackground:var(--sapButton_Emphasized_Background,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonRejectBackground:var(--sapButton_Reject_Background,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonAcceptBackground:var(--sapButton_Accept_Background,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonLiteBackground:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiSegmentedButtonBackground:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_hover_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_hover_checked_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_border_color:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_disabled_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_disabled_semantic_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_handle_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_handle_disabled_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_handle_disabled_semantic_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldHelpBackground:var(--sapField_HelpBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldHoverBackground:var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldHoverHelpBackground:var(--sapField_Hover_HelpBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldFocusBackground:var(--sapField_Focus_Background,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldFocusHelpBackground:var(--sapField_Focus_HelpBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldWarningBackground:var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldSuccessBackground:var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldInformationBackground:var(--sapField_InformationBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiNotificationBarBG:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiDragAndDropBackground:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiDragAndDropActiveBackground:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-1:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-2:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-3:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-4:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-5:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-6:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-7:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-8:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-9:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-10:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-panel-background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonActionSelectBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiListFooterBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiListTableGroupHeaderBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_daypicker_item_othermonth_background_color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-listitem-background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiActive:var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiContentSearchHighlightColor:var(--sapContent_SearchHighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiContentBadgeBackground:var(--sapContent_BadgeBackground,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiButtonHoverBackground:var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiFieldInvalidBackground:var(--sapField_InvalidBackground,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiListHighlightColor:var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiListHoverBackground:var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_card_header_hover_bg:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_card_header_active_bg:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_weekend_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_othermonth_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_monthpicker_item_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_yearpicker_item_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_othermonth_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--_ui5_daypicker_item_othermonth_hover_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiFieldActiveTextColor:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiShellInteractiveTextColor:var(--sapShell_InteractiveTextColor,var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiShellGroupTextColor:var(--sapUiShellTextColor,var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiErrorBorder:var(--sapErrorBorderColor,var(--sapErrorColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e))));--sapUiWarningBorder:var(--sapWarningBorderColor,var(--sapWarningColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d))));--sapUiSuccessBorder:var(--sapSuccessBorderColor,var(--sapSuccessColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9))));--sapUiInformationBorder:var(--sapInformationBorderColor,var(--sapInformationColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100))));--sapUiSegmentedButtonSelectedBackground:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94))));--_ui5_switch_handle_checked_bg:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94))));--_ui5_switch_track_checked_bg:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94))));--sapUiDragAndDropColor:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonEmphasizedHoverBorderColor:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonLiteHoverBorderColor:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiToggleButtonPressedHoverBorderColor:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_token_hover_border_color:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_button_emphasized_focused_border_color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonEmphasizedActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonAcceptActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonRejectActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonLiteActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonAcceptHoverBorderColor:var(--sapUiButtonAcceptBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_button_positive_border_color:var(--sapUiButtonAcceptBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonRejectHoverBorderColor:var(--sapUiButtonRejectBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_switch_handle_checked_border_color:var(--sapUiToggleButtonPressedBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_select_hover_icon_left_border:0.0625rem solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_select_rtl_hover_icon_right_border:0.0625rem solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_checkbox_inner_error_border:0.125rem dashed var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_checkbox_inner_warning_border:0.125rem dashed var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_checkbox_checkmark_warning_color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiShadowHeader:inset 0 -0.125rem var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_header_box_shadow:inset 0 -0.25rem 0 -0.125rem var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_content_border_bottom:0.125rem solid var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItemContent_border_bottom:0.25rem solid var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_positive_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_negative_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_critical_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_neutral_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItemIcon_border:1px solid var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItemIcon_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_card_header_border_color:var(--_ui5_card_border_color,var(--sapUiTileBorderColor,var(--sapTile_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiFieldActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonEmphasizedHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonAcceptHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonRejectHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonLiteHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiToggleButtonPressedHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiSegmentedButtonHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiSegmentedButtonFooterHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--_ui5_switch_handle_hover_bg:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--_ui5_switch_handle_semantic_hover_bg:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--_ui5_switch_handle_semantic_checked_hover_bg:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiListActiveBackground:var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonLiteActionSelectHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiListSelectionHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiInfobarHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiSegmentedButtonSelectedHoverBorderColor:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)))));--_ui5_button_positive_border_hover_color:var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)))));--sapUiButtonEmphasizedActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonAcceptActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonRejectActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonLiteActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiSegmentedButtonActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonFooterHoverBackground:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiSegmentedButtonSelectedHoverBackground:var(--sapUiToggleButtonPressedHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--_ui5_switch_handle_checked_hover_bg:var(--sapUiToggleButtonPressedHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiInfobarActiveBackground:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapBackgroundColorFade72:rgba(0,0,0,0.72);--sapUiAccent1Lighten50:#fff;--sapUiAccent2Lighten40:#fff;--sapUiAccent3Lighten46:#fff;--sapUiAccent4Lighten46:#fff;--sapUiAccent5Lighten32:#fff;--sapUiAccent6Lighten52:#fff;--sapUiAccent7Lighten64:#fff;--sapUiAccent8Lighten61:#fff;--sapUiAccent9Lighten37:#fff;--sapUiAccent10Lighten49:#fff;--sapUiLinkDarken15:#d9d9d9;--sapUiErrorBGLighten4:#0a0a0a;--sapUiSuccessBGLighten5:#0d0d0d;--sapUiSelectedDarken10:#0a4066;--sapUiShellBorderColorLighten30:#fff;--sapUiListTableGroupHeaderBorderColor:#fff;--sapUiListTableFooterBorder:#fff;--sapUiListTableFixedBorder:#fff;--sapUiListVerticalBorderColor:#fff;--sapUiListBorderColorLighten10:#b3b3b3;--sapUiContentForegroundColorLighten5:#0d0d0d;--sapUiContentForegroundColorLighten7:#121212;--sapUiContentForegroundColorDarken3:#000;--sapUiContentForegroundColorDarken5:#000;--sapUiContentForegroundColorDarken10:#000;--sapUiButtonBackgroundDarken7:#000;--sapUiButtonBackgroundDarken2:#000;--sapUiButtonBackgroundDarken10:#000;--sapUiListBackgroundDarken3:#000;--sapUiListBackgroundDarken10:#000;--sapUiListBackgroundDarken13:#000;--sapUiListBackgroundDarken15:#000;--sapUiListBackgroundDarken20:#000;--sapUiTileBackgroundDarken20:#000;--_ui5_link_subtle_color:var(--sapUiLinkDarken15,#d9d9d9);--_ui5_daypicker_item_selected_background_color:var(--sapUiSelectedDarken10,#0a4066);--_ui5_daypicker_item_selected_hover_background_color:var(--sapUiSelectedDarken10,#0a4066);--_ui5_monthpicker_item_selected_hover:var(--sapUiSelectedDarken10,#0a4066);--_ui5_monthpicker_item_selected_focus:var(--sapUiSelectedDarken10,#0a4066);--_ui5_yearpicker_item_selected_focus:var(--sapUiSelectedDarken10,#0a4066);--sapUiContentContrastShadowColorFade50:hsla(0,0%,100%,0.5);--sapUiContentContrastShadowColorFade60:hsla(0,0%,100%,0.6);--sapUiContentContrastShadowColorFade80:hsla(0,0%,100%,0.8);--sapUiFieldWarningColorDarken100:#000;--_ui5_daypicker_item_now_selected_text_border_color:var(--sapUiListBorderColorLighten10,#b3b3b3);--_ui5_daypicker_item_background_color:var(--sapUiContentForegroundColorLighten5,#0d0d0d);--_ui5_monthpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#121212);--_ui5_yearpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#121212);--_ui5_monthpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#000);--_ui5_yearpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#000);--sapUiActiveLighten3:#895b00;--sapUiButtonHoverBackgroundDarken2:#704a00;--sapUiButtonHoverBackgroundDarken5:#614000;--sapUiButtonAcceptActiveBackgroundDarken5:#614000;--sapUiButtonAcceptActiveBackgroundLighten5:#946200;--sapUiButtonRejectActiveBackgroundDarken5:#614000;--sapUiButtonRejectActiveBackgroundLighten5:#946200;--_ui5_toggle_button_pressed_positive_hover:var(--sapUiButtonAcceptActiveBackgroundDarken5,#614000);--_ui5_toggle_button_pressed_negative_hover:var(--sapUiButtonRejectActiveBackgroundDarken5,#614000);--sapUiToggleButtonPressedBackgroundLighten50Desaturate47:#c1d4e1;--sapUiToggleButtonPressedBorderColorLighten19Desaturate46:#fff;--sapUiShadowLevel1:0 0 1rem 0 hsla(0,0%,100%,0.5),0 0 0 2px #fff;--sapUiShadowLevel2:0 0.25rem 2rem 0 hsla(0,0%,100%,0.6),0 0 0 2px #fff;--sapUiShadowLevel3:0 0.625rem 4rem 0 hsla(0,0%,100%,0.8),0 0 0 2px #fff;--sapUiCalloutShadow:var(--sapUiShadowLevel2,0 0.25rem 2rem 0 hsla(0,0%,100%,0.6),0 0 0 2px #fff);--sapGroup_TitleTextColor:#fff;--sapPageHeader_TextColor:#fff;--sapContent_ForegroundTextColor:#fff;--sapButton_TextColor:#fff;--sapList_HeaderTextColor:#fff;--sapPageFooter_TextColor:#fff;--sapTile_TextColor:#fff;--sapTile_IconColor:#fff;--sapHighlightTextColor:#fff;--sapUiGroupTitleTextColor:var(--sapGroup_TitleTextColor,#fff);--sapUiPageHeaderTextColor:var(--sapPageHeader_TextColor,#fff);--sapUiContentForegroundTextColor:var(--sapContent_ForegroundTextColor,#fff);--sapUiButtonIconColor:#fff;--sapUiButtonTextColor:var(--sapButton_TextColor,#fff);--sapUiListHeaderTextColor:var(--sapList_HeaderTextColor,#fff);--sapUiPageFooterTextColor:var(--sapPageFooter_TextColor,#fff);--sapUiTileTextColor:var(--sapTile_TextColor,#fff);--sapUiTileIconColor:var(--sapTile_IconColor,#fff);--sapUiHighlightTextColor:var(--sapHighlightTextColor,#fff);--_ui5_tc_headerItem_color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#fff));--_ui5_tc_overflowItem_default_color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#fff));--sapUiSegmentedButtonIconColor:#fff;--sapUiButtonHeaderTextColor:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#fff));--sapUiListTableGroupHeaderTextColor:#fff;--sapUiListFooterTextColor:var(--sapUiPageFooterTextColor,var(--sapPageFooter_TextColor,#fff));--sapUiSegmentedButtonSelectedIconColor:#fff;--sapUiListActiveTextColor:#fff;--sapUiSegmentedButtonActiveIconColor:#fff;--sapButton_Emphasized_TextColor:#fff;--sapButton_Hover_TextColor:#fff;--sapTile_TitleTextColor:#fff;--sapUiButtonFooterTextColor:#fff;--sapUiToggleButtonPressedTextColor:#fff;--sapUiButtonRejectTextColor:#fff;--sapUiButtonAcceptTextColor:#fff;--sapUiButtonLiteTextColor:#fff;--sapUiSegmentedButtonTextColor:#fff;--sapUiButtonActiveTextColor:#fff;--sapUiButtonEmphasizedTextColor:var(--sapButton_Emphasized_TextColor,#fff);--sapUiButtonHoverTextColor:var(--sapButton_Hover_TextColor,#fff);--sapUiTileTitleTextColor:var(--sapTile_TitleTextColor,#fff);--sapUiSegmentedButtonSelectedTextColor:var(--sapUiToggleButtonPressedTextColor,#fff);--sapUiSegmentedButtonActiveTextColor:#fff}";
+
+  registerThemeProperties("@ui5/webcomponents", "sap_belize", belizeThemeProperties);
+  registerThemeProperties("@ui5/webcomponents", "sap_belize_hcb", belizeHcbThemeProperties);
+
   var jQuery = {};
   var inject = function inject(jQueryNew) {
     jQuery = jQueryNew;
@@ -4055,13 +4062,6 @@
   window.jQuery = window.jQuery || jQuery$1;
   inject(jQuery$1);
   /* eslint-enable */
-
-  var belizeThemeProperties = ":root{--sapPrimary1:#3f5161;--sapPrimary2:#427cac;--sapPrimary3:#eff4f9;--sapPrimary4:#fff;--sapPrimary5:#fafafa;--sapPrimary6:#bfbfbf;--sapPrimary7:#333;--sapAccentColor1:#e09d00;--sapAccentColor2:#e6600d;--sapAccentColor3:#c14646;--sapAccentColor4:#ab218e;--sapAccentColor5:#678bc7;--sapAccentColor6:#0092d1;--sapAccentColor7:#1a9898;--sapAccentColor8:#759421;--sapAccentColor9:#925ace;--sapAccentColor10:#647987;--sapShellColor:transparent;--sapShell_BorderColor:transparent;--sapFontFamily:\"72\",\"72full\",Arial,Helvetica,sans-serif;--sapFontSize:calc(0.875*var(--sapContent_GridSize));--sapLinkColor:#0070b1;--sapCompanyLogo:none;--sapBackgroundImage:none;--sapBackgroundImageOpacity:1.0;--sapBackgroundImageRepeat:false;--sapContent_GridSize:1rem;--sapNegativeColor:#b00;--sapCriticalColor:#e78c07;--sapPositiveColor:#2b7c2b;--sapInformativeColor:#427cac;--sapNeutralColor:#5e696e;--sapIndicationColor_1:#800;--sapIndicationColor_2:#b00;--sapIndicationColor_3:#e78c07;--sapIndicationColor_4:#2b7c2b;--sapIndicationColor_5:#427cac;--sapElement_LineHeight:calc(3*var(--sapContent_GridSize, 1rem));--sapElement_Height:calc(2.5*var(--sapContent_GridSize, 1rem));--sapElement_BorderWidth:calc(0.0625*var(--sapContent_GridSize, 1rem));--sapContent_LineHeight:1.4;--sapContent_ElementHeight:1.37em;--sapContent_ElementHeight_PX:22px;--sapContent_ContrastTextColor:#fff;--sapContent_FocusColor:#000;--sapContent_ContrastFocusColor:#fff;--sapContent_ShadowColor:#000;--sapContent_ContrastShadowColor:#fff;--sapContent_SearchHighlightColor:#d4f7db;--sapContent_HelpColor:#3f8600;--sapContent_MonospaceFontFamily:lucida console,monospace;--sapContent_DisabledOpacity:0.5;--sapContent_ContrastTextThreshold:0.65;--sapButton_BorderCornerRadius:calc(0.2*var(--sapContent_GridSize, 1rem));--sapField_TextColor:#000;--sapField_BorderCornerRadius:0;--sapGroup_TitleBackground:transparent;--sapGroup_BorderCornerRadius:0;--sapGroup_FooterBackground:transparent;--sapToolbar_Background:transparent;--sapScrollBar_Dimension:calc(0.7*var(--sapContent_GridSize, 1rem));--sapBlockLayer_Background:#000;--sapTile_BorderColor:transparent;--sapUiFontCondensedFamily:\"Arial Narrow\",HelveticaNeue-CondensedBold,Arial,sans-serif;--sapUiFontHeaderWeight:normal;--sapMFontHeader1Size:1.625rem;--sapMFontHeader2Size:1.375rem;--sapMFontHeader3Size:1.250rem;--sapMFontHeader4Size:1.125rem;--sapMFontHeader5Size:1rem;--sapMFontHeader6Size:0.875rem;--sapMFontSmallSize:0.75rem;--sapMFontMediumSize:0.875rem;--sapMFontLargeSize:1rem;--sapUiTranslucentBGOpacity:0;--sapMPlatformDependent:false;--sapUiDesktopFontSize:12px;--sapUiFontLargeSize:13px;--sapUiFontSmallSize:11px;--sapUiFontHeader1Size:26px;--sapUiFontHeader2Size:20px;--sapUiFontHeader3Size:18px;--sapUiFontHeader4Size:16px;--sapUiFontHeader5Size:14px;--sapUiLineHeight:18px;--sapUiNotifierSeparatorWidth:1px;--sapUiButtonLiteBackground:transparent;--sapUiButtonLiteBorderColor:transparent;--sapUiListTableTextSize:0.875rem;--sapUiListTableIconSize:1rem;--_ui5_button_base_min_width:2.5rem;--_ui5_button_base_min_compact_width:2rem;--_ui5_button_base_height:2.5rem;--_ui5_button_compact_height:1.625rem;--_ui5_button_border_radius:0.2rem;--_ui5_button_base_padding:0 0.6875rem 0 0.6875rem;--_ui5_button_compact_padding:0 0.4375rem;--_ui5_button_base_icon_only_padding:0 0.5625rem;--_ui5_button_base_icon_margin:0.563rem;--_ui5_button_base_icon_only_font_size:1.375rem;--_ui5_button_focus_after_bottom:1px;--_ui5_button_focus_after_right:1px;--_ui5_button_focus_after_left:1px;--_ui5_button_focus_after_top:1px;--_ui5_button_emphasized_font_weight:normal;--_ui5_popover_arrow_shadow_color:rgba(0,0,0,0.3);--_ui5_popover_content_padding:.4375em;--_ui5_datepicker_icon_border:none;--_ui5_daypicker_item_margin:2px;--_ui5_daypicker_item_border:none;--_ui5_daypicker_item_outline_width:1px;--_ui5_daypicker_item_outline_offset:1px;--_ui5_daypicker_daynames_container_height:2rem;--_ui5_daypicker_weeknumbers_container_padding_top:2rem;--_ui5_daypicker_item_border_radius:0;--_ui5_daypicker_item_now_inner_border_radius:0;--_ui5_daypicker_item_now_selected_focus_after_width:calc(100% - 0.125rem);--_ui5_daypicker_item_now_selected_focus_after_height:calc(100% - 0.125rem);--_ui5_calendar_header_arrow_button_border:none;--_ui5_calendar_header_arrow_button_border_radius:0.25rem;--_ui5_calendar_header_middle_button_width:2.5rem;--_ui5_calendar_header_middle_button_flex:1;--_ui5_calendar_header_middle_button_focus_border_radius:0.25rem;--_ui5_calendar_header_middle_button_focus_border:none;--_ui5_calendar_header_middle_button_focus_after_display:block;--_ui5_calendar_header_middle_button_focus_after_width:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_height:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_top_offset:1px;--_ui5_calendar_header_middle_button_focus_after_left_offset:1px;--_ui5_card_content_padding:1rem;--_ui5_card_header_active_bg:#f0f0f0;--_ui5_card_header_hover_bg:#fafafa;--_ui5_checkbox_wrapper_padding:.8125rem;--_ui5_checkbox_width_height:3rem;--_ui5_checkbox_inner_width_height:1.375rem;--_ui5_checkbox_inner_border_radius:0;--_ui5_checkbox_wrapped_focus_padding:.375rem;--_ui5_checkbox_wrapped_content_margin_top:.125rem;--_ui5_checkbox_wrapped_focus_left_top_bottom_position:.5625rem;--_ui5_checkbox_focus_position:.6875rem;--_ui5_checkbox_compact_wrapper_padding:.5rem;--_ui5_checkbox_compact_width_height:2rem;--_ui5_checkbox_compact_inner_size:1rem;--_ui5_checkbox_compact_focus_position:.375rem;--_ui5_checkbox_compact_wrapped_label_margin_top:-1px;--_ui5_input_height:2.5rem;--_ui5_input_compact_height:1.625rem;--_ui5_input_wrapper_border_radius:0;--_ui5_input_state_border_width:0.125rem;--_ui5_input_error_font_weight:normal;--_ui5_input_focus_border_width:1px;--_ui5_input_error_warning_border_style:solid;--_ui5_input_error_warning_font_style:normal;--_ui5_input_disabled_font_weight:normal;--sap_wc_input_disabled_opacity:0.5;--sap_wc_input_icon_min_width:2.375rem;--sap_wc_input_compact_min_width:2rem;--_ui5_link_opacity:0.5;--_ui5_link_outline_element_size:calc(100% - 0.125rem);--_ui5_listitembase_focus_width:1px;--_ui5_messagestrip_icon_width:2.5rem;--_ui5_messagestrip_border_radius:0.1875rem;--_ui5_messagestrip_button_border_width:0;--_ui5_messagestrip_button_border_style:none;--_ui5_messagestrip_button_border_color:transparent;--_ui5_messagestrip_button_border_radius:0;--_ui5_messagestrip_padding:0.125rem .125rem;--_ui5_messagestrip_button_height:1.625rem;--_ui5_messagestrip_border_width:1px;--_ui5_messagestrip_close_button_border:none;--_ui5_messagestrip_close_button_size:1.625rem;--_ui5_messagestrip_icon_top:0.4375rem;--_ui5_messagestrip_focus_width:1px;--_ui5_monthpicker_item_border_radius:0;--_ui5_monthpicker_item_border:none;--_ui5_monthpicker_item_margin:1px;--_ui5_monthpicker_item_focus_after_width:calc(100% - 0.375rem);--_ui5_monthpicker_item_focus_after_height:calc(100% - 0.375rem);--_ui5_monthpicker_item_focus_after_offset:2px;--_ui5_radiobutton_border_width:1px;--_ui5_radiobutton_warning_error_border_dash:0;--_ui5_select_state_error_warning_border_style:solid;--_ui5_select_state_error_warning_border_width:0.125rem;--_ui5_select_hover_icon_left_border:none;--_ui5_select_rtl_hover_icon_left_border:none;--_ui5_select_rtl_hover_icon_right_border:none;--_ui5_select_focus_width:1px;--_ui5_switch_height:2.75rem;--_ui5_switch_width:3.875rem;--_ui5_switch_no_label_width:3.25rem;--_ui5_switch_outline:1px;--_ui5_switch_compact_height:2rem;--_ui5_switch_compact_width:3.5rem;--_ui5_switch_compact_no_label_width:2.5rem;--_ui5_switch_track_height:1.375rem;--_ui5_switch_track_no_label_height:1.25rem;--_ui5_switch_track_compact_no_label_height:1rem;--_ui5_switch_track_border_radius:0.75rem;--_ui5_switch_handle_width:2rem;--_ui5_switch_handle_height:2rem;--_ui5_switch_handle_border_width:1px;--_ui5_switch_handle_border_radius:1rem;--_ui5_switch_handle_compact_width:1.625rem;--_ui5_switch_handle_compact_height:1.625rem;--_ui5_tc_headerItemSemanticIcon_display:none;--_ui5_textarea_focus_after_width:1px;--_ui5_textarea_warning_border_style:solid;--_ui5_textarea_warning_border_width:2px;--_ui5_TimelineItem_arrow_size:1.625rem;--_ui5_TimelineItem_bubble_outline_width:0.0625rem;--_ui5_TimelineItem_bubble_outline_top:-0.125rem;--_ui5_TimelineItem_bubble_outline_right:-0.125rem;--_ui5_TimelineItem_bubble_outline_bottom:-0.125rem;--_ui5_TimelineItem_bubble_outline_left:-0.625rem;--_ui5_TimelineItem_bubble_rtl_left_offset:-0.125rem;--_ui5_TimelineItem_bubble_rtl_right_offset:-0.625rem;--_ui5_yearpicker_item_border:none;--_ui5_yearpicker_item_border_radius:0;--_ui5_yearpicker_item_margin:1px;--_ui5_yearpicker_item_focus_after_width:calc(100% - 0.375rem);--_ui5_yearpicker_item_focus_after_height:calc(100% - 0.375rem);--_ui5_yearpicker_item_focus_after_offset:2px;--_ui5_token_border_radius:0.125rem;--sapBrandColor:var(--sapPrimary2,#427cac);--sapBaseColor:var(--sapPrimary3,#eff4f9);--sapBackgroundColorDefault:var(--sapPrimary5,#fafafa);--sapBackgroundColor:var(--sapPrimary5,#fafafa);--sapTextColor:var(--sapPrimary7,#333);--sapNegativeElementColor:var(--sapNegativeColor,#b00);--sapNegativeTextColor:var(--sapNegativeColor,#b00);--sapCriticalElementColor:var(--sapCriticalColor,#e78c07);--sapCriticalTextColor:var(--sapCriticalColor,#e78c07);--sapPositiveElementColor:var(--sapPositiveColor,#2b7c2b);--sapPositiveTextColor:var(--sapPositiveColor,#2b7c2b);--sapInformationBorderColor:var(--sapInformativeColor,#427cac);--sapInformativeElementColor:var(--sapInformativeColor,#427cac);--sapInformativeTextColor:var(--sapInformativeColor,#427cac);--sapNeutralBorderColor:var(--sapNeutralColor,#5e696e);--sapNeutralElementColor:var(--sapNeutralColor,#5e696e);--sapNeutralTextColor:var(--sapNeutralColor,#5e696e);--sapInformationColor:var(--sapInformativeColor,#427cac);--sapContent_IconHeight:var(--sapContent_GridSize,1rem);--sapContent_ContrastIconColor:var(--sapContent_ContrastTextColor,#fff);--sapContent_MarkerIconColor:var(--sapAccentColor5,#678bc7);--sapContent_ForegroundBorderColor:var(--sapPrimary6,#bfbfbf);--sapContent_BadgeBackground:var(--sapAccentColor3,#c14646);--sapButton_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapField_Background:var(--sapPrimary4,#fff);--sapField_BorderColor:var(--sapPrimary6,#bfbfbf);--sapField_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapField_RequiredColor:var(--sapAccentColor3,#c14646);--sapGroup_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapList_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapList_Background:var(--sapPrimary4,#fff);--sapPageFooter_Background:var(--sapPrimary4,#fff);--sapTile_Background:var(--sapPrimary4,#fff);--sapUiShellColor:var(--sapShellColor,transparent);--sapUiFontFamily:var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif);--sapUiFontSize:var(--sapFontSize,calc(0.875*var(--sapContent_GridSize)));--sapUiLink:var(--sapLinkColor,#0070b1);--sapUiGlobalLogo:var(--sapCompanyLogo,none);--sapUiGlobalBackgroundImage:var(--sapBackgroundImage,none);--sapUiBackgroundImage:var(--sapBackgroundImage,none);--sapUiGlobalBackgroundImageOpacity:var(--sapBackgroundImageOpacity,1.0);--sapUiGlobalBackgroundRepeat:var(--sapBackgroundImageRepeat,false);--sapUiElementLineHeight:var(--sapElement_LineHeight,calc(3*var(--sapContent_GridSize, 1rem)));--sapUiElementHeight:var(--sapElement_Height,calc(2.5*var(--sapContent_GridSize, 1rem)));--sapUiElementBorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapUiContentLineHeight:var(--sapContent_LineHeight,1.4);--sapUiContentElementHeight:var(--sapContent_ElementHeight,1.37em);--sapUiContentElementHeightPX:var(--sapContent_ElementHeight_PX,22px);--sapUiContentFocusColor:var(--sapContent_FocusColor,#000);--sapUiContentContrastFocusColor:var(--sapContent_ContrastFocusColor,#fff);--sapUiContentShadowColor:var(--sapContent_ShadowColor,#000);--sapUiContentContrastShadowColor:var(--sapContent_ContrastShadowColor,#fff);--sapUiContentSearchHighlightColor:var(--sapContent_SearchHighlightColor,#d4f7db);--sapUiContentHelpColor:var(--sapContent_HelpColor,#3f8600);--sapUiContentDisabledOpacity:var(--sapContent_DisabledOpacity,0.5);--sapUiContentContrastTextThreshold:var(--sapContent_ContrastTextThreshold,0.65);--sapUiContentContrastTextColor:var(--sapContent_ContrastTextColor,#fff);--sapUiShellBorderColor:var(--sapShell_BorderColor,transparent);--sapUiButtonBorderCornerRadius:var(--sapButton_BorderCornerRadius,calc(0.2*var(--sapContent_GridSize, 1rem)));--sapUiFieldBorderCornerRadius:var(--sapField_BorderCornerRadius,0);--sapUiFieldTextColor:var(--sapField_TextColor,#000);--sapUiGroupTitleBackground:var(--sapGroup_TitleBackground,transparent);--sapUiGroupFooterBackground:var(--sapGroup_FooterBackground,transparent);--sapUiToolbarBackground:var(--sapToolbar_Background,transparent);--sapUiScrollBarDimension:var(--sapScrollBar_Dimension,calc(0.7*var(--sapContent_GridSize, 1rem)));--sapUiBlockLayerBackground:var(--sapBlockLayer_Background,#000);--sapUiTileBorderColor:var(--sapTile_BorderColor,transparent);--sapUiContentGridSize:var(--sapContent_GridSize,1rem);--sapUiPrimary1:var(--sapPrimary1,#3f5161);--sapUiPrimary2:var(--sapPrimary2,#427cac);--sapUiPrimary3:var(--sapPrimary3,#eff4f9);--sapUiPrimary4:var(--sapPrimary4,#fff);--sapUiPrimary5:var(--sapPrimary5,#fafafa);--sapUiPrimary6:var(--sapPrimary6,#bfbfbf);--sapUiPrimary7:var(--sapPrimary7,#333);--sapUiAccent1:var(--sapAccentColor1,#e09d00);--sapUiAccent2:var(--sapAccentColor2,#e6600d);--sapUiAccent3:var(--sapAccentColor3,#c14646);--sapUiAccent4:var(--sapAccentColor4,#ab218e);--sapUiAccent5:var(--sapAccentColor5,#678bc7);--sapUiAccent6:var(--sapAccentColor6,#0092d1);--sapUiAccent7:var(--sapAccentColor7,#1a9898);--sapUiAccent8:var(--sapAccentColor8,#759421);--sapUiAccent9:var(--sapAccentColor9,#925ace);--sapUiAccent10:var(--sapAccentColor10,#647987);--sapUiNeutralBorder:var(--sapNeutralColor,#5e696e);--sapUiNegative:var(--sapNegativeColor,#b00);--sapUiCritical:var(--sapCriticalColor,#e78c07);--sapUiPositive:var(--sapPositiveColor,#2b7c2b);--sapUiInformative:var(--sapInformativeColor,#427cac);--sapUiNeutral:var(--sapNeutralColor,#5e696e);--sapUiIndication1:var(--sapIndicationColor_1,#800);--sapUiIndication2:var(--sapIndicationColor_2,#b00);--sapUiIndication3:var(--sapIndicationColor_3,#e78c07);--sapUiIndication4:var(--sapIndicationColor_4,#2b7c2b);--sapUiIndication5:var(--sapIndicationColor_5,#427cac);--sapUiFontHeader6Size:var(--sapUiFontLargeSize,13px);--sapGroup_Title_FontSize:var(--sapFontSize,calc(0.875*var(--sapContent_GridSize)));--sapHighlightColor:var(--sapBrandColor,var(--sapPrimary2,#427cac));--sapUiBrand:var(--sapBrandColor,var(--sapPrimary2,#427cac));--sapPageHeader_Background:var(--sapBaseColor,var(--sapPrimary3,#eff4f9));--sapObjectHeader_Background:var(--sapBaseColor,var(--sapPrimary3,#eff4f9));--sapUiBaseColor:var(--sapBaseColor,var(--sapPrimary3,#eff4f9));--sapUiBaseBG:var(--sapBackgroundColor,var(--sapPrimary5,#fafafa));--sapUiGlobalBackgroundColor:var(--sapBackgroundColor,var(--sapPrimary5,#fafafa));--sapTitleColor:var(--sapTextColor,var(--sapPrimary7,#333));--sapUiBaseText:var(--sapTextColor,var(--sapPrimary7,#333));--sapUiNegativeElement:var(--sapNegativeElementColor,var(--sapNegativeColor,#b00));--sapUiNegativeText:var(--sapNegativeTextColor,var(--sapNegativeColor,#b00));--sapUiCriticalElement:var(--sapCriticalElementColor,var(--sapCriticalColor,#e78c07));--sapUiCriticalText:var(--sapCriticalTextColor,var(--sapCriticalColor,#e78c07));--sapUiPositiveElement:var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b));--sapUiPositiveText:var(--sapPositiveTextColor,var(--sapPositiveColor,#2b7c2b));--sapUiInformationBorder:var(--sapInformationBorderColor,var(--sapInformativeColor,#427cac));--sapUiInformativeElement:var(--sapInformativeElementColor,var(--sapInformativeColor,#427cac));--sapUiInformativeText:var(--sapInformativeTextColor,var(--sapInformativeColor,#427cac));--sapUiNeutralElement:var(--sapNeutralElementColor,var(--sapNeutralColor,#5e696e));--sapUiNeutralText:var(--sapNeutralTextColor,var(--sapNeutralColor,#5e696e));--sapField_InformationColor:var(--sapInformationColor,var(--sapInformativeColor,#427cac));--sapUiContentIconHeight:var(--sapContent_IconHeight,var(--sapContent_GridSize,1rem));--sapUiContentContrastIconColor:var(--sapContent_ContrastIconColor,var(--sapContent_ContrastTextColor,#fff));--sapUiContentMarkerIconColor:var(--sapContent_MarkerIconColor,var(--sapAccentColor5,#678bc7));--sapUiContentForegroundBorderColor:var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf));--sapUiContentBadgeBackground:var(--sapContent_BadgeBackground,var(--sapAccentColor3,#c14646));--sapUiButtonBorderWidth:var(--sapButton_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapField_HelpBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_Hover_Background:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_Focus_Background:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_InvalidBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_WarningBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_SuccessBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_InformationBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapUiFieldBackground:var(--sapField_Background,var(--sapPrimary4,#fff));--sapField_Focus_BorderColor:var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf));--sapUiFieldBorderColor:var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf));--sapUiFieldBorderWidth:var(--sapField_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiFieldRequiredColor:var(--sapField_RequiredColor,var(--sapAccentColor3,#c14646));--sapUiGroupBorderWidth:var(--sapGroup_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiListBorderWidth:var(--sapList_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiListBackground:var(--sapList_Background,var(--sapPrimary4,#fff));--sapUiPageFooterBackground:var(--sapPageFooter_Background,var(--sapPrimary4,#fff));--sapUiTileBackground:var(--sapTile_Background,var(--sapPrimary4,#fff));--sapUiFontHeaderFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiDesktopFontFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiLinkActive:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiLinkVisited:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiLinkHover:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiDragAndDropActiveColor:var(--sapUiLink,var(--sapLinkColor,#0070b1));--sapUiDragAndDropActiveBorderColor:var(--sapUiLink,var(--sapLinkColor,#0070b1));--_ui5_button_focus_after_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_button_positive_border_focus_hover_color:var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_card_header_focus_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_checkbox_focus_outline:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_monthpicker_item_focus_after_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_panel_focus_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_tc_headerItem_focus_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--_ui5_yearpicker_item_focus_after_border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));--sapUiFieldActiveTextColor:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff));--ui5-badge-border-color-scheme-1:var(--sapUiAccent1,var(--sapAccentColor1,#e09d00));--ui5-badge-border-color-scheme-2:var(--sapUiAccent2,var(--sapAccentColor2,#e6600d));--ui5-badge-border-color-scheme-3:var(--sapUiAccent3,var(--sapAccentColor3,#c14646));--sapUiCalendarColorToday:var(--sapUiAccent4,var(--sapAccentColor4,#ab218e));--ui5-badge-border-color-scheme-4:var(--sapUiAccent4,var(--sapAccentColor4,#ab218e));--ui5-badge-border-color-scheme-5:var(--sapUiAccent5,var(--sapAccentColor5,#678bc7));--ui5-badge-border-color-scheme-6:var(--sapUiAccent6,var(--sapAccentColor6,#0092d1));--ui5-busyindicator-color:var(--sapUiAccent6,var(--sapAccentColor6,#0092d1));--ui5-badge-border-color-scheme-7:var(--sapUiAccent7,var(--sapAccentColor7,#1a9898));--ui5-badge-border-color-scheme-8:var(--sapUiAccent8,var(--sapAccentColor8,#759421));--ui5-badge-border-color-scheme-9:var(--sapUiAccent9,var(--sapAccentColor9,#925ace));--ui5-badge-border-color-scheme-10:var(--sapUiAccent10,var(--sapAccentColor10,#647987));--_ui5_tc_headerItem_negative_selected_border_color:var(--sapUiNegative,var(--sapNegativeColor,#b00));--_ui5_tc_headerItemIcon_negative_selected_background:var(--sapUiNegative,var(--sapNegativeColor,#b00));--_ui5_tc_headerItem_critical_selected_border_color:var(--sapUiCritical,var(--sapCriticalColor,#e78c07));--_ui5_tc_headerItemIcon_critical_selected_background:var(--sapUiCritical,var(--sapCriticalColor,#e78c07));--_ui5_tc_headerItem_positive_selected_border_color:var(--sapUiPositive,var(--sapPositiveColor,#2b7c2b));--_ui5_tc_headerItemIcon_positive_selected_background:var(--sapUiPositive,var(--sapPositiveColor,#2b7c2b));--_ui5_tc_headerItem_neutral_selected_border_color:var(--sapUiNeutral,var(--sapNeutralColor,#5e696e));--_ui5_tc_headerItemIcon_neutral_selected_background:var(--sapUiNeutral,var(--sapNeutralColor,#5e696e));--sapSelectedColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapActiveColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapField_Hover_BorderColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapField_Hover_HelpBackground:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapList_HighlightColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapUiHighlight:var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)));--sapUiPageHeaderBackground:var(--sapPageHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#eff4f9)));--sapUiObjectHeaderBackground:var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#eff4f9)));--sapUiTextTitle:var(--sapTitleColor,var(--sapTextColor,var(--sapPrimary7,#333)));--sapUiListTextColor:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary7,#333)));--_ui5_switch_text_disabled_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary7,#333)));--sapUiButtonRejectBorderColor:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)));--sapUiButtonRejectActiveBackground:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)));--_ui5_switch_text_off_semantic_color:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)));--sapUiButtonAcceptBorderColor:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)));--sapUiButtonAcceptActiveBackground:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)));--_ui5_switch_text_on_semantic_color:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)));--sapUiFieldInformationColor:var(--sapField_InformationColor,var(--sapInformationColor,var(--sapInformativeColor,#427cac)));--sapUiDragAndDropBorderColor:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_switch_track_disabled_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_switch_handle_disabled_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary6,#bfbfbf)));--sapUiFieldHelpBackground:var(--sapField_HelpBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldHoverBackground:var(--sapField_Hover_Background,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapField_Focus_HelpBackground:var(--sapField_Focus_Background,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldFocusBackground:var(--sapField_Focus_Background,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldInvalidBackground:var(--sapField_InvalidBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldWarningBackground:var(--sapField_WarningBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldSuccessBackground:var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldInformationBackground:var(--sapField_InformationBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--_ui5_input_disabled_background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--_ui5_select_disabled_background:var(--sapUiFieldBackground,var(--sapField_Background,var(--sapPrimary4,#fff)));--sapUiFieldFocusBorderColor:var(--sapField_Focus_BorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_checkbox_inner_border:solid .125rem var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_input_disabled_border_color:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--_ui5_select_disabled_border_color:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapPrimary6,#bfbfbf)));--sapUiButtonActionSelectBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--sapUiListGroupHeaderBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--_ui5_daypicker_item_othermonth_background_color:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--ui5-listitem-background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff)));--sapUiSelected:var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiActive:var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiFieldHoverBorderColor:var(--sapField_Hover_BorderColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiFieldHoverHelpBackground:var(--sapField_Hover_HelpBackground,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--sapUiListHighlightColor:var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_headerItemIcon_border:1px solid var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_headerItemIcon_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_headerItemIcon_selected_background:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_overflowItem_default_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))));--_ui5_tc_header_border_bottom:0.125rem solid var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapPrimary3,#eff4f9))));--sapUiButtonRejectHoverBorderColor:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));--sapUiButtonRejectActiveBorderColor:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));--_ui5_button_negative_focus_border_color:var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))));--sapUiButtonAcceptHoverBorderColor:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--sapUiButtonAcceptActiveBorderColor:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--_ui5_button_positive_border_color:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--_ui5_button_positive_focus_border_color:var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b))));--_ui5_checkbox_hover_background:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapPrimary4,#fff))));--_ui5_radiobutton_hover_fill:var(--sapUiFieldHoverBackground,var(--sapField_Hover_Background,var(--sapField_Background,var(--sapPrimary4,#fff))));--sapUiFieldFocusHelpBackground:var(--sapField_Focus_HelpBackground,var(--sapField_Focus_Background,var(--sapField_Background,var(--sapPrimary4,#fff))));--ui5-group-header-listitem-background-color:var(--sapUiListGroupHeaderBackground,var(--sapUiListBackground,var(--sapList_Background,var(--sapPrimary4,#fff))));--_ui5_checkbox_checkmark_color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--_ui5_radiobutton_selected_fill:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--_ui5_tc_headerItemContent_border_bottom:0.125rem solid var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiButtonActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiFieldActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiFieldActiveBorderColor:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--sapUiListActiveBackground:var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))));--_ui5_button_negative_active_border_color:var(--sapUiButtonRejectActiveBorderColor,var(--sapUiButtonRejectBorderColor,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))));--_ui5_button_positive_border_hover_color:var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)))));--_ui5_button_positive_border_active_color:var(--sapUiButtonAcceptActiveBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#2b7c2b)))));--sapUiButtonActiveBorderColor:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiButtonEmphasizedActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiButtonLiteActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiSegmentedButtonActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiInfobarActiveBackground:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac))))));--sapUiButtonEmphasizedActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))))));--_ui5_button_active_border_color:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))))));--sapUiButtonLiteActiveBorderColor:var(--sapUiButtonLiteActiveBackground,var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapPrimary2,#427cac)))))));--sapErrorBackground:#ffe4e4;--sapWarningBackground:#fef0db;--sapSuccessBackground:#e4f5e4;--sapInformationBackground:#ebf2f7;--sapNeutralBackground:#f4f5f6;--sapErrorColor:#e00;--sapWarningColor:#f9a429;--sapSuccessColor:#38a238;--sapContent_ImagePlaceholderForegroundColor:#fff;--sapContent_LabelColor:#666;--sapContent_ForegroundColor:#e5e5e5;--sapContent_DisabledTextColor:#333;--sapButton_Background:#f7f7f7;--sapField_ReadOnly_BorderColor:#ccc;--sapGroup_TitleBorderColor:#ccc;--sapGroup_ContentBackground:#fff;--sapShell_TextColor:#346187;--sapShell_BackgroundPatternColor:hsla(0,0%,100%,0.08);--sapScrollBar_FaceColor:#b2b2b2;--sapContent_NonInteractiveIconColor:#878787;--sapContent_MarkerTextColor:#147575;--sapContent_ImagePlaceholderBackground:#ceddec;--sapList_BorderColor:#e5e5e5;--sapList_HeaderBackground:#f7f7f7;--sapInfobar_Background:#168282;--sapToolbar_SeparatorColor:rgba(63,81,97,0.2);--sapUiLinkInverted:#7ed0ff;--sapUiNotificationBarBG:rgba(51,51,51,0.98);--sapUiNotifierSeparator:#000;--sapUiNotificationBarBorder:#666;--sapUiFieldPlaceholderTextColor:#757575;--sapUiDragAndDropActiveBackground:rgba(0,112,177,0.05);--sapUiContentShadowColorFade15:rgba(0,0,0,0.15);--sapUiLinkDarken15:#004065;--sapUiShellBorderColorLighten30:rgba(NaN,NaN,NaN,0.054901960784313725);--sapBackgroundColorFade72:hsla(0,0%,98%,0.72);--sapUiAccent1Lighten50:#fff6e0;--sapUiAccent2Lighten40:#fcd9c3;--sapUiAccent3Lighten46:#fcf6f6;--sapUiAccent4Lighten46:#f3c3e9;--sapUiAccent5Lighten32:#dee6f3;--sapUiAccent6Lighten52:#dbf4ff;--sapUiAccent7Lighten64:#fafefe;--sapUiAccent8Lighten61:#f9fcf0;--sapUiAccent9Lighten37:#f2ebf9;--sapUiAccent10Lighten49:#f1f3f4;--sapContent_IconColor:#346187;--sapUiShellHoverBackground:#346187;--sapUiShellActiveBackground:#2a4f6d;--sapUiShellActiveTextColor:#fff;--sapUiShellHoverToggleBackground:#152736;--sapPageHeader_BorderColor:#d1e0ee;--sapUiListFooterBackground:#ceddec;--sapUiListTableGroupHeaderBackground:#f2f2f2;--sapUiListBackgroundDarken3:#f7f7f7;--sapUiListBackgroundDarken10:#e6e6e6;--sapUiListBackgroundDarken13:#dedede;--sapUiListBackgroundDarken15:#d9d9d9;--sapUiListBackgroundDarken20:#ccc;--sapUiTileBackgroundDarken20:#ccc;--sapUiErrorBG:var(--sapErrorBackground,#ffe4e4);--sapUiWarningBG:var(--sapWarningBackground,#fef0db);--sapUiSuccessBG:var(--sapSuccessBackground,#e4f5e4);--sapUiInformationBG:var(--sapInformationBackground,#ebf2f7);--sapUiNeutralBG:var(--sapNeutralBackground,#f4f5f6);--sapErrorBorderColor:var(--sapErrorColor,#e00);--sapField_InvalidColor:var(--sapErrorColor,#e00);--sapWarningBorderColor:var(--sapWarningColor,#f9a429);--sapField_WarningColor:var(--sapWarningColor,#f9a429);--sapSuccessBorderColor:var(--sapSuccessColor,#38a238);--sapField_SuccessColor:var(--sapSuccessColor,#38a238);--sapUiContentImagePlaceholderForegroundColor:var(--sapContent_ImagePlaceholderForegroundColor,#fff);--sapUiContentLabelColor:var(--sapContent_LabelColor,#666);--sapUiContentForegroundColor:var(--sapContent_ForegroundColor,#e5e5e5);--sapUiContentDisabledTextColor:var(--sapContent_DisabledTextColor,#333);--sapButton_Reject_Background:var(--sapButton_Background,#f7f7f7);--sapButton_Accept_Background:var(--sapButton_Background,#f7f7f7);--sapUiButtonBackground:var(--sapButton_Background,#f7f7f7);--sapUiFieldReadOnlyBorderColor:var(--sapField_ReadOnly_BorderColor,#ccc);--sapUiGroupTitleBorderColor:var(--sapGroup_TitleBorderColor,#ccc);--sapUiGroupContentBackground:var(--sapGroup_ContentBackground,#fff);--sapUiShellTextColor:var(--sapShell_TextColor,#346187);--sapUiShellBackgroundPatternColor:var(--sapShell_BackgroundPatternColor,hsla(0,0%,100%,0.08));--sapScrollBar_BorderColor:var(--sapScrollBar_FaceColor,#b2b2b2);--sapUiScrollBarFaceColor:var(--sapScrollBar_FaceColor,#b2b2b2);--sapUiContentNonInteractiveIconColor:var(--sapContent_NonInteractiveIconColor,#878787);--sapUiContentMarkerTextColor:var(--sapContent_MarkerTextColor,#147575);--sapUiContentImagePlaceholderBackground:var(--sapContent_ImagePlaceholderBackground,#ceddec);--sapList_HeaderBorderColor:var(--sapList_BorderColor,#e5e5e5);--sapUiListBorderColor:var(--sapList_BorderColor,#e5e5e5);--sapUiListHeaderBackground:var(--sapList_HeaderBackground,#f7f7f7);--sapUiInfobarBackground:var(--sapInfobar_Background,#168282);--sapUiToolbarSeparatorColor:var(--sapToolbar_SeparatorColor,rgba(63,81,97,0.2));--_ui5_link_subtle_color:var(--sapUiLinkDarken15,#004065);--ui5-badge-bg-color-scheme-1:var(--sapUiAccent1Lighten50,#fff6e0);--ui5-badge-bg-color-scheme-2:var(--sapUiAccent2Lighten40,#fcd9c3);--ui5-badge-bg-color-scheme-3:var(--sapUiAccent3Lighten46,#fcf6f6);--ui5-badge-bg-color-scheme-4:var(--sapUiAccent4Lighten46,#f3c3e9);--ui5-badge-bg-color-scheme-5:var(--sapUiAccent5Lighten32,#dee6f3);--ui5-badge-bg-color-scheme-6:var(--sapUiAccent6Lighten52,#dbf4ff);--ui5-badge-bg-color-scheme-7:var(--sapUiAccent7Lighten64,#fafefe);--ui5-badge-bg-color-scheme-8:var(--sapUiAccent8Lighten61,#f9fcf0);--ui5-badge-bg-color-scheme-9:var(--sapUiAccent9Lighten37,#f2ebf9);--ui5-badge-bg-color-scheme-10:var(--sapUiAccent10Lighten49,#f1f3f4);--sapScrollBar_SymbolColor:var(--sapContent_IconColor,#346187);--sapUiContentIconColor:var(--sapContent_IconColor,#346187);--sapUiPageHeaderBorderColor:var(--sapPageHeader_BorderColor,#d1e0ee);--sapUiObjectHeaderBorderColor:#d1e0ee;--sapUiButtonRejectActiveBackgroundDarken5:#a20000;--sapUiButtonRejectActiveBackgroundLighten5:#d40000;--sapUiButtonAcceptActiveBackgroundDarken5:#246924;--sapUiButtonAcceptActiveBackgroundLighten5:#328f32;--_ui5_daypicker_item_othermonth_hover_background_color:var(--sapUiListBackgroundDarken10,#e6e6e6);--_ui5_card_border_color:var(--sapUiTileBackgroundDarken20,#ccc);--_ui5_switch_track_disabled_semantic_bg:var(--sapUiErrorBG,var(--sapErrorBackground,#ffe4e4));--_ui5_switch_handle_semantic_hover_bg:var(--sapUiErrorBG,var(--sapErrorBackground,#ffe4e4));--_ui5_switch_track_disabled_semantic_checked_bg:var(--sapUiSuccessBG,var(--sapSuccessBackground,#e4f5e4));--_ui5_switch_handle_semantic_checked_hover_bg:var(--sapUiSuccessBG,var(--sapSuccessBackground,#e4f5e4));--sapUiErrorBorder:var(--sapErrorBorderColor,var(--sapErrorColor,#e00));--sapUiFieldInvalidColor:var(--sapField_InvalidColor,var(--sapErrorColor,#e00));--sapUiWarningBorder:var(--sapWarningBorderColor,var(--sapWarningColor,#f9a429));--sapUiFieldWarningColor:var(--sapField_WarningColor,var(--sapWarningColor,#f9a429));--sapUiSuccessBorder:var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238));--sapUiFieldSuccessColor:var(--sapField_SuccessColor,var(--sapSuccessColor,#38a238));--_ui5_daypicker_item_othermonth_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_daypicker_item_othermonth_hover_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_daypicker_dayname_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_daypicker_weekname_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,#666));--_ui5_input_disabled_color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,#333));--sapUiButtonRejectBackground:var(--sapButton_Reject_Background,var(--sapButton_Background,#f7f7f7));--sapUiButtonAcceptBackground:var(--sapButton_Accept_Background,var(--sapButton_Background,#f7f7f7));--_ui5_token_background:var(--sapUiButtonBackground,var(--sapButton_Background,#f7f7f7));--_ui5_checkbox_inner_readonly_border:0.125rem solid var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,#ccc));--ui5-panel-bottom-border-color:var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,#ccc));--sapUiDragAndDropBackground:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--ui5-panel-background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--_ui5_tc_headerItemIcon_selected_color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--_ui5_tc_headerItemIcon_semantic_selected_color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,#fff));--sapUiScrollBarBorderColor:var(--sapScrollBar_BorderColor,var(--sapScrollBar_FaceColor,#b2b2b2));--sapUiDragAndDropColor:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,#878787));--sapUiListHeaderBorderColor:var(--sapList_HeaderBorderColor,var(--sapList_BorderColor,#e5e5e5));--sapUiButtonActionSelectBorderColor:var(--sapUiListBorderColor,var(--sapList_BorderColor,#e5e5e5));--ui5-listitem-border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,#e5e5e5));--sapUiShadowText:0 0 0.125rem #fff;--sapUiToggleButtonPressedBackground:#346187;--sapUiSelectedDarken10:#346187;--sapUiActiveLighten3:#4684b7;--sapUiScrollBarSymbolColor:var(--sapScrollBar_SymbolColor,var(--sapContent_IconColor,#346187));--_ui5_token_icon_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,#346187));--_ui5_tc_header_box_shadow:inset 0 -0.25rem 0 -0.125rem var(--sapUiObjectHeaderBorderColor,#d1e0ee);--_ui5_tc_content_border_bottom:0.125rem solid var(--sapUiObjectHeaderBorderColor,#d1e0ee);--_ui5_toggle_button_pressed_negative_hover:var(--sapUiButtonRejectActiveBackgroundDarken5,#a20000);--_ui5_toggle_button_pressed_positive_hover:var(--sapUiButtonAcceptActiveBackgroundDarken5,#246924);--_ui5_card_header_border_color:var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc));--_ui5_switch_track_disabled_semantic_border_color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapErrorColor,#e00)));--_ui5_switch_handle_semantic_hover_border_color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapErrorColor,#e00)));--_ui5_switch_handle_disabled_semantic_border_color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapErrorColor,#e00)));--_ui5_checkbox_inner_error_border:0.125rem solid var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorColor,#e00)));--_ui5_radiobutton_selected_error_fill:var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapErrorColor,#e00)));--_ui5_checkbox_inner_warning_border:0.125rem solid var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapWarningColor,#f9a429)));--_ui5_switch_track_disabled_semantic_checked_border_color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238)));--_ui5_switch_handle_semantic_checked_hover_border_color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238)));--_ui5_switch_handle_disabled_semantic_checked_border_color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapSuccessColor,#38a238)));--sapUiSegmentedButtonSelectedBackground:var(--sapUiToggleButtonPressedBackground,#346187);--_ui5_switch_handle_checked_bg:var(--sapUiToggleButtonPressedBackground,#346187);--_ui5_daypicker_item_selected_background_color:var(--sapUiSelectedDarken10,#346187);--_ui5_daypicker_item_selected_hover_background_color:var(--sapUiSelectedDarken10,#346187);--_ui5_monthpicker_item_selected_hover:var(--sapUiSelectedDarken10,#346187);--_ui5_monthpicker_item_selected_focus:var(--sapUiSelectedDarken10,#346187);--_ui5_yearpicker_item_selected_focus:var(--sapUiSelectedDarken10,#346187);--sapShell_Background:#cad8e6;--sapField_ReadOnly_Background:hsla(0,0%,94.9%,0.5);--_ui5_switch_handle_disabled_checked_bg:var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,#346187));--sapButton_Emphasized_Background:#5496cd;--sapUiShellBackground:var(--sapShell_Background,#cad8e6);--sapField_ReadOnly_HelpBackground:var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,0.5));--sapUiFieldReadOnlyBackground:var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,0.5));--sapList_SelectionBackgroundColor:#e8f0f6;--sapUiButtonEmphasizedBackground:var(--sapButton_Emphasized_Background,#5496cd);--sapButton_BorderColor:#ababab;--sapButton_Hover_Background:#eaeaea;--sapGroup_ContentBorderColor:#ebebeb;--sapScrollBar_TrackColor:#fff;--sapScrollBar_Hover_FaceColor:#aaa;--sapUiFieldReadOnlyHelpBackground:var(--sapField_ReadOnly_HelpBackground,var(--sapField_ReadOnly_Background,hsla(0,0%,94.9%,0.5)));--sapUiListSelectionBackgroundColor:var(--sapList_SelectionBackgroundColor,#e8f0f6);--sapUiErrorBGLighten4:#fff8f8;--sapUiSuccessBGLighten5:#f7fcf7;--sapUiContentForegroundColorLighten5:#f2f2f2;--sapUiContentForegroundColorLighten7:#f7f7f7;--sapUiContentForegroundColorDarken3:#ddd;--sapUiContentForegroundColorDarken5:#d8d8d8;--sapUiContentForegroundColorDarken10:#ccc;--sapUiSegmentedButtonBackground:#fff;--sapUiButtonBackgroundDarken7:#e5e5e5;--sapUiButtonBackgroundDarken2:#f2f2f2;--sapUiButtonBackgroundDarken10:#dedede;--sapButton_Hover_BorderColor:var(--sapButton_BorderColor,#ababab);--sapUiButtonBorderColor:var(--sapButton_BorderColor,#ababab);--sapUiButtonHoverBackground:var(--sapButton_Hover_Background,#eaeaea);--sapUiGroupContentBorderColor:var(--sapGroup_ContentBorderColor,#ebebeb);--sapUiScrollBarTrackColor:var(--sapScrollBar_TrackColor,#fff);--sapUiScrollBarHoverFaceColor:var(--sapScrollBar_Hover_FaceColor,#aaa);--sapUiListVerticalBorderColor:#ddd;--sapUiListTableGroupHeaderBorderColor:#ccc;--sapUiListTableFooterBorder:#ccc;--sapUiListTableFixedBorder:#999;--sapUiListBorderColorLighten10:#fff;--sapUiInfobarHoverBackground:#147575;--_ui5_switch_handle_disabled_semantic_bg:var(--sapUiErrorBGLighten4,#fff8f8);--_ui5_switch_handle_disabled_semantic_checked_bg:var(--sapUiSuccessBGLighten5,#f7fcf7);--sapUiFieldWarningColorDarken100:#000;--_ui5_daypicker_item_background_color:var(--sapUiContentForegroundColorLighten5,#f2f2f2);--_ui5_monthpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_monthpicker_item_hover_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_yearpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_yearpicker_item_hover_background_color:var(--sapUiContentForegroundColorLighten7,#f7f7f7);--_ui5_daypicker_item_weekend_background_color:var(--sapUiContentForegroundColorDarken3,#ddd);--_ui5_daypicker_item_hover_background_color:var(--sapUiContentForegroundColorDarken5,#d8d8d8);--_ui5_monthpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#d8d8d8);--_ui5_yearpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#d8d8d8);--_ui5_daypicker_item_weekend_hover_background_color:var(--sapUiContentForegroundColorDarken10,#ccc);--_ui5_switch_track_bg:var(--sapUiButtonBackgroundDarken7,#e5e5e5);--_ui5_switch_track_hover_bg:var(--sapUiButtonBackgroundDarken7,#e5e5e5);--_ui5_switch_handle_bg:var(--sapUiButtonBackgroundDarken2,#f2f2f2);--_ui5_token_border_color:var(--sapUiButtonBackgroundDarken10,#dedede);--sapUiButtonHoverBorderColor:var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,#ababab));--_ui5_button_focussed_border_color:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,#ababab));--sapUiButtonAcceptHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--sapUiButtonRejectHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--sapUiSegmentedButtonHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--sapUiSegmentedButtonFooterHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#eaeaea));--_ui5_daypicker_item_now_selected_text_border_color:var(--sapUiListBorderColorLighten10,#fff);--sapUiShadowLevel0:0 0 0 1px rgba(0,0,0,0.15);--sapUiToggleButtonPressedBorderColor:#2d5475;--sapUiToggleButtonPressedHoverBackground:#427bac;--_ui5_checkbox_checkmark_warning_color:var(--sapUiFieldWarningColorDarken100,#000);--_ui5_radiobutton_selected_warning_fill:var(--sapUiFieldWarningColorDarken100,#000);--_ui5_switch_track_disabled_bg:var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#e5e5e5));--_ui5_switch_handle_disabled_bg:var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#f2f2f2));--_ui5_switch_handle_checked_border_color:var(--sapUiToggleButtonPressedBorderColor,#2d5475);--_ui5_toggle_button_pressed_focussed:var(--sapUiToggleButtonPressedBorderColor,#2d5475);--_ui5_toggle_button_pressed_focussed_hovered:var(--sapUiToggleButtonPressedBorderColor,#2d5475);--sapUiToggleButtonPressedHoverBorderColor:var(--sapUiToggleButtonPressedHoverBackground,#427bac);--sapUiSegmentedButtonSelectedHoverBackground:var(--sapUiToggleButtonPressedHoverBackground,#427bac);--_ui5_switch_handle_checked_hover_bg:var(--sapUiToggleButtonPressedHoverBackground,#427bac);--sapUiShadowHeader:0 0.125rem 0 0 #eff4f9,inset 0 -0.125rem 0 0 #d1e0ee;--sapList_Hover_Background:#f0f0f0;--sapUiSegmentedButtonSelectedHoverBorderColor:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#427bac));--sapButton_Emphasized_BorderColor:#408ac7;--sapUiPageFooterBorderColor:#ebebeb;--sapUiShellGroupTextColor:#343434;--sapUiShellContainerBackground:#fff;--sapUiListHoverBackground:var(--sapList_Hover_Background,#f0f0f0);--sapUiButtonEmphasizedHoverBackground:#408ac7;--sapUiButtonEmphasizedHoverBorderColor:#408ac7;--sapUiButtonEmphasizedBorderColor:var(--sapButton_Emphasized_BorderColor,#408ac7);--sapUiButtonLiteActionSelectHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,#f0f0f0));--sapUiToggleButtonPressedBackgroundLighten50Desaturate47:#dedede;--_ui5_button_emphasized_focused_border_color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,#408ac7));--sapUiSegmentedButtonBorderColor:#bfbfbf;--sapUiSegmentedButtonFooterBorderColor:#bfbfbf;--sapUiButtonHoverBackgroundDarken2:#e5e5e5;--sapUiButtonHoverBackgroundDarken5:#ddd;--_ui5_switch_track_checked_bg:var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#dedede);--_ui5_switch_track_hover_checked_bg:var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#dedede);--_ui5_switch_handle_hover_bg:var(--sapUiButtonHoverBackgroundDarken2,#e5e5e5);--_ui5_token_hover_border_color:var(--sapUiButtonHoverBackgroundDarken5,#ddd);--_ui5_switch_track_disabled_checked_bg:var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#dedede));--sapGroup_TitleTextColor:#333;--sapUiShellAltContainerBackground:#6391be;--sapTile_TitleTextColor:#333;--sapPageFooter_TextColor:#333;--sapHighlightTextColor:#fff;--sapPageHeader_TextColor:#666;--sapUiGroupTitleTextColor:var(--sapGroup_TitleTextColor,#333);--sapUiTileTitleTextColor:var(--sapTile_TitleTextColor,#333);--sapUiPageFooterTextColor:var(--sapPageFooter_TextColor,#333);--sapUiShadowLevel1:0 0.125rem 0.5rem 0 rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.15);--sapUiShadowLevel2:0 0.625rem 1.875rem 0 rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.15);--sapUiShadowLevel3:0 1.25rem 5rem 0 rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.15);--sapUiHighlightTextColor:var(--sapHighlightTextColor,#fff);--sapUiPageHeaderTextColor:var(--sapPageHeader_TextColor,#666);--sapUiButtonLiteHoverBackground:hsla(0,0%,69.8%,0.5);--_ui5_tc_headerItem_color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#333));--sapUiListFooterTextColor:var(--sapUiPageFooterTextColor,var(--sapPageFooter_TextColor,#333));--sapUiButtonLiteHoverBorderColor:var(--sapUiButtonLiteHoverBackground,hsla(0,0%,69.8%,0.5));--sapUiButtonFooterHoverBackground:var(--sapUiButtonLiteHoverBackground,hsla(0,0%,69.8%,0.5));--sapUiToggleButtonPressedBorderColorLighten19Desaturate46:#818181;--sapUiListActiveTextColor:#fff;--_ui5_switch_track_checked_border_color:var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#818181);--sapUiSegmentedButtonActiveIconColor:#fff;--_ui5_switch_track_hover_border_color:var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#818181));--sapTile_IconColor:#93b7d5;--sapContent_ForegroundTextColor:#333;--sapButton_TextColor:#346187;--sapList_HeaderTextColor:#333;--sapUiTileIconColor:var(--sapTile_IconColor,#93b7d5);--sapUiListTableGroupHeaderTextColor:#147575;--sapUiContentForegroundTextColor:var(--sapContent_ForegroundTextColor,#333);--sapUiButtonIconColor:#346187;--sapUiButtonTextColor:var(--sapButton_TextColor,#346187);--sapUiListHeaderTextColor:var(--sapList_HeaderTextColor,#333);--sapUiListSelectionHoverBackground:#dde9f2;--sapUiButtonRejectTextColor:#b00;--sapUiButtonAcceptTextColor:#2b7c2b;--sapUiButtonLiteTextColor:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187));--sapUiButtonHeaderTextColor:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187));--_ui5_token_text_color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187));--sapUiButtonHeaderDisabledTextColor:var(--sapUiButtonHeaderTextColor,var(--sapUiButtonTextColor,var(--sapButton_TextColor,#346187)));--sapUiSegmentedButtonSelectedIconColor:#fff;--sapButton_Emphasized_TextColor:#fff;--sapUiButtonEmphasizedTextColor:var(--sapButton_Emphasized_TextColor,#fff);--sapButton_Hover_TextColor:#346187;--sapUiSegmentedButtonIconColor:#346187;--sapUiButtonHoverTextColor:var(--sapButton_Hover_TextColor,#346187);--sapTile_TextColor:#666;--sapUiTileTextColor:var(--sapTile_TextColor,#666);--sapUiButtonFooterTextColor:#346187;--sapUiButtonActiveTextColor:#fff;--sapUiToggleButtonPressedTextColor:#fff;--sapUiSegmentedButtonTextColor:#346187;--sapUiSegmentedButtonSelectedTextColor:var(--sapUiToggleButtonPressedTextColor,#fff);--sapUiButtonEmphasizedTextShadow:#000;--sapUiSegmentedButtonActiveTextColor:#fff}";
-
-  var belizeHcbThemeProperties = ":root{--sapFontFamily:\"72\",\"72full\",Arial,Helvetica,sans-serif;--sapFontSize:calc(0.875*var(--sapContent_GridSize));--sapCompanyLogo:none;--sapBackgroundImage:none;--sapBackgroundImageOpacity:1.0;--sapBackgroundImageRepeat:false;--sapContent_GridSize:1rem;--sapHC_StandardBackground:#000;--sapHC_HighlightBackground:#7a5100;--sapHC_HighlightAltBackground:#0f5d94;--sapHC_ReducedBackground:#585858;--sapHC_ReducedAltBackground:#a2a39f;--sapHC_StandardForeground:#fff;--sapHC_EnhancedForeground:#03b803;--sapHC_ReducedForeground:#666;--sapHC_ReducedAltForeground:#999;--sapHC_NegativeColor:#ff5e5e;--sapHC_CriticalColor:#ffab1d;--sapHC_PositiveColor:#9c9;--sapHC_InformativeColor:#7a5100;--sapHC_NeutralColor:#fff;--sapAccentColor1:#ffc847;--sapAccentColor2:#ed884a;--sapAccentColor3:#db9292;--sapAccentColor4:#e269c9;--sapAccentColor5:#8ca7d5;--sapAccentColor6:#6bd3ff;--sapAccentColor7:#7fc6c6;--sapAccentColor8:#b2e484;--sapAccentColor9:#b995e0;--sapAccentColor10:#b0bcc5;--sapIndicationColor_1:#ff5e5e;--sapIndicationColor_2:#ff9191;--sapIndicationColor_3:#ffab1d;--sapIndicationColor_4:#9c9;--sapIndicationColor_5:#0f5d94;--sapElement_LineHeight:calc(3*var(--sapContent_GridSize, 1rem));--sapElement_Height:calc(2.5*var(--sapContent_GridSize, 1rem));--sapElement_BorderWidth:calc(0.0625*var(--sapContent_GridSize, 1rem));--sapContent_LineHeight:1.4;--sapContent_ElementHeight:1.37em;--sapContent_ElementHeight_PX:22px;--sapContent_MonospaceFontFamily:lucida console,monospace;--sapContent_DisabledOpacity:0.5;--sapContent_ContrastTextThreshold:0.65;--sapShell_BackgroundImageOpacity:1.0;--sapShell_BackgroundImageRepeat:false;--sapShell_Favicon:none;--sapButton_BorderCornerRadius:calc(0.2*var(--sapContent_GridSize, 1rem));--sapField_BorderCornerRadius:0;--sapGroup_BorderCornerRadius:0;--sapScrollBar_Dimension:calc(0.7*var(--sapContent_GridSize, 1rem));--sapUiFontSize:16px;--sapUiFontCondensedFamily:\"Arial Narrow\",HelveticaNeue-CondensedBold,Arial,sans-serif;--sapUiFontHeaderWeight:normal;--sapMFontHeader1Size:1.625rem;--sapMFontHeader2Size:1.375rem;--sapMFontHeader3Size:1.250rem;--sapMFontHeader4Size:1.125rem;--sapMFontHeader5Size:1rem;--sapMFontHeader6Size:0.875rem;--sapMFontSmallSize:0.75rem;--sapMFontMediumSize:0.875rem;--sapMFontLargeSize:1rem;--sapUiTranslucentBGOpacity:100%;--sapUiDesktopFontSize:12px;--sapUiFontLargeSize:13px;--sapUiFontSmallSize:11px;--sapUiFontHeader1Size:26px;--sapUiFontHeader2Size:20px;--sapUiFontHeader3Size:18px;--sapUiFontHeader4Size:16px;--sapUiFontHeader5Size:14px;--sapUiLineHeight:18px;--sapUiNotifierSeparatorWidth:1px;--sapUiButtonEmphasizedTextShadow:none;--sapUiListTableTextSize:0.875rem;--sapUiListTableIconSize:1rem;--sapUiShadowText:none;--_ui5_button_base_min_width:2.5rem;--_ui5_button_base_min_compact_width:2rem;--_ui5_button_base_height:2.5rem;--_ui5_button_compact_height:1.625rem;--_ui5_button_base_padding:0 0.6875rem 0 0.6875rem;--_ui5_button_compact_padding:0 0.4375rem;--_ui5_button_base_icon_only_padding:0 0.5625rem;--_ui5_button_base_icon_margin:0.563rem;--_ui5_button_base_icon_only_font_size:1.375rem;--_ui5_button_emphasized_font_weight:normal;--_ui5_button_border_radius:0.375rem;--_ui5_button_focus_after_bottom:-1px;--_ui5_button_focus_after_right:-1px;--_ui5_button_focus_after_left:-1px;--_ui5_button_focus_after_top:-1px;--_ui5_button_focussed_border_color:transparent;--_ui5_button_positive_border_active_color:transparent;--_ui5_button_active_border_color:transparent;--_ui5_button_positive_focus_border_color:transparent;--_ui5_button_negative_focus_border_color:transparent;--_ui5_button_negative_active_border_color:transparent;--_ui5_calendar_header_middle_button_focus_after_width:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_height:calc(100% - 0.25rem);--_ui5_calendar_header_middle_button_focus_after_top_offset:1px;--_ui5_calendar_header_middle_button_focus_after_left_offset:1px;--_ui5_calendar_header_arrow_button_border_radius:0.375rem;--_ui5_calendar_header_middle_button_width:5.75rem;--_ui5_calendar_header_middle_button_flex:auto;--_ui5_calendar_header_middle_button_focus_border_radius:0;--_ui5_calendar_header_middle_button_focus_after_display:none;--_ui5_card_content_padding:1rem;--_ui5_checkbox_wrapper_padding:.8125rem;--_ui5_checkbox_width_height:3rem;--_ui5_checkbox_inner_width_height:1.375rem;--_ui5_checkbox_wrapped_focus_padding:.375rem;--_ui5_checkbox_wrapped_content_margin_top:.125rem;--_ui5_checkbox_wrapped_focus_left_top_bottom_position:.5625rem;--_ui5_checkbox_focus_position:.6875rem;--_ui5_checkbox_compact_wrapper_padding:.5rem;--_ui5_checkbox_compact_width_height:2rem;--_ui5_checkbox_compact_inner_size:1rem;--_ui5_checkbox_compact_focus_position:.375rem;--_ui5_checkbox_compact_wrapped_label_margin_top:-1px;--_ui5_checkbox_inner_border_radius:0;--_ui5_datepicker_icon_border:1px solid transparent;--_ui5_daypicker_daynames_container_height:2rem;--_ui5_daypicker_weeknumbers_container_padding_top:2rem;--_ui5_daypicker_item_border_radius:0;--_ui5_daypicker_item_now_inner_border_radius:0;--_ui5_daypicker_item_margin:0;--_ui5_daypicker_item_outline_width:0.125rem;--_ui5_daypicker_item_outline_offset:0;--_ui5_daypicker_item_now_selected_focus_after_width:calc(100% - 0.25rem);--_ui5_daypicker_item_now_selected_focus_after_height:calc(100% - 0.25rem);--_ui5_input_height:2.5rem;--_ui5_input_compact_height:1.625rem;--_ui5_input_wrapper_border_radius:0;--sap_wc_input_disabled_opacity:0.5;--sap_wc_input_icon_min_width:2.375rem;--sap_wc_input_compact_min_width:2rem;--_ui5_input_focus_border_width:0.125rem;--_ui5_input_state_border_width:1px;--_ui5_input_error_warning_border_style:dashed;--_ui5_input_error_warning_font_style:italic;--_ui5_input_error_font_weight:bold;--_ui5_input_disabled_font_weight:normal;--_ui5_link_opacity:0.5;--_ui5_link_outline_element_size:calc(100% - 0.1875rem);--_ui5_listitembase_focus_width:0.125rem;--_ui5_monthpicker_item_border_radius:0;--_ui5_monthpicker_item_margin:0;--_ui5_monthpicker_item_focus_after_width:calc(100% - 0.25rem);--_ui5_monthpicker_item_focus_after_height:calc(100% - 0.25rem);--_ui5_monthpicker_item_focus_after_offset:0;--_ui5_messagestrip_icon_width:2.5rem;--_ui5_messagestrip_border_radius:0.1875rem;--_ui5_messagestrip_button_border_width:0;--_ui5_messagestrip_button_border_style:none;--_ui5_messagestrip_button_border_color:transparent;--_ui5_messagestrip_button_border_radius:0;--_ui5_messagestrip_padding:0.125rem .125rem;--_ui5_messagestrip_button_height:1.625rem;--_ui5_messagestrip_close_button_size:1.5rem;--_ui5_messagestrip_border_width:0.125rem;--_ui5_messagestrip_icon_top:0.375rem;--_ui5_messagestrip_focus_width:0.125rem;--_ui5_popover_content_padding:.4375em;--_ui5_popover_arrow_shadow_color:hsla(0,0%,100%,0.3);--_ui5_radiobutton_border_width:0.125rem;--_ui5_radiobutton_warning_error_border_dash:5;--_ui5_select_state_error_warning_border_style:dashed;--_ui5_select_state_error_warning_border_width:1px;--_ui5_select_rtl_hover_icon_left_border:none;--_ui5_select_focus_width:0.125rem;--_ui5_switch_height:2.75rem;--_ui5_switch_width:3.875rem;--_ui5_switch_no_label_width:3.25rem;--_ui5_switch_compact_height:2rem;--_ui5_switch_compact_width:3.5rem;--_ui5_switch_compact_no_label_width:2.5rem;--_ui5_switch_track_height:1.375rem;--_ui5_switch_track_no_label_height:1.25rem;--_ui5_switch_track_compact_no_label_height:1rem;--_ui5_switch_track_border_radius:0.75rem;--_ui5_switch_handle_width:2rem;--_ui5_switch_handle_height:2rem;--_ui5_switch_handle_border_radius:1rem;--_ui5_switch_handle_compact_width:1.625rem;--_ui5_switch_handle_compact_height:1.625rem;--_ui5_switch_outline:0.125rem;--_ui5_switch_handle_border_width:0.125rem;--_ui5_tc_headerItemSemanticIcon_display:inline-block;--_ui5_textarea_focus_after_width:2px;--_ui5_textarea_warning_border_style:dashed;--_ui5_textarea_warning_border_width:1px;--_ui5_TimelineItem_arrow_size:1.625rem;--_ui5_TimelineItem_bubble_outline_width:0.125rem;--_ui5_TimelineItem_bubble_outline_top:-0.1875rem;--_ui5_TimelineItem_bubble_outline_right:-0.1875rem;--_ui5_TimelineItem_bubble_outline_bottom:-0.1875rem;--_ui5_TimelineItem_bubble_outline_left:-0.6875rem;--_ui5_TimelineItem_bubble_rtl_left_offset:-0.1875rem;--_ui5_TimelineItem_bubble_rtl_right_offset:-0.6875rem;--_ui5_toggle_button_pressed_focussed:transparent;--_ui5_toggle_button_pressed_focussed_hovered:transparent;--_ui5_yearpicker_item_border_radius:0;--_ui5_yearpicker_item_margin:0;--_ui5_yearpicker_item_focus_after_width:calc(100% - 0.25rem);--_ui5_yearpicker_item_focus_after_height:calc(100% - 0.25rem);--_ui5_yearpicker_item_focus_after_offset:0;--_ui5_token_border_radius:0.125rem;--sapBaseColor:var(--sapHC_StandardBackground,#000);--sapShellColor:var(--sapHC_StandardBackground,#000);--sapBackgroundColorDefault:var(--sapHC_StandardBackground,#000);--sapBackgroundColor:var(--sapHC_StandardBackground,#000);--sapBrandColor:var(--sapHC_HighlightBackground,#7a5100);--sapTextColor:var(--sapHC_StandardForeground,#fff);--sapLinkColor:var(--sapHC_StandardForeground,#fff);--sapErrorBackground:var(--sapHC_StandardBackground,#000);--sapWarningBackground:var(--sapHC_StandardBackground,#000);--sapSuccessBackground:var(--sapHC_StandardBackground,#000);--sapInformationBackground:var(--sapHC_StandardBackground,#000);--sapNeutralBackground:var(--sapHC_StandardBackground,#000);--sapNegativeColor:var(--sapHC_NegativeColor,#ff5e5e);--sapCriticalColor:var(--sapHC_CriticalColor,#ffab1d);--sapPositiveColor:var(--sapHC_PositiveColor,#9c9);--sapInformativeColor:var(--sapHC_InformativeColor,#7a5100);--sapNeutralColor:var(--sapHC_NeutralColor,#fff);--sapSelectedColor:var(--sapHC_HighlightAltBackground,#0f5d94);--sapContent_IconHeight:var(--sapContent_GridSize,1rem);--sapContent_IconColor:var(--sapHC_StandardForeground,#fff);--sapContent_ImagePlaceholderForegroundColor:var(--sapHC_ReducedAltForeground,#999);--sapContent_FocusColor:var(--sapHC_StandardForeground,#fff);--sapContent_ShadowColor:var(--sapHC_StandardForeground,#fff);--sapContent_HelpColor:var(--sapHC_EnhancedForeground,#03b803);--sapContent_DisabledTextColor:var(--sapHC_ReducedForeground,#666);--sapContent_ForegroundBorderColor:var(--sapHC_StandardForeground,#fff);--sapShell_BorderColor:var(--sapHC_StandardForeground,#fff);--sapButton_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapButton_BorderColor:var(--sapHC_StandardForeground,#fff);--sapField_BorderColor:var(--sapHC_StandardForeground,#fff);--sapField_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapField_ReadOnly_Background:var(--sapHC_ReducedBackground,#585858);--sapField_ReadOnly_BorderColor:var(--sapHC_ReducedAltForeground,#999);--sapGroup_TitleBorderColor:var(--sapHC_StandardForeground,#fff);--sapGroup_Title_FontSize:var(--sapFontSize,calc(0.875*var(--sapContent_GridSize)));--sapGroup_ContentBorderColor:var(--sapHC_StandardForeground,#fff);--sapGroup_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapToolbar_SeparatorColor:var(--sapHC_StandardForeground,#fff);--sapList_HeaderBorderColor:var(--sapHC_StandardForeground,#fff);--sapList_BorderColor:var(--sapHC_ReducedAltForeground,#999);--sapList_BorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapScrollBar_FaceColor:var(--sapHC_ReducedAltForeground,#999);--sapScrollBar_Hover_FaceColor:var(--sapHC_StandardForeground,#fff);--sapPageHeader_BorderColor:var(--sapHC_StandardForeground,#fff);--sapTile_BorderColor:var(--sapHC_StandardForeground,#fff);--sapUiFontFamily:var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif);--sapUiGlobalLogo:var(--sapCompanyLogo,none);--sapUiGlobalBackgroundImage:var(--sapBackgroundImage,none);--sapUiBackgroundImage:var(--sapBackgroundImage,none);--sapUiUx3ShellBackgroundImageURL:var(--sapBackgroundImage,none);--sapUiGlobalBackgroundImageOpacity:var(--sapBackgroundImageOpacity,1.0);--sapUiGlobalBackgroundRepeat:var(--sapBackgroundImageRepeat,false);--sapUiElementLineHeight:var(--sapElement_LineHeight,calc(3*var(--sapContent_GridSize, 1rem)));--sapUiElementHeight:var(--sapElement_Height,calc(2.5*var(--sapContent_GridSize, 1rem)));--sapUiElementBorderWidth:var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem)));--sapUiContentLineHeight:var(--sapContent_LineHeight,1.4);--sapUiContentElementHeight:var(--sapContent_ElementHeight,1.37em);--sapUiContentElementHeightPX:var(--sapContent_ElementHeight_PX,22px);--sapUiContentDisabledOpacity:var(--sapContent_DisabledOpacity,0.5);--sapUiContentContrastTextThreshold:var(--sapContent_ContrastTextThreshold,0.65);--sapUiShellBackgroundImageOpacity:var(--sapShell_BackgroundImageOpacity,1.0);--sapUiShellBackgroundImageRepeat:var(--sapShell_BackgroundImageRepeat,false);--sapUiShellFavicon:var(--sapShell_Favicon,none);--sapUiButtonBorderCornerRadius:var(--sapButton_BorderCornerRadius,calc(0.2*var(--sapContent_GridSize, 1rem)));--sapUiFieldBorderCornerRadius:var(--sapField_BorderCornerRadius,0);--sapUiScrollBarDimension:var(--sapScrollBar_Dimension,calc(0.7*var(--sapContent_GridSize, 1rem)));--sapUiContentGridSize:var(--sapContent_GridSize,1rem);--sapUiHcStandardBackground:var(--sapHC_StandardBackground,#000);--sapUiHcHighlightBackground:var(--sapHC_HighlightBackground,#7a5100);--sapUiHcHighlightAltBackground:var(--sapHC_HighlightAltBackground,#0f5d94);--sapUiHcReducedBackground:var(--sapHC_ReducedBackground,#585858);--sapUiHcReducedAltBackground:var(--sapHC_ReducedAltBackground,#a2a39f);--sapUiHcStandardForeground:var(--sapHC_StandardForeground,#fff);--sapUiHcEnhancedForeground:var(--sapHC_EnhancedForeground,#03b803);--sapUiHcReducedForeground:var(--sapHC_ReducedForeground,#666);--sapUiHcReducedAltForeground:var(--sapHC_ReducedAltForeground,#999);--sapUiHcNegativeColor:var(--sapHC_NegativeColor,#ff5e5e);--sapUiHcCriticalColor:var(--sapHC_CriticalColor,#ffab1d);--sapUiHcPositiveColor:var(--sapHC_PositiveColor,#9c9);--sapUiHcInformativeColor:var(--sapHC_InformativeColor,#7a5100);--sapUiHcNeutralColor:var(--sapHC_NeutralColor,#fff);--sapUiAccent1:var(--sapAccentColor1,#ffc847);--sapUiAccent2:var(--sapAccentColor2,#ed884a);--sapUiAccent3:var(--sapAccentColor3,#db9292);--sapUiAccent4:var(--sapAccentColor4,#e269c9);--sapUiAccent5:var(--sapAccentColor5,#8ca7d5);--sapUiAccent6:var(--sapAccentColor6,#6bd3ff);--sapUiAccent7:var(--sapAccentColor7,#7fc6c6);--sapUiAccent8:var(--sapAccentColor8,#b2e484);--sapUiAccent9:var(--sapAccentColor9,#b995e0);--sapUiAccent10:var(--sapAccentColor10,#b0bcc5);--sapUiIndication1:var(--sapIndicationColor_1,#ff5e5e);--sapUiIndication2:var(--sapIndicationColor_2,#ff9191);--sapUiIndication3:var(--sapIndicationColor_3,#ffab1d);--sapUiIndication4:var(--sapIndicationColor_4,#9c9);--sapUiIndication5:var(--sapIndicationColor_5,#0f5d94);--sapUiFontHeader6Size:var(--sapUiFontLargeSize,13px);--sapPageHeader_Background:var(--sapBaseColor,var(--sapHC_StandardBackground,#000));--sapObjectHeader_Background:var(--sapBaseColor,var(--sapHC_StandardBackground,#000));--sapUiBaseColor:var(--sapBaseColor,var(--sapHC_StandardBackground,#000));--sapUiShellColor:var(--sapShellColor,var(--sapHC_StandardBackground,#000));--sapContent_ImagePlaceholderBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapContent_ForegroundColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_BackgroundImage:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_BackgroundPatternColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapShell_BackgroundGradient:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapButton_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapField_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapGroup_TitleBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapGroup_ContentBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapGroup_FooterBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapToolbar_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapList_HeaderBackground:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapList_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapScrollBar_TrackColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapPageFooter_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapInfobar_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapBlockLayer_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapTile_Background:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapUiBaseBG:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapUiGlobalBackgroundColor:var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000));--sapHighlightColor:var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100));--sapUiBrand:var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100));--sapTitleColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapContent_MarkerTextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapContent_LabelColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapContent_ContrastTextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapShell_TextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapField_TextColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapField_RequiredColor:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapUiBaseText:var(--sapTextColor,var(--sapHC_StandardForeground,#fff));--sapUiLink:var(--sapLinkColor,var(--sapHC_StandardForeground,#fff));--sapUiErrorBG:var(--sapErrorBackground,var(--sapHC_StandardBackground,#000));--sapUiWarningBG:var(--sapWarningBackground,var(--sapHC_StandardBackground,#000));--sapUiSuccessBG:var(--sapSuccessBackground,var(--sapHC_StandardBackground,#000));--sapUiInformationBG:var(--sapInformationBackground,var(--sapHC_StandardBackground,#000));--sapUiNeutralBG:var(--sapNeutralBackground,var(--sapHC_StandardBackground,#000));--sapNegativeElementColor:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapNegativeTextColor:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapErrorColor:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapUiNegative:var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e));--sapCriticalElementColor:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapCriticalTextColor:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapWarningColor:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapUiCritical:var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d));--sapPositiveElementColor:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapPositiveTextColor:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapSuccessColor:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapUiPositive:var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9));--sapInformativeElementColor:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapInformativeTextColor:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapInformationColor:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapUiInformative:var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100));--sapNeutralBorderColor:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapNeutralElementColor:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapNeutralTextColor:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapUiNeutralBorder:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapUiNeutral:var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff));--sapList_SelectionBackgroundColor:var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94));--sapUiSelected:var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94));--sapUiContentIconHeight:var(--sapContent_IconHeight,var(--sapContent_GridSize,1rem));--sapContent_ContrastIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapContent_NonInteractiveIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapContent_MarkerIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapScrollBar_SymbolColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapUiContentIconColor:var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff));--sapUiContentImagePlaceholderForegroundColor:var(--sapContent_ImagePlaceholderForegroundColor,var(--sapHC_ReducedAltForeground,#999));--sapContent_ContrastFocusColor:var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff));--sapUiContentFocusColor:var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff));--sapContent_ContrastShadowColor:var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff));--sapUiContentShadowColor:var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff));--sapUiContentHelpColor:var(--sapContent_HelpColor,var(--sapHC_EnhancedForeground,#03b803));--sapUiContentDisabledTextColor:var(--sapContent_DisabledTextColor,var(--sapHC_ReducedForeground,#666));--sapUiContentForegroundBorderColor:var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiShellBorderColor:var(--sapShell_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiButtonBorderWidth:var(--sapButton_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapButton_Hover_BorderColor:var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff));--sapButton_Emphasized_BorderColor:var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiButtonBorderColor:var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_Hover_BorderColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_Focus_BorderColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_InvalidColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_WarningColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_SuccessColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapField_InformationColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiFieldBorderColor:var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiFieldBorderWidth:var(--sapField_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapField_ReadOnly_HelpBackground:var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858));--sapUiFieldReadOnlyBackground:var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858));--sapUiFieldReadOnlyBorderColor:var(--sapField_ReadOnly_BorderColor,var(--sapHC_ReducedAltForeground,#999));--sapUiGroupTitleBorderColor:var(--sapGroup_TitleBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiGroupContentBorderColor:var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiGroupBorderWidth:var(--sapGroup_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapUiToolbarSeparatorColor:var(--sapToolbar_SeparatorColor,var(--sapHC_StandardForeground,#fff));--sapUiListHeaderBorderColor:var(--sapList_HeaderBorderColor,var(--sapHC_StandardForeground,#fff));--sapUiListBorderColor:var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999));--sapUiListBorderWidth:var(--sapList_BorderWidth,var(--sapElement_BorderWidth,calc(0.0625*var(--sapContent_GridSize, 1rem))));--sapScrollBar_BorderColor:var(--sapScrollBar_FaceColor,var(--sapHC_ReducedAltForeground,#999));--sapUiScrollBarFaceColor:var(--sapScrollBar_FaceColor,var(--sapHC_ReducedAltForeground,#999));--sapUiScrollBarHoverFaceColor:var(--sapScrollBar_Hover_FaceColor,var(--sapHC_StandardForeground,#fff));--sapUiPageHeaderBorderColor:var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiTileBorderColor:var(--sapTile_BorderColor,var(--sapHC_StandardForeground,#fff));--sapUiFontHeaderFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiDesktopFontFamily:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));--sapUiListGroupHeaderBackground:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_daypicker_item_weekend_background_color:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_select_disabled_background:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_switch_track_disabled_checked_bg:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_switch_track_disabled_semantic_checked_bg:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_switch_handle_disabled_semantic_checked_bg:var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858));--_ui5_daypicker_dayname_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_daypicker_weekname_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_select_disabled_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_track_disabled_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_track_disabled_semantic_checked_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_track_disabled_semantic_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_checked_bg:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_semantic_checked_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--_ui5_switch_handle_disabled_semantic_border_color:var(--sapUiHcReducedForeground,var(--sapHC_ReducedForeground,#666));--sapUiFieldPlaceholderTextColor:var(--sapUiHcReducedAltForeground,var(--sapHC_ReducedAltForeground,#999));--_ui5_switch_text_disabled_color:var(--sapUiHcReducedAltForeground,var(--sapHC_ReducedAltForeground,#999));--sapUiPageHeaderBackground:var(--sapPageHeader_Background,var(--sapBaseColor,var(--sapHC_StandardBackground,#000)));--sapUiObjectHeaderBackground:var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapHC_StandardBackground,#000)));--sapUiContentImagePlaceholderBackground:var(--sapContent_ImagePlaceholderBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiContentForegroundColor:var(--sapContent_ForegroundColor,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackground:var(--sapShell_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackgroundImage:var(--sapShell_BackgroundImage,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackgroundPatternColor:var(--sapShell_BackgroundPatternColor,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiShellBackgroundGradient:var(--sapShell_BackgroundGradient,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapButton_Emphasized_Background:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapButton_Reject_Background:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapButton_Accept_Background:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiButtonBackground:var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_HelpBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Hover_Background:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Hover_HelpBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Focus_Background:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_Focus_HelpBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_WarningBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_SuccessBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapField_InformationBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiFieldBackground:var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiGroupTitleBackground:var(--sapGroup_TitleBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiGroupContentBackground:var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiGroupFooterBackground:var(--sapGroup_FooterBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiToolbarBackground:var(--sapToolbar_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiListHeaderBackground:var(--sapList_HeaderBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiListBackground:var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiScrollBarTrackColor:var(--sapScrollBar_TrackColor,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiPageFooterBackground:var(--sapPageFooter_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiInfobarBackground:var(--sapInfobar_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiBlockLayerBackground:var(--sapBlockLayer_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapUiTileBackground:var(--sapTile_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000)));--sapActiveColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapContent_SearchHighlightColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapContent_BadgeBackground:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapButton_Hover_Background:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapField_InvalidBackground:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapList_HighlightColor:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapList_Hover_Background:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiHighlight:var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiShellHoverBackground:var(--sapUiBrand,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiShellActiveBackground:var(--sapUiBrand,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)));--sapUiTextTitle:var(--sapTitleColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentMarkerTextColor:var(--sapContent_MarkerTextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentLabelColor:var(--sapContent_LabelColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentContrastTextColor:var(--sapContent_ContrastTextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapShell_InteractiveTextColor:var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiShellTextColor:var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldTextColor:var(--sapField_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldRequiredColor:var(--sapField_RequiredColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiShellActiveTextColor:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiListTextColor:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_track_hover_border_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_text_on_semantic_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_text_off_semantic_color:var(--sapUiBaseText,var(--sapTextColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkActive:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkVisited:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkHover:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiLinkInverted:var(--sapUiLink,var(--sapLinkColor,var(--sapHC_StandardForeground,#fff)));--sapUiNegativeElement:var(--sapNegativeElementColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e)));--sapUiNegativeText:var(--sapNegativeTextColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e)));--sapErrorBorderColor:var(--sapErrorColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e)));--sapUiCriticalElement:var(--sapCriticalElementColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d)));--sapUiCriticalText:var(--sapCriticalTextColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d)));--sapWarningBorderColor:var(--sapWarningColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d)));--sapUiPositiveElement:var(--sapPositiveElementColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9)));--sapUiPositiveText:var(--sapPositiveTextColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9)));--sapSuccessBorderColor:var(--sapSuccessColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9)));--sapUiInformativeElement:var(--sapInformativeElementColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100)));--sapUiInformativeText:var(--sapInformativeTextColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100)));--sapInformationBorderColor:var(--sapInformationColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100)));--sapUiNeutralElement:var(--sapNeutralElementColor,var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff)));--sapUiNeutralText:var(--sapNeutralTextColor,var(--sapNeutralColor,var(--sapHC_NeutralColor,#fff)));--sapUiListSelectionBackgroundColor:var(--sapList_SelectionBackgroundColor,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--sapUiShellHoverToggleBackground:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--sapUiToggleButtonPressedBackground:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_checkbox_hover_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_radiobutton_hover_fill:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_positive_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_negative_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_critical_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--_ui5_tc_headerItemIcon_neutral_selected_background:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94)));--sapUiContentContrastIconColor:var(--sapContent_ContrastIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentNonInteractiveIconColor:var(--sapContent_NonInteractiveIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentMarkerIconColor:var(--sapContent_MarkerIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiScrollBarSymbolColor:var(--sapScrollBar_SymbolColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--ui5-busyindicator-color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_checkbox_checkmark_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_radiobutton_selected_fill:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_radiobutton_selected_warning_fill:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_radiobutton_selected_error_fill:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_tc_headerItemIcon_selected_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--_ui5_tc_headerItemIcon_semantic_selected_color:var(--sapUiContentIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentContrastFocusColor:var(--sapContent_ContrastFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_button_positive_border_focus_hover_color:var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_button_focus_after_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_calendar_header_middle_button_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_card_header_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_checkbox_focus_outline:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_monthpicker_item_focus_after_border:2px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_panel_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_tc_headerItem_focus_border:0.125rem dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--_ui5_yearpicker_item_focus_after_border:2px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,var(--sapHC_StandardForeground,#fff)));--sapUiContentContrastShadowColor:var(--sapContent_ContrastShadowColor,var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff)));--sapUiShadowLevel0:0 0 0 1px var(--sapUiContentShadowColor,var(--sapContent_ShadowColor,var(--sapHC_StandardForeground,#fff)));--sapUiDragAndDropActiveColor:var(--sapUiContentHelpColor,var(--sapContent_HelpColor,var(--sapHC_EnhancedForeground,#03b803)));--sapUiDragAndDropActiveBorderColor:var(--sapUiContentHelpColor,var(--sapContent_HelpColor,var(--sapHC_EnhancedForeground,#03b803)));--sapUiButtonHeaderDisabledTextColor:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,var(--sapHC_ReducedForeground,#666)));--_ui5_input_disabled_color:var(--sapUiContentDisabledTextColor,var(--sapContent_DisabledTextColor,var(--sapHC_ReducedForeground,#666)));--sapUiDragAndDropBorderColor:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_track_checked_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_handle_semantic_hover_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_switch_handle_semantic_checked_hover_border_color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonHoverBorderColor:var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonEmphasizedBorderColor:var(--sapButton_Emphasized_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonActiveBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonAcceptBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonRejectBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonLiteBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiToggleButtonPressedBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiSegmentedButtonBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiSegmentedButtonFooterBorderColor:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_calendar_header_arrow_button_border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_messagestrip_close_button_border:1px solid var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_token_border_color:var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldHoverBorderColor:var(--sapField_Hover_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldFocusBorderColor:var(--sapField_Focus_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldInvalidColor:var(--sapField_InvalidColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldWarningColor:var(--sapField_WarningColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldSuccessColor:var(--sapField_SuccessColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldInformationColor:var(--sapField_InformationColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldActiveBorderColor:var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_checkbox_inner_border:solid .125rem var(--sapUiFieldBorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiFieldReadOnlyHelpBackground:var(--sapField_ReadOnly_HelpBackground,var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858)));--_ui5_input_disabled_background:var(--sapUiFieldReadOnlyBackground,var(--sapField_ReadOnly_Background,var(--sapHC_ReducedBackground,#585858)));--_ui5_checkbox_inner_readonly_border:0.125rem solid var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_input_disabled_border_color:var(--sapUiFieldReadOnlyBorderColor,var(--sapField_ReadOnly_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--ui5-panel-bottom-border-color:var(--sapUiGroupTitleBorderColor,var(--sapGroup_TitleBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiNotifierSeparator:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiNotificationBarBorder:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiPageFooterBorderColor:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiCalendarColorToday:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-1:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-2:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-3:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-4:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-5:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-6:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-7:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-8:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-9:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-badge-border-color-scheme-10:var(--sapUiGroupContentBorderColor,var(--sapGroup_ContentBorderColor,var(--sapHC_StandardForeground,#fff)));--sapUiButtonActionSelectBorderColor:var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_daypicker_item_border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--ui5-listitem-border-bottom:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_monthpicker_item_border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--_ui5_yearpicker_item_border:1px solid var(--sapUiListBorderColor,var(--sapList_BorderColor,var(--sapHC_ReducedAltForeground,#999)));--sapUiScrollBarBorderColor:var(--sapScrollBar_BorderColor,var(--sapScrollBar_FaceColor,var(--sapHC_ReducedAltForeground,#999)));--sapUiObjectHeaderBorderColor:var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff)));--_ui5_card_border_color:var(--sapUiTileBorderColor,var(--sapTile_BorderColor,var(--sapHC_StandardForeground,#fff)));--ui5-group-header-listitem-background-color:var(--sapUiListGroupHeaderBackground,var(--sapUiHcReducedBackground,var(--sapHC_ReducedBackground,#585858)));--_ui5_tc_header_border_bottom:0.125rem solid var(--sapUiObjectHeaderBackground,var(--sapObjectHeader_Background,var(--sapBaseColor,var(--sapHC_StandardBackground,#000))));--sapUiShellContainerBackground:var(--sapUiShellBackground,var(--sapShell_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiShellAltContainerBackground:var(--sapUiShellBackground,var(--sapShell_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonEmphasizedBackground:var(--sapButton_Emphasized_Background,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonRejectBackground:var(--sapButton_Reject_Background,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonAcceptBackground:var(--sapButton_Accept_Background,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonLiteBackground:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiSegmentedButtonBackground:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_hover_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_hover_checked_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_border_color:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_disabled_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_track_disabled_semantic_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_handle_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_handle_disabled_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_switch_handle_disabled_semantic_bg:var(--sapUiButtonBackground,var(--sapButton_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldHelpBackground:var(--sapField_HelpBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldHoverBackground:var(--sapField_Hover_Background,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldHoverHelpBackground:var(--sapField_Hover_HelpBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldFocusBackground:var(--sapField_Focus_Background,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldFocusHelpBackground:var(--sapField_Focus_HelpBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldWarningBackground:var(--sapField_WarningBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldSuccessBackground:var(--sapField_SuccessBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiFieldInformationBackground:var(--sapField_InformationBackground,var(--sapField_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiNotificationBarBG:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiDragAndDropBackground:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiDragAndDropActiveBackground:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-1:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-2:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-3:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-4:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-5:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-6:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-7:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-8:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-9:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-badge-bg-color-scheme-10:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-panel-background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiButtonActionSelectBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiListFooterBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiListTableGroupHeaderBackground:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--_ui5_daypicker_item_othermonth_background_color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--ui5-listitem-background-color:var(--sapUiListBackground,var(--sapList_Background,var(--sapBackgroundColor,var(--sapHC_StandardBackground,#000))));--sapUiActive:var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiContentSearchHighlightColor:var(--sapContent_SearchHighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiContentBadgeBackground:var(--sapContent_BadgeBackground,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiButtonHoverBackground:var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiFieldInvalidBackground:var(--sapField_InvalidBackground,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiListHighlightColor:var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--sapUiListHoverBackground:var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_card_header_hover_bg:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_card_header_active_bg:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_weekend_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_othermonth_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_monthpicker_item_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_yearpicker_item_hover_background_color:var(--sapUiHighlight,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))));--_ui5_daypicker_item_othermonth_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--_ui5_daypicker_item_othermonth_hover_color:var(--sapUiContentLabelColor,var(--sapContent_LabelColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiFieldActiveTextColor:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiShellInteractiveTextColor:var(--sapShell_InteractiveTextColor,var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiShellGroupTextColor:var(--sapUiShellTextColor,var(--sapShell_TextColor,var(--sapTextColor,var(--sapHC_StandardForeground,#fff))));--sapUiErrorBorder:var(--sapErrorBorderColor,var(--sapErrorColor,var(--sapNegativeColor,var(--sapHC_NegativeColor,#ff5e5e))));--sapUiWarningBorder:var(--sapWarningBorderColor,var(--sapWarningColor,var(--sapCriticalColor,var(--sapHC_CriticalColor,#ffab1d))));--sapUiSuccessBorder:var(--sapSuccessBorderColor,var(--sapSuccessColor,var(--sapPositiveColor,var(--sapHC_PositiveColor,#9c9))));--sapUiInformationBorder:var(--sapInformationBorderColor,var(--sapInformationColor,var(--sapInformativeColor,var(--sapHC_InformativeColor,#7a5100))));--sapUiSegmentedButtonSelectedBackground:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94))));--_ui5_switch_handle_checked_bg:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94))));--_ui5_switch_track_checked_bg:var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHC_HighlightAltBackground,#0f5d94))));--sapUiDragAndDropColor:var(--sapUiContentNonInteractiveIconColor,var(--sapContent_NonInteractiveIconColor,var(--sapContent_IconColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonEmphasizedHoverBorderColor:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonLiteHoverBorderColor:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiToggleButtonPressedHoverBorderColor:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_token_hover_border_color:var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_button_emphasized_focused_border_color:var(--sapUiButtonEmphasizedBorderColor,var(--sapButton_Emphasized_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonEmphasizedActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonAcceptActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonRejectActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonLiteActiveBorderColor:var(--sapUiButtonActiveBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonAcceptHoverBorderColor:var(--sapUiButtonAcceptBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_button_positive_border_color:var(--sapUiButtonAcceptBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonRejectHoverBorderColor:var(--sapUiButtonRejectBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_switch_handle_checked_border_color:var(--sapUiToggleButtonPressedBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_select_hover_icon_left_border:0.0625rem solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_select_rtl_hover_icon_right_border:0.0625rem solid var(--sapUiFieldHoverBorderColor,var(--sapField_Hover_BorderColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_checkbox_inner_error_border:0.125rem dashed var(--sapUiFieldInvalidColor,var(--sapField_InvalidColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_checkbox_inner_warning_border:0.125rem dashed var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_checkbox_checkmark_warning_color:var(--sapUiFieldWarningColor,var(--sapField_WarningColor,var(--sapField_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiShadowHeader:inset 0 -0.125rem var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_header_box_shadow:inset 0 -0.25rem 0 -0.125rem var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_content_border_bottom:0.125rem solid var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItemContent_border_bottom:0.25rem solid var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_positive_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_negative_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_critical_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItem_neutral_selected_border_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItemIcon_border:1px solid var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_tc_headerItemIcon_color:var(--sapUiObjectHeaderBorderColor,var(--sapUiPageHeaderBorderColor,var(--sapPageHeader_BorderColor,var(--sapHC_StandardForeground,#fff))));--_ui5_card_header_border_color:var(--_ui5_card_border_color,var(--sapUiTileBorderColor,var(--sapTile_BorderColor,var(--sapHC_StandardForeground,#fff))));--sapUiButtonActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiFieldActiveBackground:var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonEmphasizedHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonAcceptHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonRejectHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonLiteHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiToggleButtonPressedHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiSegmentedButtonHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiSegmentedButtonFooterHoverBackground:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--_ui5_switch_handle_hover_bg:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--_ui5_switch_handle_semantic_hover_bg:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--_ui5_switch_handle_semantic_checked_hover_bg:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiListActiveBackground:var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiButtonLiteActionSelectHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiListSelectionHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiInfobarHoverBackground:var(--sapUiListHoverBackground,var(--sapList_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100)))));--sapUiSegmentedButtonSelectedHoverBorderColor:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiButtonHoverBorderColor,var(--sapButton_Hover_BorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)))));--_ui5_button_positive_border_hover_color:var(--sapUiButtonAcceptHoverBorderColor,var(--sapUiButtonAcceptBorderColor,var(--sapUiButtonBorderColor,var(--sapButton_BorderColor,var(--sapHC_StandardForeground,#fff)))));--sapUiButtonEmphasizedActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonAcceptActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonRejectActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonLiteActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiSegmentedButtonActiveBackground:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiButtonFooterHoverBackground:var(--sapUiButtonLiteHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiSegmentedButtonSelectedHoverBackground:var(--sapUiToggleButtonPressedHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--_ui5_switch_handle_checked_hover_bg:var(--sapUiToggleButtonPressedHoverBackground,var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapUiInfobarActiveBackground:var(--sapUiListActiveBackground,var(--sapUiListHighlightColor,var(--sapList_HighlightColor,var(--sapHighlightColor,var(--sapBrandColor,var(--sapHC_HighlightBackground,#7a5100))))));--sapBackgroundColorFade72:rgba(0,0,0,0.72);--sapUiAccent1Lighten50:#fff;--sapUiAccent2Lighten40:#fff;--sapUiAccent3Lighten46:#fff;--sapUiAccent4Lighten46:#fff;--sapUiAccent5Lighten32:#fff;--sapUiAccent6Lighten52:#fff;--sapUiAccent7Lighten64:#fff;--sapUiAccent8Lighten61:#fff;--sapUiAccent9Lighten37:#fff;--sapUiAccent10Lighten49:#fff;--sapUiLinkDarken15:#d9d9d9;--sapUiErrorBGLighten4:#0a0a0a;--sapUiSuccessBGLighten5:#0d0d0d;--sapUiSelectedDarken10:#0a4066;--sapUiShellBorderColorLighten30:#fff;--sapUiListTableGroupHeaderBorderColor:#fff;--sapUiListTableFooterBorder:#fff;--sapUiListTableFixedBorder:#fff;--sapUiListVerticalBorderColor:#fff;--sapUiListBorderColorLighten10:#b3b3b3;--sapUiContentForegroundColorLighten5:#0d0d0d;--sapUiContentForegroundColorLighten7:#121212;--sapUiContentForegroundColorDarken3:#000;--sapUiContentForegroundColorDarken5:#000;--sapUiContentForegroundColorDarken10:#000;--sapUiButtonBackgroundDarken7:#000;--sapUiButtonBackgroundDarken2:#000;--sapUiButtonBackgroundDarken10:#000;--sapUiListBackgroundDarken3:#000;--sapUiListBackgroundDarken10:#000;--sapUiListBackgroundDarken13:#000;--sapUiListBackgroundDarken15:#000;--sapUiListBackgroundDarken20:#000;--sapUiTileBackgroundDarken20:#000;--_ui5_link_subtle_color:var(--sapUiLinkDarken15,#d9d9d9);--_ui5_daypicker_item_selected_background_color:var(--sapUiSelectedDarken10,#0a4066);--_ui5_daypicker_item_selected_hover_background_color:var(--sapUiSelectedDarken10,#0a4066);--_ui5_monthpicker_item_selected_hover:var(--sapUiSelectedDarken10,#0a4066);--_ui5_monthpicker_item_selected_focus:var(--sapUiSelectedDarken10,#0a4066);--_ui5_yearpicker_item_selected_focus:var(--sapUiSelectedDarken10,#0a4066);--sapUiContentContrastShadowColorFade50:hsla(0,0%,100%,0.5);--sapUiContentContrastShadowColorFade60:hsla(0,0%,100%,0.6);--sapUiContentContrastShadowColorFade80:hsla(0,0%,100%,0.8);--sapUiFieldWarningColorDarken100:#000;--_ui5_daypicker_item_now_selected_text_border_color:var(--sapUiListBorderColorLighten10,#b3b3b3);--_ui5_daypicker_item_background_color:var(--sapUiContentForegroundColorLighten5,#0d0d0d);--_ui5_monthpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#121212);--_ui5_yearpicker_item_background_color:var(--sapUiContentForegroundColorLighten7,#121212);--_ui5_monthpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#000);--_ui5_yearpicker_item_focus_background_color:var(--sapUiContentForegroundColorDarken5,#000);--sapUiActiveLighten3:#895b00;--sapUiButtonHoverBackgroundDarken2:#704a00;--sapUiButtonHoverBackgroundDarken5:#614000;--sapUiButtonAcceptActiveBackgroundDarken5:#614000;--sapUiButtonAcceptActiveBackgroundLighten5:#946200;--sapUiButtonRejectActiveBackgroundDarken5:#614000;--sapUiButtonRejectActiveBackgroundLighten5:#946200;--_ui5_toggle_button_pressed_positive_hover:var(--sapUiButtonAcceptActiveBackgroundDarken5,#614000);--_ui5_toggle_button_pressed_negative_hover:var(--sapUiButtonRejectActiveBackgroundDarken5,#614000);--sapUiToggleButtonPressedBackgroundLighten50Desaturate47:#c1d4e1;--sapUiToggleButtonPressedBorderColorLighten19Desaturate46:#fff;--sapUiShadowLevel1:0 0 1rem 0 hsla(0,0%,100%,0.5),0 0 0 2px #fff;--sapUiShadowLevel2:0 0.25rem 2rem 0 hsla(0,0%,100%,0.6),0 0 0 2px #fff;--sapUiShadowLevel3:0 0.625rem 4rem 0 hsla(0,0%,100%,0.8),0 0 0 2px #fff;--sapUiCalloutShadow:var(--sapUiShadowLevel2,0 0.25rem 2rem 0 hsla(0,0%,100%,0.6),0 0 0 2px #fff);--sapGroup_TitleTextColor:#fff;--sapPageHeader_TextColor:#fff;--sapContent_ForegroundTextColor:#fff;--sapButton_TextColor:#fff;--sapList_HeaderTextColor:#fff;--sapPageFooter_TextColor:#fff;--sapTile_TextColor:#fff;--sapTile_IconColor:#fff;--sapHighlightTextColor:#fff;--sapUiGroupTitleTextColor:var(--sapGroup_TitleTextColor,#fff);--sapUiPageHeaderTextColor:var(--sapPageHeader_TextColor,#fff);--sapUiContentForegroundTextColor:var(--sapContent_ForegroundTextColor,#fff);--sapUiButtonIconColor:#fff;--sapUiButtonTextColor:var(--sapButton_TextColor,#fff);--sapUiListHeaderTextColor:var(--sapList_HeaderTextColor,#fff);--sapUiPageFooterTextColor:var(--sapPageFooter_TextColor,#fff);--sapUiTileTextColor:var(--sapTile_TextColor,#fff);--sapUiTileIconColor:var(--sapTile_IconColor,#fff);--sapUiHighlightTextColor:var(--sapHighlightTextColor,#fff);--_ui5_tc_headerItem_color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#fff));--_ui5_tc_overflowItem_default_color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#fff));--sapUiSegmentedButtonIconColor:#fff;--sapUiButtonHeaderTextColor:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#fff));--sapUiListTableGroupHeaderTextColor:#fff;--sapUiListFooterTextColor:var(--sapUiPageFooterTextColor,var(--sapPageFooter_TextColor,#fff));--sapUiSegmentedButtonSelectedIconColor:#fff;--sapUiListActiveTextColor:#fff;--sapUiSegmentedButtonActiveIconColor:#fff;--sapButton_Emphasized_TextColor:#fff;--sapButton_Hover_TextColor:#fff;--sapTile_TitleTextColor:#fff;--sapUiButtonFooterTextColor:#fff;--sapUiToggleButtonPressedTextColor:#fff;--sapUiButtonRejectTextColor:#fff;--sapUiButtonAcceptTextColor:#fff;--sapUiButtonLiteTextColor:#fff;--sapUiSegmentedButtonTextColor:#fff;--sapUiButtonActiveTextColor:#fff;--sapUiButtonEmphasizedTextColor:var(--sapButton_Emphasized_TextColor,#fff);--sapUiButtonHoverTextColor:var(--sapButton_Hover_TextColor,#fff);--sapUiTileTitleTextColor:var(--sapTile_TitleTextColor,#fff);--sapUiSegmentedButtonSelectedTextColor:var(--sapUiToggleButtonPressedTextColor,#fff);--sapUiSegmentedButtonActiveTextColor:#fff}";
-
-  registerThemeProperties("@ui5/webcomponents", "sap_belize", belizeThemeProperties);
-  registerThemeProperties("@ui5/webcomponents", "sap_belize_hcb", belizeHcbThemeProperties);
 
   var rLocale = /^((?:[A-Z]{2,3}(?:-[A-Z]{3}){0,3})|[A-Z]{4}|[A-Z]{5,8})(?:-([A-Z]{4}))?(?:-([A-Z]{2}|[0-9]{3}))?((?:-[0-9A-Z]{5,8}|-[0-9][0-9A-Z]{3})*)((?:-[0-9A-WYZ](?:-[0-9A-Z]{2,8})+)*)(?:-(X(?:-[0-9A-Z]{1,8})+))?$/i;
 
@@ -7938,23 +7938,6 @@
     };
   }
 
-  var Gregorian = UniversalDate.extend('sap.ui.core.date.Gregorian', {
-    constructor: function constructor() {
-      this.oDate = this.createDate(Date, arguments);
-      this.sCalendarType = CalendarType.Gregorian;
-    }
-  });
-
-  Gregorian.UTC = function () {
-    return Date.UTC.apply(Date, arguments);
-  };
-
-  Gregorian.now = function () {
-    return Date.now();
-  };
-
-  CalendarClassRegistry.setCalendarClass(CalendarType.Gregorian, Gregorian);
-
   var Buddhist = UniversalDate.extend('sap.ui.core.date.Buddhist', {
     constructor: function constructor() {
       var aArgs = arguments;
@@ -10415,7 +10398,7 @@
 
         if (!(child instanceof HTMLElement)) {
           return defaultSlot;
-        } // Check for explicitly given logical slot
+        } // Check for explicitly given logical slot - for backward compatibility, should not be used
 
 
         var ui5Slot = child.getAttribute("data-ui5-slot");
@@ -14439,28 +14422,28 @@
     Emphasized: "Emphasized"
   };
 
-  var ButtonType =
+  var ButtonDesign =
   /*#__PURE__*/
   function (_DataType) {
-    _inherits(ButtonType, _DataType);
+    _inherits(ButtonDesign, _DataType);
 
-    function ButtonType() {
-      _classCallCheck(this, ButtonType);
+    function ButtonDesign() {
+      _classCallCheck(this, ButtonDesign);
 
-      return _possibleConstructorReturn(this, _getPrototypeOf(ButtonType).apply(this, arguments));
+      return _possibleConstructorReturn(this, _getPrototypeOf(ButtonDesign).apply(this, arguments));
     }
 
-    _createClass(ButtonType, null, [{
+    _createClass(ButtonDesign, null, [{
       key: "isValid",
       value: function isValid(value) {
         return !!ButtonTypes[value];
       }
     }]);
 
-    return ButtonType;
+    return ButtonDesign;
   }(DataType);
 
-  ButtonType.generataTypeAcessors(ButtonTypes);
+  ButtonDesign.generataTypeAcessors(ButtonTypes);
 
   function _templateObject3() {
     var data = _taggedTemplateLiteral(["<span id=\"", "-content\" class=\"", "\"><bdi><slot></slot></bdi></span>\t\t"]);
@@ -14483,7 +14466,7 @@
   }
 
   function _templateObject$4() {
-    var data = _taggedTemplateLiteral(["<button\t\ttype=\"button\"\t\tclass=\"", "\"\t\t?disabled=\"", "\"\t\taria-disabled=\"", "\"\t\tdata-sap-focus-ref\t\t\t\tdir=\"", "\"\t>\t\t", "", "</button>"]);
+    var data = _taggedTemplateLiteral(["<button\t\ttype=\"button\"\t\tclass=\"", "\"\t\t?disabled=\"", "\"\t\tdata-sap-focus-ref\t\t\t\tdir=\"", "\"\t>\t\t", "", "</button>"]);
 
     _templateObject$4 = function _templateObject() {
       return data;
@@ -14493,7 +14476,7 @@
   }
 
   var block0$3 = function block0(context) {
-    return html(_templateObject$4(), ifDefined(classMap(context.classes.main)), ifDefined(context.disabled), ifDefined(context.ariaDisabled), ifDefined(context.rtl), context.icon ? block1$2(context) : undefined, context.textContent ? block2(context) : undefined);
+    return html(_templateObject$4(), ifDefined(classMap(context.classes.main)), ifDefined(context.disabled), ifDefined(context.rtl), context.icon ? block1$2(context) : undefined, context.textContent ? block2(context) : undefined);
   };
 
   var block1$2 = function block1(context) {
@@ -14516,18 +14499,18 @@
     /** @lends sap.ui.webcomponents.main.Button.prototype */
     {
       /**
-       * Defines the <code>ui5-button</code> type.
+       * Defines the <code>ui5-button</code> design.
        * </br></br>
        * <b>Note:</b> Available options are "Default", "Emphasized", "Positive",
        * "Negative", and "Transparent".
        *
-       * @type {ButtonType}
+       * @type {ButtonDesign}
        * @defaultvalue "Default"
        * @public
        */
-      type: {
-        type: ButtonType,
-        defaultValue: ButtonType.Default
+      design: {
+        type: ButtonDesign,
+        defaultValue: ButtonDesign.Default
       },
 
       /**
@@ -14788,7 +14771,7 @@
             sapMBtnNoText: !this.text.length,
             sapMBtnDisabled: this.disabled,
             sapMBtnIconEnd: this.iconEnd
-          }, _defineProperty(_main, "sapMBtn".concat(this.type), true), _defineProperty(_main, "sapUiSizeCompact", getCompactSize()), _main),
+          }, _defineProperty(_main, "sapMBtn".concat(this.design), true), _defineProperty(_main, "sapUiSizeCompact", getCompactSize()), _main),
           icon: {
             sapWCIconInButton: true
           },
@@ -14796,11 +14779,6 @@
             sapMBtnText: true
           }
         };
-      }
-    }, {
-      key: "ariaDisabled",
-      get: function get() {
-        return this.disabled ? "true" : undefined;
       }
     }, {
       key: "rtl",
@@ -15856,7 +15834,7 @@
   }
 
   function _templateObject$7() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><header class=\"", "\"\t\t@click=\"", "\"\t\t@keydown=\"", "\"\t\t@keyup=\"", "\"\t\ttabindex=\"0\">\t\t", "", "<div class=\"sapFCardHeaderText\">\t\t\t", "", "</div><span class=\"sapFCardStatus\">", "</span></header><section class=\"sapFCardContent\"><slot></slot></section></div>"]);
+    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><header class=\"", "\"\t\t@click=\"", "\"\t\t@keydown=\"", "\"\t\t@keyup=\"", "\"\t\ttabindex=\"", "\"\t\trole=\"", "\">\t\t", "", "<div class=\"sapFCardHeaderText\">\t\t\t", "", "</div><span part=\"status\" class=\"sapFCardStatus\">", "</span></header><section class=\"sapFCardContent\"><slot></slot></section></div>"]);
 
     _templateObject$7 = function _templateObject() {
       return data;
@@ -15866,7 +15844,7 @@
   }
 
   var block0$6 = function block0(context) {
-    return html(_templateObject$7(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(classMap(context.classes.header)), ifDefined(context._headerClick), ifDefined(context._headerKeydown), ifDefined(context._headerKeyup), context.image ? block1$4(context) : undefined, context.icon ? block2$1(context) : undefined, context.heading ? block3(context) : undefined, context.subtitle ? block4(context) : undefined, ifDefined(context.status));
+    return html(_templateObject$7(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(classMap(context.classes.header)), ifDefined(context._headerClick), ifDefined(context._headerKeydown), ifDefined(context._headerKeyup), ifDefined(context.tabindex), ifDefined(context.role), context.image ? block1$4(context) : undefined, context.icon ? block2$1(context) : undefined, context.heading ? block3(context) : undefined, context.subtitle ? block4(context) : undefined, ifDefined(context.status));
   };
 
   var block1$4 = function block1(context) {
@@ -15885,7 +15863,7 @@
     return html(_templateObject5(), ifDefined(context.subtitle));
   };
 
-  var cardCss = ":host(ui5-card:not([hidden])){display:inline-block;width:100%}ui5-card:not([hidden]){display:inline-block;width:100%}.sapFCard{width:100%;height:100%;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-shadow:var(--sapUiShadowLevel0,0 0 0 1px rgba(0,0,0,.15));border-radius:.25rem;border:1px solid var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc));overflow:hidden;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapUiFontSize,16px)}.sapFCardHeader{position:relative;display:flex;align-items:flex-start;background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:1px solid var(--_ui5_card_header_border_color,var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc)));padding:var(--_ui5_card_content_padding,1rem)}.sapFCard.sapFCardNoContent{height:auto}.sapFCard.sapFCardNoContent .sapFCardHeader{border-bottom:none}.sapFCardHeader:focus{outline:none}.sapFCardHeader:focus:before{content:\"\";position:absolute;border:var(--_ui5_card_header_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapFCardHeader:hover{cursor:pointer;background:var(--_ui5_card_header_hover_bg,#fafafa)}.sapFCardHeader.sapFCardHeaderActive,.sapFCardHeader:active{background:var(--_ui5_card_header_active_bg,#f0f0f0)}.sapFCardHeader .sapFCardHeaderText{flex:1}.sapFCardHeader .sapFCardAvatar{height:3rem;width:3rem;display:flex;align-items:center;justify-content:center;margin-right:.75rem}.sapFCardHeader .sapFCardAvatar.sapFCardHeaderImg{border-radius:50%}.sapFCardHeader .sapFCardAvatar .sapFCardHeaderIcon{font-size:1.5rem;color:var(--sapUiTileIconColor,var(--sapTile_IconColor,#6a6d70))}.sapFCardHeader .sapFCardStatus{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem);color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));text-align:left;line-height:1.125rem;padding-left:1rem;margin-left:auto;text-wrap:avoid;display:inline-block}.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));font-size:var(--sapMFontHeader5Size,1rem);font-weight:var(--sapUiFontHeaderWeight,normal);color:var(--sapUiTileTitleTextColor,var(--sapTile_TitleTextColor,#32363a));max-height:3.5rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));margin-top:.5rem;max-height:2.1rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle,.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:left;text-overflow:ellipsis;white-space:normal;word-wrap:break-word;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;max-width:100%}[dir=rtl] .sapFCardHeader .sapFCardAvatar{margin-left:.75rem;margin-right:0}[dir=rtl] .sapFCardHeader .sapFCardStatus{padding-right:1rem;padding-left:0;margin-right:auto}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:right}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{text-align:right}";
+  var cardCss = ":host(ui5-card:not([hidden])){display:inline-block;width:100%}ui5-card:not([hidden]){display:inline-block;width:100%}.sapFCard{width:100%;height:100%;color:var(--sapUiGroupTitleTextColor,var(--sapGroup_TitleTextColor,#32363a));background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));box-shadow:var(--sapUiShadowLevel0,0 0 0 1px rgba(0,0,0,.15));border-radius:.25rem;border:1px solid var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc));overflow:hidden;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapUiFontSize,16px)}.sapFCardHeader{position:relative;display:flex;align-items:flex-start;background:var(--sapUiTileBackground,var(--sapTile_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-bottom:1px solid var(--_ui5_card_header_border_color,var(--_ui5_card_border_color,var(--sapUiTileBackgroundDarken20,#ccc)));padding:var(--_ui5_card_content_padding,1rem)}.sapFCard.sapFCardNoContent{height:auto}.sapFCard.sapFCardNoContent .sapFCardHeader{border-bottom:none}.sapFCardHeader:focus{outline:none}.sapFCardHeader.sapFCardHeaderInteractive:focus:before{content:\"\";position:absolute;border:var(--_ui5_card_header_focus_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));pointer-events:none;top:1px;left:1px;right:1px;bottom:1px}.sapFCardHeader.sapFCardHeaderInteractive:hover{cursor:pointer;background:var(--_ui5_card_header_hover_bg,#fafafa)}.sapFCardHeader.sapFCardHeaderActive,.sapFCardHeader.sapFCardHeaderInteractive:active{background:var(--_ui5_card_header_active_bg,#f0f0f0)}.sapFCardHeader .sapFCardHeaderText{flex:1}.sapFCardHeader .sapFCardAvatar{height:3rem;width:3rem;display:flex;align-items:center;justify-content:center;margin-right:.75rem}.sapFCardHeader .sapFCardAvatar.sapFCardHeaderImg{border-radius:50%}.sapFCardHeader .sapFCardAvatar .sapFCardHeaderIcon{font-size:1.5rem;color:var(--sapUiTileIconColor,var(--sapTile_IconColor,#6a6d70))}.sapFCardHeader .sapFCardStatus{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontSmallSize,.75rem);color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));text-align:left;line-height:1.125rem;padding-left:1rem;margin-left:auto;text-wrap:avoid;display:inline-block}.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{font-family:var(--sapUiFontHeaderFamily,var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif)));font-size:var(--sapMFontHeader5Size,1rem);font-weight:var(--sapUiFontHeaderWeight,normal);color:var(--sapUiTileTitleTextColor,var(--sapTile_TitleTextColor,#32363a));max-height:3.5rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);font-weight:400;color:var(--sapUiTileTextColor,var(--sapTile_TextColor,#6a6d70));margin-top:.5rem;max-height:2.1rem}.sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle,.sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:left;text-overflow:ellipsis;white-space:normal;word-wrap:break-word;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;max-width:100%}[dir=rtl] .sapFCardHeader .sapFCardAvatar{margin-left:.75rem;margin-right:0}[dir=rtl] .sapFCardHeader .sapFCardStatus{padding-right:1rem;padding-left:0;margin-right:auto}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardTitle{text-align:right}[dir=rtl] .sapFCardHeader .sapFCardHeaderText .sapFCardSubtitle{text-align:right}";
 
   /**
    * @public
@@ -15942,6 +15920,17 @@
       },
 
       /**
+       * Defines if the <code>ui5-card</code> header would be interactive,
+       * e.g gets hover effect, gets focused and <code>headerPress</code> event is fired, when it is pressed.
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      headerInteractive: {
+        type: Boolean
+      },
+
+      /**
        * Defines image source URI or built-in icon font URI.
        * </br></br>
        * <b>Note:</b>
@@ -15951,8 +15940,7 @@
        * @public
        */
       avatar: {
-        type: String,
-        defaultValue: null
+        type: String
       },
       _headerActive: {
         type: Boolean
@@ -15964,7 +15952,8 @@
       /**
        * Fired when the <code>ui5-card</code> header is pressed
        * by click/tap or by using the Enter or Space key.
-       *
+       * <br><br>
+       * <b>Note:</b> The event would be fired only if the <code>headerInteractive</code> property is set to true.
        * @event
        * @public
        * @since 0.10.0
@@ -15981,6 +15970,9 @@
    * The content area of a <code>ui5-card</code> can be arbitrary HTML content.
    * The header can be used through several properties, such as:
    * <code>heading</code>, <code>subtitle</code>, <code>status</code> and <code>avatar</code>.
+   *
+   * <h3>Keyboard handling</h3>
+   * In case you enable <code>headerInteractive</cdoe> property, you can press the <code>ui5-card</code> header by Space and Enter keys.
    *
    * <h3>ES6 Module Import</h3>
    *
@@ -16008,11 +16000,17 @@
     _createClass(Card, [{
       key: "_headerClick",
       value: function _headerClick() {
-        this.fireEvent("headerPress");
+        if (this.headerInteractive) {
+          this.fireEvent("headerPress");
+        }
       }
     }, {
       key: "_headerKeydown",
       value: function _headerKeydown(event) {
+        if (!this.headerInteractive) {
+          return;
+        }
+
         var enter = isEnter(event);
         var space = isSpace(event);
         this._headerActive = enter || space;
@@ -16029,6 +16027,10 @@
     }, {
       key: "_headerKeyup",
       value: function _headerKeyup(event) {
+        if (!this.headerInteractive) {
+          return;
+        }
+
         var space = isSpace(event);
         this._headerActive = false;
 
@@ -16046,7 +16048,8 @@
           },
           header: {
             "sapFCardHeader": true,
-            "sapFCardHeaderActive": this._headerActive
+            "sapFCardHeaderInteractive": this.headerInteractive,
+            "sapFCardHeaderActive": this.headerInteractive && this._headerActive
           }
         };
       }
@@ -16059,6 +16062,16 @@
       key: "image",
       get: function get() {
         return !!this.avatar && !this.icon;
+      }
+    }, {
+      key: "role",
+      get: function get() {
+        return this.headerInteractive ? "button" : undefined;
+      }
+    }, {
+      key: "tabindex",
+      get: function get() {
+        return this.headerInteractive ? "0" : undefined;
       }
     }, {
       key: "rtl",
@@ -18365,6 +18378,41 @@
     return sAllowedCharacters;
   };
 
+  /**
+   * Different calendar types.
+   */
+
+  var CalendarTypes = {
+    Gregorian: "Gregorian",
+    Islamic: "Islamic",
+    Japanese: "Japanese",
+    Buddhist: "Buddhist",
+    Persian: "Persian"
+  };
+
+  var CalendarType$1 =
+  /*#__PURE__*/
+  function (_DataType) {
+    _inherits(CalendarType, _DataType);
+
+    function CalendarType() {
+      _classCallCheck(this, CalendarType);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(CalendarType).apply(this, arguments));
+    }
+
+    _createClass(CalendarType, null, [{
+      key: "isValid",
+      value: function isValid(value) {
+        return !!CalendarTypes[value];
+      }
+    }]);
+
+    return CalendarType;
+  }(DataType);
+
+  CalendarType$1.generataTypeAcessors(CalendarTypes);
+
   var CalendarDate =
   /*#__PURE__*/
   function () {
@@ -18603,43 +18651,863 @@
     }
   }
 
-  /**
-   * Different calendar types.
-   */
+  var rFocusable = /^(?:input|select|textarea|button)$/i,
+      rClickable = /^(?:a|area)$/i;
 
-  var CalendarTypes = {
-    Gregorian: "Gregorian",
-    Islamic: "Islamic",
-    Japanese: "Japanese",
-    Buddhist: "Buddhist",
-    Persian: "Persian"
-  };
-
-  var CalendarType$1 =
+  var FocusHelper =
   /*#__PURE__*/
-  function (_DataType) {
-    _inherits(CalendarType, _DataType);
-
-    function CalendarType() {
-      _classCallCheck(this, CalendarType);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(CalendarType).apply(this, arguments));
+  function () {
+    function FocusHelper() {
+      _classCallCheck(this, FocusHelper);
     }
 
-    _createClass(CalendarType, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!CalendarTypes[value];
+    _createClass(FocusHelper, null, [{
+      key: "hasTabIndex",
+      value: function hasTabIndex(domElement) {
+        if (domElement.disabled) {
+          return false;
+        }
+
+        var tabIndex = domElement.getAttribute("tabindex");
+
+        if (tabIndex !== null && tabIndex !== undefined) {
+          return parseInt(tabIndex) >= 0;
+        }
+
+        return rFocusable.test(domElement.nodeName) || rClickable.test(domElement.nodeName) && domElement.href;
+      }
+    }, {
+      key: "isHidden",
+      value: function isHidden(domElement) {
+        if (domElement.nodeName === "SLOT") {
+          return false;
+        }
+
+        var rect = domElement.getBoundingClientRect();
+        return domElement.offsetWidth <= 0 && domElement.offsetHeight <= 0 || domElement.style.visibility === "hidden" || rect.width === 0 && 0 && rect.height === 0;
+      }
+    }, {
+      key: "isVisible",
+      value: function isVisible(domElement) {
+        return !FocusHelper.isHidden(domElement);
+      }
+    }, {
+      key: "getCorrectElement",
+      value: function getCorrectElement(element) {
+        if (element instanceof UI5Element) {
+          // Focus the CustomElement itself or provide getDomRef of each ?
+          return element.getFocusDomRef();
+        }
+
+        return element;
+      }
+    }, {
+      key: "findFocusableElement",
+      value: function findFocusableElement(container, forward) {
+        var child;
+
+        if (container.assignedNodes && container.assignedNodes()) {
+          var assignedElements = container.assignedNodes();
+          child = forward ? assignedElements[0] : assignedElements[assignedElements.length - 1];
+        } else {
+          child = forward ? container.firstChild : container.lastChild;
+        }
+
+        var focusableDescendant;
+
+        while (child) {
+          var originalChild = child;
+          child = FocusHelper.getCorrectElement(child);
+
+          if (!child) {
+            return null;
+          }
+
+          if (child.nodeType === 1 && !FocusHelper.isHidden(child)) {
+            if (FocusHelper.hasTabIndex(child)) {
+              return child;
+            }
+
+            focusableDescendant = FocusHelper.findFocusableElement(child, forward);
+
+            if (focusableDescendant) {
+              return focusableDescendant;
+            }
+          }
+
+          child = forward ? originalChild.nextSibling : originalChild.previousSibling;
+        }
+
+        return null;
+      }
+    }, {
+      key: "findFirstFocusableElement",
+      value: function findFirstFocusableElement(container) {
+        if (!container || FocusHelper.isHidden(container)) {
+          return null;
+        }
+
+        return FocusHelper.findFocusableElement(container, true);
+      }
+    }, {
+      key: "findLastFocusableElement",
+      value: function findLastFocusableElement(container) {
+        if (!container || FocusHelper.isHidden(container)) {
+          return null;
+        }
+
+        return FocusHelper.findFocusableElement(container, false);
+      }
+    }, {
+      key: "hasTabbableContent",
+      value: function hasTabbableContent(node) {
+        var hasTabableContent = false,
+            content = node.children; // eslint-disable-line
+
+        if (content) {
+          hasTabableContent = FocusHelper._hasTabbableContent(content);
+        } // If the node is inside Custom Element,
+        // check the content in the 'light' DOM.
+
+
+        if (!hasTabableContent && FocusHelper._isInsideShadowRoot(node)) {
+          var customElement = FocusHelper._getCustomElement(node);
+
+          var _content = customElement.children; // eslint-disable-line
+
+          if (_content) {
+            hasTabableContent = FocusHelper._hasTabbableContent(_content);
+          }
+        }
+
+        return hasTabableContent;
+      }
+    }, {
+      key: "getLastTabbableElement",
+      value: function getLastTabbableElement(node) {
+        var tabbableContent = FocusHelper.getTabbableContent(node);
+        return tabbableContent.length ? tabbableContent[tabbableContent.length - 1] : null;
+      }
+    }, {
+      key: "getTabbableContent",
+      value: function getTabbableContent(node) {
+        var aTabbableContent = [],
+            content = node.children; // eslint-disable-line
+
+        if (content) {
+          aTabbableContent = FocusHelper._getTabbableContent(content);
+        }
+
+        if (FocusHelper._isInsideShadowRoot(node)) {
+          var customElement = FocusHelper._getCustomElement(node);
+
+          var _content2 = customElement.children; // eslint-disable-line
+
+          if (_content2) {
+            aTabbableContent = [].concat(_toConsumableArray(aTabbableContent), _toConsumableArray(FocusHelper._getTabbableContent(_content2)));
+          }
+        }
+
+        return aTabbableContent;
+      }
+    }, {
+      key: "_getTabbableContent",
+      value: function _getTabbableContent(nodes) {
+        var aTabbableContent = [];
+        Array.from(nodes).forEach(function (node) {
+          var currentNode = node;
+
+          while (currentNode) {
+            if (FocusHelper._hasShadowRoot(currentNode)) {
+              // as the content is in the <span> template and it is always 2nd child
+              var children = currentNode.shadowRoot.children;
+              currentNode = children.length === 1 ? children[0] : children[1];
+            }
+
+            if (FocusHelper._isNodeTabbable(currentNode)) {
+              aTabbableContent.push(currentNode);
+            }
+
+            currentNode = currentNode.children && currentNode.children.length && currentNode.children[0];
+          }
+        });
+        return aTabbableContent.filter(FocusHelper.isVisible);
+      }
+    }, {
+      key: "_hasTabbableContent",
+      value: function _hasTabbableContent(nodes) {
+        var hasTabableContent = false;
+        Array.from(nodes).forEach(function (node) {
+          var currentNode = node;
+
+          while (currentNode && !hasTabableContent) {
+            if (FocusHelper._hasShadowRoot(currentNode)) {
+              // as the content is in the <span> template and it is always 2nd child
+              var children = currentNode.shadowRoot.children;
+              currentNode = children.length === 1 ? children[0] : children[1];
+            }
+
+            hasTabableContent = FocusHelper._isNodeTabbable(currentNode);
+            currentNode = currentNode.children.length && currentNode.children[0];
+          }
+        });
+        return hasTabableContent;
+      }
+    }, {
+      key: "_isNodeTabbable",
+      value: function _isNodeTabbable(node) {
+        if (!node) {
+          return false;
+        }
+
+        var nodeName = node.nodeName.toLowerCase();
+
+        if (node.hasAttribute("data-sap-no-tab-ref")) {
+          return false;
+        } // special tags
+
+
+        if (nodeName === "a") {
+          return !!node.href;
+        }
+
+        if (/input|select|textarea|button|object/.test(nodeName)) {
+          return !node.disabled;
+        }
+
+        return FocusHelper.hasTabIndex(node);
+      }
+    }, {
+      key: "_hasShadowRoot",
+      value: function _hasShadowRoot(node) {
+        return !!(node && node.shadowRoot);
+      }
+    }, {
+      key: "_isInsideShadowRoot",
+      value: function _isInsideShadowRoot(node) {
+        return !!(node && node.getRootNode() && node.getRootNode().host);
+      }
+    }, {
+      key: "_getCustomElement",
+      value: function _getCustomElement(node) {
+        return node.getRootNode().host;
       }
     }]);
 
-    return CalendarType;
+    return FocusHelper;
+  }();
+
+  var PopoverPlacementTypes = {
+    /**
+     * Popover will be placed at the left side of the reference element.
+     * @public
+     */
+    Left: "Left",
+
+    /**
+     * Popover will be placed at the right side of the reference element.
+     * @public
+     */
+    Right: "Right",
+
+    /**
+     * Popover will be placed at the top of the reference element.
+     * @public
+     */
+    Top: "Top",
+
+    /**
+     * Popover will be placed at the bottom of the reference element.
+     * @public
+     */
+    Bottom: "Bottom"
+  };
+
+  var PopoverPlacementType =
+  /*#__PURE__*/
+  function (_DataType) {
+    _inherits(PopoverPlacementType, _DataType);
+
+    function PopoverPlacementType() {
+      _classCallCheck(this, PopoverPlacementType);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(PopoverPlacementType).apply(this, arguments));
+    }
+
+    _createClass(PopoverPlacementType, null, [{
+      key: "isValid",
+      value: function isValid(value) {
+        return !!PopoverPlacementTypes[value];
+      }
+    }]);
+
+    return PopoverPlacementType;
   }(DataType);
 
-  CalendarType$1.generataTypeAcessors(CalendarTypes);
+  PopoverPlacementType.generataTypeAcessors(PopoverPlacementTypes);
+
+  var PopoverVerticalAligns = {
+    Center: "Center",
+    Top: "Top",
+    Bottom: "Bottom",
+    Stretch: "Stretch"
+  };
+
+  var PopoverVerticalAlign =
+  /*#__PURE__*/
+  function (_DataType) {
+    _inherits(PopoverVerticalAlign, _DataType);
+
+    function PopoverVerticalAlign() {
+      _classCallCheck(this, PopoverVerticalAlign);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(PopoverVerticalAlign).apply(this, arguments));
+    }
+
+    _createClass(PopoverVerticalAlign, null, [{
+      key: "isValid",
+      value: function isValid(value) {
+        return !!PopoverVerticalAligns[value];
+      }
+    }]);
+
+    return PopoverVerticalAlign;
+  }(DataType);
+
+  PopoverVerticalAlign.generataTypeAcessors(PopoverVerticalAligns);
+
+  var PopoverHorizontalAligns = {
+    Center: "Center",
+    Left: "Left",
+    Right: "Right",
+    Stretch: "Stretch"
+  };
+
+  var PopoverHorizontalAlign =
+  /*#__PURE__*/
+  function (_DataType) {
+    _inherits(PopoverHorizontalAlign, _DataType);
+
+    function PopoverHorizontalAlign() {
+      _classCallCheck(this, PopoverHorizontalAlign);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(PopoverHorizontalAlign).apply(this, arguments));
+    }
+
+    _createClass(PopoverHorizontalAlign, null, [{
+      key: "isValid",
+      value: function isValid(value) {
+        return !!PopoverHorizontalAligns[value];
+      }
+    }]);
+
+    return PopoverHorizontalAlign;
+  }(DataType);
+
+  PopoverHorizontalAlign.generataTypeAcessors(PopoverHorizontalAligns);
+
+  var styles = ".sapMPopupFrame{width:0;height:0;display:none;visibility:visible}.sapMPopupFrameOpen{display:inline}.sapMPopup{min-width:6.25rem;box-sizing:border-box;outline:none;max-width:100%;max-height:100%;background:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:none;box-shadow:var(--sapUiShadowLevel2,0 .625rem 1.875rem 0 rgba(0,0,0,.15),0 0 0 1px rgba(0,0,0,.15));border-radius:.25rem;min-height:2rem}.sapMPopup .sapMPopupHeader{margin:0;color:var(--sapUiPageHeaderTextColor,var(--sapPageHeader_TextColor,#32363a));font-size:1rem;font-weight:400;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));border-bottom:1px solid var(--sapUiPageFooterBorderColor,#d9d9d9)}.sapMPopup .sapMPopupHeaderText{padding:0 .25rem;text-align:center;height:3rem;line-height:3rem}.sapMPopup .sapMPopupFooter{font-size:1rem;font-weight:400;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));background:var(--sapUiPageFooterBackground,var(--sapPageFooter_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-top:1px solid var(--sapUiPageFooterBorderColor,#d9d9d9);color:var(--sapUiPageFooterTextColor,var(--sapPageFooter_TextColor,#32363a))}.sapMPopup .sapMPopupContent{overflow:auto;position:relative;box-sizing:border-box;background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-radius:.25rem}.sapMPopup .sapMPopupContent,.sapMPopup .sapMPopupFooter{border-bottom-left-radius:.25rem;border-bottom-right-radius:.25rem}.sapMPopup .sapMPopupScroll{vertical-align:middle;box-sizing:border-box;padding:var(--_ui5_popover_content_padding,.4375em)}.sapUiBLy{background-color:#000;opacity:.6;filter:alpha(opacity=60);top:0;left:0;right:0;bottom:0;position:fixed;outline:0 none}.sapMPopupBlockLayer{visibility:visible}.sapMPopupBlockLayerHidden{display:none}";
+
+  /**
+   * @public
+   */
+
+  var metadata$8 = {
+    "abstract": true,
+    slots:
+    /** @lends  sap.ui.webcomponents.main.Popup.prototype */
+    {
+      /**
+       * Defines the content of the Web Component.
+       * @type {HTMLElement[]}
+       * @slot
+       * @public
+       */
+      content: {
+        type: HTMLElement,
+        multiple: true
+      },
+
+      /**
+       * Defines the header HTML Element.
+       *
+       * @type {HTMLElement}
+       * @slot
+       * @public
+       */
+      header: {
+        type: HTMLElement
+      },
+
+      /**
+       * Defines the footer HTML Element.
+       *
+       * @type {HTMLElement}
+       * @slot
+       * @public
+       */
+      footer: {
+        type: HTMLElement
+      }
+    },
+    properties:
+    /** @lends  sap.ui.webcomponents.main.Popup.prototype */
+    {
+      /**
+       * Defines the ID of the HTML Element, which will get the initial focus.
+       *
+       * @type {string}
+       * @defaultvalue: ""
+       * @public
+       */
+      initialFocus: {
+        type: String,
+        association: true
+      },
+
+      /**
+       * Defines whether the header is hidden.
+       *
+       * @type {Boolean}
+       * @defaultvalue false
+       * @public
+       */
+      noHeader: {
+        type: Boolean
+      },
+
+      /**
+       * Defines the header text.
+       *
+       * @type {string}
+       * @defaultvalue: ""
+       * @public
+       */
+      headerText: {
+        type: String
+      },
+      _isOpen: {
+        type: Boolean
+      },
+      _zIndex: {
+        type: Integer
+      },
+      _hideBlockLayer: {
+        type: Boolean
+      }
+    },
+    events:
+    /** @lends  sap.ui.webcomponents.main.Popup.prototype */
+    {
+      /**
+       * Fired before the component is opened.
+       *
+       * @public
+       * @event
+       */
+      beforeOpen: {},
+
+      /**
+       * Fired after the component is opened.
+       *
+       * @public
+       * @event
+       */
+      afterOpen: {},
+
+      /**
+       * Fired before the component is closed.
+       *
+       * @public
+       * @event
+       * @param {Boolean} escPressed Indicates that <code>ESC</code> key has triggered the event.
+       */
+      beforeClose: {
+        escPressed: {
+          type: Boolean
+        }
+      },
+
+      /**
+       * Fired after the component is closed.
+       *
+       * @public
+       * @event
+       */
+      afterClose: {}
+    }
+  };
+  var openedPopups = [];
+  var currentZIndex = 100;
+  var isBodyScrollingDisabled = false;
+  var customBLyBackStyleInserted = false;
+
+  function getParentHost(node) {
+    while (node && !node.host) {
+      node = node.parentNode;
+    }
+
+    return node && node.host;
+  }
+
+  function createBLyBackStyle() {
+    if (customBLyBackStyleInserted) {
+      return;
+    }
+
+    customBLyBackStyleInserted = true;
+    var stylesheet = document.styleSheets[0];
+    stylesheet.insertRule(".sapUiBLyBack {overflow: hidden;position: fixed;width:100%;height: 100%;}", 0);
+  }
+
+  function updateBlockLayers() {
+    var popup,
+        i,
+        hasModal = false;
+
+    for (i = openedPopups.length - 1; i >= 0; i--) {
+      popup = openedPopups[i];
+
+      if (hasModal) {
+        popup._hideBlockLayer = true;
+      } else {
+        if (popup.isModal()) {
+          // eslint-disable-line
+          popup._hideBlockLayer = false;
+          hasModal = true;
+        }
+      }
+    }
+
+    updateBodyScrolling(hasModal);
+  }
+
+  function updateBodyScrolling(hasModal) {
+    if (isBodyScrollingDisabled === hasModal) {
+      return;
+    }
+
+    createBLyBackStyle();
+
+    if (hasModal) {
+      document.body.style.top = "-".concat(window.pageYOffset, "px");
+      document.body.classList.add("sapUiBLyBack");
+    } else {
+      document.body.classList.remove("sapUiBLyBack");
+      window.scrollTo(0, -parseFloat(document.body.style.top));
+      document.body.style.top = "";
+    }
+
+    isBodyScrollingDisabled = hasModal;
+  }
+  /**
+   * @class
+   * <h3 class="comment-api-title">Overview</h3>
+   * Represents a base class for all popup Web Components.
+   *
+   * @constructor
+   * @author SAP SE
+   * @alias sap.ui.webcomponents.main.Popup
+   * @extends sap.ui.webcomponents.base.UI5Element
+   * @public
+   */
+
+
+  var Popup =
+  /*#__PURE__*/
+  function (_UI5Element) {
+    _inherits(Popup, _UI5Element);
+
+    _createClass(Popup, null, [{
+      key: "getNextZIndex",
+      value: function getNextZIndex() {
+        currentZIndex += 2;
+        return currentZIndex;
+      }
+    }, {
+      key: "hitTest",
+      value: function hitTest(popup, event) {
+        var indexOf = openedPopups.indexOf(popup);
+        var openedPopup;
+
+        for (var i = indexOf; i < openedPopups.length; i++) {
+          openedPopup = openedPopups[i];
+
+          if (openedPopup.hitTest(event)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+    }, {
+      key: "hasModalPopup",
+      value: function hasModalPopup() {
+        for (var i = 0; i < openedPopups.length; i++) {
+          if (openedPopups[i].isModal()) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+    }, {
+      key: "metadata",
+      get: function get() {
+        return metadata$8;
+      }
+    }, {
+      key: "styles",
+      get: function get() {
+        return styles;
+      }
+    }]);
+
+    function Popup() {
+      var _this;
+
+      _classCallCheck(this, Popup);
+
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(Popup).call(this));
+      _this._documentKeyDownHandler = _this.documentKeyDown.bind(_assertThisInitialized(_this));
+      return _this;
+    }
+
+    _createClass(Popup, [{
+      key: "isTopPopup",
+      value: function isTopPopup() {
+        return openedPopups.indexOf(this) === openedPopups.length - 1;
+      }
+    }, {
+      key: "isModal",
+      value: function isModal() {
+        return true;
+      }
+    }, {
+      key: "documentKeyDown",
+      value: function documentKeyDown(event) {
+        if (isEscape(event) && this.isTopPopup()) {
+          this.escPressed = true;
+          this.close();
+        }
+      }
+    }, {
+      key: "getPopupDomRef",
+      value: function getPopupDomRef() {
+        var domRef = this.getDomRef();
+        return domRef && domRef.querySelector(".sapMPopup");
+      }
+    }, {
+      key: "hitTest",
+      value: function hitTest(_event) {
+        return true;
+      }
+    }, {
+      key: "open",
+      value: function open() {
+        this.fireEvent("beforeOpen", {});
+        this._isFirstTimeRendered = false;
+        this._zIndex = Popup.getNextZIndex();
+        openedPopups.push(this);
+        updateBlockLayers();
+        document.addEventListener("keydown", this._documentKeyDownHandler, true);
+      }
+    }, {
+      key: "close",
+      value: function close() {
+        this.fireEvent("beforeClose", {
+          escPressed: this.escPressed
+        }, true);
+        this.escPressed = false;
+        document.removeEventListener("keydown", this._documentKeyDownHandler, true);
+        var index = openedPopups.indexOf(this);
+        openedPopups.splice(index, 1);
+        updateBlockLayers();
+      }
+    }, {
+      key: "initInitialFocus",
+      value: function initInitialFocus() {
+        var initialFocus = this.initialFocus;
+        var initialFocusDomRef = this.initialFocus;
+
+        if (initialFocus && typeof initialFocus === "string") {
+          initialFocusDomRef = document.getElementById(initialFocus);
+
+          if (!initialFocusDomRef) {
+            var parentHost = getParentHost(this);
+
+            if (parentHost) {
+              initialFocusDomRef = parentHost.shadowRoot.querySelector("#".concat(initialFocus));
+            }
+          }
+        }
+
+        this._initialFocusDomRef = initialFocusDomRef;
+      }
+    }, {
+      key: "onFirstTimeAfterRendering",
+      value: function onFirstTimeAfterRendering() {
+        if (this.isTopPopup()) {
+          this.initInitialFocus();
+          this.setInitialFocus(this.getPopupDomRef());
+        }
+
+        this.fireEvent("afterOpen", {});
+      }
+    }, {
+      key: "onAfterRendering",
+      value: function onAfterRendering() {
+        if (!this._isOpen) {
+          return;
+        }
+
+        if (!this._isFirstTimeRendered) {
+          this.onFirstTimeAfterRendering();
+          this._isFirstTimeRendered = true;
+        }
+      }
+    }, {
+      key: "setInitialFocus",
+      value: function setInitialFocus(container) {
+        if (this._initialFocusDomRef) {
+          if (this._initialFocusDomRef !== document.activeElement) {
+            this._initialFocusDomRef.focus();
+          }
+
+          return;
+        }
+
+        if (!container) {
+          return;
+        }
+
+        var focusableElement = FocusHelper.findFirstFocusableElement(container);
+
+        if (focusableElement) {
+          focusableElement.focus();
+        } else {
+          container.focus();
+        }
+      }
+    }, {
+      key: "onfocusin",
+      value: function onfocusin(event) {
+        this.preserveFocus(event, this.getPopupDomRef());
+      }
+    }, {
+      key: "preserveFocus",
+      value: function preserveFocus(event, container) {
+        if (!this.isTopPopup()) {
+          return;
+        }
+
+        var target = event.target;
+
+        while (target.shadowRoot && target.shadowRoot.activeElement) {
+          target = target.shadowRoot.activeElement;
+        }
+
+        var focusableElement;
+        var isSpecialCase = false;
+
+        switch (target.id) {
+          case "".concat(this._id, "-firstfe"):
+            focusableElement = FocusHelper.findLastFocusableElement(container);
+            isSpecialCase = true;
+            break;
+
+          case "".concat(this._id, "-lastfe"):
+            focusableElement = FocusHelper.findFirstFocusableElement(container);
+            isSpecialCase = true;
+            break;
+
+          case "".concat(this._id, "-blocklayer"):
+            focusableElement = this._currentFocusedElement || FocusHelper.findFirstFocusableElement(container);
+            isSpecialCase = true;
+            break;
+        }
+
+        if (focusableElement) {
+          focusableElement.focus();
+        } else if (isSpecialCase) {
+          container.focus();
+        }
+
+        this._currentFocusedElement = focusableElement || document.activeElement;
+      }
+    }, {
+      key: "storeCurrentFocus",
+      value: function storeCurrentFocus() {
+        var element = document.activeElement;
+
+        while (element.shadowRoot && element.shadowRoot.activeElement) {
+          element = element.shadowRoot.activeElement;
+        }
+
+        this._lastFocusableElement = element;
+      }
+    }, {
+      key: "resetFocus",
+      value: function resetFocus() {
+        if (!this._lastFocusableElement) {
+          return;
+        }
+
+        var lastFocusableElement = this._lastFocusableElement;
+
+        if (lastFocusableElement) {
+          lastFocusableElement.focus();
+        }
+
+        this._lastFocusableElement = null;
+      }
+    }]);
+
+    return Popup;
+  }(UI5Element);
+
+  function _templateObject5$1() {
+    var data = _taggedTemplateLiteral(["<footer><div class=\"sapMPopupFooter\"><slot name=\"footer\"></slot></div></footer>\t"]);
+
+    _templateObject5$1 = function _templateObject5() {
+      return data;
+    };
+
+    return data;
+  }
+
+  function _templateObject4$1() {
+    var data = _taggedTemplateLiteral(["<h2 role=\"toolbar\" class=\"sapMPopupHeader sapMPopupHeaderText\">", "</h2>\t\t\t"]);
+
+    _templateObject4$1 = function _templateObject4() {
+      return data;
+    };
+
+    return data;
+  }
+
+  function _templateObject3$2() {
+    var data = _taggedTemplateLiteral(["<div role=\"toolbar\" class=\"sapMPopupHeader\"><slot name=\"header\"></slot></div>\t\t\t"]);
+
+    _templateObject3$2 = function _templateObject3() {
+      return data;
+    };
+
+    return data;
+  }
+
+  function _templateObject2$5() {
+    var data = _taggedTemplateLiteral(["<header>\t\t\t", "</header>\t"]);
+
+    _templateObject2$5 = function _templateObject2() {
+      return data;
+    };
+
+    return data;
+  }
 
   function _templateObject$8() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><ui5-icon id=\"", "-btnPrev\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Prev\"></ui5-icon><div class=\"sapWCCalHeadMidButtonContainer\"><div\t\t\tid=\"", "-btn1\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Month\"\t\t>\t\t\t", "</div><div\t\t\tid=\"", "-btn2\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Year\"\t\t>\t\t\t", "</div></div><ui5-icon\t\tid=\"", "-btnNext\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Next\"></ui5-icon></div>"]);
+    var data = _taggedTemplateLiteral(["<span class=\"", "\"><span id=\"", "-firstfe\" tabindex=\"0\" @focusin=", "></span><div style=\"", "\" role=\"dialog\" aria-labelledby=\"", "\" tabindex=\"-1\" class=\"", "\">\t\t\t", "<div id=\"", "-content\" role=\"application\" style=\"", "\" class=\"sapMPopupContent\"><div class=\"sapMPopupScroll\"><slot></slot></div></div>\t\t\t", "<span id=\"", "-arrow\" style=\"", "\" class=\"", "\"></span></div><span id=\"", "-lastfe\" tabindex=\"0\" @focusin=", "></span><div tabindex=\"0\" id=\"", "-blocklayer\" style=\"", "\" class=\"", "\"></div></span>"]);
 
     _templateObject$8 = function _templateObject() {
       return data;
@@ -18649,12 +19517,708 @@
   }
 
   var block0$7 = function block0(context) {
-    return html(_templateObject$8(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnPrev.icon), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn1.type), ifDefined(context._btn1.text), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn2.type), ifDefined(context._btn2.text), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnNext.icon));
+    return html(_templateObject$8(), ifDefined(classMap(context.classes.frame)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToLast), ifDefined(styleMap$1(context.styles.main)), ifDefined(context.headerId), ifDefined(classMap(context.classes.main)), !context.noHeader ? block1$5(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.content)), context.footer ? block4$1(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.arrow)), ifDefined(classMap(context.classes.arrow)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToFirst), ifDefined(context._id), ifDefined(styleMap$1(context.styles.blockLayer)), ifDefined(classMap(context.classes.blockLayer)));
   };
 
-  var styles = ":host(ui5-calendar-header){display:inline-block;width:100%}ui5-calendar-header{display:inline-block;width:100%}.sapWCCalHead{display:flex;height:3rem;padding:.25rem 0;box-sizing:border-box}.sapWCCalHead ui5-button{height:100%}.sapWCCalHeadArrowButton{display:flex;justify-content:center;align-items:center;width:2.5rem;background-color:var(--sapUiButtonLiteBackground,transparent);color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));cursor:pointer;overflow:hidden;white-space:nowrap;padding:0;font-size:var(--sapMFontMediumSize,.875rem)}.sapWCCalHeadArrowButton:focus{outline:none}.sapWCCalHeadArrowButton:hover{background-color:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));color:var(--sapUiButtonHoverTextColor,var(--sapButton_Hover_TextColor,#0854a0))}.sapWCCalHeadArrowButton:active{background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCCalHeadArrowButton,.sapWCCalHeadMiddleButton{border:var(--_ui5_calendar_header_arrow_button_border,none);border-radius:var(--_ui5_calendar_header_arrow_button_border_radius,.25rem)}.sapWCCalHeadMidButtonContainer{display:flex;justify-content:space-around;flex:1;padding:0 .5rem}.sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-right:.5rem}.sapWCCalHeadMiddleButton{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));width:var(--_ui5_calendar_header_middle_button_width,2.5rem);flex:var(--_ui5_calendar_header_middle_button_flex,1);position:relative;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.sapWCCalHeadMiddleButton:focus{border:var(--_ui5_calendar_header_middle_button_focus_border,none);border-radius:var(--_ui5_calendar_header_middle_button_focus_border_radius,.25rem)}.sapWCCalHeadMiddleButton:focus:after{content:\"\";display:var(--_ui5_calendar_header_middle_button_focus_after_display,block);width:var(--_ui5_calendar_header_middle_button_focus_after_width,calc(100% - .375rem));height:var(--_ui5_calendar_header_middle_button_focus_after_height,calc(100% - .375rem));border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:var(--_ui5_calendar_header_middle_button_focus_after_top_offset,.125rem);left:var(--_ui5_calendar_header_middle_button_focus_after_left_offset,.125rem)}.sapWCCalHeadMiddleButton:focus:active:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapUiSizeCompact.sapWCCalHead{height:2rem;padding:0}.sapUiSizeCompact.sapWCCalHeadArrowButton{width:2rem}[dir=rtl] .sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-left:.5rem;margin-right:0}";
+  var block1$5 = function block1(context) {
+    return html(_templateObject2$5(), context.header ? block2$2(context) : block3$1(context));
+  };
 
-  var metadata$8 = {
+  var block2$2 = function block2(context) {
+    return html(_templateObject3$2());
+  };
+
+  var block3$1 = function block3(context) {
+    return html(_templateObject4$1(), ifDefined(context.headerText));
+  };
+
+  var block4$1 = function block4(context) {
+    return html(_templateObject5$1());
+  };
+
+  var popoverCss = ".sapMPopover{position:fixed;z-index:10}.sapMPopoverArr{pointer-events:none;display:block;width:1rem;height:1rem;position:absolute;overflow:hidden}.sapMPopoverArr:after{content:\" \";display:block;width:.7rem;height:.7rem;background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));transform:rotate(-45deg)}.sapMPopoverArrUp{left:calc(50% - .5625rem);top:-.5rem;height:.5625rem}.sapMPopoverArrUp:after{margin:.1875rem 0 0 .1875rem;box-shadow:-.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrRight{top:calc(50% - .5625rem);right:-.5625rem;width:.5625rem}.sapMPopoverArrRight:after{margin:.1875rem 0 0 -.375rem;box-shadow:-.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrDown{left:calc(50% - .5625rem);height:.5625rem}.sapMPopoverArrDown:after{margin:-.375rem 0 0 .125rem;box-shadow:.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrLeft{left:-.5625rem;top:calc(50% - .5625rem);width:.5625rem;height:1rem}.sapMPopoverArrLeft:after{margin:.125rem 0 0 .25rem;box-shadow:.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArr.sapMPopoverArrHidden{display:none}.sapMPopover{transform:translateZ(0)}";
+
+  /**
+   * @public
+   */
+
+  var metadata$9 = {
+    tag: "ui5-popover",
+    properties:
+    /** @lends sap.ui.webcomponents.main.Popover.prototype */
+    {
+      /**
+       * Determines on which side the <code>ui5-popover</code> is placed at.
+       *
+       * @type {PopoverPlacementType}
+       * @defaultvalue "Right"
+       * @public
+       */
+      placementType: {
+        type: PopoverPlacementType,
+        defaultValue: PopoverPlacementType.Right
+      },
+
+      /**
+       * Determines the horizontal alignment of the <code>ui5-popover</code>.
+       *
+       * @type {PopoverHorizontalAlign}
+       * @defaultvalue "Center"
+       * @public
+       */
+      horizontalAlign: {
+        type: PopoverHorizontalAlign,
+        defaultValue: PopoverHorizontalAlign.Center
+      },
+
+      /**
+       * Determines the vertical alignment of the <code>ui5-popover</code>.
+       *
+       * @type {PopoverVerticalAlign}
+       * @defaultvalue "Center"
+       * @public
+       */
+      verticalAlign: {
+        type: PopoverVerticalAlign,
+        defaultValue: PopoverVerticalAlign.Center
+      },
+
+      /**
+       * Defines whether the <code>ui5-popover</code> should close when
+       * clicking/tapping outside of the popover.
+       * If enabled, it blocks any interaction with the background.
+       *
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      modal: {
+        type: Boolean
+      },
+
+      /**
+       * Determines whether the <code>ui5-popover</code> arrow is hidden.
+       *
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      noArrow: {
+        type: Boolean
+      },
+
+      /**
+       * Determines whether the <code>ui5-popover</code> would close upon user scroll.
+       *
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      stayOpenOnScroll: {
+        type: Boolean
+      },
+
+      /**
+       * Determines if there is no enough space, the <code>ui5-popover</code> can be placed
+       * over the target.
+       *
+       * @type {boolean}
+       * @defaultvalue false
+       * @public
+       */
+      allowTargetOverlap: {
+        type: Boolean
+      },
+      _left: {
+        type: Integer
+      },
+      _top: {
+        type: Integer
+      },
+      _width: {
+        type: String
+      },
+      _height: {
+        type: String
+      },
+      _maxContentHeight: {
+        type: Integer
+      },
+      _arrowTranslateX: {
+        type: Integer,
+        defaultValue: 0
+      },
+      _arrowTranslateY: {
+        type: Integer,
+        defaultValue: 0
+      },
+      _actualPlacementType: {
+        type: PopoverPlacementType,
+        defaultValue: PopoverPlacementType.Right
+      },
+      _focusElementsHandlers: {
+        type: Object
+      }
+    }
+  };
+  var diffTolerance = 32;
+  var dockInterval = 200;
+  var arrowSize = 8;
+  /**
+   * @class
+   *
+   * <h3 class="comment-api-title">Overview</h3>
+   *
+   * The <code>ui5-popover</code> component displays additional information for an object
+   * in a compact way and without leaving the page.
+   * The Popover can contain various UI elements, such as fields, tables, images, and charts.
+   * It can also include actions in the footer.
+   *
+   * <h3>Structure</h3>
+   *
+   * The popover has three main areas:
+   * <ul>
+   * <li>Header (optional) - with a back button and a title</li>
+   * <li>Content - holds all the Web Component</li>
+   * <li>Footer (optional) - with additional action buttons</li>
+   * </ul>
+   *
+   * <b>Note:</b> The <code>ui5-popover</code> is closed when the user clicks
+   * or taps outside the popover
+   * or selects an action within the popover. You can prevent this with the
+   * <code>modal</code> property.
+   *
+   * <h3>ES6 Module Import</h3>
+   *
+   * <code>import "@ui5/webcomponents/dist/Popover";</code>
+   *
+   * @constructor
+   * @author SAP SE
+   * @alias sap.ui.webcomponents.main.Popover
+   * @extends Popup
+   * @tagname ui5-popover
+   * @public
+   */
+
+  var Popover =
+  /*#__PURE__*/
+  function (_Popup) {
+    _inherits(Popover, _Popup);
+
+    _createClass(Popover, null, [{
+      key: "metadata",
+      get: function get() {
+        return metadata$9;
+      }
+    }, {
+      key: "render",
+      get: function get() {
+        return litRender;
+      }
+    }, {
+      key: "template",
+      get: function get() {
+        return block0$7;
+      }
+    }, {
+      key: "styles",
+      get: function get() {
+        return [Popup.styles, popoverCss];
+      }
+    }]);
+
+    function Popover() {
+      var _this;
+
+      _classCallCheck(this, Popover);
+
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(Popover).call(this));
+      _this._documentMouseDownHandler = _this.documentMouseDown.bind(_assertThisInitialized(_this));
+
+      var that = _assertThisInitialized(_this);
+
+      _this._focusElementsHandlers = {
+        forwardToFirst: function forwardToFirst(event) {
+          var firstFocusable = FocusHelper.findFirstFocusableElement(that);
+
+          if (firstFocusable) {
+            firstFocusable.focus();
+          }
+        },
+        forwardToLast: function forwardToLast(event) {
+          var lastFocusable = FocusHelper.findLastFocusableElement(that);
+
+          if (lastFocusable) {
+            lastFocusable.focus();
+          }
+        }
+      };
+      return _this;
+    }
+
+    _createClass(Popover, [{
+      key: "isModal",
+      value: function isModal() {
+        return this.modal;
+      }
+    }, {
+      key: "hitTest",
+      value: function hitTest(event) {
+        var domRef = this.getPopupDomRef();
+        var rect = domRef.getBoundingClientRect();
+        var x, y;
+
+        if (event.touches) {
+          var touch = event.touches[0];
+          x = touch.clientX;
+          y = touch.clientY;
+        } else {
+          x = event.clientX;
+          y = event.clientY;
+        } // don't close the popover if the "initial focus" is outside the popover
+        // and the user click/touch on it
+
+
+        if (this.initialFocus && this._initialFocusDomRef) {
+          var initialFocusRect = this._initialFocusDomRef.getBoundingClientRect();
+
+          if (Popover.isInRect(x, y, initialFocusRect)) {
+            return true;
+          }
+        }
+
+        if (this._targetElement) {
+          var targetElementRect = this._targetElement.getBoundingClientRect();
+
+          if (Popover.isInRect(x, y, targetElementRect)) {
+            return true;
+          }
+        }
+
+        return Popover.isInRect(x, y, rect);
+      }
+    }, {
+      key: "documentMouseDown",
+      value: function documentMouseDown(event) {
+        if (!this.modal && !Popup.hitTest(this, event)) {
+          this.close();
+        }
+      }
+    }, {
+      key: "checkDocking",
+      value: function checkDocking() {
+        if (!this.stayOpenOnScroll && this.hasTargetElementMoved()) {
+          this.close();
+        }
+
+        var popoverDomRef = this.getPopupDomRef();
+        var popoverSize = {
+          width: popoverDomRef.offsetWidth,
+          height: popoverDomRef.offsetHeight
+        };
+        var targetRect = Popover.getClientRect(this._targetElement);
+        this.setLocation(targetRect, popoverSize);
+      }
+    }, {
+      key: "getVerticalLeft",
+      value: function getVerticalLeft(targetRect, popoverSize) {
+        var left;
+
+        switch (this.horizontalAlign) {
+          case PopoverHorizontalAlign.Center:
+          case PopoverHorizontalAlign.Stretch:
+            left = targetRect.left - (popoverSize.width - targetRect.width) / 2;
+            break;
+
+          case PopoverHorizontalAlign.Left:
+            left = targetRect.left;
+            break;
+
+          case PopoverHorizontalAlign.Right:
+            left = targetRect.right - popoverSize.width;
+            break;
+        }
+
+        return left;
+      }
+    }, {
+      key: "getHorizontalTop",
+      value: function getHorizontalTop(targetRect, popoverSize) {
+        var top;
+
+        switch (this.verticalAlign) {
+          case PopoverVerticalAlign.Center:
+          case PopoverVerticalAlign.Stretch:
+            top = targetRect.top - (popoverSize.height - targetRect.height) / 2;
+            break;
+
+          case PopoverVerticalAlign.Top:
+            top = targetRect.top;
+            break;
+
+          case PopoverVerticalAlign.Bottom:
+            top = targetRect.bottom - popoverSize.height;
+            break;
+        }
+
+        return top;
+      }
+    }, {
+      key: "getActualPlacementType",
+      value: function getActualPlacementType(targetRect, popoverSize) {
+        var placementType = this.placementType;
+        var actualPlacementType = placementType;
+        var clientWidth = document.documentElement.clientWidth;
+        var clientHeight = document.documentElement.clientHeight;
+
+        switch (placementType) {
+          case PopoverPlacementType.Top:
+            if (targetRect.top < popoverSize.height && targetRect.top < clientHeight - targetRect.bottom) {
+              actualPlacementType = PopoverPlacementType.Bottom;
+            }
+
+            break;
+
+          case PopoverPlacementType.Bottom:
+            if (clientHeight - targetRect.bottom < popoverSize.height && clientHeight - targetRect.bottom < targetRect.top) {
+              actualPlacementType = PopoverPlacementType.Top;
+            }
+
+            break;
+
+          case PopoverPlacementType.Left:
+            if (targetRect.left < popoverSize.width && targetRect.left < clientWidth - targetRect.right) {
+              actualPlacementType = PopoverPlacementType.Right;
+            }
+
+            break;
+
+          case PopoverPlacementType.Right:
+            if (clientWidth - targetRect.right < popoverSize.width && clientWidth - targetRect.right < targetRect.left) {
+              actualPlacementType = PopoverPlacementType.Left;
+            }
+
+            break;
+        }
+
+        this._actualPlacementType = actualPlacementType;
+        return actualPlacementType;
+      }
+    }, {
+      key: "setLocation",
+      value: function setLocation(targetRect, popoverSize) {
+        var left = 0;
+        var top = 0;
+        var allowTargetOverlap = this.allowTargetOverlap;
+        var clientWidth = document.documentElement.clientWidth;
+        var clientHeight = document.documentElement.clientHeight;
+        var maxHeight = clientHeight;
+        var width = "";
+        var height = "";
+        var placementType = this.getActualPlacementType(targetRect, popoverSize);
+        var isVertical = placementType === PopoverPlacementType.Top || placementType === PopoverPlacementType.Bottom;
+
+        if (this.horizontalAlign === PopoverHorizontalAlign.Stretch && isVertical) {
+          popoverSize.width = targetRect.width;
+          width = "".concat(targetRect.width, "px");
+        } else if (this.verticalAlign === PopoverVerticalAlign.Stretch && !isVertical) {
+          popoverSize.height = targetRect.height;
+          height = "".concat(targetRect.height, "px");
+        }
+
+        this._width = width;
+        this._height = height;
+        var arrowOffset = this.noArrow ? 0 : arrowSize; // calc popover positions
+
+        switch (placementType) {
+          case PopoverPlacementType.Top:
+            left = this.getVerticalLeft(targetRect, popoverSize);
+            top = Math.max(targetRect.top - popoverSize.height - arrowOffset, 0);
+
+            if (!allowTargetOverlap) {
+              maxHeight = targetRect.top - arrowOffset;
+            }
+
+            break;
+
+          case PopoverPlacementType.Bottom:
+            left = this.getVerticalLeft(targetRect, popoverSize);
+
+            if (allowTargetOverlap) {
+              top = Math.max(Math.min(targetRect.bottom + arrowOffset, clientHeight - popoverSize.height), 0);
+            } else {
+              top = targetRect.bottom + arrowOffset;
+              maxHeight = clientHeight - targetRect.bottom - arrowOffset;
+            }
+
+            break;
+
+          case PopoverPlacementType.Left:
+            left = Math.max(targetRect.left - popoverSize.width - arrowOffset, 0);
+            top = this.getHorizontalTop(targetRect, popoverSize);
+            break;
+
+          case PopoverPlacementType.Right:
+            if (allowTargetOverlap) {
+              left = Math.max(Math.min(targetRect.left + targetRect.width + arrowOffset, clientWidth - popoverSize.width), 0);
+            } else {
+              left = targetRect.left + targetRect.width + arrowOffset;
+            }
+
+            top = this.getHorizontalTop(targetRect, popoverSize);
+            break;
+        } // correct popover positions
+
+
+        if (isVertical) {
+          if (popoverSize.width > clientWidth || left < 0) {
+            left = 0;
+          } else if (left + popoverSize.width > clientWidth) {
+            left -= left + popoverSize.width - clientWidth;
+          }
+        } else {
+          if (popoverSize.height > clientHeight || top < 0) {
+            // eslint-disable-line
+            top = 0;
+          } else if (top + popoverSize.height > clientHeight) {
+            top -= top + popoverSize.height - clientHeight;
+          }
+        }
+
+        var maxContentHeight = Math.round(maxHeight);
+
+        if (!this.noHeader) {
+          var headerDomRef = this.getPopupDomRef().querySelector(".sapMPopupHeader");
+
+          if (headerDomRef) {
+            maxContentHeight = Math.round(maxHeight - headerDomRef.offsetHeight);
+          }
+        }
+
+        this._maxContentHeight = maxContentHeight;
+        var arrowTranslateX = isVertical ? targetRect.left + targetRect.width / 2 - left - popoverSize.width / 2 : 0;
+        var arrowTranslateY = !isVertical ? targetRect.top + targetRect.height / 2 - top - popoverSize.height / 2 : 0;
+        this._arrowTranslateX = Math.round(arrowTranslateX);
+        this._arrowTranslateY = Math.round(arrowTranslateY);
+
+        if (this._left === undefined || Math.abs(this._left - left) > 1.5) {
+          this._left = Math.round(left);
+        }
+
+        if (this._top === undefined || Math.abs(this._top - top) > 1.5) {
+          this._top = Math.round(top);
+        }
+      }
+      /**
+       * Opens the <code>Popover</code>.
+       * @param {object} control This is the component to which the
+       * <code>ui5-popover</code> will be placed.
+       * The side of the placement depends on the <code>placementType</code> property
+       * set in the <code>ui5-popover</code>.
+       * @public
+       */
+
+    }, {
+      key: "openBy",
+      value: function openBy(element) {
+        var _this2 = this;
+
+        if (this._isOpen) {
+          return;
+        }
+
+        var cancelled = _get(_getPrototypeOf(Popover.prototype), "open", this).call(this);
+
+        if (cancelled) {
+          return true;
+        }
+
+        this.storeCurrentFocus();
+        var targetDomRef = element;
+        var popoverSize = this.getPopoverSize();
+        var targetRect = Popover.getClientRect(targetDomRef);
+        this._targetElement = targetDomRef;
+        this._targetRect = targetRect;
+        this.setLocation(targetRect, popoverSize);
+        this._isOpen = true;
+        setTimeout(function (_) {
+          if (_this2._isOpen) {
+            _this2._dockInterval = setInterval(_this2.checkDocking.bind(_this2), dockInterval);
+          }
+        }, 0);
+        setTimeout(function (_) {
+          if (_this2._isOpen) {
+            document.addEventListener("mousedown", _this2._documentMouseDownHandler, true);
+            document.addEventListener("touchstart", _this2._documentMouseDownHandler, true);
+          }
+        }, 0);
+      }
+      /**
+       * Closes the <code>ui5-popover</code>.
+       * @public
+       */
+
+    }, {
+      key: "close",
+      value: function close() {
+        var _this3 = this;
+
+        if (!this._isOpen) {
+          return;
+        }
+
+        var cancelled = _get(_getPrototypeOf(Popover.prototype), "close", this).call(this);
+
+        if (cancelled) {
+          return;
+        }
+
+        this._isOpen = false;
+        clearInterval(this._dockInterval);
+        document.removeEventListener("mousedown", this._documentMouseDownHandler, true);
+        document.removeEventListener("touchstart", this._documentMouseDownHandler, true);
+        this.resetFocus();
+        RenderScheduler.whenFinished().then(function (_) {
+          _this3.fireEvent("afterClose", {});
+        });
+      }
+    }, {
+      key: "getPopoverSize",
+      value: function getPopoverSize() {
+        var popoverFrameDomRef = this.shadowRoot.querySelector(".sapMPopupFrame"); // this.getDomRef();
+
+        var popoverDomRef = popoverFrameDomRef.querySelector(".sapMPopover");
+        popoverFrameDomRef.style.visibility = "hidden";
+        popoverFrameDomRef.style.display = "block";
+        var width = popoverDomRef.offsetWidth;
+        var height = popoverDomRef.offsetHeight;
+        popoverFrameDomRef.style.display = "";
+        popoverFrameDomRef.style.visibility = "visible";
+        return {
+          width: width,
+          height: height
+        };
+      }
+    }, {
+      key: "hasTargetElementMoved",
+      value: function hasTargetElementMoved() {
+        var newRect = this._targetElement.getBoundingClientRect();
+
+        var targetRect = this._targetRect;
+        return Math.abs(newRect.left - targetRect.left) > diffTolerance || Math.abs(newRect.top - targetRect.top) > diffTolerance;
+      }
+    }, {
+      key: "classes",
+      get: function get() {
+        var placementType = this._actualPlacementType;
+        return {
+          frame: {
+            sapMPopupFrame: true,
+            sapMPopupFrameOpen: this._isOpen
+          },
+          main: {
+            sapMPopup: true,
+            sapMPopover: true
+          },
+          blockLayer: {
+            sapUiBLy: true,
+            sapMPopupBlockLayer: true,
+            sapMPopupBlockLayerHidden: !this.modal || this._hideBlockLayer
+          },
+          arrow: {
+            sapMPopoverArr: true,
+            sapMPopoverArrHidden: this.noArrow,
+            sapMPopoverArrLeft: placementType === PopoverPlacementType.Right,
+            sapMPopoverArrRight: placementType === PopoverPlacementType.Left,
+            sapMPopoverArrUp: placementType === PopoverPlacementType.Bottom,
+            sapMPopoverArrDown: placementType === PopoverPlacementType.Top
+          }
+        };
+      }
+    }, {
+      key: "styles",
+      get: function get() {
+        return {
+          main: {
+            left: "".concat(this._left, "px"),
+            top: "".concat(this._top, "px"),
+            width: this._width,
+            height: this._height,
+            "z-index": this._zIndex + 1
+          },
+          content: {
+            "max-height": "".concat(this._maxContentHeight, "px")
+          },
+          arrow: {
+            transform: "translate(".concat(this._arrowTranslateX, "px, ").concat(this._arrowTranslateY, "px)")
+          },
+          blockLayer: {
+            "z-index": this._zIndex
+          }
+        };
+      }
+    }, {
+      key: "headerId",
+      get: function get() {
+        return this.noHeader ? undefined : "".concat(this._id, "-header");
+      }
+    }, {
+      key: "focusHelper",
+      get: function get() {
+        return {
+          forwardToLast: this._focusElementsHandlers.forwardToLast,
+          forwardToFirst: this._focusElementsHandlers.forwardToFirst
+        };
+      }
+    }], [{
+      key: "isInRect",
+      value: function isInRect(x, y, rect) {
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      }
+    }, {
+      key: "getClientRect",
+      value: function getClientRect(domRef) {
+        var rect = domRef.getBoundingClientRect();
+        var computedStyle = window.getComputedStyle(domRef);
+        var offsetLeft = parseFloat(computedStyle.paddingLeft);
+        var offsetRight = parseFloat(computedStyle.paddingRight);
+        var offsetTop = parseFloat(computedStyle.paddingTop);
+        var offsetBottom = parseFloat(computedStyle.paddingBottom);
+        return {
+          left: rect.left + offsetLeft,
+          right: rect.right - offsetRight,
+          top: rect.top + offsetTop,
+          bottom: rect.bottom - offsetBottom,
+          width: rect.width - offsetLeft - offsetRight,
+          height: rect.height - offsetTop - offsetBottom
+        };
+      }
+    }]);
+
+    return Popover;
+  }(Popup);
+
+  Bootstrap.boot().then(function (_) {
+    Popover.define();
+  });
+
+  function _templateObject$9() {
+    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><ui5-icon id=\"", "-btnPrev\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Prev\"></ui5-icon><div class=\"sapWCCalHeadMidButtonContainer\"><div\t\t\tid=\"", "-btn1\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Month\"\t\t>\t\t\t", "</div><div\t\t\tid=\"", "-btn2\"\t\t\tclass=\"", "\"\t\t\ttype=\"", "\"\t\t\ttabindex=\"0\"\t\t\tdata-sap-show-picker=\"Year\"\t\t>\t\t\t", "</div></div><ui5-icon\t\tid=\"", "-btnNext\"\t\tclass=\"", "\"\t\tsrc=\"", "\"\t\tdata-sap-cal-head-button=\"Next\"></ui5-icon></div>"]);
+
+    _templateObject$9 = function _templateObject() {
+      return data;
+    };
+
+    return data;
+  }
+
+  var block0$8 = function block0(context) {
+    return html(_templateObject$9(), ifDefined(classMap(context.classes.main)), ifDefined(context.rtl), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnPrev.icon), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn1.type), ifDefined(context._btn1.text), ifDefined(context._id), ifDefined(classMap(context.classes.middleButtons)), ifDefined(context._btn2.type), ifDefined(context._btn2.text), ifDefined(context._id), ifDefined(classMap(context.classes.buttons)), ifDefined(context._btnNext.icon));
+  };
+
+  var styles$1 = ":host(ui5-calendar-header){display:inline-block;width:100%}ui5-calendar-header{display:inline-block;width:100%}.sapWCCalHead{display:flex;height:3rem;padding:.25rem 0;box-sizing:border-box}.sapWCCalHead ui5-button{height:100%}.sapWCCalHeadArrowButton{display:flex;justify-content:center;align-items:center;width:2.5rem;background-color:var(--sapUiButtonLiteBackground,transparent);color:var(--sapUiButtonTextColor,var(--sapButton_TextColor,#0854a0));cursor:pointer;overflow:hidden;white-space:nowrap;padding:0;font-size:var(--sapMFontMediumSize,.875rem)}.sapWCCalHeadArrowButton:focus{outline:none}.sapWCCalHeadArrowButton:hover{background-color:var(--sapUiButtonHoverBackground,var(--sapButton_Hover_Background,#ebf5fe));color:var(--sapUiButtonHoverTextColor,var(--sapButton_Hover_TextColor,#0854a0))}.sapWCCalHeadArrowButton:active{background-color:var(--sapUiButtonActiveBackground,var(--sapUiActive,var(--sapActiveColor,var(--sapHighlightColor,#0854a0))));color:var(--sapUiButtonActiveTextColor,#fff)}.sapWCCalHeadArrowButton,.sapWCCalHeadMiddleButton{border:var(--_ui5_calendar_header_arrow_button_border,none);border-radius:var(--_ui5_calendar_header_arrow_button_border_radius,.25rem)}.sapWCCalHeadMidButtonContainer{display:flex;justify-content:space-around;flex:1;padding:0 .5rem}.sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-right:.5rem}.sapWCCalHeadMiddleButton{font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));width:var(--_ui5_calendar_header_middle_button_width,2.5rem);flex:var(--_ui5_calendar_header_middle_button_flex,1);position:relative;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.sapWCCalHeadMiddleButton:focus{border:var(--_ui5_calendar_header_middle_button_focus_border,none);border-radius:var(--_ui5_calendar_header_middle_button_focus_border_radius,.25rem)}.sapWCCalHeadMiddleButton:focus:after{content:\"\";display:var(--_ui5_calendar_header_middle_button_focus_after_display,block);width:var(--_ui5_calendar_header_middle_button_focus_after_width,calc(100% - .375rem));height:var(--_ui5_calendar_header_middle_button_focus_after_height,calc(100% - .375rem));border:1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));position:absolute;top:var(--_ui5_calendar_header_middle_button_focus_after_top_offset,.125rem);left:var(--_ui5_calendar_header_middle_button_focus_after_left_offset,.125rem)}.sapWCCalHeadMiddleButton:focus:active:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapUiSizeCompact.sapWCCalHead{height:2rem;padding:0}.sapUiSizeCompact.sapWCCalHeadArrowButton{width:2rem}[dir=rtl] .sapWCCalHeadMidButtonContainer .sapWCCalHeadMiddleButton:first-child{margin-left:.5rem;margin-right:0}";
+
+  var metadata$a = {
     tag: "ui5-calendar-header",
     properties: {
       monthText: {
@@ -18692,7 +20256,7 @@
     _createClass(CalendarHeader, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$8;
+        return metadata$a;
       }
     }, {
       key: "render",
@@ -18702,12 +20266,12 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$7;
+        return block0$8;
       }
     }, {
       key: "styles",
       get: function get() {
-        return styles;
+        return styles$1;
       }
     }]);
 
@@ -18722,9 +20286,9 @@
       _this._btnNext = {};
       _this._btnNext.icon = "sap-icon://slim-arrow-right";
       _this._btn1 = {};
-      _this._btn1.type = ButtonType.Transparent;
+      _this._btn1.type = ButtonDesign.Transparent;
       _this._btn2 = {};
-      _this._btn2.type = ButtonType.Transparent;
+      _this._btn2.type = ButtonDesign.Transparent;
       return _this;
     }
 
@@ -19259,80 +20823,80 @@
     return data;
   }
 
-  function _templateObject5$1() {
+  function _templateObject5$2() {
     var data = _taggedTemplateLiteral(["<div style=\"display: flex;\">\t\t\t\t\t\t", "</div>\t\t\t\t"]);
 
-    _templateObject5$1 = function _templateObject5() {
+    _templateObject5$2 = function _templateObject5() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject4$1() {
+  function _templateObject4$2() {
     var data = _taggedTemplateLiteral(["", ""]);
 
-    _templateObject4$1 = function _templateObject4() {
+    _templateObject4$2 = function _templateObject4() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject3$2() {
+  function _templateObject3$3() {
     var data = _taggedTemplateLiteral(["<div\t\t\t\t\tid=", "\t\t\t\t\trole=\"columnheader\"\t\t\t\t\taria-label=\"", "\"\t\t\t\t\tclass=\"", "\">\t\t\t\t\t", "</div>\t\t\t"]);
 
-    _templateObject3$2 = function _templateObject3() {
+    _templateObject3$3 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$5() {
+  function _templateObject2$6() {
     var data = _taggedTemplateLiteral(["<div class=\"sapWCDayPickerWeekNameContainer\"><span class=\"sapWCDayPickerWeekName\">", "</span></div>\t\t"]);
 
-    _templateObject2$5 = function _templateObject2() {
+    _templateObject2$6 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$9() {
+  function _templateObject$a() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\" style=\"", "\"><div class=\"", "\">\t\t", "</div><div id=\"", "-content\" class=\"", "\"><div role=\"row\" class=\"", "\">\t\t\t", "</div><div id=\"", "-days\" class=\"sapWCDayPickerItemsContainer\" tabindex=\"-1\">\t\t\t", "</div></div></div>"]);
 
-    _templateObject$9 = function _templateObject() {
+    _templateObject$a = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$8 = function block0(context) {
-    return html(_templateObject$9(), ifDefined(classMap(context.classes.wrapper)), ifDefined(styleMap$1(context.styles.wrapper)), ifDefined(classMap(context.classes.weekNumberContainer)), repeat(context._weekNumbers, undefined, function (item, index) {
-      return block1$5(item, index, context);
+  var block0$9 = function block0(context) {
+    return html(_templateObject$a(), ifDefined(classMap(context.classes.wrapper)), ifDefined(styleMap$1(context.styles.wrapper)), ifDefined(classMap(context.classes.weekNumberContainer)), repeat(context._weekNumbers, undefined, function (item, index) {
+      return block1$6(item, index, context);
     }), ifDefined(context._id), ifDefined(classMap(context.classes.content)), ifDefined(classMap(context.classes.weekDaysContainer)), repeat(context._dayNames, undefined, function (item, index) {
-      return block2$2(item, index, context);
+      return block2$3(item, index, context);
     }), ifDefined(context._id), repeat(context._weeks, undefined, function (item, index) {
-      return block3$1(item, index, context);
+      return block3$2(item, index, context);
     }));
   };
 
-  var block1$5 = function block1(item, index, context) {
-    return html(_templateObject2$5(), ifDefined(item));
+  var block1$6 = function block1(item, index, context) {
+    return html(_templateObject2$6(), ifDefined(item));
   };
 
-  var block2$2 = function block2(item, index, context) {
-    return html(_templateObject3$2(), ifDefined(item._id), ifDefined(item.name), ifDefined(item.classes), ifDefined(item.ultraShortName));
+  var block2$3 = function block2(item, index, context) {
+    return html(_templateObject3$3(), ifDefined(item._id), ifDefined(item.name), ifDefined(item.classes), ifDefined(item.ultraShortName));
   };
 
-  var block3$1 = function block3(item, index, context) {
-    return html(_templateObject4$1(), item.length ? block4$1(item, index, context) : block6(item, index, context));
+  var block3$2 = function block3(item, index, context) {
+    return html(_templateObject4$2(), item.length ? block4$2(item, index, context) : block6(item, index, context));
   };
 
-  var block4$1 = function block4(item, index, context) {
-    return html(_templateObject5$1(), repeat(item, undefined, function (item, index) {
+  var block4$2 = function block4(item, index, context) {
+    return html(_templateObject5$2(), repeat(item, undefined, function (item, index) {
       return block5(item, index, context);
     }));
   };
@@ -19351,7 +20915,7 @@
    * @public
    */
 
-  var metadata$9 = {
+  var metadata$b = {
     tag: "ui5-daypicker",
     properties:
     /** @lends  sap.ui.webcomponents.main.DayPicker.prototype */
@@ -19443,7 +21007,7 @@
     _createClass(DayPicker, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$9;
+        return metadata$b;
       }
     }, {
       key: "render",
@@ -19453,7 +21017,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$8;
+        return block0$9;
       }
     }, {
       key: "styles",
@@ -19856,59 +21420,59 @@
     DayPicker.define();
   });
 
-  function _templateObject3$3() {
+  function _templateObject3$4() {
     var data = _taggedTemplateLiteral(["<div\t\t\t\t\tid=\"", "\"\t\t\t\t\tdata-sap-timestamp=", "\t\t\t\t\ttabindex=", "\t\t\t\t\tclass=\"", "\"\t\t\t\t\trole=\"gridcell\"\t\t\t\t\taria-selected=\"false\"\t\t\t\t>\t\t\t\t\t", "</div>\t\t\t"]);
 
-    _templateObject3$3 = function _templateObject3() {
+    _templateObject3$4 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$6() {
+  function _templateObject2$7() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\">\t\t\t", "</div>\t"]);
 
-    _templateObject2$6 = function _templateObject2() {
+    _templateObject2$7 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$a() {
+  function _templateObject$b() {
     var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\trole=\"grid\"\taria-readonly=\"false\"\taria-multiselectable=\"false\"\tstyle=\"", "\">\t", "</div>"]);
 
-    _templateObject$a = function _templateObject() {
+    _templateObject$b = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$9 = function block0(context) {
-    return html(_templateObject$a(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._quarters, undefined, function (item, index) {
-      return block1$6(item, index, context);
+  var block0$a = function block0(context) {
+    return html(_templateObject$b(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._quarters, undefined, function (item, index) {
+      return block1$7(item, index, context);
     }));
   };
 
-  var block1$6 = function block1(item, index, context) {
-    return html(_templateObject2$6(), ifDefined(classMap(context.classes.quarter)), repeat(item, undefined, function (item, index) {
-      return block2$3(item, index, context);
+  var block1$7 = function block1(item, index, context) {
+    return html(_templateObject2$7(), ifDefined(classMap(context.classes.quarter)), repeat(item, undefined, function (item, index) {
+      return block2$4(item, index, context);
     }));
   };
 
-  var block2$3 = function block2(item, index, context) {
-    return html(_templateObject3$3(), ifDefined(item.id), ifDefined(item.timestamp), ifDefined(item._tabIndex), ifDefined(item.classes), ifDefined(item.name));
+  var block2$4 = function block2(item, index, context) {
+    return html(_templateObject3$4(), ifDefined(item.id), ifDefined(item.timestamp), ifDefined(item._tabIndex), ifDefined(item.classes), ifDefined(item.name));
   };
 
-  var styles$1 = ":host(ui5-month-picker){display:inline-block;width:100%;height:100%}ui5-month-picker{display:inline-block;width:100%;height:100%}.sapWCMonthPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCMonthPickerItem{display:flex;width:calc(33.333% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_monthpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;margin:var(--_ui5_monthpicker_item_margin,1px);box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_monthpicker_item_border,none);border-radius:var(--_ui5_monthpicker_item_border_radius,.25rem)}.sapWCMonthPickerItem:hover{background-color:var(--_ui5_monthpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:hover{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem:focus{background-color:var(--_ui5_monthpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_monthpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_monthpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_monthpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_monthpicker_item_focus_after_offset,2px);left:var(--_ui5_monthpicker_item_focus_after_offset,2px)}.sapWCMonthPickerQuarter{display:flex;justify-content:center;align-items:center;width:100%}.sapUiSizeCompact .sapWCMonthPickerItem{height:2rem}";
+  var styles$2 = ":host(ui5-month-picker){display:inline-block;width:100%;height:100%}ui5-month-picker{display:inline-block;width:100%;height:100%}.sapWCMonthPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCMonthPickerItem{display:flex;width:calc(33.333% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_monthpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;margin:var(--_ui5_monthpicker_item_margin,1px);box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_monthpicker_item_border,none);border-radius:var(--_ui5_monthpicker_item_border_radius,.25rem)}.sapWCMonthPickerItem:hover{background-color:var(--_ui5_monthpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCMonthPickerItem.sapWCMonthPickerItemSel:hover{background-color:var(--_ui5_monthpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCMonthPickerItem:focus{background-color:var(--_ui5_monthpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCMonthPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_monthpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_monthpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_monthpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_monthpicker_item_focus_after_offset,2px);left:var(--_ui5_monthpicker_item_focus_after_offset,2px)}.sapWCMonthPickerQuarter{display:flex;justify-content:center;align-items:center;width:100%}.sapUiSizeCompact .sapWCMonthPickerItem{height:2rem}";
 
   /**
    * @public
    */
 
-  var metadata$a = {
+  var metadata$c = {
     tag: "ui5-month-picker",
     properties:
     /** @lends  sap.ui.webcomponents.main.MonthPicker.prototype */
@@ -19973,7 +21537,7 @@
     _createClass(MonthPicker, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$a;
+        return metadata$c;
       }
     }, {
       key: "render",
@@ -19983,12 +21547,12 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$9;
+        return block0$a;
       }
     }, {
       key: "styles",
       get: function get() {
-        return styles$1;
+        return styles$2;
       }
     }]);
 
@@ -20153,59 +21717,59 @@
     MonthPicker.define();
   });
 
-  function _templateObject3$4() {
+  function _templateObject3$5() {
     var data = _taggedTemplateLiteral(["<div id=\"", "\"\t\t\t\t\ttabindex=\"", "\"\t\t\t\t\tdata-sap-timestamp=\"", "\"\t\t\t\t\tclass=\"", "\"\t\t\t\t\trole=\"gridcell\"\t\t\t\t\taria-selected=\"false\">\t\t\t\t\t\t", "</div>\t\t\t"]);
 
-    _templateObject3$4 = function _templateObject3() {
+    _templateObject3$5 = function _templateObject3() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject2$7() {
+  function _templateObject2$8() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\">\t\t\t", "</div>\t"]);
 
-    _templateObject2$7 = function _templateObject2() {
+    _templateObject2$8 = function _templateObject2() {
       return data;
     };
 
     return data;
   }
 
-  function _templateObject$b() {
+  function _templateObject$c() {
     var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\trole=\"grid\"\taria-readonly=\"false\"\taria-multiselectable=\"false\"\tstyle=\"", "\">\t", "</div>"]);
 
-    _templateObject$b = function _templateObject() {
+    _templateObject$c = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$a = function block0(context) {
-    return html(_templateObject$b(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._yearIntervals, undefined, function (item, index) {
-      return block1$7(item, index, context);
+  var block0$b = function block0(context) {
+    return html(_templateObject$c(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), repeat(context._yearIntervals, undefined, function (item, index) {
+      return block1$8(item, index, context);
     }));
   };
 
-  var block1$7 = function block1(item, index, context) {
-    return html(_templateObject2$7(), ifDefined(classMap(context.classes.yearInterval)), repeat(item, undefined, function (item, index) {
-      return block2$4(item, index, context);
+  var block1$8 = function block1(item, index, context) {
+    return html(_templateObject2$8(), ifDefined(classMap(context.classes.yearInterval)), repeat(item, undefined, function (item, index) {
+      return block2$5(item, index, context);
     }));
   };
 
-  var block2$4 = function block2(item, index, context) {
-    return html(_templateObject3$4(), ifDefined(item.id), ifDefined(item._tabIndex), ifDefined(item.timestamp), ifDefined(item.classes), ifDefined(item.year));
+  var block2$5 = function block2(item, index, context) {
+    return html(_templateObject3$5(), ifDefined(item.id), ifDefined(item._tabIndex), ifDefined(item.timestamp), ifDefined(item.classes), ifDefined(item.year));
   };
 
-  var styles$2 = ":host(ui5-yearpicker){display:inline-block;width:100%;height:100%}ui5-yearpicker{display:inline-block;width:100%;height:100%}.sapWCYearPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCYearPickerIntervalContainer{display:flex;justify-content:center;align-items:center;width:100%}.sapWCYearPickerItem{display:flex;margin:var(--_ui5_yearpicker_item_margin,1px);width:calc(25% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_yearpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_yearpicker_item_border,none);border-radius:var(--_ui5_yearpicker_item_border_radius,.25rem)}.sapWCYearPickerItem:hover{background-color:var(--_ui5_yearpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem:focus{background-color:var(--_ui5_yearpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem.sapWCYearPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:hover{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_yearpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_yearpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_yearpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_yearpicker_item_focus_after_offset,2px);left:var(--_ui5_yearpicker_item_focus_after_offset,2px)}.sapUiSizeCompact .sapWCYearPickerItem{height:2rem}";
+  var styles$3 = ":host(ui5-yearpicker){display:inline-block;width:100%;height:100%}ui5-yearpicker{display:inline-block;width:100%;height:100%}.sapWCYearPicker{padding:2rem 0 1rem 0;display:flex;flex-direction:column;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));font-size:var(--sapMFontMediumSize,.875rem);justify-content:center;align-items:center}.sapWCYearPickerIntervalContainer{display:flex;justify-content:center;align-items:center;width:100%}.sapWCYearPickerItem{display:flex;margin:var(--_ui5_yearpicker_item_margin,1px);width:calc(25% - .125rem);height:3rem;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));background-color:var(--_ui5_yearpicker_item_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7));align-items:center;justify-content:center;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;outline:none;position:relative;border:var(--_ui5_yearpicker_item_border,none);border-radius:var(--_ui5_yearpicker_item_border_radius,.25rem)}.sapWCYearPickerItem:hover{background-color:var(--_ui5_yearpicker_item_hover_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem:focus{background-color:var(--_ui5_yearpicker_item_focus_background_color,var(--sapUiListBackgroundDarken3,#f7f7f7))}.sapWCYearPickerItem.sapWCYearPickerItemSel{background-color:var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)));color:var(--sapUiContentContrastTextColor,var(--sapContent_ContrastTextColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem.sapWCYearPickerItemSel:focus:after{border-color:var(--sapUiContentContrastFocusColor,var(--sapContent_ContrastFocusColor,#fff))}.sapWCYearPickerItem.sapWCYearPickerItemSel:hover{background-color:var(--_ui5_yearpicker_item_selected_focus,var(--sapUiSelectedDarken10,#063a6f))}.sapWCYearPickerItem:focus:after{content:\"\";position:absolute;width:var(--_ui5_yearpicker_item_focus_after_width,calc(100% - .375rem));height:var(--_ui5_yearpicker_item_focus_after_height,calc(100% - .375rem));border:var(--_ui5_yearpicker_item_focus_after_border,1px dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000)));top:var(--_ui5_yearpicker_item_focus_after_offset,2px);left:var(--_ui5_yearpicker_item_focus_after_offset,2px)}.sapUiSizeCompact .sapWCYearPickerItem{height:2rem}";
 
   /**
    * @public
    */
 
-  var metadata$b = {
+  var metadata$d = {
     tag: "ui5-yearpicker",
     properties:
     /** @lends  sap.ui.webcomponents.main.YearPicker.prototype */
@@ -20271,12 +21835,12 @@
     _createClass(YearPicker, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$b;
+        return metadata$d;
       }
     }, {
       key: "styles",
       get: function get() {
-        return styles$2;
+        return styles$3;
       }
     }, {
       key: "render",
@@ -20286,7 +21850,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$a;
+        return block0$b;
       }
     }]);
 
@@ -20518,19 +22082,36 @@
     YearPicker.define();
   });
 
-  function _templateObject$c() {
+  function _templateObject$d() {
     var data = _taggedTemplateLiteral(["<div class=\"", "\" style=\"", "\"><ui5-calendar-header\t\tid=\"", "-head\"\t\tmonth-text=\"", "\"\t\tyear-text=\"", "\"\t\t.primaryCalendarType=\"", "\"\t\t@ui5-pressPrevious=\"", "\"\t\t@ui5-pressNext=\"", "\"\t\t@ui5-btn1Press=\"", "\"\t\t@ui5-btn2Press=\"", "\"\t></ui5-calendar-header><div id=\"", "-content\" class=\"sapUiCalContent\"><ui5-daypicker\t\t\tid=\"", "-daypicker\"\t\t\tclass=\"", "\"\t\t\tformat-pattern=\"", "\"\t\t\t.selectedDates=\"", "\"\t\t\t._hidden=\"", "\"\t\t\t.primaryCalendarType=\"", "\"\t\t\ttimestamp=\"", "\"\t\t\t@ui5-selectionChange=\"", "\"\t\t\t@ui5-navigate=\"", "\"\t\t></ui5-daypicker><ui5-month-picker\t\t\tid=\"", "-MP\"\t\t\tclass=\"", "\"\t\t\t._hidden=\"", "\"\t\t\t.primaryCalendarType=\"", "\"\t\t\ttimestamp=\"", "\"\t\t\t@ui5-selectedMonthChange=\"", "\"\t\t></ui5-month-picker><ui5-yearpicker\t\t\t\tid=\"", "-YP\"\t\t\t\tclass=\"", "\"\t\t\t\t._hidden=\"", "\"\t\t\t\t.primaryCalendarType=\"", "\"\t\t\t\ttimestamp=\"", "\"\t\t\t\t._selectedYear=\"", "\"\t\t\t\t@ui5-selectedYearChange=\"", "\"\t\t></ui5-yearpicker></div></div>"]);
 
-    _templateObject$c = function _templateObject() {
+    _templateObject$d = function _templateObject() {
       return data;
     };
 
     return data;
   }
 
-  var block0$b = function block0(context) {
-    return html(_templateObject$c(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._header.monthText), ifDefined(context._header.yearText), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._header.onPressPrevious), ifDefined(context._header.onPressNext), ifDefined(context._header.onBtn1Press), ifDefined(context._header.onBtn2Press), ifDefined(context._id), ifDefined(context._id), ifDefined(classMap(context.classes.dayPicker)), ifDefined(context._oMonth.formatPattern), ifDefined(context._oMonth.selectedDates), ifDefined(context._oMonth._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._oMonth.timestamp), ifDefined(context._oMonth.onSelectedDatesChange), ifDefined(context._oMonth.onNavigate), ifDefined(context._id), ifDefined(classMap(context.classes.monthPicker)), ifDefined(context._monthPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._monthPicker.timestamp), ifDefined(context._monthPicker.onSelectedMonthChange), ifDefined(context._id), ifDefined(classMap(context.classes.yearPicker)), ifDefined(context._yearPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._yearPicker.timestamp), ifDefined(context._yearPicker._selectedYear), ifDefined(context._yearPicker.onSelectedYearChange));
+  var block0$c = function block0(context) {
+    return html(_templateObject$d(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._header.monthText), ifDefined(context._header.yearText), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._header.onPressPrevious), ifDefined(context._header.onPressNext), ifDefined(context._header.onBtn1Press), ifDefined(context._header.onBtn2Press), ifDefined(context._id), ifDefined(context._id), ifDefined(classMap(context.classes.dayPicker)), ifDefined(context._oMonth.formatPattern), ifDefined(context._oMonth.selectedDates), ifDefined(context._oMonth._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._oMonth.timestamp), ifDefined(context._oMonth.onSelectedDatesChange), ifDefined(context._oMonth.onNavigate), ifDefined(context._id), ifDefined(classMap(context.classes.monthPicker)), ifDefined(context._monthPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._monthPicker.timestamp), ifDefined(context._monthPicker.onSelectedMonthChange), ifDefined(context._id), ifDefined(classMap(context.classes.yearPicker)), ifDefined(context._yearPicker._hidden), ifDefined(context._oMonth.primaryCalendarType), ifDefined(context._yearPicker.timestamp), ifDefined(context._yearPicker._selectedYear), ifDefined(context._yearPicker.onSelectedYearChange));
   };
+
+  var Gregorian = UniversalDate.extend('sap.ui.core.date.Gregorian', {
+    constructor: function constructor() {
+      this.oDate = this.createDate(Date, arguments);
+      this.sCalendarType = CalendarType.Gregorian;
+    }
+  });
+
+  Gregorian.UTC = function () {
+    return Date.UTC.apply(Date, arguments);
+  };
+
+  Gregorian.now = function () {
+    return Date.now();
+  };
+
+  CalendarClassRegistry.setCalendarClass(CalendarType.Gregorian, Gregorian);
 
   var calendarCSS = "ui5-calendar{display:inline-block}:host(ui5-calendar){display:inline-block}.sapWCDayPickerHidden,.sapWCMonthPickerHidden,.sapWCYearPickerHidden{display:none}.sapUiCal{background:var(--sapUiListBackground,var(--sapList_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))))}.sapUiCal ui5-daypicker,.sapUiCal ui5-month-picker,.sapUiCal ui5-yearpicker{vertical-align:top}";
 
@@ -20538,7 +22119,7 @@
    * @public
    */
 
-  var metadata$c = {
+  var metadata$e = {
     tag: "ui5-calendar",
     properties:
     /** @lends  sap.ui.webcomponents.main.Calendar.prototype */
@@ -20630,7 +22211,7 @@
     _createClass(Calendar, null, [{
       key: "metadata",
       get: function get() {
-        return metadata$c;
+        return metadata$e;
       }
     }, {
       key: "render",
@@ -20640,7 +22221,7 @@
     }, {
       key: "template",
       get: function get() {
-        return block0$b;
+        return block0$c;
       }
     }, {
       key: "styles",
@@ -21088,1557 +22669,6 @@
     Calendar.define();
   });
 
-  var rFocusable = /^(?:input|select|textarea|button)$/i,
-      rClickable = /^(?:a|area)$/i;
-
-  var FocusHelper =
-  /*#__PURE__*/
-  function () {
-    function FocusHelper() {
-      _classCallCheck(this, FocusHelper);
-    }
-
-    _createClass(FocusHelper, null, [{
-      key: "hasTabIndex",
-      value: function hasTabIndex(domElement) {
-        if (domElement.disabled) {
-          return false;
-        }
-
-        var tabIndex = domElement.getAttribute("tabindex");
-
-        if (tabIndex !== null && tabIndex !== undefined) {
-          return parseInt(tabIndex) >= 0;
-        }
-
-        return rFocusable.test(domElement.nodeName) || rClickable.test(domElement.nodeName) && domElement.href;
-      }
-    }, {
-      key: "isHidden",
-      value: function isHidden(domElement) {
-        if (domElement.nodeName === "SLOT") {
-          return false;
-        }
-
-        var rect = domElement.getBoundingClientRect();
-        return domElement.offsetWidth <= 0 && domElement.offsetHeight <= 0 || domElement.style.visibility === "hidden" || rect.width === 0 && 0 && rect.height === 0;
-      }
-    }, {
-      key: "isVisible",
-      value: function isVisible(domElement) {
-        return !FocusHelper.isHidden(domElement);
-      }
-    }, {
-      key: "getCorrectElement",
-      value: function getCorrectElement(element) {
-        if (element instanceof UI5Element) {
-          // Focus the CustomElement itself or provide getDomRef of each ?
-          return element.getFocusDomRef();
-        }
-
-        return element;
-      }
-    }, {
-      key: "findFocusableElement",
-      value: function findFocusableElement(container, forward) {
-        var child;
-
-        if (container.assignedNodes && container.assignedNodes()) {
-          var assignedElements = container.assignedNodes();
-          child = forward ? assignedElements[0] : assignedElements[assignedElements.length - 1];
-        } else {
-          child = forward ? container.firstChild : container.lastChild;
-        }
-
-        var focusableDescendant;
-
-        while (child) {
-          var originalChild = child;
-          child = FocusHelper.getCorrectElement(child);
-
-          if (!child) {
-            return null;
-          }
-
-          if (child.nodeType === 1 && !FocusHelper.isHidden(child)) {
-            if (FocusHelper.hasTabIndex(child)) {
-              return child;
-            }
-
-            focusableDescendant = FocusHelper.findFocusableElement(child, forward);
-
-            if (focusableDescendant) {
-              return focusableDescendant;
-            }
-          }
-
-          child = forward ? originalChild.nextSibling : originalChild.previousSibling;
-        }
-
-        return null;
-      }
-    }, {
-      key: "findFirstFocusableElement",
-      value: function findFirstFocusableElement(container) {
-        if (!container || FocusHelper.isHidden(container)) {
-          return null;
-        }
-
-        return FocusHelper.findFocusableElement(container, true);
-      }
-    }, {
-      key: "findLastFocusableElement",
-      value: function findLastFocusableElement(container) {
-        if (!container || FocusHelper.isHidden(container)) {
-          return null;
-        }
-
-        return FocusHelper.findFocusableElement(container, false);
-      }
-    }, {
-      key: "hasTabbableContent",
-      value: function hasTabbableContent(node) {
-        var hasTabableContent = false,
-            content = node.children; // eslint-disable-line
-
-        if (content) {
-          hasTabableContent = FocusHelper._hasTabbableContent(content);
-        } // If the node is inside Custom Element,
-        // check the content in the 'light' DOM.
-
-
-        if (!hasTabableContent && FocusHelper._isInsideShadowRoot(node)) {
-          var customElement = FocusHelper._getCustomElement(node);
-
-          var _content = customElement.children; // eslint-disable-line
-
-          if (_content) {
-            hasTabableContent = FocusHelper._hasTabbableContent(_content);
-          }
-        }
-
-        return hasTabableContent;
-      }
-    }, {
-      key: "getLastTabbableElement",
-      value: function getLastTabbableElement(node) {
-        var tabbableContent = FocusHelper.getTabbableContent(node);
-        return tabbableContent.length ? tabbableContent[tabbableContent.length - 1] : null;
-      }
-    }, {
-      key: "getTabbableContent",
-      value: function getTabbableContent(node) {
-        var aTabbableContent = [],
-            content = node.children; // eslint-disable-line
-
-        if (content) {
-          aTabbableContent = FocusHelper._getTabbableContent(content);
-        }
-
-        if (FocusHelper._isInsideShadowRoot(node)) {
-          var customElement = FocusHelper._getCustomElement(node);
-
-          var _content2 = customElement.children; // eslint-disable-line
-
-          if (_content2) {
-            aTabbableContent = [].concat(_toConsumableArray(aTabbableContent), _toConsumableArray(FocusHelper._getTabbableContent(_content2)));
-          }
-        }
-
-        return aTabbableContent;
-      }
-    }, {
-      key: "_getTabbableContent",
-      value: function _getTabbableContent(nodes) {
-        var aTabbableContent = [];
-        Array.from(nodes).forEach(function (node) {
-          var currentNode = node;
-
-          while (currentNode) {
-            if (FocusHelper._hasShadowRoot(currentNode)) {
-              // as the content is in the <span> template and it is always 2nd child
-              var children = currentNode.shadowRoot.children;
-              currentNode = children.length === 1 ? children[0] : children[1];
-            }
-
-            if (FocusHelper._isNodeTabbable(currentNode)) {
-              aTabbableContent.push(currentNode);
-            }
-
-            currentNode = currentNode.children && currentNode.children.length && currentNode.children[0];
-          }
-        });
-        return aTabbableContent.filter(FocusHelper.isVisible);
-      }
-    }, {
-      key: "_hasTabbableContent",
-      value: function _hasTabbableContent(nodes) {
-        var hasTabableContent = false;
-        Array.from(nodes).forEach(function (node) {
-          var currentNode = node;
-
-          while (currentNode && !hasTabableContent) {
-            if (FocusHelper._hasShadowRoot(currentNode)) {
-              // as the content is in the <span> template and it is always 2nd child
-              var children = currentNode.shadowRoot.children;
-              currentNode = children.length === 1 ? children[0] : children[1];
-            }
-
-            hasTabableContent = FocusHelper._isNodeTabbable(currentNode);
-            currentNode = currentNode.children.length && currentNode.children[0];
-          }
-        });
-        return hasTabableContent;
-      }
-    }, {
-      key: "_isNodeTabbable",
-      value: function _isNodeTabbable(node) {
-        if (!node) {
-          return false;
-        }
-
-        var nodeName = node.nodeName.toLowerCase();
-
-        if (node.hasAttribute("data-sap-no-tab-ref")) {
-          return false;
-        } // special tags
-
-
-        if (nodeName === "a") {
-          return !!node.href;
-        }
-
-        if (/input|select|textarea|button|object/.test(nodeName)) {
-          return !node.disabled;
-        }
-
-        return FocusHelper.hasTabIndex(node);
-      }
-    }, {
-      key: "_hasShadowRoot",
-      value: function _hasShadowRoot(node) {
-        return !!(node && node.shadowRoot);
-      }
-    }, {
-      key: "_isInsideShadowRoot",
-      value: function _isInsideShadowRoot(node) {
-        return !!(node && node.getRootNode() && node.getRootNode().host);
-      }
-    }, {
-      key: "_getCustomElement",
-      value: function _getCustomElement(node) {
-        return node.getRootNode().host;
-      }
-    }]);
-
-    return FocusHelper;
-  }();
-
-  var PopoverPlacementTypes = {
-    /**
-     * Popover will be placed at the left side of the reference element.
-     * @public
-     */
-    Left: "Left",
-
-    /**
-     * Popover will be placed at the right side of the reference element.
-     * @public
-     */
-    Right: "Right",
-
-    /**
-     * Popover will be placed at the top of the reference element.
-     * @public
-     */
-    Top: "Top",
-
-    /**
-     * Popover will be placed at the bottom of the reference element.
-     * @public
-     */
-    Bottom: "Bottom"
-  };
-
-  var PopoverPlacementType =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(PopoverPlacementType, _DataType);
-
-    function PopoverPlacementType() {
-      _classCallCheck(this, PopoverPlacementType);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(PopoverPlacementType).apply(this, arguments));
-    }
-
-    _createClass(PopoverPlacementType, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!PopoverPlacementTypes[value];
-      }
-    }]);
-
-    return PopoverPlacementType;
-  }(DataType);
-
-  PopoverPlacementType.generataTypeAcessors(PopoverPlacementTypes);
-
-  var PopoverVerticalAligns = {
-    Center: "Center",
-    Top: "Top",
-    Bottom: "Bottom",
-    Stretch: "Stretch"
-  };
-
-  var PopoverVerticalAlign =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(PopoverVerticalAlign, _DataType);
-
-    function PopoverVerticalAlign() {
-      _classCallCheck(this, PopoverVerticalAlign);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(PopoverVerticalAlign).apply(this, arguments));
-    }
-
-    _createClass(PopoverVerticalAlign, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!PopoverVerticalAligns[value];
-      }
-    }]);
-
-    return PopoverVerticalAlign;
-  }(DataType);
-
-  PopoverVerticalAlign.generataTypeAcessors(PopoverVerticalAligns);
-
-  var PopoverHorizontalAligns = {
-    Center: "Center",
-    Left: "Left",
-    Right: "Right",
-    Stretch: "Stretch"
-  };
-
-  var PopoverHorizontalAlign =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(PopoverHorizontalAlign, _DataType);
-
-    function PopoverHorizontalAlign() {
-      _classCallCheck(this, PopoverHorizontalAlign);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(PopoverHorizontalAlign).apply(this, arguments));
-    }
-
-    _createClass(PopoverHorizontalAlign, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!PopoverHorizontalAligns[value];
-      }
-    }]);
-
-    return PopoverHorizontalAlign;
-  }(DataType);
-
-  PopoverHorizontalAlign.generataTypeAcessors(PopoverHorizontalAligns);
-
-  var styles$3 = ".sapMPopupFrame{width:0;height:0;display:none;visibility:visible}.sapMPopupFrameOpen{display:inline}.sapMPopup{min-width:6.25rem;box-sizing:border-box;outline:none;max-width:100%;max-height:100%;background:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border:none;box-shadow:var(--sapUiShadowLevel2,0 .625rem 1.875rem 0 rgba(0,0,0,.15),0 0 0 1px rgba(0,0,0,.15));border-radius:.25rem;min-height:2rem}.sapMPopup .sapMPopupHeader{margin:0;color:var(--sapUiPageHeaderTextColor,var(--sapPageHeader_TextColor,#32363a));font-size:1rem;font-weight:400;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));border-bottom:1px solid var(--sapUiPageFooterBorderColor,#d9d9d9)}.sapMPopup .sapMPopupHeaderText{padding:0 .25rem;text-align:center;height:3rem;line-height:3rem}.sapMPopup .sapMPopupFooter{font-size:1rem;font-weight:400;font-family:var(--sapUiFontFamily,var(--sapFontFamily,\"72\",\"72full\",Arial,Helvetica,sans-serif));background:var(--sapUiPageFooterBackground,var(--sapPageFooter_Background,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-top:1px solid var(--sapUiPageFooterBorderColor,#d9d9d9);color:var(--sapUiPageFooterTextColor,var(--sapPageFooter_TextColor,#32363a))}.sapMPopup .sapMPopupContent{overflow:auto;position:relative;box-sizing:border-box;background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));border-radius:.25rem}.sapMPopup .sapMPopupContent,.sapMPopup .sapMPopupFooter{border-bottom-left-radius:.25rem;border-bottom-right-radius:.25rem}.sapMPopup .sapMPopupScroll{vertical-align:middle;box-sizing:border-box;padding:var(--_ui5_popover_content_padding,.4375em)}.sapUiBLy{background-color:#000;opacity:.6;filter:alpha(opacity=60);top:0;left:0;right:0;bottom:0;position:fixed;outline:0 none}.sapMPopupBlockLayer{visibility:visible}.sapMPopupBlockLayerHidden{display:none}";
-
-  /**
-   * @public
-   */
-
-  var metadata$d = {
-    "abstract": true,
-    slots:
-    /** @lends  sap.ui.webcomponents.main.Popup.prototype */
-    {
-      /**
-       * Defines the content of the Web Component.
-       * @type {HTMLElement[]}
-       * @slot
-       * @public
-       */
-      content: {
-        type: HTMLElement,
-        multiple: true
-      },
-
-      /**
-       * Defines the header HTML Element.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @public
-       */
-      header: {
-        type: HTMLElement
-      },
-
-      /**
-       * Defines the footer HTML Element.
-       *
-       * @type {HTMLElement}
-       * @slot
-       * @public
-       */
-      footer: {
-        type: HTMLElement
-      }
-    },
-    properties:
-    /** @lends  sap.ui.webcomponents.main.Popup.prototype */
-    {
-      /**
-       * Defines the ID of the HTML Element, which will get the initial focus.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      initialFocus: {
-        type: String,
-        association: true
-      },
-
-      /**
-       * Defines whether the header is hidden.
-       *
-       * @type {Boolean}
-       * @defaultvalue false
-       * @public
-       */
-      hideHeader: {
-        type: Boolean
-      },
-
-      /**
-       * Defines the header text.
-       *
-       * @type {string}
-       * @defaultvalue: ""
-       * @public
-       */
-      headerText: {
-        type: String
-      },
-      _isOpen: {
-        type: Boolean
-      },
-      _zIndex: {
-        type: Integer
-      },
-      _hideBlockLayer: {
-        type: Boolean
-      }
-    },
-    events:
-    /** @lends  sap.ui.webcomponents.main.Popup.prototype */
-    {
-      /**
-       * Fired before the component is opened.
-       *
-       * @public
-       * @event
-       */
-      beforeOpen: {},
-
-      /**
-       * Fired after the component is opened.
-       *
-       * @public
-       * @event
-       */
-      afterOpen: {},
-
-      /**
-       * Fired before the component is closed.
-       *
-       * @public
-       * @event
-       * @param {Boolean} escPressed Indicates that <code>ESC</code> key has triggered the event.
-       */
-      beforeClose: {
-        escPressed: {
-          type: Boolean
-        }
-      },
-
-      /**
-       * Fired after the component is closed.
-       *
-       * @public
-       * @event
-       */
-      afterClose: {}
-    }
-  };
-  var openedPopups = [];
-  var currentZIndex = 100;
-  var isBodyScrollingDisabled = false;
-  var customBLyBackStyleInserted = false;
-
-  function getParentHost(node) {
-    while (node && !node.host) {
-      node = node.parentNode;
-    }
-
-    return node && node.host;
-  }
-
-  function createBLyBackStyle() {
-    if (customBLyBackStyleInserted) {
-      return;
-    }
-
-    customBLyBackStyleInserted = true;
-    var stylesheet = document.styleSheets[0];
-    stylesheet.insertRule(".sapUiBLyBack {overflow: hidden;position: fixed;width:100%;height: 100%;}", 0);
-  }
-
-  function updateBlockLayers() {
-    var popup,
-        i,
-        hasModal = false;
-
-    for (i = openedPopups.length - 1; i >= 0; i--) {
-      popup = openedPopups[i];
-
-      if (hasModal) {
-        popup._hideBlockLayer = true;
-      } else {
-        if (popup.isModal()) {
-          // eslint-disable-line
-          popup._hideBlockLayer = false;
-          hasModal = true;
-        }
-      }
-    }
-
-    updateBodyScrolling(hasModal);
-  }
-
-  function updateBodyScrolling(hasModal) {
-    if (isBodyScrollingDisabled === hasModal) {
-      return;
-    }
-
-    createBLyBackStyle();
-
-    if (hasModal) {
-      document.body.style.top = "-".concat(window.pageYOffset, "px");
-      document.body.classList.add("sapUiBLyBack");
-    } else {
-      document.body.classList.remove("sapUiBLyBack");
-      window.scrollTo(0, -parseFloat(document.body.style.top));
-      document.body.style.top = "";
-    }
-
-    isBodyScrollingDisabled = hasModal;
-  }
-  /**
-   * @class
-   * <h3 class="comment-api-title">Overview</h3>
-   * Represents a base class for all popup Web Components.
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Popup
-   * @extends sap.ui.webcomponents.base.UI5Element
-   * @public
-   */
-
-
-  var Popup =
-  /*#__PURE__*/
-  function (_UI5Element) {
-    _inherits(Popup, _UI5Element);
-
-    _createClass(Popup, null, [{
-      key: "getNextZIndex",
-      value: function getNextZIndex() {
-        currentZIndex += 2;
-        return currentZIndex;
-      }
-    }, {
-      key: "hitTest",
-      value: function hitTest(popup, event) {
-        var indexOf = openedPopups.indexOf(popup);
-        var openedPopup;
-
-        for (var i = indexOf; i < openedPopups.length; i++) {
-          openedPopup = openedPopups[i];
-
-          if (openedPopup.hitTest(event)) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-    }, {
-      key: "hasModalPopup",
-      value: function hasModalPopup() {
-        for (var i = 0; i < openedPopups.length; i++) {
-          if (openedPopups[i].isModal()) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-    }, {
-      key: "metadata",
-      get: function get() {
-        return metadata$d;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return styles$3;
-      }
-    }]);
-
-    function Popup() {
-      var _this;
-
-      _classCallCheck(this, Popup);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Popup).call(this));
-      _this._documentKeyDownHandler = _this.documentKeyDown.bind(_assertThisInitialized(_this));
-      return _this;
-    }
-
-    _createClass(Popup, [{
-      key: "isTopPopup",
-      value: function isTopPopup() {
-        return openedPopups.indexOf(this) === openedPopups.length - 1;
-      }
-    }, {
-      key: "isModal",
-      value: function isModal() {
-        return true;
-      }
-    }, {
-      key: "documentKeyDown",
-      value: function documentKeyDown(event) {
-        if (isEscape(event) && this.isTopPopup()) {
-          this.escPressed = true;
-          this.close();
-        }
-      }
-    }, {
-      key: "getPopupDomRef",
-      value: function getPopupDomRef() {
-        var domRef = this.getDomRef();
-        return domRef && domRef.querySelector(".sapMPopup");
-      }
-    }, {
-      key: "hitTest",
-      value: function hitTest(_event) {
-        return true;
-      }
-    }, {
-      key: "open",
-      value: function open() {
-        this.fireEvent("beforeOpen", {});
-        this._isFirstTimeRendered = false;
-        this._zIndex = Popup.getNextZIndex();
-        openedPopups.push(this);
-        updateBlockLayers();
-        document.addEventListener("keydown", this._documentKeyDownHandler, true);
-      }
-    }, {
-      key: "close",
-      value: function close() {
-        this.fireEvent("beforeClose", {
-          escPressed: this.escPressed
-        }, true);
-        this.escPressed = false;
-        document.removeEventListener("keydown", this._documentKeyDownHandler, true);
-        var index = openedPopups.indexOf(this);
-        openedPopups.splice(index, 1);
-        updateBlockLayers();
-      }
-    }, {
-      key: "initInitialFocus",
-      value: function initInitialFocus() {
-        var initialFocus = this.initialFocus;
-        var initialFocusDomRef = this.initialFocus;
-
-        if (initialFocus && typeof initialFocus === "string") {
-          initialFocusDomRef = document.getElementById(initialFocus);
-
-          if (!initialFocusDomRef) {
-            var parentHost = getParentHost(this);
-
-            if (parentHost) {
-              initialFocusDomRef = parentHost.shadowRoot.querySelector("#".concat(initialFocus));
-            }
-          }
-        }
-
-        this._initialFocusDomRef = initialFocusDomRef;
-      }
-    }, {
-      key: "onFirstTimeAfterRendering",
-      value: function onFirstTimeAfterRendering() {
-        if (this.isTopPopup()) {
-          this.initInitialFocus();
-          this.setInitialFocus(this.getPopupDomRef());
-        }
-
-        this.fireEvent("afterOpen", {});
-      }
-    }, {
-      key: "onAfterRendering",
-      value: function onAfterRendering() {
-        if (!this._isOpen) {
-          return;
-        }
-
-        if (!this._isFirstTimeRendered) {
-          this.onFirstTimeAfterRendering();
-          this._isFirstTimeRendered = true;
-        }
-      }
-    }, {
-      key: "setInitialFocus",
-      value: function setInitialFocus(container) {
-        if (this._initialFocusDomRef) {
-          if (this._initialFocusDomRef !== document.activeElement) {
-            this._initialFocusDomRef.focus();
-          }
-
-          return;
-        }
-
-        if (!container) {
-          return;
-        }
-
-        var focusableElement = FocusHelper.findFirstFocusableElement(container);
-
-        if (focusableElement) {
-          focusableElement.focus();
-        } else {
-          container.focus();
-        }
-      }
-    }, {
-      key: "onfocusin",
-      value: function onfocusin(event) {
-        this.preserveFocus(event, this.getPopupDomRef());
-      }
-    }, {
-      key: "preserveFocus",
-      value: function preserveFocus(event, container) {
-        if (!this.isTopPopup()) {
-          return;
-        }
-
-        var target = event.target;
-
-        while (target.shadowRoot && target.shadowRoot.activeElement) {
-          target = target.shadowRoot.activeElement;
-        }
-
-        var focusableElement;
-        var isSpecialCase = false;
-
-        switch (target.id) {
-          case "".concat(this._id, "-firstfe"):
-            focusableElement = FocusHelper.findLastFocusableElement(container);
-            isSpecialCase = true;
-            break;
-
-          case "".concat(this._id, "-lastfe"):
-            focusableElement = FocusHelper.findFirstFocusableElement(container);
-            isSpecialCase = true;
-            break;
-
-          case "".concat(this._id, "-blocklayer"):
-            focusableElement = this._currentFocusedElement || FocusHelper.findFirstFocusableElement(container);
-            isSpecialCase = true;
-            break;
-        }
-
-        if (focusableElement) {
-          focusableElement.focus();
-        } else if (isSpecialCase) {
-          container.focus();
-        }
-
-        this._currentFocusedElement = focusableElement || document.activeElement;
-      }
-    }, {
-      key: "storeCurrentFocus",
-      value: function storeCurrentFocus() {
-        var element = document.activeElement;
-
-        while (element.shadowRoot && element.shadowRoot.activeElement) {
-          element = element.shadowRoot.activeElement;
-        }
-
-        this._lastFocusableElement = element;
-      }
-    }, {
-      key: "resetFocus",
-      value: function resetFocus() {
-        if (!this._lastFocusableElement) {
-          return;
-        }
-
-        var lastFocusableElement = this._lastFocusableElement;
-
-        if (lastFocusableElement) {
-          lastFocusableElement.focus();
-        }
-
-        this._lastFocusableElement = null;
-      }
-    }]);
-
-    return Popup;
-  }(UI5Element);
-
-  function _templateObject5$2() {
-    var data = _taggedTemplateLiteral(["<footer><div class=\"sapMPopupFooter\"><slot name=\"footer\"></slot></div></footer>\t"]);
-
-    _templateObject5$2 = function _templateObject5() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject4$2() {
-    var data = _taggedTemplateLiteral(["<h2 role=\"toolbar\" class=\"sapMPopupHeader sapMPopupHeaderText\">", "</h2>\t\t\t"]);
-
-    _templateObject4$2 = function _templateObject4() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject3$5() {
-    var data = _taggedTemplateLiteral(["<div role=\"toolbar\" class=\"sapMPopupHeader\"><slot name=\"header\"></slot></div>\t\t\t"]);
-
-    _templateObject3$5 = function _templateObject3() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject2$8() {
-    var data = _taggedTemplateLiteral(["<header>\t\t\t", "</header>\t"]);
-
-    _templateObject2$8 = function _templateObject2() {
-      return data;
-    };
-
-    return data;
-  }
-
-  function _templateObject$d() {
-    var data = _taggedTemplateLiteral(["<span class=\"", "\"><span id=\"", "-firstfe\" tabindex=\"0\" @focusin=", "></span><div style=\"", "\" role=\"dialog\" aria-labelledby=\"", "\" tabindex=\"-1\" class=\"", "\">\t\t\t", "<div id=\"", "-content\" role=\"application\" style=\"", "\" class=\"sapMPopupContent\"><div class=\"sapMPopupScroll\"><slot></slot></div></div>\t\t\t", "<span id=\"", "-arrow\" style=\"", "\" class=\"", "\"></span></div><span id=\"", "-lastfe\" tabindex=\"0\" @focusin=", "></span><div tabindex=\"0\" id=\"", "-blocklayer\" style=\"", "\" class=\"", "\"></div></span>"]);
-
-    _templateObject$d = function _templateObject() {
-      return data;
-    };
-
-    return data;
-  }
-
-  var block0$c = function block0(context) {
-    return html(_templateObject$d(), ifDefined(classMap(context.classes.frame)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToLast), ifDefined(styleMap$1(context.styles.main)), ifDefined(context.headerId), ifDefined(classMap(context.classes.main)), !context.hideHeader ? block1$8(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.content)), context.footer ? block4$2(context) : undefined, ifDefined(context._id), ifDefined(styleMap$1(context.styles.arrow)), ifDefined(classMap(context.classes.arrow)), ifDefined(context._id), ifDefined(context.focusHelper.forwardToFirst), ifDefined(context._id), ifDefined(styleMap$1(context.styles.blockLayer)), ifDefined(classMap(context.classes.blockLayer)));
-  };
-
-  var block1$8 = function block1(context) {
-    return html(_templateObject2$8(), context.header ? block2$5(context) : block3$2(context));
-  };
-
-  var block2$5 = function block2(context) {
-    return html(_templateObject3$5());
-  };
-
-  var block3$2 = function block3(context) {
-    return html(_templateObject4$2(), ifDefined(context.headerText));
-  };
-
-  var block4$2 = function block4(context) {
-    return html(_templateObject5$2());
-  };
-
-  var popoverCss = ".sapMPopover{position:fixed;z-index:10}.sapMPopoverArr{pointer-events:none;display:block;width:1rem;height:1rem;position:absolute;overflow:hidden}.sapMPopoverArr:after{content:\" \";display:block;width:.7rem;height:.7rem;background-color:var(--sapUiGroupContentBackground,var(--sapGroup_ContentBackground,var(--sapBaseColor,var(--sapPrimary3,#fff))));transform:rotate(-45deg)}.sapMPopoverArrUp{left:calc(50% - .5625rem);top:-.5rem;height:.5625rem}.sapMPopoverArrUp:after{margin:.1875rem 0 0 .1875rem;box-shadow:-.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrRight{top:calc(50% - .5625rem);right:-.5625rem;width:.5625rem}.sapMPopoverArrRight:after{margin:.1875rem 0 0 -.375rem;box-shadow:-.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrDown{left:calc(50% - .5625rem);height:.5625rem}.sapMPopoverArrDown:after{margin:-.375rem 0 0 .125rem;box-shadow:.375rem -.375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArrLeft{left:-.5625rem;top:calc(50% - .5625rem);width:.5625rem;height:1rem}.sapMPopoverArrLeft:after{margin:.125rem 0 0 .25rem;box-shadow:.375rem .375rem .75rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3)),0 0 .125rem 0 var(--_ui5_popover_arrow_shadow_color,rgba(0,0,0,.3))}.sapMPopoverArr.sapMPopoverArrHidden{display:none}.sapMPopover{transform:translateZ(0)}";
-
-  /**
-   * @public
-   */
-
-  var metadata$e = {
-    tag: "ui5-popover",
-    properties:
-    /** @lends sap.ui.webcomponents.main.Popover.prototype */
-    {
-      /**
-       * Determines on which side the <code>ui5-popover</code> is placed at.
-       *
-       * @type {PopoverPlacementType}
-       * @defaultvalue "Right"
-       * @public
-       */
-      placementType: {
-        type: PopoverPlacementType,
-        defaultValue: PopoverPlacementType.Right
-      },
-
-      /**
-       * Determines the horizontal alignment of the <code>ui5-popover</code>.
-       *
-       * @type {PopoverHorizontalAlign}
-       * @defaultvalue "Center"
-       * @public
-       */
-      horizontalAlign: {
-        type: PopoverHorizontalAlign,
-        defaultValue: PopoverHorizontalAlign.Center
-      },
-
-      /**
-       * Determines the vertical alignment of the <code>ui5-popover</code>.
-       *
-       * @type {PopoverVerticalAlign}
-       * @defaultvalue "Center"
-       * @public
-       */
-      verticalAlign: {
-        type: PopoverVerticalAlign,
-        defaultValue: PopoverVerticalAlign.Center
-      },
-
-      /**
-       * Defines whether the <code>ui5-popover</code> should close when
-       * clicking/tapping outside of the popover.
-       * If enabled, it blocks any interaction with the background.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      modal: {
-        type: Boolean
-      },
-
-      /**
-       * Determines whether the <code>ui5-popover</code> arrow is hidden.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      hideArrow: {
-        type: Boolean
-      },
-
-      /**
-       * Determines whether the <code>ui5-popover</code> would close upon user scroll.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      stayOpenOnScroll: {
-        type: Boolean
-      },
-
-      /**
-       * Determines if there is no enough space, the <code>ui5-popover</code> can be placed
-       * over the target.
-       *
-       * @type {boolean}
-       * @defaultvalue false
-       * @public
-       */
-      allowTargetOverlap: {
-        type: Boolean
-      },
-      _left: {
-        type: Integer
-      },
-      _top: {
-        type: Integer
-      },
-      _width: {
-        type: String
-      },
-      _height: {
-        type: String
-      },
-      _maxContentHeight: {
-        type: Integer
-      },
-      _arrowTranslateX: {
-        type: Integer,
-        defaultValue: 0
-      },
-      _arrowTranslateY: {
-        type: Integer,
-        defaultValue: 0
-      },
-      _actualPlacementType: {
-        type: PopoverPlacementType,
-        defaultValue: PopoverPlacementType.Right
-      },
-      _focusElementsHandlers: {
-        type: Object
-      }
-    }
-  };
-  var diffTolerance = 32;
-  var dockInterval = 200;
-  var arrowSize = 8;
-  /**
-   * @class
-   *
-   * <h3 class="comment-api-title">Overview</h3>
-   *
-   * The <code>ui5-popover</code> component displays additional information for an object
-   * in a compact way and without leaving the page.
-   * The Popover can contain various UI elements, such as fields, tables, images, and charts.
-   * It can also include actions in the footer.
-   *
-   * <h3>Structure</h3>
-   *
-   * The popover has three main areas:
-   * <ul>
-   * <li>Header (optional) - with a back button and a title</li>
-   * <li>Content - holds all the Web Component</li>
-   * <li>Footer (optional) - with additional action buttons</li>
-   * </ul>
-   *
-   * <b>Note:</b> The <code>ui5-popover</code> is closed when the user clicks
-   * or taps outside the popover
-   * or selects an action within the popover. You can prevent this with the
-   * <code>modal</code> property.
-   *
-   * <h3>ES6 Module Import</h3>
-   *
-   * <code>import "@ui5/webcomponents/dist/Popover";</code>
-   *
-   * @constructor
-   * @author SAP SE
-   * @alias sap.ui.webcomponents.main.Popover
-   * @extends Popup
-   * @tagname ui5-popover
-   * @public
-   */
-
-  var Popover =
-  /*#__PURE__*/
-  function (_Popup) {
-    _inherits(Popover, _Popup);
-
-    _createClass(Popover, null, [{
-      key: "metadata",
-      get: function get() {
-        return metadata$e;
-      }
-    }, {
-      key: "render",
-      get: function get() {
-        return litRender;
-      }
-    }, {
-      key: "template",
-      get: function get() {
-        return block0$c;
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return [Popup.styles, popoverCss];
-      }
-    }]);
-
-    function Popover() {
-      var _this;
-
-      _classCallCheck(this, Popover);
-
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Popover).call(this));
-      _this._documentMouseDownHandler = _this.documentMouseDown.bind(_assertThisInitialized(_this));
-
-      var that = _assertThisInitialized(_this);
-
-      _this._focusElementsHandlers = {
-        forwardToFirst: function forwardToFirst(event) {
-          var firstFocusable = FocusHelper.findFirstFocusableElement(that);
-
-          if (firstFocusable) {
-            firstFocusable.focus();
-          }
-        },
-        forwardToLast: function forwardToLast(event) {
-          var lastFocusable = FocusHelper.findLastFocusableElement(that);
-
-          if (lastFocusable) {
-            lastFocusable.focus();
-          }
-        }
-      };
-      return _this;
-    }
-
-    _createClass(Popover, [{
-      key: "isModal",
-      value: function isModal() {
-        return this.modal;
-      }
-    }, {
-      key: "hitTest",
-      value: function hitTest(event) {
-        var domRef = this.getPopupDomRef();
-        var rect = domRef.getBoundingClientRect();
-        var x, y;
-
-        if (event.touches) {
-          var touch = event.touches[0];
-          x = touch.clientX;
-          y = touch.clientY;
-        } else {
-          x = event.clientX;
-          y = event.clientY;
-        } // don't close the popover if the "initial focus" is outside the popover
-        // and the user click/touch on it
-
-
-        if (this.initialFocus && this._initialFocusDomRef) {
-          var initialFocusRect = this._initialFocusDomRef.getBoundingClientRect();
-
-          if (Popover.isInRect(x, y, initialFocusRect)) {
-            return true;
-          }
-        }
-
-        if (this._targetElement) {
-          var targetElementRect = this._targetElement.getBoundingClientRect();
-
-          if (Popover.isInRect(x, y, targetElementRect)) {
-            return true;
-          }
-        }
-
-        return Popover.isInRect(x, y, rect);
-      }
-    }, {
-      key: "documentMouseDown",
-      value: function documentMouseDown(event) {
-        if (!this.modal && !Popup.hitTest(this, event)) {
-          this.close();
-        }
-      }
-    }, {
-      key: "checkDocking",
-      value: function checkDocking() {
-        if (!this.stayOpenOnScroll && this.hasTargetElementMoved()) {
-          this.close();
-        }
-
-        var popoverDomRef = this.getPopupDomRef();
-        var popoverSize = {
-          width: popoverDomRef.offsetWidth,
-          height: popoverDomRef.offsetHeight
-        };
-        var targetRect = Popover.getClientRect(this._targetElement);
-        this.setLocation(targetRect, popoverSize);
-      }
-    }, {
-      key: "getVerticalLeft",
-      value: function getVerticalLeft(targetRect, popoverSize) {
-        var left;
-
-        switch (this.horizontalAlign) {
-          case PopoverHorizontalAlign.Center:
-          case PopoverHorizontalAlign.Stretch:
-            left = targetRect.left - (popoverSize.width - targetRect.width) / 2;
-            break;
-
-          case PopoverHorizontalAlign.Left:
-            left = targetRect.left;
-            break;
-
-          case PopoverHorizontalAlign.Right:
-            left = targetRect.right - popoverSize.width;
-            break;
-        }
-
-        return left;
-      }
-    }, {
-      key: "getHorizontalTop",
-      value: function getHorizontalTop(targetRect, popoverSize) {
-        var top;
-
-        switch (this.verticalAlign) {
-          case PopoverVerticalAlign.Center:
-          case PopoverVerticalAlign.Stretch:
-            top = targetRect.top - (popoverSize.height - targetRect.height) / 2;
-            break;
-
-          case PopoverVerticalAlign.Top:
-            top = targetRect.top;
-            break;
-
-          case PopoverVerticalAlign.Bottom:
-            top = targetRect.bottom - popoverSize.height;
-            break;
-        }
-
-        return top;
-      }
-    }, {
-      key: "getActualPlacementType",
-      value: function getActualPlacementType(targetRect, popoverSize) {
-        var placementType = this.placementType;
-        var actualPlacementType = placementType;
-        var clientWidth = document.documentElement.clientWidth;
-        var clientHeight = document.documentElement.clientHeight;
-
-        switch (placementType) {
-          case PopoverPlacementType.Top:
-            if (targetRect.top < popoverSize.height && targetRect.top < clientHeight - targetRect.bottom) {
-              actualPlacementType = PopoverPlacementType.Bottom;
-            }
-
-            break;
-
-          case PopoverPlacementType.Bottom:
-            if (clientHeight - targetRect.bottom < popoverSize.height && clientHeight - targetRect.bottom < targetRect.top) {
-              actualPlacementType = PopoverPlacementType.Top;
-            }
-
-            break;
-
-          case PopoverPlacementType.Left:
-            if (targetRect.left < popoverSize.width && targetRect.left < clientWidth - targetRect.right) {
-              actualPlacementType = PopoverPlacementType.Right;
-            }
-
-            break;
-
-          case PopoverPlacementType.Right:
-            if (clientWidth - targetRect.right < popoverSize.width && clientWidth - targetRect.right < targetRect.left) {
-              actualPlacementType = PopoverPlacementType.Left;
-            }
-
-            break;
-        }
-
-        this._actualPlacementType = actualPlacementType;
-        return actualPlacementType;
-      }
-    }, {
-      key: "setLocation",
-      value: function setLocation(targetRect, popoverSize) {
-        var left = 0;
-        var top = 0;
-        var allowTargetOverlap = this.allowTargetOverlap;
-        var clientWidth = document.documentElement.clientWidth;
-        var clientHeight = document.documentElement.clientHeight;
-        var maxHeight = clientHeight;
-        var width = "";
-        var height = "";
-        var placementType = this.getActualPlacementType(targetRect, popoverSize);
-        var isVertical = placementType === PopoverPlacementType.Top || placementType === PopoverPlacementType.Bottom;
-
-        if (this.horizontalAlign === PopoverHorizontalAlign.Stretch && isVertical) {
-          popoverSize.width = targetRect.width;
-          width = "".concat(targetRect.width, "px");
-        } else if (this.verticalAlign === PopoverVerticalAlign.Stretch && !isVertical) {
-          popoverSize.height = targetRect.height;
-          height = "".concat(targetRect.height, "px");
-        }
-
-        this._width = width;
-        this._height = height;
-        var arrowOffset = this.hideArrow ? 0 : arrowSize; // calc popover positions
-
-        switch (placementType) {
-          case PopoverPlacementType.Top:
-            left = this.getVerticalLeft(targetRect, popoverSize);
-            top = Math.max(targetRect.top - popoverSize.height - arrowOffset, 0);
-
-            if (!allowTargetOverlap) {
-              maxHeight = targetRect.top - arrowOffset;
-            }
-
-            break;
-
-          case PopoverPlacementType.Bottom:
-            left = this.getVerticalLeft(targetRect, popoverSize);
-
-            if (allowTargetOverlap) {
-              top = Math.max(Math.min(targetRect.bottom + arrowOffset, clientHeight - popoverSize.height), 0);
-            } else {
-              top = targetRect.bottom + arrowOffset;
-              maxHeight = clientHeight - targetRect.bottom - arrowOffset;
-            }
-
-            break;
-
-          case PopoverPlacementType.Left:
-            left = Math.max(targetRect.left - popoverSize.width - arrowOffset, 0);
-            top = this.getHorizontalTop(targetRect, popoverSize);
-            break;
-
-          case PopoverPlacementType.Right:
-            if (allowTargetOverlap) {
-              left = Math.max(Math.min(targetRect.left + targetRect.width + arrowOffset, clientWidth - popoverSize.width), 0);
-            } else {
-              left = targetRect.left + targetRect.width + arrowOffset;
-            }
-
-            top = this.getHorizontalTop(targetRect, popoverSize);
-            break;
-        } // correct popover positions
-
-
-        if (isVertical) {
-          if (popoverSize.width > clientWidth || left < 0) {
-            left = 0;
-          } else if (left + popoverSize.width > clientWidth) {
-            left -= left + popoverSize.width - clientWidth;
-          }
-        } else {
-          if (popoverSize.height > clientHeight || top < 0) {
-            // eslint-disable-line
-            top = 0;
-          } else if (top + popoverSize.height > clientHeight) {
-            top -= top + popoverSize.height - clientHeight;
-          }
-        }
-
-        var maxContentHeight = Math.round(maxHeight);
-
-        if (!this.hideHeader) {
-          var headerDomRef = this.getPopupDomRef().querySelector(".sapMPopupHeader");
-
-          if (headerDomRef) {
-            maxContentHeight = Math.round(maxHeight - headerDomRef.offsetHeight);
-          }
-        }
-
-        this._maxContentHeight = maxContentHeight;
-        var arrowTranslateX = isVertical ? targetRect.left + targetRect.width / 2 - left - popoverSize.width / 2 : 0;
-        var arrowTranslateY = !isVertical ? targetRect.top + targetRect.height / 2 - top - popoverSize.height / 2 : 0;
-        this._arrowTranslateX = Math.round(arrowTranslateX);
-        this._arrowTranslateY = Math.round(arrowTranslateY);
-
-        if (this._left === undefined || Math.abs(this._left - left) > 1.5) {
-          this._left = Math.round(left);
-        }
-
-        if (this._top === undefined || Math.abs(this._top - top) > 1.5) {
-          this._top = Math.round(top);
-        }
-      }
-      /**
-       * Opens the <code>Popover</code>.
-       * @param {object} control This is the component to which the
-       * <code>ui5-popover</code> will be placed.
-       * The side of the placement depends on the <code>placementType</code> property
-       * set in the <code>ui5-popover</code>.
-       * @public
-       */
-
-    }, {
-      key: "openBy",
-      value: function openBy(element) {
-        var _this2 = this;
-
-        if (this._isOpen) {
-          return;
-        }
-
-        var cancelled = _get(_getPrototypeOf(Popover.prototype), "open", this).call(this);
-
-        if (cancelled) {
-          return true;
-        }
-
-        this.storeCurrentFocus();
-        var targetDomRef = element;
-        var popoverSize = this.getPopoverSize();
-        var targetRect = Popover.getClientRect(targetDomRef);
-        this._targetElement = targetDomRef;
-        this._targetRect = targetRect;
-        this.setLocation(targetRect, popoverSize);
-        this._isOpen = true;
-        setTimeout(function (_) {
-          if (_this2._isOpen) {
-            _this2._dockInterval = setInterval(_this2.checkDocking.bind(_this2), dockInterval);
-          }
-        }, 0);
-        setTimeout(function (_) {
-          if (_this2._isOpen) {
-            document.addEventListener("mousedown", _this2._documentMouseDownHandler, true);
-            document.addEventListener("touchstart", _this2._documentMouseDownHandler, true);
-          }
-        }, 0);
-      }
-      /**
-       * Closes the <code>ui5-popover</code>.
-       * @public
-       */
-
-    }, {
-      key: "close",
-      value: function close() {
-        var _this3 = this;
-
-        if (!this._isOpen) {
-          return;
-        }
-
-        var cancelled = _get(_getPrototypeOf(Popover.prototype), "close", this).call(this);
-
-        if (cancelled) {
-          return;
-        }
-
-        this._isOpen = false;
-        clearInterval(this._dockInterval);
-        document.removeEventListener("mousedown", this._documentMouseDownHandler, true);
-        document.removeEventListener("touchstart", this._documentMouseDownHandler, true);
-        this.resetFocus();
-        RenderScheduler.whenFinished().then(function (_) {
-          _this3.fireEvent("afterClose", {});
-        });
-      }
-    }, {
-      key: "getPopoverSize",
-      value: function getPopoverSize() {
-        var popoverFrameDomRef = this.shadowRoot.querySelector(".sapMPopupFrame"); // this.getDomRef();
-
-        var popoverDomRef = popoverFrameDomRef.querySelector(".sapMPopover");
-        popoverFrameDomRef.style.visibility = "hidden";
-        popoverFrameDomRef.style.display = "block";
-        var width = popoverDomRef.offsetWidth;
-        var height = popoverDomRef.offsetHeight;
-        popoverFrameDomRef.style.display = "";
-        popoverFrameDomRef.style.visibility = "visible";
-        return {
-          width: width,
-          height: height
-        };
-      }
-    }, {
-      key: "hasTargetElementMoved",
-      value: function hasTargetElementMoved() {
-        var newRect = this._targetElement.getBoundingClientRect();
-
-        var targetRect = this._targetRect;
-        return Math.abs(newRect.left - targetRect.left) > diffTolerance || Math.abs(newRect.top - targetRect.top) > diffTolerance;
-      }
-    }, {
-      key: "classes",
-      get: function get() {
-        var placementType = this._actualPlacementType;
-        return {
-          frame: {
-            sapMPopupFrame: true,
-            sapMPopupFrameOpen: this._isOpen
-          },
-          main: {
-            sapMPopup: true,
-            sapMPopover: true
-          },
-          blockLayer: {
-            sapUiBLy: true,
-            sapMPopupBlockLayer: true,
-            sapMPopupBlockLayerHidden: !this.modal || this._hideBlockLayer
-          },
-          arrow: {
-            sapMPopoverArr: true,
-            sapMPopoverArrHidden: this.hideArrow,
-            sapMPopoverArrLeft: placementType === PopoverPlacementType.Right,
-            sapMPopoverArrRight: placementType === PopoverPlacementType.Left,
-            sapMPopoverArrUp: placementType === PopoverPlacementType.Bottom,
-            sapMPopoverArrDown: placementType === PopoverPlacementType.Top
-          }
-        };
-      }
-    }, {
-      key: "styles",
-      get: function get() {
-        return {
-          main: {
-            left: "".concat(this._left, "px"),
-            top: "".concat(this._top, "px"),
-            width: this._width,
-            height: this._height,
-            "z-index": this._zIndex + 1
-          },
-          content: {
-            "max-height": "".concat(this._maxContentHeight, "px")
-          },
-          arrow: {
-            transform: "translate(".concat(this._arrowTranslateX, "px, ").concat(this._arrowTranslateY, "px)")
-          },
-          blockLayer: {
-            "z-index": this._zIndex
-          }
-        };
-      }
-    }, {
-      key: "headerId",
-      get: function get() {
-        return this.hideHeader ? undefined : "".concat(this._id, "-header");
-      }
-    }, {
-      key: "focusHelper",
-      get: function get() {
-        return {
-          forwardToLast: this._focusElementsHandlers.forwardToLast,
-          forwardToFirst: this._focusElementsHandlers.forwardToFirst
-        };
-      }
-    }], [{
-      key: "isInRect",
-      value: function isInRect(x, y, rect) {
-        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-      }
-    }, {
-      key: "getClientRect",
-      value: function getClientRect(domRef) {
-        var rect = domRef.getBoundingClientRect();
-        var computedStyle = window.getComputedStyle(domRef);
-        var offsetLeft = parseFloat(computedStyle.paddingLeft);
-        var offsetRight = parseFloat(computedStyle.paddingRight);
-        var offsetTop = parseFloat(computedStyle.paddingTop);
-        var offsetBottom = parseFloat(computedStyle.paddingBottom);
-        return {
-          left: rect.left + offsetLeft,
-          right: rect.right - offsetRight,
-          top: rect.top + offsetTop,
-          bottom: rect.bottom - offsetBottom,
-          width: rect.width - offsetLeft - offsetRight,
-          height: rect.height - offsetTop - offsetBottom
-        };
-      }
-    }]);
-
-    return Popover;
-  }(Popup);
-
-  Bootstrap.boot().then(function (_) {
-    Popover.define();
-  });
-
   var InputTypes = {
     Text: "Text",
     Email: "Email",
@@ -22672,7 +22702,7 @@
   InputType.generataTypeAcessors(InputTypes);
 
   function _templateObject4$3() {
-    var data = _taggedTemplateLiteral(["<ui5-popover\t\t\t\tplacement-type=\"Bottom\"\t\t\t\thide-header=\"true\"\t\t\t\thide-arrow=\"true\"\t\t\t\thorizontal-align=\"Stretch\"\t\t\t\tinitial-focus=\"", "-inner\"><ui5-list separators=\"Inner\"><slot></slot></ui5-list></ui5-popover>\t"]);
+    var data = _taggedTemplateLiteral(["<ui5-popover\t\t\t\tplacement-type=\"Bottom\"\t\t\t\tno-header\t\t\t\tno-arrow\t\t\t\thorizontal-align=\"Stretch\"\t\t\t\tinitial-focus=\"", "-inner\"><ui5-list separators=\"Inner\"><slot></slot></ui5-list></ui5-popover>\t"]);
 
     _templateObject4$3 = function _templateObject4() {
       return data;
@@ -23349,7 +23379,7 @@
   }
 
   function _templateObject$f() {
-    var data = _taggedTemplateLiteral(["<div\t\tclass=\"", "\"\t\tstyle=\"", "\"><!-- INPUT --><ui5-input\t\t\tid=\"", "-inner\"\t\t\tplaceholder=\"", "\"\t\t\ttype=\"", "\"\t\t\tvalue=\"", "\"\t\t\t?disabled=\"", "\"\t\t\t?readonly=\"", "\"\t\t\tvalue-state=\"", "\"\t\t\t@ui5-change=\"", "\"\t\t\t@ui5-input=\"", "\"\t\t\tdata-sap-focus-ref\t>\t\t", "</ui5-input><!-- POPOVER --><ui5-popover\t\t\tid=\"", "-popover\"\t\t\tallow-target-overlap=\"", "\"\t\t\tplacement-type=\"", "\"\t\t\thide-header=\"", "\"\t\t\thide-arrow=\"", "\"\t\t\thorizontal-align=\"", "\"\t\t\tstay-open-on-scroll=\"", "\"\t\t\t@ui5-afterClose=\"", "\"\t\t\t@ui5-afterOpen=\"", "\"\t><ui5-calendar\t\t\t\tid=\"", "-calendar\"\t\t\t\tprimary-calendar-type=\"", "\"\t\t\t\tformat-pattern=\"", "\"\t\t\t\ttimestamp=\"", "\"\t\t\t\t.selectedDates=\"", "\"\t\t\t\t@ui5-selectedDatesChange=\"", "\"\t\t></ui5-calendar></ui5-popover><slot name=\"formSupport\"></slot></div>"]);
+    var data = _taggedTemplateLiteral(["<div\t\tclass=\"", "\"\t\tstyle=\"", "\"><!-- INPUT --><ui5-input\t\t\tid=\"", "-inner\"\t\t\tplaceholder=\"", "\"\t\t\ttype=\"", "\"\t\t\tvalue=\"", "\"\t\t\t?disabled=\"", "\"\t\t\t?readonly=\"", "\"\t\t\tvalue-state=\"", "\"\t\t\t@ui5-change=\"", "\"\t\t\t@ui5-input=\"", "\"\t\t\tdata-sap-focus-ref\t>\t\t", "</ui5-input><!-- POPOVER --><ui5-popover\t\t\tid=\"", "-popover\"\t\t\tallow-target-overlap=\"", "\"\t\t\tplacement-type=\"", "\"\t\t\tno-header\t\t\tno-arrow\t\t\thorizontal-align=\"", "\"\t\t\tstay-open-on-scroll=\"", "\"\t\t\t@ui5-afterClose=\"", "\"\t\t\t@ui5-afterOpen=\"", "\"\t><ui5-calendar\t\t\t\tid=\"", "-calendar\"\t\t\t\tprimary-calendar-type=\"", "\"\t\t\t\tformat-pattern=\"", "\"\t\t\t\ttimestamp=\"", "\"\t\t\t\t.selectedDates=\"", "\"\t\t\t\t@ui5-selectedDatesChange=\"", "\"\t\t></ui5-calendar></ui5-popover><slot name=\"formSupport\"></slot></div>"]);
 
     _templateObject$f = function _templateObject() {
       return data;
@@ -23359,7 +23389,7 @@
   }
 
   var block0$e = function block0(context) {
-    return html(_templateObject$f(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._input.placeholder), ifDefined(context._input.type), ifDefined(context.value), ifDefined(context.disabled), ifDefined(context.readonly), ifDefined(context.valueState), ifDefined(context._input.onChange), ifDefined(context._input.onLiveChange), !context.readonly ? block1$a(context) : undefined, ifDefined(context._id), ifDefined(context._popover.allowTargetOverlap), ifDefined(context._popover.placementType), ifDefined(context._popover.hideHeader), ifDefined(context._popover.hideArrow), ifDefined(context._popover.horizontalAlign), ifDefined(context._popover.stayOpenOnScroll), ifDefined(context._popover.afterClose), ifDefined(context._popover.afterOpen), ifDefined(context._id), ifDefined(context._calendar.primaryCalendarType), ifDefined(context._calendar.formatPattern), ifDefined(context._calendar.timestamp), ifDefined(context._calendar.selectedDates), ifDefined(context._calendar.onSelectedDatesChange));
+    return html(_templateObject$f(), ifDefined(classMap(context.classes.main)), ifDefined(styleMap$1(context.styles.main)), ifDefined(context._id), ifDefined(context._input.placeholder), ifDefined(context._input.type), ifDefined(context.value), ifDefined(context.disabled), ifDefined(context.readonly), ifDefined(context.valueState), ifDefined(context._input.onChange), ifDefined(context._input.onLiveChange), !context.readonly ? block1$a(context) : undefined, ifDefined(context._id), ifDefined(context._popover.allowTargetOverlap), ifDefined(context._popover.placementType), ifDefined(context._popover.horizontalAlign), ifDefined(context._popover.stayOpenOnScroll), ifDefined(context._popover.afterClose), ifDefined(context._popover.afterOpen), ifDefined(context._id), ifDefined(context._calendar.primaryCalendarType), ifDefined(context._calendar.formatPattern), ifDefined(context._calendar.timestamp), ifDefined(context._calendar.selectedDates), ifDefined(context._calendar.onSelectedDatesChange));
   };
 
   var block1$a = function block1(context) {
@@ -23604,8 +23634,6 @@
       _this._popover = {
         placementType: PopoverPlacementType.Bottom,
         horizontalAlign: PopoverHorizontalAlign.Left,
-        hideHeader: true,
-        hideArrow: true,
         allowTargetOverlap: true,
         stayOpenOnScroll: true,
         afterClose: function afterClose() {
@@ -24057,7 +24085,7 @@
   }
 
   var block0$f = function block0(context) {
-    return html(_templateObject$g(), ifDefined(classMap(context.classes.frame)), ifDefined(context._id), ifDefined(context.zindex), ifDefined(classMap(context.classes.dialogParent)), ifDefined(context.headerId), ifDefined(classMap(context.classes.main)), !context.hideHeader ? block1$b(context) : undefined, context.footer ? block4$3(context) : undefined, ifDefined(context._id), ifDefined(context._id), ifDefined(context.blockLayer), ifDefined(classMap(context.classes.blockLayer)));
+    return html(_templateObject$g(), ifDefined(classMap(context.classes.frame)), ifDefined(context._id), ifDefined(context.zindex), ifDefined(classMap(context.classes.dialogParent)), ifDefined(context.headerId), ifDefined(classMap(context.classes.main)), !context.noHeader ? block1$b(context) : undefined, context.footer ? block4$3(context) : undefined, ifDefined(context._id), ifDefined(context._id), ifDefined(context.blockLayer), ifDefined(classMap(context.classes.blockLayer)));
   };
 
   var block1$b = function block1(context) {
@@ -26177,7 +26205,7 @@
   }(ListItemBase);
 
   function _templateObject15() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\ttype=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
+    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
 
     _templateObject15 = function _templateObject15() {
       return data;
@@ -26277,7 +26305,7 @@
   }
 
   function _templateObject5$5() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\ttype=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
+    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
 
     _templateObject5$5 = function _templateObject5() {
       return data;
@@ -26615,7 +26643,7 @@
   });
 
   function _templateObject9$1() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\ttype=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
+    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
 
     _templateObject9$1 = function _templateObject9() {
       return data;
@@ -26655,7 +26683,7 @@
   }
 
   function _templateObject5$6() {
-    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\ttype=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
+    var data = _taggedTemplateLiteral(["<div class=\"sapMDeleteListItemButton\"><ui5-button\t\t\t\tid=\"", "-deleteSelectionElement\"\t\t\t\tdesign=\"Transparent\"\t\t\t\ticon=\"sap-icon://decline\"\t\t\t\t@ui5-press=\"", "\"\t\t\t></ui5-button></div>\t"]);
 
     _templateObject5$6 = function _templateObject5() {
       return data;
@@ -28305,7 +28333,7 @@
   });
 
   function _templateObject2$h() {
-    var data = _taggedTemplateLiteral(["<ui5-popover\t\t\tplacement-type=\"Bottom\"\t\t\thide-header=\"true\"\t\t\thide-arrow=\"true\"\t\t\thorizontal-align=\"Stretch\"><ui5-list separators=\"None\"><slot></slot></ui5-list></ui5-popover>\t"]);
+    var data = _taggedTemplateLiteral(["<ui5-popover\t\t\tplacement-type=\"Bottom\"\t\t\tno-header\t\t\tno-arrow\t\t\thorizontal-align=\"Stretch\"><ui5-list separators=\"None\"><slot></slot></ui5-list></ui5-popover>\t"]);
 
     _templateObject2$h = function _templateObject2() {
       return data;
@@ -29120,7 +29148,7 @@
   }
 
   function _templateObject$o() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><div class=\"", "\">\t\t", "", "", "<ui5-popover class=\"sapWCShellBarMenuPopover\" hide-header placement-type=\"Bottom\"><ui5-list separators=\"None\" mode=\"SingleSelect\" @ui5-itemPress=", "><slot name=\"menuItems\"></slot></ui5-list></ui5-popover><h2 class=\"", "\">", "</h2></div><div class=\"sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerMiddle\">\t\t", "</div><div class=\"sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerRight\"><div class=\"sapWCShellBarOverflowContainerRightChild\">\t\t\t", "</div></div><ui5-popover class=\"sapWCShellBarOverflowPopover\" placement-type=\"Bottom\" horizontal-align=\"", "\" hide-header hide-arrow><ui5-list separators=\"None\" @ui5-itemPress=\"", "\">\t\t\t", "</ui5-list></ui5-popover><div class=\"", "\"></div><div id=\"", "-searchfield-wrapper\"\t\tclass=\"", "\"\t\tstyle=\"", "\"\t\t@focusout=", "\t>\t\t", "</div></div>"]);
+    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><div class=\"", "\">\t\t", "", "", "<ui5-popover class=\"sapWCShellBarMenuPopover\" no-header placement-type=\"Bottom\"><ui5-list separators=\"None\" mode=\"SingleSelect\" @ui5-itemPress=", "><slot name=\"menuItems\"></slot></ui5-list></ui5-popover><h2 class=\"", "\">", "</h2></div><div class=\"sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerMiddle\">\t\t", "</div><div class=\"sapWCShellBarOverflowContainer sapWCShellBarOverflowContainerRight\"><div class=\"sapWCShellBarOverflowContainerRightChild\">\t\t\t", "</div></div><ui5-popover class=\"sapWCShellBarOverflowPopover\" placement-type=\"Bottom\" horizontal-align=\"", "\" no-header no-arrow><ui5-list separators=\"None\" @ui5-itemPress=\"", "\">\t\t\t", "</ui5-list></ui5-popover><div class=\"", "\"></div><div id=\"", "-searchfield-wrapper\"\t\tclass=\"", "\"\t\tstyle=\"", "\"\t\t@focusout=", "\t>\t\t", "</div></div>"]);
 
     _templateObject$o = function _templateObject() {
       return data;
@@ -30246,45 +30274,6 @@
     return html(_templateObject$q(), ifDefined(classMap(context.classes.main)), ifDefined(context.checked), ifDefined(context.tabIndex), ifDefined(context.rtl), ifDefined(context.textOn), ifDefined(context.textOff), ifDefined(context.checked));
   };
 
-  /**
-   * Different types of Switch.
-   */
-
-  var SwitchTypes = {
-    /**
-     * The Textual type includes the default styling and user provided texts.
-     */
-    Textual: "Textual",
-
-    /**
-     * The Graphical type - positive/negative icons and colors are displayed.
-     */
-    Graphical: "Graphical"
-  };
-
-  var SwitchType =
-  /*#__PURE__*/
-  function (_DataType) {
-    _inherits(SwitchType, _DataType);
-
-    function SwitchType() {
-      _classCallCheck(this, SwitchType);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(SwitchType).apply(this, arguments));
-    }
-
-    _createClass(SwitchType, null, [{
-      key: "isValid",
-      value: function isValid(value) {
-        return !!SwitchTypes[value];
-      }
-    }]);
-
-    return SwitchType;
-  }(DataType);
-
-  SwitchType.generataTypeAcessors(SwitchTypes);
-
   var switchCss = ":host(ui5-switch:not([hidden])){display:inline-block}ui5-switch:not([hidden]){display:inline-block}.ui5-switch-wrapper{position:relative;width:100%;height:var(--_ui5_switch_height,2.75rem);min-width:var(--_ui5_switch_width,3.875rem);cursor:pointer;outline:none;-webkit-tap-highlight-color:rgba(0,0,0,0)}.ui5-switch-wrapper.ui5-switch--no-label{min-width:var(--_ui5_switch_no_label_width,3.25rem)}.ui5-switch-inner{display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;pointer-events:none}.ui5-switch-track{height:var(--_ui5_switch_track_height,1.375rem);width:100%;display:flex;align-items:center;background:var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#ededed));border:1px solid;border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_switch_track_border_radius,.75rem);box-sizing:border-box}.ui5-switch--no-label .ui5-switch-track{height:var(--_ui5_switch_track_no_label_height,1.25rem)}.ui5-switch-slider{position:relative;height:var(--_ui5_switch_height,2.75rem);width:100%;transition:transform .1s ease-in;transform-origin:top left}.ui5-switch-handle{position:absolute;left:-1px;width:var(--_ui5_switch_handle_width,2rem);height:var(--_ui5_switch_handle_height,2rem);background:var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#fafafa));border:var(--_ui5_switch_handle_border_width,1px) solid var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)));border-radius:var(--_ui5_switch_handle_border_radius,1rem);box-sizing:border-box}.ui5-switch-text{display:flex;justify-content:center;position:absolute;min-width:1.625rem;padding:0 .125rem;font-size:var(--sapMFontSmallSize,.75rem);font-family:\"72\",\"72full\",Arial,Helvetica,sans-serif;text-transform:uppercase;text-align:center;color:var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a)));white-space:nowrap;user-select:none;-webkit-user-select:none;-ms-user-select:none}.ui5-switch-text--on{left:calc(-100% + 1.9125rem)}.ui5-switch-text--off{right:0}.ui5-switch-handle,.ui5-switch-text{top:50%;transform:translateY(-50%)}.ui5-switch-desktop.ui5-switch-wrapper:focus:after{content:\"\";position:absolute;left:-var(--_ui5_switch_outline,1px);top:0;bottom:0;width:100%;border:var(--_ui5_switch_outline,1px) dotted var(--sapUiContentFocusColor,var(--sapContent_FocusColor,#000));pointer-events:none}.ui5-switch-wrapper .ui5-switch-input{position:absolute;left:0;width:0;height:0;margin:0;visibility:hidden;-webkit-appearance:none}.ui5-switch-wrapper.ui5-switch--disabled{opacity:.4;cursor:default}.ui5-switch-wrapper.ui5-switch--disabled .ui5-switch-track{background:var(--_ui5_switch_track_disabled_bg,var(--_ui5_switch_track_bg,var(--sapUiButtonBackgroundDarken7,#ededed)));border-color:var(--_ui5_switch_track_disabled_border_color,var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a))))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-track{background:var(--_ui5_switch_track_disabled_checked_bg,var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7)))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_checked_bg,var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.ui5-switch-wrapper.ui5-switch--disabled .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_bg,var(--_ui5_switch_handle_bg,var(--sapUiButtonBackgroundDarken2,#fafafa)));border-color:var(--_ui5_switch_handle_disabled_border_color,var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-track{background:var(--_ui5_switch_track_disabled_semantic_checked_bg,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_switch_track_disabled_semantic_checked_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_semantic_checked_bg,var(--sapUiSuccessBGLighten5,#fff));border-color:var(--_ui5_switch_handle_disabled_semantic_checked_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled:not(.ui5-switch--checked) .ui5-switch-track{background:var(--_ui5_switch_track_disabled_semantic_bg,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--_ui5_switch_track_disabled_semantic_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled:not(.ui5-switch--checked) .ui5-switch-handle{background:var(--_ui5_switch_handle_disabled_semantic_bg,var(--sapUiErrorBGLighten4,#fff));border-color:var(--_ui5_switch_handle_disabled_semantic_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-wrapper.ui5-switch--disabled.ui5-switch--checked .ui5-switch-text{color:var(--_ui5_switch_text_disabled_color,var(--sapUiBaseText,var(--sapTextColor,var(--sapPrimary6,#32363a))))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-handle{background:var(--_ui5_switch_handle_checked_bg,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0)))));border-color:var(--_ui5_switch_handle_checked_border_color,var(--sapUiToggleButtonPressedBorderColor,var(--sapUiToggleButtonPressedBackground,var(--sapUiSelected,var(--sapSelectedColor,var(--sapHighlightColor,#0854a0))))))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-track{background:var(--_ui5_switch_track_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7));border-color:var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#4e84ba))}.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(100%) translateX(-1.875rem)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-handle,.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-track{border-color:var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e)))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-track{background:var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-handle{background:var(--sapUiSuccessBGLighten5,#fff)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text{justify-content:center;font-size:var(--sapMFontSmallSize,.75rem)}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text:before{font-family:SAP-icons;speak:none;width:.75rem;height:.75rem;line-height:.75rem}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text--on:before{content:\"\\e05b\";color:var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e)))}.ui5-switch-wrapper.ui5-switch--semantic .ui5-switch-text--off:before{content:\"\\e03e\";color:var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00)))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-handle,.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-track{border-color:var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00)))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-track{background:var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb))}.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--checked) .ui5-switch-handle{background:var(--sapUiErrorBGLighten4,#fff)}.ui5-switch-desktop.ui5-switch-wrapper:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)))}.ui5-switch-desktop.ui5-switch-wrapper:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_hover_bg,var(--sapUiButtonHoverBackgroundDarken2,#e1f0fe));border-color:var(--sapUiContentForegroundBorderColor,var(--sapContent_ForegroundBorderColor,var(--sapPrimary5,#89919a)))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--sapUiToggleButtonPressedHoverBackground,#095caf);border-color:var(--sapUiToggleButtonPressedHoverBorderColor,var(--sapUiToggleButtonPressedHoverBackground,#095caf))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-track{background:var(--_ui5_switch_track_hover_checked_bg,var(--sapUiToggleButtonPressedBackgroundLighten50Desaturate47,#c0d3e7));border-color:var(--_ui5_switch_track_hover_border_color,var(--_ui5_switch_track_checked_border_color,var(--sapUiToggleButtonPressedBorderColorLighten19Desaturate46,#4e84ba)))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_semantic_hover_bg,var(--sapUiErrorBG,var(--sapErrorBackground,#ffebeb)));border-color:var(--_ui5_switch_handle_semantic_hover_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--_ui5_switch_handle_semantic_hover_border_color,var(--sapUiErrorBorder,var(--sapErrorBorderColor,var(--sapNegativeColor,#b00))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-handle{background:var(--_ui5_switch_handle_semantic_checked_hover_bg,var(--sapUiSuccessBG,var(--sapSuccessBackground,#f1fdf6)));border-color:var(--_ui5_switch_handle_semantic_checked_hover_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-desktop.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--checked:not(.ui5-switch--disabled):hover .ui5-switch-track{border-color:var(--_ui5_switch_handle_semantic_checked_hover_border_color,var(--sapUiSuccessBorder,var(--sapSuccessBorderColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-text--on:before,.ui5-switch-wrapper.ui5-switch--semantic:hover .ui5-switch-text--on:before{color:var(--_ui5_switch_text_on_semantic_color,var(--sapUiPositiveElement,var(--sapPositiveElementColor,var(--sapPositiveColor,#107e3e))))}.ui5-switch-wrapper.ui5-switch--semantic.ui5-switch--disabled .ui5-switch-text--off:before,.ui5-switch-wrapper.ui5-switch--semantic:hover .ui5-switch-text--off:before{color:var(--_ui5_switch_text_off_semantic_color,var(--sapUiNegativeElement,var(--sapNegativeElementColor,var(--sapNegativeColor,#b00))))}.sapUiSizeCompact.ui5-switch-wrapper{height:var(--_ui5_switch_compact_height,2rem);min-width:var(--_ui5_switch_compact_width,3.5rem)}.sapUiSizeCompact.ui5-switch-wrapper .ui5-switch-handle{height:var(--_ui5_switch_handle_compact_height,1.625rem);width:var(--_ui5_switch_handle_compact_width,1.625rem)}.sapUiSizeCompact.ui5-switch-wrapper .ui5-switch-text--on{left:calc(-100% + 1.5625rem)}.sapUiSizeCompact.ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(100%) translateX(-1.5rem)}.sapUiSizeCompact.ui5-switch-wrapper.ui5-switch--no-label{min-width:var(--_ui5_switch_compact_no_label_width,2.5rem)}.sapUiSizeCompact.ui5-switch--no-label .ui5-switch-track{height:var(--_ui5_switch_track_compact_no_label_height,1rem)}[dir=rtl].ui5-switch-wrapper .ui5-switch-handle{left:0;right:-1px}[dir=rtl].ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(1.875rem) translateX(-100%)}[dir=rtl].ui5-switch-wrapper .ui5-switch-text--on{right:calc(-100% + 1.9125rem);left:auto}[dir=rtl].ui5-switch-wrapper .ui5-switch-text--off{right:auto;left:0}.sapUiSizeCompact[dir=rtl].ui5-switch-wrapper.ui5-switch--checked .ui5-switch-slider{transform:translateX(-100%) translateX(1.5rem)}.sapUiSizeCompact[dir=rtl].ui5-switch-wrapper .ui5-switch-text--on{right:calc(-100% + 1.5625rem)}";
 
   /**
@@ -30353,18 +30342,15 @@
       /**
        * Defines the <code>ui5-switch</code> type.
        * <br>
-       * Available options are <code>Textual</code> and <code>Graphical</code>.
        *
-       * <br><br>
-       * <b>Note:</b> If <code>Graphical</code> type is set,
+       * <b>Note:</b> If <code>graphical</code> type is set,
        * positive and negative icons will replace the <code>textOn</code> and <code>textOff</code>.
        * @type {string}
-       * @defaultvalue "Textual"
+       * @defaultvalue false
        * @public
        */
-      type: {
-        type: String,
-        defaultValue: SwitchType.Textual
+      graphical: {
+        type: Boolean
       }
     },
     events:
@@ -30453,14 +30439,12 @@
     }, {
       key: "textOn",
       get: function get() {
-        var graphical = this.type === SwitchType.Graphical;
-        return graphical ? "" : this.textOn;
+        return this.graphical ? "" : this.textOn;
       }
     }, {
       key: "textOff",
       get: function get() {
-        var graphical = this.type === SwitchType.Graphical;
-        return graphical ? "" : this.textOff;
+        return this.graphical ? "" : this.textOff;
       }
     }, {
       key: "tabIndex",
@@ -30470,15 +30454,14 @@
     }, {
       key: "classes",
       get: function get() {
-        var graphical = this.type === SwitchType.Graphical;
-        var hasLabel = graphical || this.textOn || this.textOff;
+        var hasLabel = this.graphical || this.textOn || this.textOff;
         return {
           main: {
             "ui5-switch-wrapper": true,
             "ui5-switch-desktop": isDesktop(),
             "ui5-switch--disabled": this.disabled,
             "ui5-switch--checked": this.checked,
-            "ui5-switch--semantic": graphical,
+            "ui5-switch--semantic": this.graphical,
             "ui5-switch--no-label": !hasLabel,
             "sapUiSizeCompact": getCompactSize()
           }
@@ -30598,7 +30581,7 @@
   }
 
   var block0$q = function block0(context) {
-    return html(_templateObject$r(), ifDefined(classMap(context.classes.main)), ifDefined(context._id), !context.hideIcon ? block1$j(context) : undefined, ifDefined(context.hiddenText), ifDefined(classMap(context.classes.label)), !context.hideCloseButton ? block2$d(context) : undefined);
+    return html(_templateObject$r(), ifDefined(classMap(context.classes.main)), ifDefined(context._id), !context.noIcon ? block1$j(context) : undefined, ifDefined(context.hiddenText), ifDefined(classMap(context.classes.label)), !context.noCloseButton ? block2$d(context) : undefined);
   };
 
   var block1$j = function block1(context) {
@@ -30662,7 +30645,7 @@
        * @defaultvalue false
        * @public
        */
-      hideIcon: {
+      noIcon: {
         type: Boolean
       },
 
@@ -30673,7 +30656,7 @@
        * @defaultvalue false
        * @public
        */
-      hideCloseButton: {
+      noCloseButton: {
         type: Boolean
       },
       _closeButton: {
@@ -30786,7 +30769,7 @@
     }, {
       key: "hiddenText",
       get: function get() {
-        return "Message Strip ".concat(this.type, " ").concat(this.hideCloseButton ? "" : "closable", ".");
+        return "Message Strip ".concat(this.type, " ").concat(this.noCloseButton ? "" : "closable", ".");
       }
     }, {
       key: "_closeButtonText",
@@ -30799,15 +30782,15 @@
         return {
           label: {
             "ui5-messagestrip-text": true,
-            "ui5-messagestripNoCloseButton": this.hideCloseButton
+            "ui5-messagestripNoCloseButton": this.noCloseButton
           },
           closeIcon: {
             "ui5-messagestrip-close-icon": true
           },
           main: _defineProperty({
             "ui5-messagestrip-root": true,
-            "ui5-messagestrip-icon--hidden": this.hideIcon,
-            "ui5-messagestrip-close-icon--hidden": this.hideCloseButton
+            "ui5-messagestrip-icon--hidden": this.noIcon,
+            "ui5-messagestrip-close-icon--hidden": this.noCloseButton
           }, this.typeClasses, true)
         };
       }
@@ -30956,7 +30939,7 @@
   }
 
   function _templateObject$s() {
-    var data = _taggedTemplateLiteral(["<div class=\"", "\"><ui5-input id=\"ui5-multi-combobox--input\"\t\tvalue=\"", "\"\t\tplaceholder=\"", "\"\t\t?disabled=", "\t\t?readonly=", "\t\tvalue-state=\"", "\"\t\t@ui5-input=\"", "\"\t\t@ui5-change=", "\t\t@keydown=\"", "\"><ui5-tokenizer slot=\"_beginContent\"\t\t\tshow-more\t\t\tclass=\"ui5-multi-combobox-tokenizer\"\t\t\t?disabled=\"", "\"\t\t\t@ui5-showMoreItemsPress=\"", "\"\t\t\t@ui5-tokenDelete=\"", "\"\t\t\t@focusout=\"", "\"\t\t>\t\t\t", "</ui5-tokenizer>\t\t", "</ui5-input><ui5-popover \t\tclass=\"ui5-multi-combobox-selected-items--popover\"\t\thorizontal-align=\"Stretch\"\t\thide-header\t\t?hide-arrow=", "\t\tplacement-type=\"Bottom\"><ui5-list separators=\"None\" mode=\"", "\"\t\t\t@ui5-selectionChange=", ">\t\t\t", "</ui5-list></ui5-popover><ui5-popover class=\"ui5-multi-combobox-all-items--popover\"\t\thide-header\t\thide-arrow\t\thorizontal-align=\"Stretch\"\t\tinitial-focus=\"ui5-multi-combobox--input\"\t\thorizontal-align=\"Left\"\t\tplacement-type=\"Bottom\"\t\t@ui5-selectionChange=", "\t\t@ui5-afterClose=", "\t\t@ui5-afterOpen=", "><ui5-list separators=\"None\" mode=\"MultiSelect\" class=\"ui5-multi-combobox-all-items-list\">\t\t\t", "</ui5-list></ui5-popover></div>"]);
+    var data = _taggedTemplateLiteral(["<div class=\"", "\"><ui5-input id=\"ui5-multi-combobox--input\"\t\tvalue=\"", "\"\t\tplaceholder=\"", "\"\t\t?disabled=", "\t\t?readonly=", "\t\tvalue-state=\"", "\"\t\t@ui5-input=\"", "\"\t\t@ui5-change=", "\t\t@keydown=\"", "\"><ui5-tokenizer slot=\"_beginContent\"\t\t\tshow-more\t\t\tclass=\"ui5-multi-combobox-tokenizer\"\t\t\t?disabled=\"", "\"\t\t\t@ui5-showMoreItemsPress=\"", "\"\t\t\t@ui5-tokenDelete=\"", "\"\t\t\t@focusout=\"", "\"\t\t>\t\t\t", "</ui5-tokenizer>\t\t", "</ui5-input><ui5-popover \t\tclass=\"ui5-multi-combobox-selected-items--popover\"\t\thorizontal-align=\"Stretch\"\t\tno-header\t\t?no-arrow=", "\t\tplacement-type=\"Bottom\"><ui5-list separators=\"None\" mode=\"", "\"\t\t\t@ui5-selectionChange=", ">\t\t\t", "</ui5-list></ui5-popover><ui5-popover class=\"ui5-multi-combobox-all-items--popover\"\t\tno-arrow\t\tno-header\t\thorizontal-align=\"Stretch\"\t\tinitial-focus=\"ui5-multi-combobox--input\"\t\thorizontal-align=\"Left\"\t\tplacement-type=\"Bottom\"\t\t@ui5-selectionChange=", "\t\t@ui5-afterClose=", "\t\t@ui5-afterOpen=", "><ui5-list separators=\"None\" mode=\"MultiSelect\" class=\"ui5-multi-combobox-all-items-list\">\t\t\t", "</ui5-list></ui5-popover></div>"]);
 
     _templateObject$s = function _templateObject() {
       return data;
@@ -32380,7 +32363,7 @@
   }
 
   function _templateObject$v() {
-    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><div class=\"", "\" id=\"", "-header\"><ui5-icon @ui5-press=\"", "\" class=\"", "\" src=\"sap-icon://slim-arrow-left\" tabindex=\"-1\"></ui5-icon><!-- tab items --><div class=\"", "\" id=\"", "-headerScrollContainer\"><ul role=\"tablist\" class=\"", "\">\t\t\t\t", "</ul></div><ui5-icon @ui5-press=\"", "\" class=\"", "\" src=\"sap-icon://slim-arrow-right\" tabindex=\"-1\"></ui5-icon><!-- overflow button -->\t\t", "</div><!-- content area --><div class=\"", "\">\t\t", "</div><!-- overflow menu --><ui5-popover\t\tid=\"", "-overflowMenu\"\t\thide-arrow\t\thide-header\t\tplacement-type=\"Bottom\"\t\thorizontal-align=\"Right\"><ui5-list @ui5-itemPress=\"", "\">\t\t\t", "</ui5-list></ui5-popover></div>"]);
+    var data = _taggedTemplateLiteral(["<div\tclass=\"", "\"\tdir=\"", "\"><div class=\"", "\" id=\"", "-header\"><ui5-icon @ui5-press=\"", "\" class=\"", "\" src=\"sap-icon://slim-arrow-left\" tabindex=\"-1\"></ui5-icon><!-- tab items --><div class=\"", "\" id=\"", "-headerScrollContainer\"><ul role=\"tablist\" class=\"", "\">\t\t\t\t", "</ul></div><ui5-icon @ui5-press=\"", "\" class=\"", "\" src=\"sap-icon://slim-arrow-right\" tabindex=\"-1\"></ui5-icon><!-- overflow button -->\t\t", "</div><!-- content area --><div class=\"", "\">\t\t", "</div><!-- overflow menu --><ui5-popover\t\tid=\"", "-overflowMenu\"\t\tno-arrow\t\tno-header\t\tplacement-type=\"Bottom\"\t\thorizontal-align=\"Right\"><ui5-list @ui5-itemPress=\"", "\">\t\t\t", "</ui5-list></ui5-popover></div>"]);
 
     _templateObject$v = function _templateObject() {
       return data;
@@ -33612,6 +33595,7 @@
         type: HTMLElement
       }
     },
+    defaultSlot: "header",
     properties:
     /** @lends sap.ui.webcomponents.main.TableColumn.prototype */
     {
@@ -34192,6 +34176,7 @@
         }
       }
     },
+    defaultSlot: "rows",
     properties:
     /** @lends sap.ui.webcomponents.main.Table.prototype */
     {
@@ -35811,7 +35796,7 @@
   }
 
   function _templateObject$G() {
-    var data = _taggedTemplateLiteral(["<button\t\ttype=\"button\"\t\tclass=\"", "\"\t\t?disabled=\"", "\"\t\taria-disabled=\"", "\"\t\tdata-sap-focus-ref\t\t\taria-pressed=\"", "\"\t\tdir=\"", "\"\t>\t\t", "", "</button>"]);
+    var data = _taggedTemplateLiteral(["<button\t\ttype=\"button\"\t\tclass=\"", "\"\t\t?disabled=\"", "\"\t\tdata-sap-focus-ref\t\t\taria-pressed=\"", "\"\t\tdir=\"", "\"\t>\t\t", "", "</button>"]);
 
     _templateObject$G = function _templateObject() {
       return data;
@@ -35821,7 +35806,7 @@
   }
 
   var block0$F = function block0(context) {
-    return html(_templateObject$G(), ifDefined(classMap(context.classes.main)), ifDefined(context.disabled), ifDefined(context.ariaDisabled), ifDefined(context.pressed), ifDefined(context.rtl), context.icon ? block1$v(context) : undefined, context.textContent ? block2$m(context) : undefined);
+    return html(_templateObject$G(), ifDefined(classMap(context.classes.main)), ifDefined(context.disabled), ifDefined(context.pressed), ifDefined(context.rtl), context.icon ? block1$v(context) : undefined, context.textContent ? block2$m(context) : undefined);
   };
 
   var block1$v = function block1(context) {
