@@ -5429,87 +5429,87 @@
     return new ResourceBundleFallback();
   };
 
-  var ar = "/resources/sap/ui/webcomponents/main/messagebundle_ar.06fb918541d68ed5.json";
+  var ar = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_ar.06fb918541d68ed5.json";
 
-  var bg = "/resources/sap/ui/webcomponents/main/messagebundle_bg.a778fe1b25159342.json";
+  var bg = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_bg.a778fe1b25159342.json";
 
-  var ca = "/resources/sap/ui/webcomponents/main/messagebundle_ca.6a38d82dabbc5c30.json";
+  var ca = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_ca.6a38d82dabbc5c30.json";
 
-  var cs = "/resources/sap/ui/webcomponents/main/messagebundle_cs.81d0171bc73a68d8.json";
+  var cs = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_cs.81d0171bc73a68d8.json";
 
-  var da = "/resources/sap/ui/webcomponents/main/messagebundle_da.40b3bf8df26ea945.json";
+  var da = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_da.40b3bf8df26ea945.json";
 
-  var de = "/resources/sap/ui/webcomponents/main/messagebundle_de.003a88af11495a15.json";
+  var de = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_de.003a88af11495a15.json";
 
-  var el = "/resources/sap/ui/webcomponents/main/messagebundle_el.f468c1f6c90edc73.json";
+  var el = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_el.f468c1f6c90edc73.json";
 
-  var enUSSappsd = "/resources/sap/ui/webcomponents/main/messagebundle_en_US_sappsd.0dce4b939c54cfc4.json";
+  var enUSSappsd = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_en_US_sappsd.0dce4b939c54cfc4.json";
 
-  var enUSSaptrc = "/resources/sap/ui/webcomponents/main/messagebundle_en_US_saptrc.9bc9aa064bc6ecc9.json";
+  var enUSSaptrc = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_en_US_saptrc.9bc9aa064bc6ecc9.json";
 
-  var en = "/resources/sap/ui/webcomponents/main/messagebundle_en.d59172246398cc8f.json";
+  var en = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_en.d59172246398cc8f.json";
 
-  var es = "/resources/sap/ui/webcomponents/main/messagebundle_es.ab14d7ce0bf66489.json";
+  var es = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_es.ab14d7ce0bf66489.json";
 
-  var et = "/resources/sap/ui/webcomponents/main/messagebundle_et.0c90feb1671ba0ea.json";
+  var et = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_et.0c90feb1671ba0ea.json";
 
-  var fi = "/resources/sap/ui/webcomponents/main/messagebundle_fi.6e6dd51450619a06.json";
+  var fi = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_fi.6e6dd51450619a06.json";
 
-  var fr = "/resources/sap/ui/webcomponents/main/messagebundle_fr.88b269c5ba9527a8.json";
+  var fr = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_fr.88b269c5ba9527a8.json";
 
-  var hi = "/resources/sap/ui/webcomponents/main/messagebundle_hi.d46c1048011a0893.json";
+  var hi = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_hi.d46c1048011a0893.json";
 
-  var hr = "/resources/sap/ui/webcomponents/main/messagebundle_hr.cb7f51997b3ec4a2.json";
+  var hr = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_hr.cb7f51997b3ec4a2.json";
 
-  var hu = "/resources/sap/ui/webcomponents/main/messagebundle_hu.47c1cfab11f3d193.json";
+  var hu = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_hu.47c1cfab11f3d193.json";
 
-  var it = "/resources/sap/ui/webcomponents/main/messagebundle_it.250799d07e0852c7.json";
+  var it = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_it.250799d07e0852c7.json";
 
-  var iw = "/resources/sap/ui/webcomponents/main/messagebundle_iw.dba6f047c549ee52.json";
+  var iw = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_iw.dba6f047c549ee52.json";
 
-  var ja = "/resources/sap/ui/webcomponents/main/messagebundle_ja.a229dfa02de2c0c2.json";
+  var ja = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_ja.a229dfa02de2c0c2.json";
 
-  var kk = "/resources/sap/ui/webcomponents/main/messagebundle_kk.f3102b0950a1b903.json";
+  var kk = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_kk.f3102b0950a1b903.json";
 
-  var ko = "/resources/sap/ui/webcomponents/main/messagebundle_ko.22fe17aebe7281f4.json";
+  var ko = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_ko.22fe17aebe7281f4.json";
 
-  var lt = "/resources/sap/ui/webcomponents/main/messagebundle_lt.5685ac52a3287bc2.json";
+  var lt = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_lt.5685ac52a3287bc2.json";
 
-  var lv = "/resources/sap/ui/webcomponents/main/messagebundle_lv.cb22b4a4f0537065.json";
+  var lv = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_lv.cb22b4a4f0537065.json";
 
-  var ms = "/resources/sap/ui/webcomponents/main/messagebundle_ms.84e52d85fd343d4c.json";
+  var ms = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_ms.84e52d85fd343d4c.json";
 
-  var nl = "/resources/sap/ui/webcomponents/main/messagebundle_nl.b7234dc65f8384a5.json";
+  var nl = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_nl.b7234dc65f8384a5.json";
 
-  var no = "/resources/sap/ui/webcomponents/main/messagebundle_no.aa766b01d5dd3397.json";
+  var no = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_no.aa766b01d5dd3397.json";
 
-  var pl = "/resources/sap/ui/webcomponents/main/messagebundle_pl.ad6b8bb7568ceb62.json";
+  var pl = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_pl.ad6b8bb7568ceb62.json";
 
-  var pt = "/resources/sap/ui/webcomponents/main/messagebundle_pt.3c37822285c202de.json";
+  var pt = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_pt.3c37822285c202de.json";
 
-  var ro = "/resources/sap/ui/webcomponents/main/messagebundle_ro.c602aaf73a74bf18.json";
+  var ro = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_ro.c602aaf73a74bf18.json";
 
-  var ru = "/resources/sap/ui/webcomponents/main/messagebundle_ru.3ac41f7b4beecd72.json";
+  var ru = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_ru.3ac41f7b4beecd72.json";
 
-  var sh = "/resources/sap/ui/webcomponents/main/messagebundle_sh.421df84970edef89.json";
+  var sh = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_sh.421df84970edef89.json";
 
-  var sk = "/resources/sap/ui/webcomponents/main/messagebundle_sk.f608bb74df0c4a5d.json";
+  var sk = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_sk.f608bb74df0c4a5d.json";
 
-  var sl = "/resources/sap/ui/webcomponents/main/messagebundle_sl.9450c227e6838ee7.json";
+  var sl = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_sl.9450c227e6838ee7.json";
 
-  var sv = "/resources/sap/ui/webcomponents/main/messagebundle_sv.e5747a02932a925b.json";
+  var sv = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_sv.e5747a02932a925b.json";
 
-  var th = "/resources/sap/ui/webcomponents/main/messagebundle_th.3437d04f5056a409.json";
+  var th = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_th.3437d04f5056a409.json";
 
-  var tr = "/resources/sap/ui/webcomponents/main/messagebundle_tr.89bc04dd14cf4660.json";
+  var tr = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_tr.89bc04dd14cf4660.json";
 
-  var uk = "/resources/sap/ui/webcomponents/main/messagebundle_uk.0aa615d9445f9660.json";
+  var uk = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_uk.0aa615d9445f9660.json";
 
-  var vi = "/resources/sap/ui/webcomponents/main/messagebundle_vi.073f6383d6d10694.json";
+  var vi = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_vi.073f6383d6d10694.json";
 
-  var zhCN = "/resources/sap/ui/webcomponents/main/messagebundle_zh_CN.9abbfdb97879f9b0.json";
+  var zhCN = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_zh_CN.9abbfdb97879f9b0.json";
 
-  var zhTW = "/resources/sap/ui/webcomponents/main/messagebundle_zh_TW.9ab7f263087768f7.json";
+  var zhTW = "/i18n-demo/resources/sap/ui/webcomponents/main/messagebundle_zh_TW.9ab7f263087768f7.json";
 
   var bundleMap = {
     ar: ar,
